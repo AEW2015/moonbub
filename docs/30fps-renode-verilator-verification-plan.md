@@ -28,6 +28,33 @@ report actual modeled refresh, distinct frame timestamps and 10-second windows;
 do not substitute a video-refresh counter for frame IDs. Set a latency target
 using user requirements and hardware data rather than inventing one here.
 
+## Progress update — 2026-11-02/03
+
+The evidence below records the initial baseline; later work is tracked in
+[the study progress](30fps-progress-2026-11-02.md). The following results are
+behavioral simulations unless explicitly stated otherwise:
+
+- The experimental burst path and its functional SDRAM model now run under
+  both Verilator and XSim. Short full-resolution tests have passed with exact
+  comparison against a related C decoder; this is not an independent codec or
+  physical timing proof. See [burst README](../fpga/experiments/throughput30/burst/README.md).
+- The experimental QSPI/CDC-to-LCD model passed a ten-frame test, and a
+  separate packet-trace study passed clean and lossy ten-frame workloads.
+  Its whole-frame network staging and FIFO credits are hypothetical; neither
+  is a production ESP32/FPGA integration. See [network study](../fpga/experiments/throughput30/burst/network-rtl-study/README.md).
+- Two 1,800-frame runs are **in progress**, one with optimistic register-bus
+  upload and one through modeled QSPI. Neither is a completed 60-second pass.
+  Partial results also show that display cadence does not establish a 33.3 ms
+  per-frame latency deadline. See [latency study](../fpga/experiments/throughput30/burst/latency-study/README.md).
+- Directed abort tests exposed partial-staging and simultaneous abort/vblank
+  issues; isolated candidates pass selected Verilator tests and XSim checks.
+  Production recovery, command acknowledgment and buffer ownership remain open.
+  See [abort study](../fpga/experiments/throughput30/burst/abort-study/README.md).
+- No ESP32-S3 firmware has been booted in Renode and no Renode–Verilator
+  full-system bridge has been demonstrated. An Espressif emulator is being
+  evaluated as an alternative; its peripheral support must be checked rather
+  than assumed.
+
 ## Current evidence and constraints
 
 - XSim ran actual memory/LCD RTL and a functional SDRAM model for a single
