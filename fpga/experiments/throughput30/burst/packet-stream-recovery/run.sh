@@ -16,11 +16,15 @@ verilator --binary --timing --assert -Wno-fatal -DSIMULATION --top-module tb_pac
  "$burst/marker-followup/jpeg_input_followup.v" "$burst/../moonbub_tile_transpose.sv" "$fpga/rtl/moonshine_core.sv" \
  "$fpga/rtl/moonshine_lcd.sv" "${files[@]}"
 ulimit -c 0
-timeout 400s "$build/obj/Vtb_packet_recovery" "+FIXTURE_DIR=$base/fixtures" "+DUMP_DIR=$build/dumps" "+TRACE_FILE=$build/trace.txt" > "$build/run.log"
-python3 "$here/verify.py" "$build/run.log" "$build/trace.txt"
-for spec in 'preload 0002' 'recovery 0001';do
- read -r name id <<< "$spec"
- "$base/cmodel" "$base/fixtures/$id.jpg" "$build/$name.ppm" > "$build/$name-cmodel.log"
- python3 "$burst/compare-frame.py" "$build/$name.ppm" "$build/dumps/$name-rgb565.txt" --exact > "$build/$name-comparison.json"
+for mode in middle final;do
+ mkdir -p "$build/$mode/dumps"
+ final=0; [[ "$mode" == final ]] && final=1
+ timeout 400s "$build/obj/Vtb_packet_recovery" "+FIXTURE_DIR=$base/fixtures" "+DUMP_DIR=$build/$mode/dumps" "+TRACE_FILE=$build/trace.txt" "+DROP_FINAL=$final" > "$build/$mode/run.log"
+ python3 "$here/verify.py" "$build/$mode/run.log" "$build/trace.txt" "$mode"
+ for spec in 'preload 0002' 'recovery 0001';do
+  read -r name id <<< "$spec"
+  "$base/cmodel" "$base/fixtures/$id.jpg" "$build/$mode/$name.ppm" > "$build/$mode/$name-cmodel.log"
+  python3 "$burst/compare-frame.py" "$build/$mode/$name.ppm" "$build/$mode/dumps/$name-rgb565.txt" --exact > "$build/$mode/$name-comparison.json"
+ done
 done
-printf 'PASS: original-core partial receive abort and next-frame recovery; output %s\n' "$build"
+printf 'PASS: original-core missing-middle and missing-final recovery; output %s\n' "$build"

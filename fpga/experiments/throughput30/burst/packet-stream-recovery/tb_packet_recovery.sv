@@ -60,6 +60,7 @@ module tb_packet_recovery;
  integer ev_id[0:127],ev_at[0:127],ev_off[0:127],ev_len[0:127],event_count=0;
  integer ring_id[0:4],discard_id=-1,frame_active=-1,n0,n1,frame_len,frame_bytes=0;
  integer preload_writes,preload_pixels,preload_front,aborts=0,recovery_commits=0,received_packets=0;
+ integer drop_final=0,last_forward_cycle=0,abort_trigger_cycle=0;
  reg[31:0] crc0,crc1,receive_crc;
  integer trace_id[0:9],trace_fixture[0:9],trace_capture[0:9],trace_ready[0:9];
  integer trace_count, trace_line, trace_status, trace_fd, consumed=0, q_fixture=0, q_ready=0, frame_fixture=0, frame_ready=0;reg producer_done=0;
@@ -89,7 +90,20 @@ module tb_packet_recovery;
  task read_reg(input[11:0]a0,output[31:0]value);
  integer k;begin header(8'h55,32'he0000000|{20'd0,a0},31.25);shift(0,64,4,31.25);value=0;
  for(k=0;k<8;k=k+1)begin #31.25;qck=1;value=(value<<4)|qout;#31.25;qck=0;end end_transaction();end endtask
+ task abort_partial(input integer timeout_reason);
+ integer check_index,check_base;
+ begin
+  abort_trigger_cycle=cycles;discard_id=0;write_reg('h24,2);aborts=aborts+1;
+  ring_count=0;ring_bytes=0;ring_head=ring_tail;frame_active=-1;
+  if(!fvalid||front!=preload_front||core.presented_frames!=1||core.complete_frames!=1||core.decoded_frames!=1||pixels!=preload_pixels||model.writes!=preload_writes)$fatal(1,"front changed on abort");
+  check_base=front ? 24'h080000:0;
+  for(check_index=0;check_index<345600;check_index=check_index+1)
+   if(model.mem[check_base+((check_index/480)+40)*480+(check_index%480)]!==previous_front[check_index])$fatal(1,"prior front changed on abort");
+  $display("FRAME_ABORT id=0 reason=%0d cycle=%0d trigger_cycle=%0d last_forward_cycle=%0d forwarded_bytes=%0d prior_front_intact=1",timeout_reason,cycles,abort_trigger_cycle,last_forward_cycle,frame_bytes);
+ end endtask
  initial begin
+  if(!$value$plusargs("DROP_FINAL=%d",drop_final))drop_final=0;
+  if(drop_final!=0 && drop_final!=1)$fatal(1,"invalid loss mode");
   if(!$value$plusargs("FIXTURE_DIR=%s",fixture_dir))$fatal(1,"need FIXTURE_DIR");
   if(!$value$plusargs("DUMP_DIR=%s",dump_dir))$fatal(1,"need DUMP_DIR");
   if(!$value$plusargs("TRACE_FILE=%s",trace_file))$fatal(1,"need TRACE_FILE");
@@ -137,7 +151,7 @@ module tb_packet_recovery;
     omitted=0;
     for(k=0;k<event_count;k=k+1)begin
      while(cycles<epoch+ev_at[k])@(negedge clk);
-     if(ev_id[k]==0 && ev_off[k]==5120)begin
+     if(ev_id[k]==0 && ((!drop_final && ev_off[k]==5120) || (drop_final && ev_off[k]+ev_len[k]==n0)))begin
       omitted=omitted+1;$display("PACKET_EVENT id=0 offset=%0d bytes=%0d arrival_cycle=%0d action=omitted",ev_off[k],ev_len[k],cycles);
      end else if(ev_id[k]==discard_id)begin
       $display("PACKET_EVENT id=%0d offset=%0d bytes=%0d arrival_cycle=%0d action=discard_after_abort",ev_id[k],ev_off[k],ev_len[k],cycles);
@@ -154,7 +168,11 @@ module tb_packet_recovery;
     integer fid,off,plen;
     while(!packet_done||ring_count!=0)begin
      @(posedge clk);#0.001;
-     while(ring_count==0&&!packet_done)begin @(posedge clk);#0.001;end
+     while(ring_count==0&&!packet_done)begin
+      @(posedge clk);#0.001;
+      // Hypothetical testbench inactivity timer, not the production receiver.
+      if(drop_final && frame_active==0 && last_forward_cycle!=0 && cycles-last_forward_cycle>=200000)abort_partial(1);
+     end
      if(ring_count!=0)begin
       fid=ring_id[ring_head];off=ring_offset[ring_head];plen=ring_len[ring_head];
       if(frame_active<0)begin
@@ -167,11 +185,8 @@ module tb_packet_recovery;
       if(fid!=frame_active)$fatal(1,"interleaved frame");
       if(off!=frame_bytes)begin
        if(fid!=0||off!=6144||frame_bytes!=5120)$fatal(1,"unexpected offset gap");
-       discard_id=fid;write_reg('h24,2);aborts=aborts+1;
-       ring_count=0;ring_bytes=0;ring_head=ring_tail;frame_active=-1;
-       if(!fvalid||front!=preload_front||core.presented_frames!=1||core.complete_frames!=1||core.decoded_frames!=1||pixels!=preload_pixels||model.writes!=preload_writes)$fatal(1,"front changed on abort");
-       base=front ? 24'h080000:0;for(i=0;i<345600;i=i+1)if(model.mem[base+((i/480)+40)*480+(i%480)]!==previous_front[i])$fatal(1,"prior front changed on abort");
-       $display("FRAME_ABORT id=0 cycle=%0d expected=5120 actual=6144 prior_front_intact=1",cycles);
+       if(drop_final)$fatal(1,"gap in timeout-only mode");
+       abort_partial(0);
       end else begin
        for(i=off;i<off+plen;i=i+chunk)begin
         read_reg('h00c,readback);if(readback!==frame_len-i)$fatal(1,"remaining fid=%0d i=%0d",fid,i);
@@ -183,7 +198,7 @@ module tb_packet_recovery;
          end_transaction();
         end
        end
-       frame_bytes=frame_bytes+plen;received_packets=received_packets+1;
+       frame_bytes=frame_bytes+plen;received_packets=received_packets+1;last_forward_cycle=cycles;
        $display("PACKET_FORWARD id=%0d offset=%0d bytes=%0d cycle=%0d",fid,off,plen,cycles);
        ring_head=(ring_head+1)%5;ring_count=ring_count-1;ring_bytes=ring_bytes-plen-40;
        if(frame_bytes==frame_len)begin
