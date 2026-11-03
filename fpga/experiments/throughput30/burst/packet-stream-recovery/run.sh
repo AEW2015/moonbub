@@ -16,15 +16,15 @@ verilator --binary --timing --assert -Wno-fatal -DSIMULATION --top-module tb_pac
  "$burst/marker-followup/jpeg_input_followup.v" "$burst/../moonbub_tile_transpose.sv" "$fpga/rtl/moonshine_core.sv" \
  "$fpga/rtl/moonshine_lcd.sv" "${files[@]}"
 ulimit -c 0
-for mode in middle final;do
- mkdir -p "$build/$mode/dumps"
- final=0; [[ "$mode" == final ]] && final=1
- timeout 400s "$build/obj/Vtb_packet_recovery" "+FIXTURE_DIR=$base/fixtures" "+DUMP_DIR=$build/$mode/dumps" "+TRACE_FILE=$build/trace.txt" "+DROP_FINAL=$final" > "$build/$mode/run.log"
- python3 "$here/verify.py" "$build/$mode/run.log" "$build/trace.txt" "$mode"
+python3 "$here/cases.py" > "$build/cases.txt"
+while read -r start count;do
+ name="loss-${start}-${count}";mkdir -p "$build/$name/dumps"
+ timeout 400s "$build/obj/Vtb_packet_recovery" "+FIXTURE_DIR=$base/fixtures" "+DUMP_DIR=$build/$name/dumps" "+TRACE_FILE=$build/trace.txt" "+DROP_START=$start" "+DROP_COUNT=$count" > "$build/$name/run.log"
+ python3 "$here/verify.py" "$build/$name/run.log" "$build/trace.txt" "$start" "$count"
  for spec in 'preload 0002' 'recovery 0001';do
-  read -r name id <<< "$spec"
-  "$base/cmodel" "$base/fixtures/$id.jpg" "$build/$mode/$name.ppm" > "$build/$mode/$name-cmodel.log"
-  python3 "$burst/compare-frame.py" "$build/$mode/$name.ppm" "$build/$mode/dumps/$name-rgb565.txt" --exact > "$build/$mode/$name-comparison.json"
+  read -r image id <<< "$spec"
+  "$base/cmodel" "$base/fixtures/$id.jpg" "$build/$name/$image.ppm" > "$build/$name/$image-cmodel.log"
+  python3 "$burst/compare-frame.py" "$build/$name/$image.ppm" "$build/$name/dumps/$image-rgb565.txt" --exact > "$build/$name/$image-comparison.json"
  done
-done
-printf 'PASS: original-core missing-middle and missing-final recovery; output %s\n' "$build"
+done < "$build/cases.txt"
+printf 'PASS: original-core bounded seeded packet-loss regression; output %s\n' "$build"

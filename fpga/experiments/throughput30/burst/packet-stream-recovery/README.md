@@ -33,3 +33,23 @@ The current wrapper reruns the middle-packet loss case and separately suppresses
 The missing-final case forwarded 25 frame-0 packets (25,600 bytes). At 100 MHz, the last payload completed at cycle 7,376,963, timeout triggered exactly 200,000 cycles later at 7,576,963, and the abort command completed at 7,577,043. A separately preloaded prior front remained valid and its memory matched the saved image at abort; no additional frame completed, decoded or wrote pixels. Frame 1 then forwarded all 26 packets, committed and presented successfully. Both the prior and recovery images matched all 345,600 pixels against the related C model. Peak descriptor-queue occupancy remained 1,064 bytes. All 52 source arrivals, their enqueue/omission actions, forwards and abort/recovery events are in `results-final/run.log`.
 
 The full two-mode `run.sh` wrapper passed in the development container (exit 0), with a 400-second limit on each RTL run; output is at `/home/lori/gamebub-tools/packet-stream-recovery-wrapper-v3` and its log at `/home/lori/gamebub-tools/packet-stream-recovery-wrapper-v3.log`. This adds no test of actual firmware timer scheduling, delivery failure of the abort, timer race with a late packet, packet buffering on a real ESP32, or physical display behavior. The prior original-core abort/vblank warning and all other limitations above still apply.
+
+## Bounded seeded loss-position regression
+
+The current wrapper now runs nine independently reset RTL simulations over the same two-frame trace. `cases.py` selects fixed first/middle/final and three-packet-burst positions, plus three additional middle positions sampled with seed 42. For every simulation the full wrapper passed the trace/transaction checker and compared both the preload and recovered frame exactly with the related C model; all 18 comparisons had 345,600 matching pixels. Every case retains all 52 source arrival events and actions in `results-regression/`. Each RTL invocation is limited to 400 seconds; compilation and comparisons are outside those limits. The successful full output is `/home/lori/gamebub-tools/packet-stream-recovery-wrapper-v4` and its log is `/home/lori/gamebub-tools/packet-stream-recovery-wrapper-v4.log`.
+
+Loss positions are zero-based within frame 0. The consumer's hypothetical policy distinguishes a missing SOF from an active transfer: if the first surviving packet lacks SOF, it discards the frame without sending FPGA begin or abort; if an active receive encounters an offset gap, it sends abort; if a gap is not observed before the hypothetical **2 ms inactivity timeout**, it aborts on that timer. The prior displayed front remains intact and the next valid frame is presented in each case.
+
+| Omitted packet range | Simulated handling | Payload bytes forwarded before abort |
+| --- | --- | ---: |
+| 0 | Missing SOF; no abort | 0 |
+| 5 | Offset gap abort | 5,120 |
+| 25 | Inactivity timeout abort | 25,600 |
+| 0–2 | Missing SOF; no abort | 0 |
+| 5–7 | Inactivity timeout abort | 5,120 |
+| 23–25 | Inactivity timeout abort | 23,552 |
+| 22 | Inactivity timeout abort | 22,528 |
+| 4 | Offset gap abort | 4,096 |
+| 1 | Inactivity timeout abort | 1,024 |
+
+This is a small deterministic fault-injection sample on one synthetic trace, with fixed packet timing and one later recovery frame. It does not cover all loss patterns, an entirely absent frame, late or reordered packets, actual receiver timers, real queue overflow, lost/reordered abort commands, decoder/pending-frame aborts, or physical hardware. The timeout assumptions and original-core abort/vblank limitation described above remain in force. The earlier output directories and two-mode claims document historical runs; `./run.sh` now executes all nine cases.
