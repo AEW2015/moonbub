@@ -1,6 +1,6 @@
 # Game Bub streaming: simulation handoff
 
-Status snapshot: 2026-11-03 11:00 UTC. This is a research branch, not a
+Status snapshot: 2026-11-03 11:10 UTC. This is a research branch, not a
 hardware release. The required target is 720×480 at 30 **distinct displayed**
 frames per second; no complete physical end-to-end 30 fps result has been
 measured.
@@ -28,6 +28,12 @@ measured.
   admitted/presented ten synthetic frames at 30 Hz with exact framebuffer and
   modeled LCD pixel checks. The adapter and free-bank status are test-only;
   this is not a 60-second or physical performance result. See [cadence test](../fpga/experiments/throughput30/burst/dual-compressed-bank-study/qspi-cadence10/README.md).
+- The live emulated guest was also connected through the experimental QSPI
+  path and dual banks to the modeled decoder and display. Clean frame, corrupt
+  frame abort, preserved front buffer and subsequent recovery were checked
+  pixel by pixel. The deliberately serialized bridge freezes RTL time while
+  awaiting IPC, so this establishes functional integration only; see
+  [dual-bank live test](../fpga/experiments/throughput30/burst/dual-compressed-bank-study/live-qspi-banks/README.md).
 - Narrow JPEG X/Y candidates passed separately scoped compositional stage
   proofs and 90-frame combined behavioral checks. The complete-IDCT inference
   requires the [documented initial-state/reset conditions](../fpga/experiments/throughput30/burst/idct-dsp-study/idct-composition-audit/README.md).
