@@ -100,3 +100,26 @@ The independent Pillow discrepancy is analyzed in
 nearest-style upsampling/fast-IDCT setting point to upsampling as a likely
 contributor, but the experiment does not isolate its cause or establish an
 acceptable visual tolerance.
+
+## Follow-up: marker audit, cadence and finite link
+
+- A directed audit found that the SOF-only candidate also mishandles a stale
+  EOI marker without an accepted input byte. An isolated broader candidate
+  passes directed idle/blocked and accepted-EOI tests in XSim and Verilator,
+  and its ten-frame Verilator outputs match the earlier verified dumps. Other
+  marker paths remain unaudited. See `burst/marker-audit/README.md`.
+- The existing testbench display clock is about 65.0755 Hz: swaps in the short
+  trace are quantized to its 15.367 ms refresh boundaries. A hypothetical
+  testbench-only 59.9984 Hz display clock made those ten swaps more regular,
+  but the clock is not verified against the actual panel or FPGA. A separate
+  1,800-frame analytical replay repeats ten measured service times; it is not
+  an 1,800-frame RTL run or sustained proof. See `burst/cadence-study/README.md`.
+- With a **hypothetical** constant 8 Mb/s payload link and the same ten JPEGs,
+  Verilator presented ten frames without modeled drops or underruns; the maximum
+  modeled capture-to-presentation age was 61.60114 ms. This assumes a complete
+  lossless serialized JPEG, an external queue and a fast register bus, excluding
+  real Wi-Fi, QSPI, CPU and packet costs. At 4 Mb/s the model explicitly failed
+  the second capture because the first JPEG was still in flight; no sender queue
+  is modeled, and average payload for this sequence exceeds that rate. See
+  `burst/link-study/README.md`. Short-window rates are phase-sensitive and do
+  not establish sustained 30 fps.
