@@ -1,0 +1,19 @@
+# Live emulated-guest multi-frame recovery bridge
+
+This separate Verilator bench extends `../live-rtl-bridge/` without changing its one-frame tests. An ESP32-S3 research guest running in Espressif esp-emu receives actual synthetic MSV1 datagrams and executes the unmodified Rust receiver. A localhost adapter checks each emitted event and forwards its **actual received DATA bytes** to the RTL using the same bounded, big-endian, stop-and-wait protocol. There is one event in flight, with at most 1,039 body bytes. The RTL testbench holds no JPEG stimulus array. The guest embeds the three fixtures as validation oracles, so its memory use is not a production estimate.
+
+The clean run sends 84 events in this order:
+
+- Frame 0: BEGIN, 26 DATA (26,159 bytes), COMMIT. The RTL decodes and presents it.
+- Frame 1: BEGIN and 25 DATA (25,600 bytes). The adapter corrupts the final datagram before the guest receives it; the receiver rejects it for integrity, and the guest sends ABORT instead of forwarding that last DATA or sending COMMIT. The RTL checks the previously displayed frame stays valid and bit-for-bit unchanged across two modeled LCD boundaries before acknowledging ABORT.
+- Frame 2: BEGIN, 27 DATA (26,991 bytes), COMMIT. The RTL decodes and presents this distinct frame, also checking the old framebuffer remains unchanged during recovery.
+
+The full wrapper passed: guest, adapter and RTL exited successfully; event audit confirmed all 84 ordered acknowledged event hashes, two COMMITs and one ABORT. The related C JPEG model matched each displayed 720×480 RGB565 image exactly, **345,600 pixels per frame**. `results/live-clean/` retains guest, adapter and RTL logs, per-event hashes, audit, comparisons and artifact hashes. `results/rtl-source-sha256.txt` records the 33 Verilator/DPI input source hashes and was checked against the staged build sources. A separately run host mock passed the same 84-event scenario; mock logs and comparisons are also retained.
+
+The RTL model uses the original core for this abort **during receive, before commit**, and the experimental credit FIFO/CDC, burst memory, SDRAM and LCD functional models. The prior front comparison is against modeled memory; no physical panel or real FPGA is involved. This does not establish abort safety during decode, pending presentation or simultaneous vblank; the separate `../abort-study/` documents a distinct original-core abort/vblank failure and a limited test-only candidate. There is no actual target DMA, real Wi-Fi, packet loss beyond the deliberate corruption, queue contention, feedback, late packets or unknown abort delivery in this test.
+
+The emulated guest and RTL do **not share a clock**: the host waits for each QSPI ACK before sending the next event and Verilator's simulated clock freezes during socket reads. The reported cycles and elapsed wall time are functional simulation artifacts, not input-to-photon latency, ESP32 timing, actual throughput or a 30 fps proof. The related C decoder shares algorithmic sources with the RTL and is not a fully independent decoder. The loopback protocol is unauthenticated and intended only for isolated local tests.
+
+## Reproduce
+
+`build.sh` builds this bench and its DPI socket into a new empty `BUILD_DIR` using Verilator 5.x and a C++ compiler. The complete integration wrapper, emulated guest and adapter are under `../esp-emulator-study/live-bridge/`: see `run-multi.py` and the corresponding section of `../esp-emulator-study/README.md` for generation of the separately built ESP32-S3 guest ELF/flash, three-fixture trace, and wrapper invocation. It binds adapter port 15536 and uses `BRIDGE_PORT=15536` for the Verilator process. The wrapper bounds process execution and saves hashes and both C-model comparisons. The passing full work directory is `/home/lori/gamebub-tools/esp-emu-study-0510/lcd-bypass/live-multi-clean`.
