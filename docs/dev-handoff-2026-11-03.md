@@ -16,6 +16,26 @@ Cross-machine access to the physical board and its serial/programming resources 
 
 ## Work packages and acceptance evidence
 
+For independent agents, use separate worktrees or branches and preserve the
+study evidence. Suggested task prompts:
+
+> **FPGA/hardware agent:** Starting from the Moonbub study branch, evaluate the
+> BRAM and SDRAM options below, select an integration candidate using measured
+> resource/timing evidence, and integrate the actual display, decoder and
+> bounded ingress paths. First reproduce the relevant simulations; then run
+> target implementation and hardware tests only on your accessible device.
+> Report bitstream/source hashes, model limits, timing, memory use, frame IDs,
+> underruns and failure/recovery results. Do not assume this study is a
+> hardware-qualified 30 fps image.
+
+> **Firmware/host agent:** Starting from the linked Moonbub and Sunshine study
+> branches, implement and test bounded transaction identity, ACK/NACK,
+> reset/drain and size/quality behavior at the real firmware/host interfaces.
+> Preserve the installed Sunshine service and existing working baseline. Use
+> your accessible hardware for throughput and recovery measurements; report
+> host capture, receiver ingress and actual presentation separately. Do not
+> treat an ingress ACK or simulator time as a displayed-frame measurement.
+
 ### FPGA: turn the burst candidate into an integrated memory path
 
 - Start from the isolated [full-frame burst candidate](../fpga/experiments/throughput30/burst/README.md), preserving the current single-pixel path as a reference. Integrate the real decoder/transpose, a bounded queue, the LCD line-fetch path and a memory arbiter. Add explicit backpressure, response ownership, abort/reset recovery, refresh handling and atomic frame publication.
