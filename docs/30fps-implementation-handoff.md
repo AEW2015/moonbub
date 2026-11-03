@@ -1,5 +1,9 @@
 # Game Bub streaming: simulation handoff
 
+For later results and developer work packages, see the newer
+[developer handoff](dev-handoff-2026-11-03.md). The snapshot below predates
+the completed shifted-phase test and SDRAM staging integration.
+
 Status snapshot: 2026-11-03 11:10 UTC. This is a research branch, not a
 hardware release. The required target is 720×480 at 30 **distinct displayed**
 frames per second; no complete physical end-to-end 30 fps result has been
