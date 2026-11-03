@@ -63,3 +63,8 @@ matched the Verilator counts and 2.29825 ms simulated time; see
 `fenced-25-xsim.log`. The isolated behavioral project used an available xck24
 part because the local tools lack target Artix-7 support. It is not physical
 clock, memory or metastability validation.
+
+The deliberately unfenced 25 MHz stale-status failure was independently
+reproduced with XSim 2025.2 at the same point and values as Verilator; see
+`unfenced-25-expected-failure-xsim.log`. A simulator run/exit alone is not a
+pass for this negative test; the expected fatal and diagnostic are the result.
