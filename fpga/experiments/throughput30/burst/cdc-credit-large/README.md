@@ -57,3 +57,9 @@ fenced cases at four phases; it requires Verilator 5.x, make, C++ and timeout.
 `run-yosys.sh` regenerates standalone Yosys mapping logs. Saved evidence is
 `verilator-summary.log`, `unfenced-25-expected-failure.log` and
 `yosys-stat.log`. No real board, ESP32, JPEG pipeline or 30 fps is tested.
+
+The fenced 25 MHz stress scenario was also run in Vivado XSim 2025.2 and
+matched the Verilator counts and 2.29825 ms simulated time; see
+`fenced-25-xsim.log`. The isolated behavioral project used an available xck24
+part because the local tools lack target Artix-7 support. It is not physical
+clock, memory or metastability validation.

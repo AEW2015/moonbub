@@ -101,3 +101,12 @@ and every corresponding back-buffer SDRAM location. It does **not** sample and
 compare every RGB pixel actually emitted by the LCD output. The presentation
 check observes the core's frame ID and the LCD's swap boundary, plus the modeled
 underrun counter. Full scanout pixel checking remains a separate gap.
+
+The strict 1,800-frame criterion checks that all frames finish within one
+aggregate 60-second simulated window; it does **not** require each individual
+frame to appear within 33.333 ms of its arrival. Per-frame ages are recorded
+separately. For example, an audit of the first 209 verified frames found 43
+arrival-to-presentation ages above 33.333 ms. This illustrates why throughput
+and latency must be reported separately; the prefix is not a final result.
+The fixture manifest was independently checked for 1,800 unique hashes, matching
+file sizes and SHA-256 values; source content remains synthetic.
