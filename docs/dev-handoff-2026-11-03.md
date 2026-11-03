@@ -11,6 +11,15 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
+Latest: [iteration11](custom-codec-prototype-v11-2026-11-03.md) now integrates
+temporal HR01/HP01 selective HG01 with actual GF02/GA01 software replay and outer
+content binding. It adds BM01 block prediction (mixed results), reduced512×288
+30/20fps cases and a [full/constrained/custom FPGA codec plan](gamebub-hevc-av1-fpga-plan.md).
+There are57 passing tests. Short512 UI replay gives29 diagnostic IDs/s with
+periodic refresh and30 with an initial-key-only probe; this does not qualify a
+refresh default, sustained hardware30fps or full HEVC/AV1 target decoding.
+
+
 Latest: [iteration10](custom-codec-prototype-v10-2026-11-03.md) adds actual
 selective HP01/GH01 admission and byte-identical GM01 fallback, separate adaptive
 HR01/HG01 row-run coding, charged BOX/transport CPU services and common-color

@@ -1,5 +1,21 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [iteration11 results](custom-codec-prototype-v11-2026-11-03.md) integrate
+actual HP01/HR01 selection with GM01 temporal prediction, then carry complete
+HG01/GM01 bytes through GF02 and outer-content-bound GA01 in the finite model.
+Temporal compact packets shrink34.44% versus HP01 at identical exact area.
+A separate BM01 integer block-motion prototype produces mixed real results;
+its sidebytes and search cost prevent a general improvement.
+
+Use **512×288 at30fps** as the next coded software target, with20fps as a secondary
+tradeoff and720×480 retained as the comparison. Under short measured-call replay,
+512 base reaches30 diagnostic IDs/s, periodic-refresh UI29 and20fps UI20. A
+separate initial-key-only UI probe reaches30 diagnostic IDs/s, but misses startup
+frames and does not qualify a default refresh policy or sustained hardware rate.
+The [FPGA decoder study](gamebub-hevc-av1-fpga-plan.md) distinguishes full HEVC/AV1,
+constrained standard streams and custom inspired decoders. Lower dimensions help
+work/storage, not proportional area shrink or automatic standard conformance.
+
 The [iteration10 results](custom-codec-prototype-v10-2026-11-03.md) implement
 bounded selective UI admission and exact GM01 fallback, plus a separate HR01
 row-run/HG01 patch codec. Compact real-region packets shrink40.0→31.2kB mean
@@ -32,9 +48,11 @@ and hardware30 fps remain open. JPEG remains the hardware comparison control.
 
 ## Product target and split of work
 
-Target a720×480 transmitted canvas, with720×405 active16:9 content letterboxed
-inside it. First qualify30 distinct displayed frames/s, stable HUD/text and
-bounded frame age. Rate alone is insufficient if the newest input or game
+The comparison baseline is a720×480 coded canvas with720×405 active16:9 content.
+The next qualification target is a512×288 coded picture at30 distinct displayed
+frames/s, with20fps as a secondary tradeoff. Keep stable HUD/text and bounded
+frame age. Native display scaling/letterboxing, its arithmetic/storage and fixed
+scanout traffic still need implementation and qualification. Rate alone is insufficient if the newest input or game
 response waits behind stale frames. The working comparison is the existing
 JPEG path, using the same captures, canvas, display and wire accounting.
 
@@ -66,7 +84,9 @@ BRAM/DSP fit or bandwidth. Existing exact Q14 arithmetic remains the golden.
 | DT01 independent dirty tiles | Exclude from gameplay base | Frequent cap failures and header/context cost; static tail is a possible separate UI mode |
 | Two asynchronous replacement anchors | Later measured option | Extra reference, control decode, lifetime and retirement costs remain |
 | HP01/GH01 selective UI | Implemented cap/deadline-aware Python policy | Compact real regions fit with exact565 output and byte-identical GM fallback; Python cost remains high |
-| HR01/HG01 row-run UI | Implemented separate minimum-byte candidate | Compact real complete packets22.1% smaller than HP01; integration with selective policy/finite transport remains |
+| HR01/HG01 temporal UI | Integrated in Python selection and finite transport |34.44% fewer temporal compact bytes than HP01; exact565 and outer ACK binding checked |
+| BM01 block prediction | Optional research candidate | Mixed real byte results and high search cost; not in finite HG/GM link |
+| Constrained HEVC / full AV1 | Feasibility research only | Resource/state/memory/syntax qualification needed; no standard decoder supplied |
 
 Independent ROI was implemented as RG01. The combined GM01 version now actually
 encodes/decodes the temporal residual and map together; it is not a silent MA01
@@ -162,8 +182,8 @@ as a best-case control and require held-out antialiased/real gameplay evaluation
 1. Review GM01 golden packets and the GF02/GA01 laboratory contract. The finite
    replay now exercises real chunk/feedback bytes and delivered-reader ownership.
    Freeze capability/version negotiation, reason enums, security and reset rules
-   before integrating a Sunshine output mode. Keep GH01 a separate negotiated
-   option; the current GF02/GM01 adapter cannot decode that wrapper.
+   before integrating a Sunshine output mode. The new HG01/GM01 adapter now exercises actual outer-content ACKs; capability
+   negotiation and installed target support remain absent. BM01 is separate.
 2. Implement FPGA CP02 decode, inverse transform/map lookup, reference fetch and
    framebuffer publication against those vectors. Reuse the existing display
    and JPEG control. Prove real ingress/backpressure/CDC and ownership behavior.
@@ -181,12 +201,12 @@ as a best-case control and require held-out antialiased/real gameplay evaluation
    assumptions with the intended shared-resource schedule. Live capture/readback
    is still absent; link/QSPI/vblank timing is assumed. Sweep phase/jitter/loss
    and long tails before rate claims. Keep every rejected call and reader paid.
-2. Integrate HR01 into selective admission with explicit HG01 capability and
-   atomic validation, then test actual whole packets through the finite transport.
-   Compare the same source IDs against GM01/JPEG and common-color HEVC/AV1.
-   Prototype bounded block motion/skip/recent-reference alternatives as controlled
-   ablations. Report byte caps, full work, exact565 coverage, quality and frame age.
-   Do not combine standalone patch sizes with unrelated temporal traffic as proof.
+2. Qualify the integrated HG01/GM01 path at512×288 under fixed replayed service
+   traces, periodic/scene-aware refresh, true distinct-source capture and long
+   fault/load/phase tests. Initial-key-only probes are not a production policy.
+   Add paid actual-rate zero/block choice, per-block residual skip or bounded intra
+   modes after BM01's mixed results. Keep native/JPEG/common-color standard controls,
+   exact-area quality and full cost visible. BM01 still needs separate integration.
 3. Collect native distinct30-fps captures covering scene cuts, particles, text,
    menus and dark motion, then run at least1,800 captures with fixed strict,
    diagnostic and drain windows. Preserve unselected and rejected capture IDs.

@@ -4,16 +4,24 @@ Audit date: 2026-11-03. Input: the supplied “FPGA Game Streaming Codec:
 Development & Evaluation Plan.” This document proposes experiments; it does
 not select a production codec or establish hardware performance. Use the
 [developer handoff](dev-handoff-2026-11-03.md) for the current implementation
-and evidence. Current work is on paired `handoff/gamebub-app-codec-v10-20261103`
-branches in [Moonbub](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v10-20261103)
-and [Sunshine](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v10-20261103).
+and evidence. Current work is on paired `handoff/gamebub-app-codec-v11-20261103`
+branches in [Moonbub](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v11-20261103)
+and [Sunshine](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v11-20261103).
 Earlier study/handoff branches remain frozen.
 
 ## Recommendation
 
 ### Python prototype progress, 2026-11-03
 
-Current follow-up: [iteration10 selective UI, row coding and reference-codec comparison](custom-codec-prototype-v10-2026-11-03.md)
+Current follow-up: [iteration11 temporal UI integration and reduced target](custom-codec-prototype-v11-2026-11-03.md)
+connects actual selected HG01/GM01 bodies to GF02/GA01, tests bounded block motion
+and512×28830/20fps, and investigates constrained/full HEVC/AV1 FPGA architectures.
+Short diagnostic cadence improves with reduced dimensions; startup/drain and
+refresh-policy limits remain. BM01 has mixed results and is not enabled generally.
+Read the [decoder architecture plan](gamebub-hevc-av1-fpga-plan.md) before claims
+about standards compatibility, memory allocation or proportional RTL shrink.
+
+Previous follow-up: [iteration10 selective UI, row coding and reference-codec comparison](custom-codec-prototype-v10-2026-11-03.md)
 implements bounded actual patch admission, row-run/HP01 minimum coding and measured
 BOX/transport CPU services. Common-color HEVC/AV1 references expose a substantial
 remaining coding-efficiency gap. Motion/skip and reference decisions, selective
