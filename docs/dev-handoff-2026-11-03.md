@@ -11,6 +11,16 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
+Latest: [iteration10](custom-codec-prototype-v10-2026-11-03.md) adds actual
+selective HP01/GH01 admission and byte-identical GM01 fallback, separate adaptive
+HR01/HG01 row-run coding, charged BOX/transport CPU services and common-color
+HEVC/AV1 reference curves. Row coding saves22.1% complete bytes on16 real compact
+samples; finite measured service stays27–28 diagnostic IDs/s. These methods are
+not yet one integrated target stream. Native reference codecs remain much more
+bit-efficient on the short corpus; no FPGA HEVC/AV1 decoder is supplied.
+Read each study's exact coverage, paid-cost and negotiation limits before porting.
+
+
 Start with [iteration9](custom-codec-prototype-v9-2026-11-03.md). It adds actual
 GF02 chunks/GA01 feedback and finite measured-service replay around GM01, plus
 HP01/GH01 exact RGB565 display-patch experiments. All26 new tests pass. Measured

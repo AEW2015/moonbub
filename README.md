@@ -1,14 +1,15 @@
 # Moonshine / MoonBub prototype
 
 The latest application-specific codec handoff is
-[`handoff/gamebub-app-codec-v9-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v9-20261103).
+[`handoff/gamebub-app-codec-v10-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v10-20261103).
 Start with the [application-specific plan](docs/gamebub-application-specific-codec-plan.md),
-[iteration9 results](docs/custom-codec-prototype-v9-2026-11-03.md), and
+[iteration10 results](docs/custom-codec-prototype-v10-2026-11-03.md), and
 [developer handoff](docs/dev-handoff-2026-11-03.md). The matching
-[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v9-20261103)
+[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v10-20261103)
 contains host-laboratory references. Earlier handoffs remain frozen snapshots.
-V9 adds finite GM01/GF02/GA01 replay, a delivered-buffer ownership correction,
-and exact565 UI patch experiments. These remain Python software studies.
+V10 adds selective exact565 UI admission, adaptive row-run patches, charged
+preprocessing/transport CPU replay and same-source HEVC/AV1 coding references.
+These remain software studies; sustained30fps and target decoder fit are unproved.
 The baseline build and timing results below do not qualify the experimental
 dual-bank, SDRAM staging, gateway, or host candidates for hardware use.
 

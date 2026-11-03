@@ -1,5 +1,20 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [iteration10 results](custom-codec-prototype-v10-2026-11-03.md) implement
+bounded selective UI admission and exact GM01 fallback, plus a separate HR01
+row-run/HG01 patch codec. Compact real-region packets shrink40.0→31.2kB mean
+when adding row coding; all16 fit48KiB. These experiments are separate: the
+selective GH01 policy does not yet emit HR01, and neither wrapper is in the
+finite GF02/GM01 transport model. Charged BOX/transport CPU service retains
+27–28 diagnostic IDs/s; hardware30fps remains unqualified.
+
+Same-source, common-color HEVC/AV1 references expose a substantial coding gap:
+at selected short-sample points native codecs use10–24times fewer coded bits
+with higher active/ROI PSNR. This is not a universal ratio or decoder-fit claim.
+The next compression work should target bounded motion/skip/reference decisions
+alongside selective exact UI, rather than imply shared primitives equal standard
+compatibility. Full HEVC/AV1 streams require matching decoders that are absent.
+
 The [iteration9 results](custom-codec-prototype-v9-2026-11-03.md) connect the
 GM01 temporal/priority codec to actual GF02 chunks and serialized GA01 feedback
 in a finite software pipeline. Short diagnostic windows reach27–28 distinct
@@ -50,7 +65,8 @@ BRAM/DSP fit or bandwidth. Existing exact Q14 arithmetic remains the golden.
 | Word CP02 reader | Carry into software oracle | Exact valid-output and sampled malformed-rejection compatibility; measured receive cost reduction |
 | DT01 independent dirty tiles | Exclude from gameplay base | Frequent cap failures and header/context cost; static tail is a possible separate UI mode |
 | Two asynchronous replacement anchors | Later measured option | Extra reference, control decode, lifetime and retirement costs remain |
-| HP01/GH01 lossless RGB565 UI patches | Conditional small-region candidate only | Exact565 output; broad antialiased regions fail the cap, two flat low-color probes fit |
+| HP01/GH01 selective UI | Implemented cap/deadline-aware Python policy | Compact real regions fit with exact565 output and byte-identical GM fallback; Python cost remains high |
+| HR01/HG01 row-run UI | Implemented separate minimum-byte candidate | Compact real complete packets22.1% smaller than HP01; integration with selective policy/finite transport remains |
 
 Independent ROI was implemented as RG01. The combined GM01 version now actually
 encodes/decodes the temporal residual and map together; it is not a silent MA01
@@ -132,7 +148,7 @@ campaign patches use8-bit palettes or RAW on many regions; all36 wrappers fail
 case. Full wrapper receive/preparation costs include base validation and duplicate
 parsing; small palette/overlay component costs do not establish real-time service.
 
-Next prototype a **conditional small-region UI mode**: declare exact regions and
+The implemented **conditional small-region UI mode** follows this contract: declare exact regions and
 measure actual unique-color/index cost plus every wrapper/patch byte. Admit a
 patch only with whole-frame headroom and remaining deadline. Otherwise send the
 unchanged GM01 base and record that lossless UI was not selected. Compare smaller
@@ -161,14 +177,16 @@ as a best-case control and require held-out antialiased/real gameplay evaluation
 
 ## Next qualification sequence
 
-1. Add measured capture/scale and packetization/reassembly/feedback CPU stages
-   to the finite pipeline. Current capture delay defaults to zero, transport CPU
-   executes only for correctness, and link/QSPI/vblank timing is assumed. Sweep
-   phases, realistic jitter, loss and longer service tails before rate claims.
-2. Test the conditional small-region UI policy above on the same source IDs as
-   uniform/ROI GM01 and JPEG. Report cap failures, all attempted work, exact565
-   coverage, active/ROI error, visual legibility and frame age. Do not combine
-   standalone patch sizes or costs with unrelated temporal traffic as a proof.
+1. Replace the new measured BOX/transport CPU model's independent-server
+   assumptions with the intended shared-resource schedule. Live capture/readback
+   is still absent; link/QSPI/vblank timing is assumed. Sweep phase/jitter/loss
+   and long tails before rate claims. Keep every rejected call and reader paid.
+2. Integrate HR01 into selective admission with explicit HG01 capability and
+   atomic validation, then test actual whole packets through the finite transport.
+   Compare the same source IDs against GM01/JPEG and common-color HEVC/AV1.
+   Prototype bounded block motion/skip/recent-reference alternatives as controlled
+   ablations. Report byte caps, full work, exact565 coverage, quality and frame age.
+   Do not combine standalone patch sizes with unrelated temporal traffic as proof.
 3. Collect native distinct30-fps captures covering scene cuts, particles, text,
    menus and dark motion, then run at least1,800 captures with fixed strict,
    diagnostic and drain windows. Preserve unselected and rejected capture IDs.

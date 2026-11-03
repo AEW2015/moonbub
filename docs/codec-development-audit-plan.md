@@ -4,16 +4,23 @@ Audit date: 2026-11-03. Input: the supplied “FPGA Game Streaming Codec:
 Development & Evaluation Plan.” This document proposes experiments; it does
 not select a production codec or establish hardware performance. Use the
 [developer handoff](dev-handoff-2026-11-03.md) for the current implementation
-and evidence. Current work is on paired `handoff/gamebub-app-codec-v9-20261103`
-branches in [Moonbub](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v9-20261103)
-and [Sunshine](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v9-20261103).
+and evidence. Current work is on paired `handoff/gamebub-app-codec-v10-20261103`
+branches in [Moonbub](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v10-20261103)
+and [Sunshine](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v10-20261103).
 Earlier study/handoff branches remain frozen.
 
 ## Recommendation
 
 ### Python prototype progress, 2026-11-03
 
-Current follow-up: [iteration9 finite transport, feedback and UI experiments](custom-codec-prototype-v9-2026-11-03.md)
+Current follow-up: [iteration10 selective UI, row coding and reference-codec comparison](custom-codec-prototype-v10-2026-11-03.md)
+implements bounded actual patch admission, row-run/HP01 minimum coding and measured
+BOX/transport CPU services. Common-color HEVC/AV1 references expose a substantial
+remaining coding-efficiency gap. Motion/skip and reference decisions, selective
+HR01 integration, shared-resource scheduling and target implementation are next.
+No wrapper/finite-model results establish physical30fps or full-standard decoding.
+
+Previous follow-up: [iteration9 finite transport, feedback and UI experiments](custom-codec-prototype-v9-2026-11-03.md)
 connects actual GM01/GF02/GA01 bytes to finite measured-service replay. It corrects
 a GF01 delivered-pin ownership bug and tests separate exact565 UI patches.
 The full-path short diagnostic counts stay below30 IDs/s; broad antialiased UI
