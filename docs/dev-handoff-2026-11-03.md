@@ -11,13 +11,25 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Start with [iteration8](custom-codec-prototype-v8-2026-11-03.md): GM01 now combines
-temporal residuals and an application-priority map, with a real bounded
-controller and exact/cheap size guards. The
-[golden vectors and lab replay](../experiments/python-game-link-study/README.md)
-provide binary packets, coefficients, maps and expected RGB565 for target
-decoder work. These are software and in-process transport evidence; custom
-firmware, capability negotiation and physical30 fps remain open.
+Start with [iteration9](custom-codec-prototype-v9-2026-11-03.md). It adds actual
+GF02 chunks/GA01 feedback and finite measured-service replay around GM01, plus
+HP01/GH01 exact RGB565 display-patch experiments. All26 new tests pass. Measured
+Python diagnostic cadence is27–28 IDs/s in short replay windows; physical30 fps,
+capture/transport CPU and native target-memory service remain unqualified.
+
+Use [GF02/GA01](../experiments/python-game-feedback-study/PROTOCOL.md) for new
+transport work. V8 GF01 has a reproduced delivered-pin ownership bug on conflicts;
+its historical source stays frozen. GF02 retains pins until read completion and
+GA01 binds decoded feedback to epoch/frame/body CRC. CRC is not authentication.
+The [GM01 golden vectors](../experiments/python-game-link-study/README.md) remain
+valid codec inputs; their old GF01 envelopes are historical and must be regenerated
+for GF02. HP01/GH01 is a separate experimental wrapper, absent from this finite
+pipeline and all installed peers. All36 main wrapped samples fail48 KiB; use only
+measured selective small-region admission as a future experiment.
+
+[Iteration8](custom-codec-prototype-v8-2026-11-03.md) preserves the combined
+codec, controller and size-guard evidence. New peer negotiation, native code,
+RTL/firmware and physical memory/display qualification remain implementation work.
 
 The earlier [iteration7](custom-codec-prototype-v7-2026-11-03.md) established
 independent RG01 priority maps and faster word decoding, and rejected DT01 as

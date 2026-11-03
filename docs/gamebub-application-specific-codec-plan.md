@@ -1,13 +1,19 @@
 # Game Bub application-specific codec: selected direction and gates
 
-The [iteration8 results](custom-codec-prototype-v8-2026-11-03.md) now include
-an executable GM01 temporal-ROI Python codec, shared-transform two-candidate
-admission and replayable golden vectors. The prior
-[iteration7 results](custom-codec-prototype-v7-2026-11-03.md) selected this direction.
-These remain software prototypes: capability negotiation, actual firmware/FPGA
-support, physical memory service and hardware30 fps are not implemented gates.
-The current JPEG implementation remains the hardware control. Custom formats
-cannot be sent to JPEG RTL.
+The [iteration9 results](custom-codec-prototype-v9-2026-11-03.md) connect the
+GM01 temporal/priority codec to actual GF02 chunks and serialized GA01 feedback
+in a finite software pipeline. Short diagnostic windows reach27–28 distinct
+presented IDs/s with measured Python decode; they do not prove physical30 fps.
+The optional GH01 lossless RGB565 UI wrapper works, but all36 broad-region main
+samples exceed48 KiB. Two deliberately flat low-color probes fit17.9–20.0 kB.
+Keep these findings separate: GH01 is not integrated into the GM01 pipeline.
+
+The [iteration8 results](custom-codec-prototype-v8-2026-11-03.md) preserve the
+combined codec/controller and golden vectors. Its GF01 lab reassembler has a
+known delivered-pin ownership bug, reproduced and corrected by v9 GF02. Use the
+new transport contract for further implementation; leave the old snapshot frozen.
+Capability negotiation, native firmware/FPGA support, physical memory service
+and hardware30 fps remain open. JPEG remains the hardware comparison control.
 
 ## Product target and split of work
 
@@ -39,12 +45,12 @@ BRAM/DSP fit or bandwidth. Existing exact Q14 arithmetic remains the golden.
 
 | Candidate | Decision | Reason |
 | --- | --- | --- |
-| MA01-style immutable anchor + CP02 residual | Base for next combined experiment | Better tested byte demand than independent dirty tiles; explicit ACK/reference identity |
+| GM01 immutable anchor + CP02 residual | Implemented Python gameplay base | Combines temporal prediction and ROI map; actual finite feedback replay now tested |
 | RG01 macroblock quality map | Implemented in GM01 Python residual profile | Improves declared-region error at similar same-frame byte budget, with visible background tradeoff |
 | Word CP02 reader | Carry into software oracle | Exact valid-output and sampled malformed-rejection compatibility; measured receive cost reduction |
 | DT01 independent dirty tiles | Exclude from gameplay base | Frequent cap failures and header/context cost; static tail is a possible separate UI mode |
 | Two asynchronous replacement anchors | Later measured option | Extra reference, control decode, lifetime and retirement costs remain |
-| Palette/lossless HUD patches | Next optional experiment | Could preserve colored glyph edges; no rate/quality/decoder win established yet |
+| HP01/GH01 lossless RGB565 UI patches | Conditional small-region candidate only | Exact565 output; broad antialiased regions fail the cap, two flat low-color probes fit |
 
 Independent ROI was implemented as RG01. The combined GM01 version now actually
 encodes/decodes the temporal residual and map together; it is not a silent MA01
@@ -119,17 +125,29 @@ Report exact matching source IDs; do not hide quality loss behind different
 presented subsets. No repeated precompressed-frame sequence can establish
 native30-distinct-frame/s capture.
 
-Prototype palette/lossless patches only in configured UI regions with explicit
-fallback to transform coding. Charge palette, mask, mode and patch headers,
-bounded parser/table memory and required reference traffic. Compare against
-ROI quantization on the same glyph/real-game content before selecting it.
+The implemented HP01/GH01 wrapper preserves original RGB565 words in configured
+UI rectangles without altering GM01 reconstructed-YUV reference state. Main
+campaign patches use8-bit palettes or RAW on many regions; all36 wrappers fail
+48 KiB. Treat the two deliberately low-color flat probes as a separate favorable
+case. Full wrapper receive/preparation costs include base validation and duplicate
+parsing; small palette/overlay component costs do not establish real-time service.
+
+Next prototype a **conditional small-region UI mode**: declare exact regions and
+measure actual unique-color/index cost plus every wrapper/patch byte. Admit a
+patch only with whole-frame headroom and remaining deadline. Otherwise send the
+unchanged GM01 base and record that lossless UI was not selected. Compare smaller
+regions, row spans/RLE and repeated-patch reuse against this baseline, charging
+state/control/memory traffic. Any reuse needs epoch, patch identity, ACK and reset
+rules; it must not silently change the YUV predictor. Keep the low-color fixture
+as a best-case control and require held-out antialiased/real gameplay evaluation.
 
 ## Work package D: sender, firmware and FPGA handoff
 
-1. Review the implemented GM01 golden packets and GF01 laboratory adapter,
-   corrupt/partial/reordered fixtures and reference/ACK/abort rules. Freeze a
-   target peer contract, then implement explicit capability negotiation and
-   serialized feedback before integrating a Sunshine output mode.
+1. Review GM01 golden packets and the GF02/GA01 laboratory contract. The finite
+   replay now exercises real chunk/feedback bytes and delivered-reader ownership.
+   Freeze capability/version negotiation, reason enums, security and reset rules
+   before integrating a Sunshine output mode. Keep GH01 a separate negotiated
+   option; the current GF02/GM01 adapter cannot decode that wrapper.
 2. Implement FPGA CP02 decode, inverse transform/map lookup, reference fetch and
    framebuffer publication against those vectors. Reuse the existing display
    and JPEG control. Prove real ingress/backpressure/CDC and ownership behavior.
@@ -141,13 +159,32 @@ ROI quantization on the same glyph/real-game content before selecting it.
    IDs, frame age and p95/p99 tails, CRC/FIFO/memory errors, recovery, quality and
    input behavior. Preserve strict and drain counts; do not shift windows to pass.
 
+## Next qualification sequence
+
+1. Add measured capture/scale and packetization/reassembly/feedback CPU stages
+   to the finite pipeline. Current capture delay defaults to zero, transport CPU
+   executes only for correctness, and link/QSPI/vblank timing is assumed. Sweep
+   phases, realistic jitter, loss and longer service tails before rate claims.
+2. Test the conditional small-region UI policy above on the same source IDs as
+   uniform/ROI GM01 and JPEG. Report cap failures, all attempted work, exact565
+   coverage, active/ROI error, visual legibility and frame age. Do not combine
+   standalone patch sizes or costs with unrelated temporal traffic as a proof.
+3. Collect native distinct30-fps captures covering scene cuts, particles, text,
+   menus and dark motion, then run at least1,800 captures with fixed strict,
+   diagnostic and drain windows. Preserve unselected and rejected capture IDs.
+4. Port the frozen arithmetic and GF02 ownership/GA01 binding to native host and
+   target parser tests. Use GM01 goldens for bit-exact comparison. Then implement
+   CP02/inverse transform/map/refetch and framebuffer publication in target RTL,
+   prove memory/CDC/backpressure/read-drain behavior and compile/place/route.
+5. Qualify real simultaneous Wi-Fi/QSPI/input/display service and the10-minute
+   physical30-fps campaign on the board. Record presented IDs, frame age, recovery
+   and memory/FIFO/CRC errors; retain JPEG as a working comparison and fallback.
+
 ## Ready now and remaining scope
 
-The combined GM01 software decoder uses the word reader, with uniform-map
-compatibility tests and a real two-candidate controller. Reproduce these tests
-and the binary fixtures before target implementation. GF01 is an in-process lab
-container; it is not firmware ingress or a deployed streaming transport. There
-is still no installed custom Sunshine mode, ESP32 support or FPGA bitstream.
-Existing JPEG telemetry/age/size policies can be tested with the matching
-hardware independently. Hardware remains on another system; this study has not
-programmed or measured that board.
+The combined GM01 Python decoder/controller, binary goldens, GF02/GA01 functional
+adapter, finite deadline/read-pin replay and HP01/GH01 UI experiment are available.
+The v9 verifier reconciles stored evidence, source pins, test logs and window/byte
+accounting. There is no installed custom Sunshine mode, ESP32 decoder support or
+new FPGA bitstream from these experiments. Existing JPEG policies can be tested
+independently on the other system's hardware. No board was programmed here.

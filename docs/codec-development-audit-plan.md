@@ -4,15 +4,23 @@ Audit date: 2026-11-03. Input: the supplied “FPGA Game Streaming Codec:
 Development & Evaluation Plan.” This document proposes experiments; it does
 not select a production codec or establish hardware performance. Use the
 [developer handoff](dev-handoff-2026-11-03.md) for the current implementation
-and evidence. Work belongs on the paired `study/30fps-sim-20261102` branches
-in [Moonbub](https://github.com/AEW2015/moonbub/tree/study/30fps-sim-20261102)
-and [Sunshine](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102).
+and evidence. Current work is on paired `handoff/gamebub-app-codec-v9-20261103`
+branches in [Moonbub](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v9-20261103)
+and [Sunshine](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v9-20261103).
+Earlier study/handoff branches remain frozen.
 
 ## Recommendation
 
 ### Python prototype progress, 2026-11-03
 
-Current follow-up: [iteration8 combined GM01 application-specific codec](custom-codec-prototype-v8-2026-11-03.md)
+Current follow-up: [iteration9 finite transport, feedback and UI experiments](custom-codec-prototype-v9-2026-11-03.md)
+connects actual GM01/GF02/GA01 bytes to finite measured-service replay. It corrects
+a GF01 delivered-pin ownership bug and tests separate exact565 UI patches.
+The full-path short diagnostic counts stay below30 IDs/s; broad antialiased UI
+patches fail the cap while two low-color probes fit. Capture/transport CPU,
+long distinct-source coverage, native/RTL and hardware gates remain open.
+
+Previous follow-up: [iteration8 combined GM01 application-specific codec](custom-codec-prototype-v8-2026-11-03.md)
 implements temporal residuals plus the explicit priority map, one-analysis
 two-candidate admission, size guards and replayable golden packets. Normal
 preparation is promising, while fallback/noise tails and physical30 fps gates
