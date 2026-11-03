@@ -1,5 +1,9 @@
 # MoonBub developer handoff — 2026-11-03
 
+For proposed custom codec work, read the [codec audit and revised plan](codec-development-audit-plan.md)
+before selecting a new decoder. It preserves JPEG as the baseline and defines
+software comparison, reference-state and memory-service gates.
+
 ## Baseline and evidence boundary
 
 The work is on the [Moonbub study branch](https://github.com/AEW2015/moonbub/tree/study/30fps-sim-20261102) and the [Sunshine study branch](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102). These branches contain experimental code and evidence; none of the new RTL should be treated as a production bitstream. Existing separately qualified device artifacts must be identified and preserved before testing.
