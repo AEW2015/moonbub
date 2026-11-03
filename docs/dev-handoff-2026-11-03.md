@@ -11,7 +11,13 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Start with [iteration5](custom-codec-prototype-v5-2026-11-03.md): faster byte-identical
+Start with [iteration6](custom-codec-prototype-v6-2026-11-03.md): faster key preparation
+and token entropy, actual per-selected-call Python service replay, and exact
+transform-width bounds. Keys reach27.67 ms mean but still have deadline misses;
+short modeled cadence remains28–29 IDs/s with assumed8 ms decode and21–24
+with measured Python decode. These are software evidence, not physical30 fps.
+
+The earlier [iteration5](custom-codec-prototype-v5-2026-11-03.md): faster byte-identical
 host preparation, asynchronous two-anchor refresh, causal quality recovery and
 corpus-overlap checks. P preparation reaches23–25 ms medians on this host, but
 key means remain78–111 ms and physical30 fps is unproven. The formats and policy

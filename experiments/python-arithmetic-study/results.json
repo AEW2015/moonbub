@@ -1,0 +1,1853 @@
+{
+  "evidence": "Analytical intermediate bounds plus actual paired Python arithmetic; not a DSP schedule or hardware FPS proof",
+  "source_sha256": {
+    "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/experiments/python-arithmetic-study/benchmark.py": "6401023637532e7ba75b72522e5a49f5f7275c341bd6180f575d20d87e5ca926",
+    "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/experiments/python-arithmetic-study/bounded_math.py": "03c043d66053089a220edf91ab338e9a7711cfdc0707f3d042e7938b7d4e08ca",
+    "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/experiments/python-motion-study/motion_codec.py": "dd82c43c0ff78debb14a97dce3ea4389199d7b98cbb81b721e846160c74a922a",
+    "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/experiments/python-transform-study/fixed_codec.py": "c5f0aebba63058b127c25167502b3846c6710ef4379887d75062e783a2412699",
+    "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/experiments/python-fast-entropy-study/fast_coeff.py": "6c17f8529cf02ddebb305682299a093e49988e107e2f79e14a8c7390638e1668",
+    "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/experiments/python-coefficient-study/coeff_codec.py": "c8bc1f5b5b9a7017768b6e7a51b09fb6b4c83b2baa6972b16968400d69a7d941",
+    "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/experiments/python-key-prepare-study/key_encoder.py": "6e6d95a58a47d8c59aaccb9a645cc6e23804e80acdb58bb538cfb6ea7b319e77",
+    "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/experiments/python-fast-entropy-study/fast_anchor.py": "ca62e022afea735656772a76a49c99197c7970e80395a0e099929b9e68131bd1",
+    "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/experiments/python-codec-study/corpus.py": "5bee343a45667638229b80bffffe1bee8571f3fd5706801cd0bf8c19e6875d43"
+  },
+  "python": "3.14.4",
+  "numpy": "2.5.4",
+  "domain_bounds": {
+    "domains": {
+      "residual_forward": {
+        "max_abs_input": 255,
+        "matrix_l1": 46344,
+        "first_acc_abs_including_bias": 11825912,
+        "first_rounded_abs": 721,
+        "second_acc_abs_including_bias": 33422216,
+        "second_rounded_abs": 2039,
+        "int32_safe": true,
+        "max_abs_input_signed_bits": 9,
+        "first_acc_abs_including_bias_signed_bits": 25,
+        "first_rounded_abs_signed_bits": 11,
+        "second_acc_abs_including_bias_signed_bits": 26,
+        "second_rounded_abs_signed_bits": 12
+      },
+      "full_syntax_inverse": {
+        "max_abs_input": 522240,
+        "matrix_l1": 43284,
+        "first_acc_abs_including_bias": 22604644352,
+        "first_rounded_abs": 1379678,
+        "second_acc_abs_including_bias": 59717990744,
+        "second_rounded_abs": 3644896,
+        "int32_safe": false,
+        "max_abs_input_signed_bits": 20,
+        "first_acc_abs_including_bias_signed_bits": 36,
+        "first_rounded_abs_signed_bits": 22,
+        "second_acc_abs_including_bias_signed_bits": 37,
+        "second_rounded_abs_signed_bits": 23
+      }
+    },
+    "inverse_int32_max_abs": 18779,
+    "matrix_coefficient_signed_bits": 14,
+    "logical_multiply_mapping": "Both passes fit a 25x18 signed multiplier for these declared domains; no schedule, DSP count, fit, timing or memory-service proof.",
+    "accumulator_note": "Bounds include rounding bias; actual reachable host key values usually use fewer bits than the full accepted coefficient syntax."
+  },
+  "scenes": [
+    {
+      "name": "mass-effect-combat",
+      "manifest": {
+        "source": "/home/lori/gamebub-streaming-prototype/media/mass-effect-combat.mp4",
+        "source_sha256": "defff415bc1fdff6e18a70b0a0fbbddebb0429c5c0b8b5d5d04d8283bb315d3b",
+        "source_width": 512,
+        "source_height": 288,
+        "source_fps": "25/1",
+        "time_base": "1/25",
+        "start_seconds": 4,
+        "target_width": 720,
+        "target_height": 480,
+        "resampler": "Pillow BOX",
+        "frame_count": 12,
+        "selected_pts": [
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111
+        ],
+        "selected_times_seconds": [
+          4.0,
+          4.04,
+          4.08,
+          4.12,
+          4.16,
+          4.2,
+          4.24,
+          4.28,
+          4.32,
+          4.36,
+          4.4,
+          4.44
+        ],
+        "frame_sha256": [
+          "8a4d7a37b9a4db09f833637f2262a1fbdd07748d7e834e230a1981e1181d5054",
+          "f51d6ecf897aba79ba58f843b571270372abd91247ba4d1ada6ed2c11a749456",
+          "f51d6ecf897aba79ba58f843b571270372abd91247ba4d1ada6ed2c11a749456",
+          "f51d6ecf897aba79ba58f843b571270372abd91247ba4d1ada6ed2c11a749456",
+          "8a4d7a37b9a4db09f833637f2262a1fbdd07748d7e834e230a1981e1181d5054",
+          "d1c42661b37386d628209c44ff3f645951302eb8806a577dbd1fe95c4caad317",
+          "6af86a5a03572216e84272105e7758b31cba40b946b558abd48d245f77d0dd75",
+          "6af86a5a03572216e84272105e7758b31cba40b946b558abd48d245f77d0dd75",
+          "3165b07f3574eae9751edc3e7fd886add47e3e196bf196a5f23c58ce00de0b3c",
+          "3165b07f3574eae9751edc3e7fd886add47e3e196bf196a5f23c58ce00de0b3c",
+          "ac92be584ab2c6be6dfc2df1d88bf7d821c26b339f1fdabe7fac6e127255defd",
+          "ac92be584ab2c6be6dfc2df1d88bf7d821c26b339f1fdabe7fac6e127255defd"
+        ],
+        "unique_frame_count": 6,
+        "active_rects": [
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ]
+        ]
+      },
+      "paired_checks": 24,
+      "stats": {
+        "wide": {
+          "transform_ms": {
+            "mean": 11.483216916666668,
+            "p50": 11.739663,
+            "p95": 13.28702375,
+            "max": 14.193902
+          },
+          "reconstruct_ms": {
+            "mean": 5.691703874999999,
+            "p50": 5.4390965,
+            "p95": 6.3633956,
+            "max": 6.374845
+          },
+          "combined_ms": {
+            "mean": 17.174920791666665,
+            "p50": 17.2965425,
+            "p95": 19.4694076,
+            "max": 19.538188
+          }
+        },
+        "bounded": {
+          "transform_ms": {
+            "mean": 11.186386416666666,
+            "p50": 11.353472499999999,
+            "p95": 12.2953261,
+            "max": 12.386165
+          },
+          "reconstruct_ms": {
+            "mean": 5.851164375,
+            "p50": 5.581595,
+            "p95": 6.5096643,
+            "max": 7.114805
+          },
+          "combined_ms": {
+            "mean": 17.037550791666664,
+            "p50": 17.0745065,
+            "p95": 18.6229497,
+            "max": 19.50097
+          }
+        }
+      },
+      "records": [
+        {
+          "repeat": 0,
+          "frame": 0,
+          "scale": 8,
+          "input_sha256": "8a4d7a37b9a4db09f833637f2262a1fbdd07748d7e834e230a1981e1181d5054",
+          "packet_sha256": "cf4a628d0a1ca2d60847f0b9d5792994a4242a6dc395c8f436f295f9798e40ca",
+          "bytes": 39105,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 14.193902,
+              "reconstruct_ms": 5.332625,
+              "combined_ms": 19.526527
+            },
+            "bounded": {
+              "transform_ms": 11.392295,
+              "reconstruct_ms": 5.547632,
+              "combined_ms": 16.939927
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 0,
+          "scale": 32,
+          "input_sha256": "8a4d7a37b9a4db09f833637f2262a1fbdd07748d7e834e230a1981e1181d5054",
+          "packet_sha256": "b893229f15c309ef9aac8f36a477487d1fc865d7717d807208756a24e4c8b675",
+          "bytes": 21648,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 11.87578,
+              "reconstruct_ms": 5.432239,
+              "combined_ms": 17.308019
+            },
+            "bounded": {
+              "transform_ms": 9.741208,
+              "reconstruct_ms": 5.576506,
+              "combined_ms": 15.317714
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 3,
+          "scale": 8,
+          "input_sha256": "f51d6ecf897aba79ba58f843b571270372abd91247ba4d1ada6ed2c11a749456",
+          "packet_sha256": "6c32b7dad69dc5c3819014017307f2a4331568e3d31ad8eaf7cbdd66849538f6",
+          "bytes": 39123,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 12.326515,
+              "reconstruct_ms": 6.32417,
+              "combined_ms": 18.650685
+            },
+            "wide": {
+              "transform_ms": 12.648741,
+              "reconstruct_ms": 5.435846,
+              "combined_ms": 18.084587
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 3,
+          "scale": 32,
+          "input_sha256": "f51d6ecf897aba79ba58f843b571270372abd91247ba4d1ada6ed2c11a749456",
+          "packet_sha256": "6e576a75597bafda3d99ee51bf2f796329a5c80c9c7e1f2166c41137633edaa9",
+          "bytes": 21646,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.039902,
+              "reconstruct_ms": 5.524259,
+              "combined_ms": 16.564161
+            },
+            "wide": {
+              "transform_ms": 8.934504,
+              "reconstruct_ms": 5.130931,
+              "combined_ms": 14.065435
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 6,
+          "scale": 8,
+          "input_sha256": "6af86a5a03572216e84272105e7758b31cba40b946b558abd48d245f77d0dd75",
+          "packet_sha256": "23e6cf608ba1d60f0383ffceeedc01aac0d30359d72c8d8237fed82f5c8cde42",
+          "bytes": 39256,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 9.360022,
+              "reconstruct_ms": 5.398265,
+              "combined_ms": 14.758287000000001
+            },
+            "bounded": {
+              "transform_ms": 9.899811,
+              "reconstruct_ms": 5.394689,
+              "combined_ms": 15.2945
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 6,
+          "scale": 32,
+          "input_sha256": "6af86a5a03572216e84272105e7758b31cba40b946b558abd48d245f77d0dd75",
+          "packet_sha256": "98e02402e9e50e2762f6a8b28251b76f9ad6e20f5b207d73491baab710fed9a9",
+          "bytes": 21667,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.281852,
+              "reconstruct_ms": 6.367832,
+              "combined_ms": 18.649684
+            },
+            "bounded": {
+              "transform_ms": 11.07628,
+              "reconstruct_ms": 5.607934,
+              "combined_ms": 16.684214
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 9,
+          "scale": 8,
+          "input_sha256": "3165b07f3574eae9751edc3e7fd886add47e3e196bf196a5f23c58ce00de0b3c",
+          "packet_sha256": "e811fd15ab6e7a575fbe26ac4f7a64364cf4df27f43ac421b2a0a51f0e3be7e4",
+          "bytes": 39110,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.51924,
+              "reconstruct_ms": 6.278074,
+              "combined_ms": 17.797314
+            },
+            "wide": {
+              "transform_ms": 12.315104,
+              "reconstruct_ms": 6.236357,
+              "combined_ms": 18.551461
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 9,
+          "scale": 32,
+          "input_sha256": "3165b07f3574eae9751edc3e7fd886add47e3e196bf196a5f23c58ce00de0b3c",
+          "packet_sha256": "ce7fe0cf54581389bb29853e790b9ead144f87ba372cf426e3777885a015ca08",
+          "bytes": 21611,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.318107,
+              "reconstruct_ms": 5.586684,
+              "combined_ms": 16.904791
+            },
+            "wide": {
+              "transform_ms": 10.655901,
+              "reconstruct_ms": 5.249831,
+              "combined_ms": 15.905732
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 0,
+          "scale": 8,
+          "input_sha256": "8a4d7a37b9a4db09f833637f2262a1fbdd07748d7e834e230a1981e1181d5054",
+          "packet_sha256": "cf4a628d0a1ca2d60847f0b9d5792994a4242a6dc395c8f436f295f9798e40ca",
+          "bytes": 39105,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 10.096525,
+              "reconstruct_ms": 5.575454,
+              "combined_ms": 15.671979
+            },
+            "wide": {
+              "transform_ms": 11.251675,
+              "reconstruct_ms": 5.351639,
+              "combined_ms": 16.603314
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 0,
+          "scale": 32,
+          "input_sha256": "8a4d7a37b9a4db09f833637f2262a1fbdd07748d7e834e230a1981e1181d5054",
+          "packet_sha256": "b893229f15c309ef9aac8f36a477487d1fc865d7717d807208756a24e4c8b675",
+          "bytes": 21648,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.782638,
+              "reconstruct_ms": 6.400662,
+              "combined_ms": 18.1833
+            },
+            "wide": {
+              "transform_ms": 12.054691,
+              "reconstruct_ms": 6.374845,
+              "combined_ms": 18.429536
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 3,
+          "scale": 8,
+          "input_sha256": "f51d6ecf897aba79ba58f843b571270372abd91247ba4d1ada6ed2c11a749456",
+          "packet_sha256": "6c32b7dad69dc5c3819014017307f2a4331568e3d31ad8eaf7cbdd66849538f6",
+          "bytes": 39123,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 10.735369,
+              "reconstruct_ms": 6.276412,
+              "combined_ms": 17.011781
+            },
+            "bounded": {
+              "transform_ms": 11.936883,
+              "reconstruct_ms": 6.5289,
+              "combined_ms": 18.465783000000002
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 3,
+          "scale": 32,
+          "input_sha256": "f51d6ecf897aba79ba58f843b571270372abd91247ba4d1ada6ed2c11a749456",
+          "packet_sha256": "6e576a75597bafda3d99ee51bf2f796329a5c80c9c7e1f2166c41137633edaa9",
+          "bytes": 21646,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 13.37165,
+              "reconstruct_ms": 6.166538,
+              "combined_ms": 19.538188
+            },
+            "bounded": {
+              "transform_ms": 11.388838,
+              "reconstruct_ms": 6.389621,
+              "combined_ms": 17.778458999999998
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 6,
+          "scale": 8,
+          "input_sha256": "6af86a5a03572216e84272105e7758b31cba40b946b558abd48d245f77d0dd75",
+          "packet_sha256": "23e6cf608ba1d60f0383ffceeedc01aac0d30359d72c8d8237fed82f5c8cde42",
+          "bytes": 39256,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 10.968139,
+              "reconstruct_ms": 6.3291,
+              "combined_ms": 17.297239
+            },
+            "wide": {
+              "transform_ms": 12.132756,
+              "reconstruct_ms": 6.185554,
+              "combined_ms": 18.31831
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 6,
+          "scale": 32,
+          "input_sha256": "6af86a5a03572216e84272105e7758b31cba40b946b558abd48d245f77d0dd75",
+          "packet_sha256": "98e02402e9e50e2762f6a8b28251b76f9ad6e20f5b207d73491baab710fed9a9",
+          "bytes": 21667,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.662656,
+              "reconstruct_ms": 5.54643,
+              "combined_ms": 17.209086
+            },
+            "wide": {
+              "transform_ms": 9.010274,
+              "reconstruct_ms": 5.283524,
+              "combined_ms": 14.293798
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 9,
+          "scale": 8,
+          "input_sha256": "3165b07f3574eae9751edc3e7fd886add47e3e196bf196a5f23c58ce00de0b3c",
+          "packet_sha256": "e811fd15ab6e7a575fbe26ac4f7a64364cf4df27f43ac421b2a0a51f0e3be7e4",
+          "bytes": 39110,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 10.859718,
+              "reconstruct_ms": 5.466152,
+              "combined_ms": 16.325870000000002
+            },
+            "bounded": {
+              "transform_ms": 11.528517,
+              "reconstruct_ms": 5.338565,
+              "combined_ms": 16.867082
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 9,
+          "scale": 32,
+          "input_sha256": "3165b07f3574eae9751edc3e7fd886add47e3e196bf196a5f23c58ce00de0b3c",
+          "packet_sha256": "ce7fe0cf54581389bb29853e790b9ead144f87ba372cf426e3777885a015ca08",
+          "bytes": 21611,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.398127,
+              "reconstruct_ms": 6.004469,
+              "combined_ms": 18.402596000000003
+            },
+            "bounded": {
+              "transform_ms": 11.223242,
+              "reconstruct_ms": 6.211972,
+              "combined_ms": 17.435214000000002
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 0,
+          "scale": 8,
+          "input_sha256": "8a4d7a37b9a4db09f833637f2262a1fbdd07748d7e834e230a1981e1181d5054",
+          "packet_sha256": "cf4a628d0a1ca2d60847f0b9d5792994a4242a6dc395c8f436f295f9798e40ca",
+          "bytes": 39105,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 10.4339,
+              "reconstruct_ms": 5.442347,
+              "combined_ms": 15.876247
+            },
+            "bounded": {
+              "transform_ms": 9.772415,
+              "reconstruct_ms": 5.64883,
+              "combined_ms": 15.421245
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 0,
+          "scale": 32,
+          "input_sha256": "8a4d7a37b9a4db09f833637f2262a1fbdd07748d7e834e230a1981e1181d5054",
+          "packet_sha256": "b893229f15c309ef9aac8f36a477487d1fc865d7717d807208756a24e4c8b675",
+          "bytes": 21648,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.807475,
+              "reconstruct_ms": 6.338256,
+              "combined_ms": 19.145731
+            },
+            "bounded": {
+              "transform_ms": 10.464567,
+              "reconstruct_ms": 5.541451,
+              "combined_ms": 16.006018
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 3,
+          "scale": 8,
+          "input_sha256": "f51d6ecf897aba79ba58f843b571270372abd91247ba4d1ada6ed2c11a749456",
+          "packet_sha256": "6c32b7dad69dc5c3819014017307f2a4331568e3d31ad8eaf7cbdd66849538f6",
+          "bytes": 39123,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 12.118589,
+              "reconstruct_ms": 5.483514,
+              "combined_ms": 17.602103
+            },
+            "wide": {
+              "transform_ms": 12.193799,
+              "reconstruct_ms": 5.219244,
+              "combined_ms": 17.413043000000002
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 3,
+          "scale": 32,
+          "input_sha256": "f51d6ecf897aba79ba58f843b571270372abd91247ba4d1ada6ed2c11a749456",
+          "packet_sha256": "6e576a75597bafda3d99ee51bf2f796329a5c80c9c7e1f2166c41137633edaa9",
+          "bytes": 21646,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.798497,
+              "reconstruct_ms": 5.436927,
+              "combined_ms": 17.235424
+            },
+            "wide": {
+              "transform_ms": 11.435946,
+              "reconstruct_ms": 5.158382,
+              "combined_ms": 16.594327999999997
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 6,
+          "scale": 8,
+          "input_sha256": "6af86a5a03572216e84272105e7758b31cba40b946b558abd48d245f77d0dd75",
+          "packet_sha256": "23e6cf608ba1d60f0383ffceeedc01aac0d30359d72c8d8237fed82f5c8cde42",
+          "bytes": 39256,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 11.708069,
+              "reconstruct_ms": 6.056034,
+              "combined_ms": 17.764103
+            },
+            "bounded": {
+              "transform_ms": 12.061755,
+              "reconstruct_ms": 6.140129,
+              "combined_ms": 18.201884
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 6,
+          "scale": 32,
+          "input_sha256": "6af86a5a03572216e84272105e7758b31cba40b946b558abd48d245f77d0dd75",
+          "packet_sha256": "98e02402e9e50e2762f6a8b28251b76f9ad6e20f5b207d73491baab710fed9a9",
+          "bytes": 21667,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 11.771257,
+              "reconstruct_ms": 5.29801,
+              "combined_ms": 17.069267
+            },
+            "bounded": {
+              "transform_ms": 9.683831,
+              "reconstruct_ms": 5.451565,
+              "combined_ms": 15.135396
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 9,
+          "scale": 8,
+          "input_sha256": "3165b07f3574eae9751edc3e7fd886add47e3e196bf196a5f23c58ce00de0b3c",
+          "packet_sha256": "e811fd15ab6e7a575fbe26ac4f7a64364cf4df27f43ac421b2a0a51f0e3be7e4",
+          "bytes": 39110,
+          "dequant_max_per_plane": [
+            1024,
+            18,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.286659,
+              "reconstruct_ms": 5.450072,
+              "combined_ms": 16.736731
+            },
+            "wide": {
+              "transform_ms": 9.896165,
+              "reconstruct_ms": 5.381024,
+              "combined_ms": 15.277189
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 9,
+          "scale": 32,
+          "input_sha256": "3165b07f3574eae9751edc3e7fd886add47e3e196bf196a5f23c58ce00de0b3c",
+          "packet_sha256": "ce7fe0cf54581389bb29853e790b9ead144f87ba372cf426e3777885a015ca08",
+          "bytes": 21611,
+          "dequant_max_per_plane": [
+            1024,
+            34,
+            0
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 12.386165,
+              "reconstruct_ms": 7.114805,
+              "combined_ms": 19.50097
+            },
+            "wide": {
+              "transform_ms": 11.270529,
+              "reconstruct_ms": 6.014537,
+              "combined_ms": 17.285066
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mass-effect-2600",
+      "manifest": {
+        "source": "/home/lori/gamebub-streaming-prototype/media/mass-effect-2600.mp4",
+        "source_sha256": "cf79e7bef47b242005eff912c9da40404aadcd3fb4154c7fd1a84ab95ecfd311",
+        "source_width": 1280,
+        "source_height": 720,
+        "source_fps": "747/25",
+        "time_base": "1/11952",
+        "start_seconds": 4,
+        "target_width": 720,
+        "target_height": 480,
+        "resampler": "Pillow BOX",
+        "frame_count": 12,
+        "selected_pts": [
+          48000,
+          48400,
+          48800,
+          49200,
+          49600,
+          50000,
+          50400,
+          50800,
+          51200,
+          51600,
+          52000,
+          52400
+        ],
+        "selected_times_seconds": [
+          4.016064257028113,
+          4.049531459170013,
+          4.0829986613119145,
+          4.116465863453815,
+          4.149933065595716,
+          4.183400267737617,
+          4.216867469879518,
+          4.250334672021419,
+          4.28380187416332,
+          4.317269076305221,
+          4.350736278447122,
+          4.384203480589023
+        ],
+        "frame_sha256": [
+          "49e1c3c1b3055402d51f8294903de110b1c1cacff154e8100f69a389282d3bf0",
+          "0b3f5577ec52f93fa6dd688595a9edd6d480054dfd8cc86493855338a6b523af",
+          "d929d4d58ec610b08bb774102e957fc2ea30b16db5f96b5371b66741fb1797a7",
+          "823c5b1ed118985baa63cf7937777ff7ff9942492d0da60682a21157a8269dbd",
+          "8ec4a181a499a7a1f1e00ee6bea52628063781721129c5bef895161937626427",
+          "32691435b03baeb14fd77fc75080b0f09908e353f87850400987529a4732ecf9",
+          "7ae96a5db67560d16adcce8be4d8129613f7207776fc9476f025260634c0905b",
+          "2991455599da06511f0cb8881c85e0cacef1c062f3d7a8ff600eb2cbd2771c39",
+          "04cd16c3da3ed5bd30c8f671adddcfd4dbab87d9da8f94336634e99caf3d0c02",
+          "fc873043308fcd0f39deb2e3f4d067a0ae36cc50804f929340942098c351c7aa",
+          "06d38839131c98888dd6398fb275ef081b88b5040f2efb5a9dfda29c2cd0f9cd",
+          "edb515e61cfc5fb85b941ea99b85ec25be85be2a13ab3e191f7f196811460aa5"
+        ],
+        "unique_frame_count": 12,
+        "active_rects": [
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ],
+          [
+            0,
+            37,
+            720,
+            405
+          ]
+        ]
+      },
+      "paired_checks": 24,
+      "stats": {
+        "wide": {
+          "transform_ms": {
+            "mean": 12.255841583333334,
+            "p50": 12.17013,
+            "p95": 12.953502849999998,
+            "max": 13.104295
+          },
+          "reconstruct_ms": {
+            "mean": 6.246770208333333,
+            "p50": 6.2389175,
+            "p95": 6.2909704,
+            "max": 6.359075
+          },
+          "combined_ms": {
+            "mean": 18.502611791666666,
+            "p50": 18.409779,
+            "p95": 19.19003735,
+            "max": 19.338979000000002
+          }
+        },
+        "bounded": {
+          "transform_ms": {
+            "mean": 11.624274041666666,
+            "p50": 11.5286475,
+            "p95": 12.2692423,
+            "max": 12.428434
+          },
+          "reconstruct_ms": {
+            "mean": 6.5346355,
+            "p50": 6.507054,
+            "p95": 6.61224155,
+            "max": 7.099857
+          },
+          "combined_ms": {
+            "mean": 18.158909541666667,
+            "p50": 18.0495925,
+            "p95": 18.80706465,
+            "max": 19.528291
+          }
+        }
+      },
+      "records": [
+        {
+          "repeat": 0,
+          "frame": 0,
+          "scale": 8,
+          "input_sha256": "49e1c3c1b3055402d51f8294903de110b1c1cacff154e8100f69a389282d3bf0",
+          "packet_sha256": "fb4df871a968f09708f0ecd0f34694f82109f9a5afe2396d08697f595bc2125e",
+          "bytes": 25542,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            162
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 13.104295,
+              "reconstruct_ms": 6.234684,
+              "combined_ms": 19.338979000000002
+            },
+            "bounded": {
+              "transform_ms": 12.290989,
+              "reconstruct_ms": 6.526565,
+              "combined_ms": 18.817554
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 0,
+          "scale": 32,
+          "input_sha256": "49e1c3c1b3055402d51f8294903de110b1c1cacff154e8100f69a389282d3bf0",
+          "packet_sha256": "20bf3c3354e449d2b1b8e1be75a0049291bad569d78153b8f8dce2140c044603",
+          "bytes": 10404,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.266794,
+              "reconstruct_ms": 6.28645,
+              "combined_ms": 18.553244
+            },
+            "bounded": {
+              "transform_ms": 11.51933,
+              "reconstruct_ms": 6.533418,
+              "combined_ms": 18.052748
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 3,
+          "scale": 8,
+          "input_sha256": "823c5b1ed118985baa63cf7937777ff7ff9942492d0da60682a21157a8269dbd",
+          "packet_sha256": "c07a83c4b0caaf30e52bb462fc1a2774b09969e993024f2f3b033904082c3682",
+          "bytes": 25679,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            162
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.617191,
+              "reconstruct_ms": 6.581146,
+              "combined_ms": 18.198337000000002
+            },
+            "wide": {
+              "transform_ms": 12.544108,
+              "reconstruct_ms": 6.259901,
+              "combined_ms": 18.804009
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 3,
+          "scale": 32,
+          "input_sha256": "823c5b1ed118985baa63cf7937777ff7ff9942492d0da60682a21157a8269dbd",
+          "packet_sha256": "a53a3f0e704643c9a795f3fbb03ff45d07f779c6f701b2da7395929a5606009e",
+          "bytes": 10412,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.46546,
+              "reconstruct_ms": 6.478466,
+              "combined_ms": 17.943926
+            },
+            "wide": {
+              "transform_ms": 12.021219,
+              "reconstruct_ms": 6.288825,
+              "combined_ms": 18.310044
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 6,
+          "scale": 8,
+          "input_sha256": "7ae96a5db67560d16adcce8be4d8129613f7207776fc9476f025260634c0905b",
+          "packet_sha256": "a294ca24a1f6e76870243d90a026b93a73ca64e7355a402522e450b846bcdae7",
+          "bytes": 25807,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            162
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.22125,
+              "reconstruct_ms": 6.261294,
+              "combined_ms": 18.482544
+            },
+            "bounded": {
+              "transform_ms": 11.364022,
+              "reconstruct_ms": 6.463237,
+              "combined_ms": 17.827259
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 6,
+          "scale": 32,
+          "input_sha256": "7ae96a5db67560d16adcce8be4d8129613f7207776fc9476f025260634c0905b",
+          "packet_sha256": "7d6b7a92dab9b8ee8c6888c4df81bc978489c637a95cdd1ae2b3c6607ddcdd6b",
+          "bytes": 10438,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.132435,
+              "reconstruct_ms": 6.272776,
+              "combined_ms": 18.405211
+            },
+            "bounded": {
+              "transform_ms": 11.433782,
+              "reconstruct_ms": 6.46983,
+              "combined_ms": 17.903612000000003
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 9,
+          "scale": 8,
+          "input_sha256": "fc873043308fcd0f39deb2e3f4d067a0ae36cc50804f929340942098c351c7aa",
+          "packet_sha256": "3bd034a38309903a6e5c05d2026c7237405ee51c3cd2b0ec2a52026fd0883455",
+          "bytes": 25875,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            171
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.53,
+              "reconstruct_ms": 6.516437,
+              "combined_ms": 18.046436999999997
+            },
+            "wide": {
+              "transform_ms": 12.110805,
+              "reconstruct_ms": 6.202584,
+              "combined_ms": 18.313389
+            }
+          }
+        },
+        {
+          "repeat": 0,
+          "frame": 9,
+          "scale": 32,
+          "input_sha256": "fc873043308fcd0f39deb2e3f4d067a0ae36cc50804f929340942098c351c7aa",
+          "packet_sha256": "4f30b96bbef76a87517308bf2d0afc80a76edd7bb297c8e13765136e5d76d9c9",
+          "bytes": 10464,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.544928,
+              "reconstruct_ms": 6.549778,
+              "combined_ms": 18.094706000000002
+            },
+            "wide": {
+              "transform_ms": 12.168943,
+              "reconstruct_ms": 6.194751,
+              "combined_ms": 18.363694000000002
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 0,
+          "scale": 8,
+          "input_sha256": "49e1c3c1b3055402d51f8294903de110b1c1cacff154e8100f69a389282d3bf0",
+          "packet_sha256": "fb4df871a968f09708f0ecd0f34694f82109f9a5afe2396d08697f595bc2125e",
+          "bytes": 25542,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            162
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.550989,
+              "reconstruct_ms": 6.547514,
+              "combined_ms": 18.098503
+            },
+            "wide": {
+              "transform_ms": 12.073315,
+              "reconstruct_ms": 6.176296,
+              "combined_ms": 18.249610999999998
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 0,
+          "scale": 32,
+          "input_sha256": "49e1c3c1b3055402d51f8294903de110b1c1cacff154e8100f69a389282d3bf0",
+          "packet_sha256": "20bf3c3354e449d2b1b8e1be75a0049291bad569d78153b8f8dce2140c044603",
+          "bytes": 10404,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.504563,
+              "reconstruct_ms": 6.488264,
+              "combined_ms": 17.992827
+            },
+            "wide": {
+              "transform_ms": 12.41016,
+              "reconstruct_ms": 6.267916,
+              "combined_ms": 18.678075999999997
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 3,
+          "scale": 8,
+          "input_sha256": "823c5b1ed118985baa63cf7937777ff7ff9942492d0da60682a21157a8269dbd",
+          "packet_sha256": "c07a83c4b0caaf30e52bb462fc1a2774b09969e993024f2f3b033904082c3682",
+          "bytes": 25679,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            162
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.171317,
+              "reconstruct_ms": 6.232841,
+              "combined_ms": 18.404158
+            },
+            "bounded": {
+              "transform_ms": 11.40026,
+              "reconstruct_ms": 6.504915,
+              "combined_ms": 17.905175
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 3,
+          "scale": 32,
+          "input_sha256": "823c5b1ed118985baa63cf7937777ff7ff9942492d0da60682a21157a8269dbd",
+          "packet_sha256": "a53a3f0e704643c9a795f3fbb03ff45d07f779c6f701b2da7395929a5606009e",
+          "bytes": 10412,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.36743,
+              "reconstruct_ms": 6.291349,
+              "combined_ms": 18.658779000000003
+            },
+            "bounded": {
+              "transform_ms": 11.48175,
+              "reconstruct_ms": 6.451206,
+              "combined_ms": 17.932956
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 6,
+          "scale": 8,
+          "input_sha256": "7ae96a5db67560d16adcce8be4d8129613f7207776fc9476f025260634c0905b",
+          "packet_sha256": "a294ca24a1f6e76870243d90a026b93a73ca64e7355a402522e450b846bcdae7",
+          "bytes": 25807,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            162
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.626218,
+              "reconstruct_ms": 6.476152,
+              "combined_ms": 18.10237
+            },
+            "wide": {
+              "transform_ms": 12.090046,
+              "reconstruct_ms": 6.236468,
+              "combined_ms": 18.326514
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 6,
+          "scale": 32,
+          "input_sha256": "7ae96a5db67560d16adcce8be4d8129613f7207776fc9476f025260634c0905b",
+          "packet_sha256": "7d6b7a92dab9b8ee8c6888c4df81bc978489c637a95cdd1ae2b3c6607ddcdd6b",
+          "bytes": 10438,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.527295,
+              "reconstruct_ms": 6.509193,
+              "combined_ms": 18.036488
+            },
+            "wide": {
+              "transform_ms": 12.109823,
+              "reconstruct_ms": 6.241367,
+              "combined_ms": 18.351190000000003
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 9,
+          "scale": 8,
+          "input_sha256": "fc873043308fcd0f39deb2e3f4d067a0ae36cc50804f929340942098c351c7aa",
+          "packet_sha256": "3bd034a38309903a6e5c05d2026c7237405ee51c3cd2b0ec2a52026fd0883455",
+          "bytes": 25875,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            171
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.136964,
+              "reconstruct_ms": 6.359075,
+              "combined_ms": 18.496039
+            },
+            "bounded": {
+              "transform_ms": 11.788569,
+              "reconstruct_ms": 6.437841,
+              "combined_ms": 18.22641
+            }
+          }
+        },
+        {
+          "repeat": 1,
+          "frame": 9,
+          "scale": 32,
+          "input_sha256": "fc873043308fcd0f39deb2e3f4d067a0ae36cc50804f929340942098c351c7aa",
+          "packet_sha256": "4f30b96bbef76a87517308bf2d0afc80a76edd7bb297c8e13765136e5d76d9c9",
+          "bytes": 10464,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 11.671993,
+              "reconstruct_ms": 6.199489,
+              "combined_ms": 17.871482
+            },
+            "bounded": {
+              "transform_ms": 11.346179,
+              "reconstruct_ms": 6.501729,
+              "combined_ms": 17.847908
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 0,
+          "scale": 8,
+          "input_sha256": "49e1c3c1b3055402d51f8294903de110b1c1cacff154e8100f69a389282d3bf0",
+          "packet_sha256": "fb4df871a968f09708f0ecd0f34694f82109f9a5afe2396d08697f595bc2125e",
+          "bytes": 25542,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            162
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.188409,
+              "reconstruct_ms": 6.198778,
+              "combined_ms": 18.387187
+            },
+            "bounded": {
+              "transform_ms": 11.351159,
+              "reconstruct_ms": 6.49115,
+              "combined_ms": 17.842309
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 0,
+          "scale": 32,
+          "input_sha256": "49e1c3c1b3055402d51f8294903de110b1c1cacff154e8100f69a389282d3bf0",
+          "packet_sha256": "20bf3c3354e449d2b1b8e1be75a0049291bad569d78153b8f8dce2140c044603",
+          "bytes": 10404,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.145439,
+              "reconstruct_ms": 6.223684,
+              "combined_ms": 18.369123000000002
+            },
+            "bounded": {
+              "transform_ms": 11.378038,
+              "reconstruct_ms": 6.465592,
+              "combined_ms": 17.84363
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 3,
+          "scale": 8,
+          "input_sha256": "823c5b1ed118985baa63cf7937777ff7ff9942492d0da60682a21157a8269dbd",
+          "packet_sha256": "c07a83c4b0caaf30e52bb462fc1a2774b09969e993024f2f3b033904082c3682",
+          "bytes": 25679,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            162
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.908621,
+              "reconstruct_ms": 6.614117,
+              "combined_ms": 18.522738
+            },
+            "wide": {
+              "transform_ms": 12.370185,
+              "reconstruct_ms": 6.285839,
+              "combined_ms": 18.656024
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 3,
+          "scale": 32,
+          "input_sha256": "823c5b1ed118985baa63cf7937777ff7ff9942492d0da60682a21157a8269dbd",
+          "packet_sha256": "a53a3f0e704643c9a795f3fbb03ff45d07f779c6f701b2da7395929a5606009e",
+          "bytes": 10412,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 11.836558,
+              "reconstruct_ms": 6.516376,
+              "combined_ms": 18.352934
+            },
+            "wide": {
+              "transform_ms": 12.278946,
+              "reconstruct_ms": 6.284978,
+              "combined_ms": 18.563924
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 6,
+          "scale": 8,
+          "input_sha256": "7ae96a5db67560d16adcce8be4d8129613f7207776fc9476f025260634c0905b",
+          "packet_sha256": "a294ca24a1f6e76870243d90a026b93a73ca64e7355a402522e450b846bcdae7",
+          "bytes": 25807,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            162
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.160427,
+              "reconstruct_ms": 6.25392,
+              "combined_ms": 18.414347
+            },
+            "bounded": {
+              "transform_ms": 11.554094,
+              "reconstruct_ms": 6.514884,
+              "combined_ms": 18.068978
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 6,
+          "scale": 32,
+          "input_sha256": "7ae96a5db67560d16adcce8be4d8129613f7207776fc9476f025260634c0905b",
+          "packet_sha256": "7d6b7a92dab9b8ee8c6888c4df81bc978489c637a95cdd1ae2b3c6607ddcdd6b",
+          "bytes": 10438,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "wide": {
+              "transform_ms": 12.121786,
+              "reconstruct_ms": 6.200872,
+              "combined_ms": 18.322658
+            },
+            "bounded": {
+              "transform_ms": 11.388137,
+              "reconstruct_ms": 6.491971,
+              "combined_ms": 17.880108
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 9,
+          "scale": 8,
+          "input_sha256": "fc873043308fcd0f39deb2e3f4d067a0ae36cc50804f929340942098c351c7aa",
+          "packet_sha256": "3bd034a38309903a6e5c05d2026c7237405ee51c3cd2b0ec2a52026fd0883455",
+          "bytes": 25875,
+          "dequant_max_per_plane": [
+            1024,
+            216,
+            171
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 12.428434,
+              "reconstruct_ms": 7.099857,
+              "combined_ms": 19.528291
+            },
+            "wide": {
+              "transform_ms": 13.025749,
+              "reconstruct_ms": 6.232411,
+              "combined_ms": 19.25816
+            }
+          }
+        },
+        {
+          "repeat": 2,
+          "frame": 9,
+          "scale": 32,
+          "input_sha256": "fc873043308fcd0f39deb2e3f4d067a0ae36cc50804f929340942098c351c7aa",
+          "packet_sha256": "4f30b96bbef76a87517308bf2d0afc80a76edd7bb297c8e13765136e5d76d9c9",
+          "bytes": 10464,
+          "dequant_max_per_plane": [
+            1024,
+            204,
+            170
+          ],
+          "inverse_paths": [
+            "int32",
+            "int32",
+            "int32"
+          ],
+          "timings": {
+            "bounded": {
+              "transform_ms": 12.146011,
+              "reconstruct_ms": 6.601614,
+              "combined_ms": 18.747625
+            },
+            "wide": {
+              "transform_ms": 12.24836,
+              "reconstruct_ms": 6.235937,
+              "combined_ms": 18.484296999999998
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "timing_scope": "Only residual transform/quantization and key inverse/clip; RGB/color, entropy, snapshots, packet, network, oracle, decode and presentation excluded.",
+  "concurrency": "Uncontrolled background host load, paired alternating order, 3 repetitions; prior codec benchmark finished first.",
+  "sample_scope": "4 selected native frames per clip repeated at2 scales and3 repetitions:8 source capture IDs,48 checks total; source images may repeat."
+}

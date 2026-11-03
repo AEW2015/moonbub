@@ -12,7 +12,13 @@ and [Sunshine](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102
 
 ### Python prototype progress, 2026-11-03
 
-Current follow-up: [iteration5 host optimizations, asynchronous anchors and quality recovery](custom-codec-prototype-v5-2026-11-03.md)
+Current follow-up: [iteration6 key preparation, measured services and arithmetic](custom-codec-prototype-v6-2026-11-03.md)
+reduces key preparation to27.67 ms mean in a paired token-entropy experiment,
+retains over-budget tails, and charges actual selected-packet Python service.
+The short model still misses30 diagnostic IDs/s; decoder, refresh, memory and
+native-capture gates remain open.
+
+Previous follow-up: [iteration5 host optimizations, asynchronous anchors and quality recovery](custom-codec-prototype-v5-2026-11-03.md)
 adds byte-identical faster preparation, explicit reference-only refresh, causal
 quality restoration and an independent corpus-overlap audit. Measured key stalls
 and conditional model failures remain open; this does not qualify hardware30 fps.
