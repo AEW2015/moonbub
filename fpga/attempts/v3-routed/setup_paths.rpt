@@ -1,0 +1,1839 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Mon Nov  2 18:31:12 2026
+| Host         : DESKTOP-I75K8PP running 64-bit major release  (build 9200)
+| Command      : report_timing -delay_type max -max_paths 20 -file C:/Users/lavat/codex/moonbub/fpga/build-final/setup_paths.rpt
+| Design       : moonshine_top
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -0.064ns  (required time - arrival time)
+  Source:                 rst100_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            sdram_cke[0]
+                            (output port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Path Group:             sdram_forwarded
+  Path Type:              Max at Slow Process Corner
+  Requirement:            5.000ns  (sdram_forwarded rise@5.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        6.081ns  (logic 3.564ns (58.621%)  route 2.516ns (41.379%))
+  Logic Levels:           2  (LUT1=1 OBUF=1)
+  Output Delay:           2.000ns
+  Clock Path Skew:        3.064ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    8.213ns = ( 13.213 - 5.000 ) 
+    Source Clock Delay      (SCD):    5.329ns
+    Clock Pessimism Removal (CPR):    0.180ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.729     5.329    clk100
+    SLICE_X82Y98         FDPE                                         r  rst100_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X82Y98         FDPE (Prop_fdpe_C_Q)         0.456     5.785 f  rst100_reg[3]/Q
+                         net (fo=1302, routed)        0.635     6.420    lcd/out[0]
+    SLICE_X86Y103        LUT1 (Prop_lut1_I0_O)        0.124     6.544 r  lcd/sdram_cke_OBUF[0]_inst_i_1/O
+                         net (fo=5, routed)           1.881     8.425    sdram_cke_OBUF[0]
+    J4                   OBUF (Prop_obuf_I_O)         2.984    11.409 r  sdram_cke_OBUF[0]_inst/O
+                         net (fo=0)                   0.000    11.409    sdram_cke[0]
+    J4                                                                r  sdram_cke[0] (OUT)
+  -------------------------------------------------------------------    -------------------
+
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     6.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     8.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     8.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    10.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711     6.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918     8.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091     8.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.578     9.997    memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.411    10.408 r  memory/controller/forward_clock/Q
+                         net (fo=1, routed)           0.001    10.409    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.804    13.213 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    13.213    sdram_clk
+    J5                                                                r  sdram_clk (OUT)
+                         clock pessimism              0.180    13.393    
+                         clock uncertainty           -0.047    13.346    
+                         output delay                -2.000    11.346    
+  -------------------------------------------------------------------
+                         required time                         11.346    
+                         arrival time                         -11.409    
+  -------------------------------------------------------------------
+                         slack                                 -0.064    
+
+Slack (VIOLATED) :        -0.062ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_y_factor_q_reg[2]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.367ns  (logic 3.044ns (32.497%)  route 6.323ns (67.502%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.124ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.073ns = ( 15.073 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.845    14.761    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X58Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_y_factor_q_reg[2]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.654    15.073    core/decoder/u_jpeg_input/clk100
+    SLICE_X58Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_y_factor_q_reg[2]/C
+                         clock pessimism              0.197    15.270    
+                         clock uncertainty           -0.047    15.222    
+    SLICE_X58Y25         FDRE (Setup_fdre_C_R)       -0.524    14.698    core/decoder/u_jpeg_input/img_y_factor_q_reg[2]
+  -------------------------------------------------------------------
+                         required time                         14.698    
+                         arrival time                         -14.761    
+  -------------------------------------------------------------------
+                         slack                                 -0.062    
+
+Slack (VIOLATED) :        -0.062ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_y_factor_q_reg[3]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.367ns  (logic 3.044ns (32.497%)  route 6.323ns (67.502%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.124ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.073ns = ( 15.073 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.845    14.761    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X58Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_y_factor_q_reg[3]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.654    15.073    core/decoder/u_jpeg_input/clk100
+    SLICE_X58Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_y_factor_q_reg[3]/C
+                         clock pessimism              0.197    15.270    
+                         clock uncertainty           -0.047    15.222    
+    SLICE_X58Y25         FDRE (Setup_fdre_C_R)       -0.524    14.698    core/decoder/u_jpeg_input/img_y_factor_q_reg[3]
+  -------------------------------------------------------------------
+                         required time                         14.698    
+                         arrival time                         -14.761    
+  -------------------------------------------------------------------
+                         slack                                 -0.062    
+
+Slack (VIOLATED) :        -0.062ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_y_factor_q_reg[6]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.367ns  (logic 3.044ns (32.497%)  route 6.323ns (67.502%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.124ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.073ns = ( 15.073 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.845    14.761    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X58Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_y_factor_q_reg[6]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.654    15.073    core/decoder/u_jpeg_input/clk100
+    SLICE_X58Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_y_factor_q_reg[6]/C
+                         clock pessimism              0.197    15.270    
+                         clock uncertainty           -0.047    15.222    
+    SLICE_X58Y25         FDRE (Setup_fdre_C_R)       -0.524    14.698    core/decoder/u_jpeg_input/img_y_factor_q_reg[6]
+  -------------------------------------------------------------------
+                         required time                         14.698    
+                         arrival time                         -14.761    
+  -------------------------------------------------------------------
+                         slack                                 -0.062    
+
+Slack (VIOLATED) :        -0.062ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_y_factor_q_reg[7]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.367ns  (logic 3.044ns (32.497%)  route 6.323ns (67.502%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.124ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.073ns = ( 15.073 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.845    14.761    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X58Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_y_factor_q_reg[7]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.654    15.073    core/decoder/u_jpeg_input/clk100
+    SLICE_X58Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_y_factor_q_reg[7]/C
+                         clock pessimism              0.197    15.270    
+                         clock uncertainty           -0.047    15.222    
+    SLICE_X58Y25         FDRE (Setup_fdre_C_R)       -0.524    14.698    core/decoder/u_jpeg_input/img_y_factor_q_reg[7]
+  -------------------------------------------------------------------
+                         required time                         14.698    
+                         arrival time                         -14.761    
+  -------------------------------------------------------------------
+                         slack                                 -0.062    
+
+Slack (VIOLATED) :        -0.019ns  (required time - arrival time)
+  Source:                 endpoint/address_reg[24]/C
+                            (rising edge-triggered cell FDRE clocked by raw200  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Destination:            endpoint/ov_addr_reg[10]/CE
+                            (rising edge-triggered cell FDRE clocked by raw200  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Path Group:             raw200
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            5.000ns  (raw200 rise@5.000ns - raw200 rise@0.000ns)
+  Data Path Delay:        4.642ns  (logic 1.248ns (26.885%)  route 3.394ns (73.115%))
+  Logic Levels:           4  (LUT2=1 LUT6=3)
+  Clock Path Skew:        -0.127ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.921ns = ( 9.921 - 5.000 ) 
+    Source Clock Delay      (SCD):    5.228ns
+    Clock Pessimism Removal (CPR):    0.180ns
+  Clock Uncertainty:      0.045ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.056ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.939     1.491 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           2.012     3.503    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.096     3.599 r  spi_clock/O
+                         net (fo=596, routed)         1.628     5.228    endpoint/clk200
+    SLICE_X46Y87         FDRE                                         r  endpoint/address_reg[24]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X46Y87         FDRE (Prop_fdre_C_Q)         0.518     5.746 r  endpoint/address_reg[24]/Q
+                         net (fo=7, routed)           0.611     6.357    endpoint/p_1_in[0]
+    SLICE_X47Y86         LUT2 (Prop_lut2_I1_O)        0.150     6.507 f  endpoint/irq_flags[1]_i_10/O
+                         net (fo=2, routed)           0.606     7.114    endpoint/irq_flags[1]_i_10_n_0
+    SLICE_X45Y88         LUT6 (Prop_lut6_I5_O)        0.332     7.446 f  endpoint/ov_addr[17]_i_5/O
+                         net (fo=1, routed)           0.652     8.098    endpoint/ov_addr[17]_i_5_n_0
+    SLICE_X41Y88         LUT6 (Prop_lut6_I5_O)        0.124     8.222 r  endpoint/ov_addr[17]_i_2/O
+                         net (fo=2, routed)           0.507     8.729    endpoint/ov_addr[17]_i_2_n_0
+    SLICE_X41Y95         LUT6 (Prop_lut6_I0_O)        0.124     8.853 r  endpoint/ov_addr[17]_i_1/O
+                         net (fo=77, routed)          1.017     9.870    endpoint/ov_addr[17]_i_1_n_0
+    SLICE_X45Y105        FDRE                                         r  endpoint/ov_addr_reg[10]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw200 rise edge)     5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     6.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     8.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     8.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    10.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.711     6.410 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           1.918     8.328    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.091     8.419 r  spi_clock/O
+                         net (fo=596, routed)         1.502     9.921    endpoint/clk200
+    SLICE_X45Y105        FDRE                                         r  endpoint/ov_addr_reg[10]/C
+                         clock pessimism              0.180    10.101    
+                         clock uncertainty           -0.045    10.056    
+    SLICE_X45Y105        FDRE (Setup_fdre_C_CE)      -0.205     9.851    endpoint/ov_addr_reg[10]
+  -------------------------------------------------------------------
+                         required time                          9.851    
+                         arrival time                          -9.870    
+  -------------------------------------------------------------------
+                         slack                                 -0.019    
+
+Slack (VIOLATED) :        -0.019ns  (required time - arrival time)
+  Source:                 endpoint/address_reg[24]/C
+                            (rising edge-triggered cell FDRE clocked by raw200  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Destination:            endpoint/ov_addr_reg[12]/CE
+                            (rising edge-triggered cell FDRE clocked by raw200  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Path Group:             raw200
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            5.000ns  (raw200 rise@5.000ns - raw200 rise@0.000ns)
+  Data Path Delay:        4.642ns  (logic 1.248ns (26.885%)  route 3.394ns (73.115%))
+  Logic Levels:           4  (LUT2=1 LUT6=3)
+  Clock Path Skew:        -0.127ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.921ns = ( 9.921 - 5.000 ) 
+    Source Clock Delay      (SCD):    5.228ns
+    Clock Pessimism Removal (CPR):    0.180ns
+  Clock Uncertainty:      0.045ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.056ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.939     1.491 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           2.012     3.503    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.096     3.599 r  spi_clock/O
+                         net (fo=596, routed)         1.628     5.228    endpoint/clk200
+    SLICE_X46Y87         FDRE                                         r  endpoint/address_reg[24]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X46Y87         FDRE (Prop_fdre_C_Q)         0.518     5.746 r  endpoint/address_reg[24]/Q
+                         net (fo=7, routed)           0.611     6.357    endpoint/p_1_in[0]
+    SLICE_X47Y86         LUT2 (Prop_lut2_I1_O)        0.150     6.507 f  endpoint/irq_flags[1]_i_10/O
+                         net (fo=2, routed)           0.606     7.114    endpoint/irq_flags[1]_i_10_n_0
+    SLICE_X45Y88         LUT6 (Prop_lut6_I5_O)        0.332     7.446 f  endpoint/ov_addr[17]_i_5/O
+                         net (fo=1, routed)           0.652     8.098    endpoint/ov_addr[17]_i_5_n_0
+    SLICE_X41Y88         LUT6 (Prop_lut6_I5_O)        0.124     8.222 r  endpoint/ov_addr[17]_i_2/O
+                         net (fo=2, routed)           0.507     8.729    endpoint/ov_addr[17]_i_2_n_0
+    SLICE_X41Y95         LUT6 (Prop_lut6_I0_O)        0.124     8.853 r  endpoint/ov_addr[17]_i_1/O
+                         net (fo=77, routed)          1.017     9.870    endpoint/ov_addr[17]_i_1_n_0
+    SLICE_X45Y105        FDRE                                         r  endpoint/ov_addr_reg[12]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw200 rise edge)     5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     6.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     8.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     8.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    10.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.711     6.410 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           1.918     8.328    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.091     8.419 r  spi_clock/O
+                         net (fo=596, routed)         1.502     9.921    endpoint/clk200
+    SLICE_X45Y105        FDRE                                         r  endpoint/ov_addr_reg[12]/C
+                         clock pessimism              0.180    10.101    
+                         clock uncertainty           -0.045    10.056    
+    SLICE_X45Y105        FDRE (Setup_fdre_C_CE)      -0.205     9.851    endpoint/ov_addr_reg[12]
+  -------------------------------------------------------------------
+                         required time                          9.851    
+                         arrival time                          -9.870    
+  -------------------------------------------------------------------
+                         slack                                 -0.019    
+
+Slack (VIOLATED) :        -0.009ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_cb_dqt_table_q_reg[1]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.409ns  (logic 3.044ns (32.353%)  route 6.365ns (67.647%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.124ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.073ns = ( 15.073 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.887    14.802    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X61Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_cb_dqt_table_q_reg[1]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.654    15.073    core/decoder/u_jpeg_input/clk100
+    SLICE_X61Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_cb_dqt_table_q_reg[1]/C
+                         clock pessimism              0.197    15.270    
+                         clock uncertainty           -0.047    15.222    
+    SLICE_X61Y25         FDRE (Setup_fdre_C_R)       -0.429    14.793    core/decoder/u_jpeg_input/img_cb_dqt_table_q_reg[1]
+  -------------------------------------------------------------------
+                         required time                         14.793    
+                         arrival time                         -14.802    
+  -------------------------------------------------------------------
+                         slack                                 -0.009    
+
+Slack (VIOLATED) :        -0.009ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_cr_dqt_table_q_reg[1]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.409ns  (logic 3.044ns (32.353%)  route 6.365ns (67.647%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.124ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.073ns = ( 15.073 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.887    14.802    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X61Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_cr_dqt_table_q_reg[1]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.654    15.073    core/decoder/u_jpeg_input/clk100
+    SLICE_X61Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_cr_dqt_table_q_reg[1]/C
+                         clock pessimism              0.197    15.270    
+                         clock uncertainty           -0.047    15.222    
+    SLICE_X61Y25         FDRE (Setup_fdre_C_R)       -0.429    14.793    core/decoder/u_jpeg_input/img_cr_dqt_table_q_reg[1]
+  -------------------------------------------------------------------
+                         required time                         14.793    
+                         arrival time                         -14.802    
+  -------------------------------------------------------------------
+                         slack                                 -0.009    
+
+Slack (VIOLATED) :        -0.009ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_y_dqt_table_q_reg[1]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.409ns  (logic 3.044ns (32.353%)  route 6.365ns (67.647%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.124ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.073ns = ( 15.073 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.887    14.802    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X61Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_y_dqt_table_q_reg[1]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.654    15.073    core/decoder/u_jpeg_input/clk100
+    SLICE_X61Y25         FDRE                                         r  core/decoder/u_jpeg_input/img_y_dqt_table_q_reg[1]/C
+                         clock pessimism              0.197    15.270    
+                         clock uncertainty           -0.047    15.222    
+    SLICE_X61Y25         FDRE (Setup_fdre_C_R)       -0.429    14.793    core/decoder/u_jpeg_input/img_y_dqt_table_q_reg[1]
+  -------------------------------------------------------------------
+                         required time                         14.793    
+                         arrival time                         -14.802    
+  -------------------------------------------------------------------
+                         slack                                 -0.009    
+
+Slack (VIOLATED) :        -0.006ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_height_q_reg[10]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.317ns  (logic 3.044ns (32.672%)  route 6.273ns (67.327%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.118ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.079ns = ( 15.079 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.795    14.711    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X58Y29         FDRE                                         r  core/decoder/u_jpeg_input/img_height_q_reg[10]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.660    15.079    core/decoder/u_jpeg_input/clk100
+    SLICE_X58Y29         FDRE                                         r  core/decoder/u_jpeg_input/img_height_q_reg[10]/C
+                         clock pessimism              0.197    15.276    
+                         clock uncertainty           -0.047    15.228    
+    SLICE_X58Y29         FDRE (Setup_fdre_C_R)       -0.524    14.704    core/decoder/u_jpeg_input/img_height_q_reg[10]
+  -------------------------------------------------------------------
+                         required time                         14.704    
+                         arrival time                         -14.711    
+  -------------------------------------------------------------------
+                         slack                                 -0.006    
+
+Slack (VIOLATED) :        -0.006ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_height_q_reg[14]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.317ns  (logic 3.044ns (32.672%)  route 6.273ns (67.327%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.118ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.079ns = ( 15.079 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.795    14.711    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X58Y29         FDRE                                         r  core/decoder/u_jpeg_input/img_height_q_reg[14]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.660    15.079    core/decoder/u_jpeg_input/clk100
+    SLICE_X58Y29         FDRE                                         r  core/decoder/u_jpeg_input/img_height_q_reg[14]/C
+                         clock pessimism              0.197    15.276    
+                         clock uncertainty           -0.047    15.228    
+    SLICE_X58Y29         FDRE (Setup_fdre_C_R)       -0.524    14.704    core/decoder/u_jpeg_input/img_height_q_reg[14]
+  -------------------------------------------------------------------
+                         required time                         14.704    
+                         arrival time                         -14.711    
+  -------------------------------------------------------------------
+                         slack                                 -0.006    
+
+Slack (VIOLATED) :        -0.006ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_height_q_reg[15]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.317ns  (logic 3.044ns (32.672%)  route 6.273ns (67.327%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.118ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.079ns = ( 15.079 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.795    14.711    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X58Y29         FDRE                                         r  core/decoder/u_jpeg_input/img_height_q_reg[15]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.660    15.079    core/decoder/u_jpeg_input/clk100
+    SLICE_X58Y29         FDRE                                         r  core/decoder/u_jpeg_input/img_height_q_reg[15]/C
+                         clock pessimism              0.197    15.276    
+                         clock uncertainty           -0.047    15.228    
+    SLICE_X58Y29         FDRE (Setup_fdre_C_R)       -0.524    14.704    core/decoder/u_jpeg_input/img_height_q_reg[15]
+  -------------------------------------------------------------------
+                         required time                         14.704    
+                         arrival time                         -14.711    
+  -------------------------------------------------------------------
+                         slack                                 -0.006    
+
+Slack (VIOLATED) :        -0.006ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_height_q_reg[8]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.317ns  (logic 3.044ns (32.672%)  route 6.273ns (67.327%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.118ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.079ns = ( 15.079 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.795    14.711    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X58Y29         FDRE                                         r  core/decoder/u_jpeg_input/img_height_q_reg[8]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.660    15.079    core/decoder/u_jpeg_input/clk100
+    SLICE_X58Y29         FDRE                                         r  core/decoder/u_jpeg_input/img_height_q_reg[8]/C
+                         clock pessimism              0.197    15.276    
+                         clock uncertainty           -0.047    15.228    
+    SLICE_X58Y29         FDRE (Setup_fdre_C_R)       -0.524    14.704    core/decoder/u_jpeg_input/img_height_q_reg[8]
+  -------------------------------------------------------------------
+                         required time                         14.704    
+                         arrival time                         -14.711    
+  -------------------------------------------------------------------
+                         slack                                 -0.006    
+
+Slack (VIOLATED) :        -0.006ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_height_q_reg[9]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.317ns  (logic 3.044ns (32.672%)  route 6.273ns (67.327%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.118ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.079ns = ( 15.079 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.795    14.711    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X58Y29         FDRE                                         r  core/decoder/u_jpeg_input/img_height_q_reg[9]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.660    15.079    core/decoder/u_jpeg_input/clk100
+    SLICE_X58Y29         FDRE                                         r  core/decoder/u_jpeg_input/img_height_q_reg[9]/C
+                         clock pessimism              0.197    15.276    
+                         clock uncertainty           -0.047    15.228    
+    SLICE_X58Y29         FDRE (Setup_fdre_C_R)       -0.524    14.704    core/decoder/u_jpeg_input/img_height_q_reg[9]
+  -------------------------------------------------------------------
+                         required time                         14.704    
+                         arrival time                         -14.711    
+  -------------------------------------------------------------------
+                         slack                                 -0.006    
+
+Slack (VIOLATED) :        -0.004ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_cb_dqt_table_q_reg[0]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.311ns  (logic 3.044ns (32.694%)  route 6.267ns (67.306%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.122ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.075ns = ( 15.075 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.789    14.705    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X60Y26         FDRE                                         r  core/decoder/u_jpeg_input/img_cb_dqt_table_q_reg[0]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.656    15.075    core/decoder/u_jpeg_input/clk100
+    SLICE_X60Y26         FDRE                                         r  core/decoder/u_jpeg_input/img_cb_dqt_table_q_reg[0]/C
+                         clock pessimism              0.197    15.272    
+                         clock uncertainty           -0.047    15.224    
+    SLICE_X60Y26         FDRE (Setup_fdre_C_R)       -0.524    14.700    core/decoder/u_jpeg_input/img_cb_dqt_table_q_reg[0]
+  -------------------------------------------------------------------
+                         required time                         14.700    
+                         arrival time                         -14.705    
+  -------------------------------------------------------------------
+                         slack                                 -0.004    
+
+Slack (MET) :             0.018ns  (required time - arrival time)
+  Source:                 core/length_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            core/decoder/u_jpeg_input/img_cb_factor_q_reg[0]/R
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        9.289ns  (logic 3.044ns (32.769%)  route 6.245ns (67.231%))
+  Logic Levels:           15  (CARRY4=8 LUT2=1 LUT4=1 LUT5=2 LUT6=3)
+  Clock Path Skew:        -0.121ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.076ns = ( 15.076 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.394ns
+    Clock Pessimism Removal (CPR):    0.197ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=5420, routed)        1.794     5.394    core/clk100
+    SLICE_X43Y28         FDRE                                         r  core/length_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y28         FDRE (Prop_fdre_C_Q)         0.456     5.850 r  core/length_reg[1]/Q
+                         net (fo=11, routed)          0.670     6.520    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17_0[1]
+    SLICE_X42Y28         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     7.040 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11/CO[3]
+                         net (fo=1, routed)           0.000     7.040    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_11_n_0
+    SLICE_X42Y29         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.157 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19/CO[3]
+                         net (fo=1, routed)           0.000     7.157    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_19_n_0
+    SLICE_X42Y30         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.274 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20/CO[3]
+                         net (fo=1, routed)           0.000     7.274    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_20_n_0
+    SLICE_X42Y31         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.391 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21/CO[3]
+                         net (fo=1, routed)           0.000     7.391    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_21_n_0
+    SLICE_X42Y32         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.508 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15/CO[3]
+                         net (fo=1, routed)           0.000     7.508    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_15_n_0
+    SLICE_X42Y33         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.625 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     7.625    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_14_n_0
+    SLICE_X42Y34         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.117     7.742 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16/CO[3]
+                         net (fo=1, routed)           0.000     7.742    core/decoder/u_jpeg_input/last_b_q_reg[7]_i_16_n_0
+    SLICE_X42Y35         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     8.057 r  core/decoder/u_jpeg_input/last_b_q_reg[7]_i_17/O[3]
+                         net (fo=1, routed)           0.811     8.868    core/decoder/u_jpeg_input/remaining[31]
+    SLICE_X44Y34         LUT6 (Prop_lut6_I0_O)        0.307     9.175 r  core/decoder/u_jpeg_input/last_b_q[7]_i_18/O
+                         net (fo=1, routed)           0.161     9.336    core/decoder/u_jpeg_input/last_b_q[7]_i_18_n_0
+    SLICE_X44Y34         LUT5 (Prop_lut5_I4_O)        0.124     9.460 f  core/decoder/u_jpeg_input/last_b_q[7]_i_6/O
+                         net (fo=28, routed)          0.887    10.346    core/decoder/u_jpeg_input/last_b_q[7]_i_6_n_0
+    SLICE_X42Y36         LUT6 (Prop_lut6_I2_O)        0.124    10.470 r  core/decoder/u_jpeg_input/last_b_q[7]_i_4/O
+                         net (fo=8, routed)           1.059    11.529    core/decoder/u_jpeg_input/decoder_strobe[2]
+    SLICE_X53Y26         LUT6 (Prop_lut6_I5_O)        0.124    11.653 r  core/decoder/u_jpeg_input/last_b_q[7]_i_1/O
+                         net (fo=22, routed)          0.927    12.580    core/decoder/u_jpeg_input/D[7]
+    SLICE_X54Y26         LUT5 (Prop_lut5_I2_O)        0.124    12.704 f  core/decoder/u_jpeg_input/img_width_q[15]_i_5/O
+                         net (fo=2, routed)           0.583    13.287    core/decoder/u_jpeg_input/img_width_q[15]_i_5_n_0
+    SLICE_X55Y26         LUT4 (Prop_lut4_I1_O)        0.124    13.411 r  core/decoder/u_jpeg_input/img_width_q[15]_i_3/O
+                         net (fo=8, routed)           0.381    13.792    core/decoder/u_jpeg_input/img_width_q[15]_i_3_n_0
+    SLICE_X57Y27         LUT2 (Prop_lut2_I0_O)        0.124    13.916 r  core/decoder/u_jpeg_input/img_width_q[15]_i_1/O
+                         net (fo=56, routed)          0.767    14.683    core/decoder/u_jpeg_input/img_width_q[15]_i_1_n_0
+    SLICE_X56Y31         FDRE                                         r  core/decoder/u_jpeg_input/img_cb_factor_q_reg[0]/R
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock/O
+                         net (fo=5420, routed)        1.657    15.076    core/decoder/u_jpeg_input/clk100
+    SLICE_X56Y31         FDRE                                         r  core/decoder/u_jpeg_input/img_cb_factor_q_reg[0]/C
+                         clock pessimism              0.197    15.273    
+                         clock uncertainty           -0.047    15.225    
+    SLICE_X56Y31         FDRE (Setup_fdre_C_R)       -0.524    14.701    core/decoder/u_jpeg_input/img_cb_factor_q_reg[0]
+  -------------------------------------------------------------------
+                         required time                         14.701    
+                         arrival time                         -14.683    
+  -------------------------------------------------------------------
+                         slack                                  0.018    
+
+Slack (MET) :             0.019ns  (required time - arrival time)
+  Source:                 endpoint/address_reg[24]/C
+                            (rising edge-triggered cell FDRE clocked by raw200  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Destination:            endpoint/ov_addr_reg[0]/CE
+                            (rising edge-triggered cell FDRE clocked by raw200  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Path Group:             raw200
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            5.000ns  (raw200 rise@5.000ns - raw200 rise@0.000ns)
+  Data Path Delay:        4.606ns  (logic 1.248ns (27.097%)  route 3.358ns (72.903%))
+  Logic Levels:           4  (LUT2=1 LUT6=3)
+  Clock Path Skew:        -0.126ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.922ns = ( 9.922 - 5.000 ) 
+    Source Clock Delay      (SCD):    5.228ns
+    Clock Pessimism Removal (CPR):    0.180ns
+  Clock Uncertainty:      0.045ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.056ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.939     1.491 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           2.012     3.503    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.096     3.599 r  spi_clock/O
+                         net (fo=596, routed)         1.628     5.228    endpoint/clk200
+    SLICE_X46Y87         FDRE                                         r  endpoint/address_reg[24]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X46Y87         FDRE (Prop_fdre_C_Q)         0.518     5.746 r  endpoint/address_reg[24]/Q
+                         net (fo=7, routed)           0.611     6.357    endpoint/p_1_in[0]
+    SLICE_X47Y86         LUT2 (Prop_lut2_I1_O)        0.150     6.507 f  endpoint/irq_flags[1]_i_10/O
+                         net (fo=2, routed)           0.606     7.114    endpoint/irq_flags[1]_i_10_n_0
+    SLICE_X45Y88         LUT6 (Prop_lut6_I5_O)        0.332     7.446 f  endpoint/ov_addr[17]_i_5/O
+                         net (fo=1, routed)           0.652     8.098    endpoint/ov_addr[17]_i_5_n_0
+    SLICE_X41Y88         LUT6 (Prop_lut6_I5_O)        0.124     8.222 r  endpoint/ov_addr[17]_i_2/O
+                         net (fo=2, routed)           0.507     8.729    endpoint/ov_addr[17]_i_2_n_0
+    SLICE_X41Y95         LUT6 (Prop_lut6_I0_O)        0.124     8.853 r  endpoint/ov_addr[17]_i_1/O
+                         net (fo=77, routed)          0.980     9.833    endpoint/ov_addr[17]_i_1_n_0
+    SLICE_X39Y109        FDRE                                         r  endpoint/ov_addr_reg[0]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw200 rise edge)     5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     6.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     8.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     8.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    10.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.711     6.410 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           1.918     8.328    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.091     8.419 r  spi_clock/O
+                         net (fo=596, routed)         1.503     9.922    endpoint/clk200
+    SLICE_X39Y109        FDRE                                         r  endpoint/ov_addr_reg[0]/C
+                         clock pessimism              0.180    10.102    
+                         clock uncertainty           -0.045    10.057    
+    SLICE_X39Y109        FDRE (Setup_fdre_C_CE)      -0.205     9.852    endpoint/ov_addr_reg[0]
+  -------------------------------------------------------------------
+                         required time                          9.852    
+                         arrival time                          -9.833    
+  -------------------------------------------------------------------
+                         slack                                  0.019    
+
+Slack (MET) :             0.019ns  (required time - arrival time)
+  Source:                 endpoint/address_reg[24]/C
+                            (rising edge-triggered cell FDRE clocked by raw200  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Destination:            endpoint/ov_addr_reg[17]/CE
+                            (rising edge-triggered cell FDRE clocked by raw200  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Path Group:             raw200
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            5.000ns  (raw200 rise@5.000ns - raw200 rise@0.000ns)
+  Data Path Delay:        4.606ns  (logic 1.248ns (27.097%)  route 3.358ns (72.903%))
+  Logic Levels:           4  (LUT2=1 LUT6=3)
+  Clock Path Skew:        -0.126ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.922ns = ( 9.922 - 5.000 ) 
+    Source Clock Delay      (SCD):    5.228ns
+    Clock Pessimism Removal (CPR):    0.180ns
+  Clock Uncertainty:      0.045ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.056ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.939     1.491 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           2.012     3.503    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.096     3.599 r  spi_clock/O
+                         net (fo=596, routed)         1.628     5.228    endpoint/clk200
+    SLICE_X46Y87         FDRE                                         r  endpoint/address_reg[24]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X46Y87         FDRE (Prop_fdre_C_Q)         0.518     5.746 r  endpoint/address_reg[24]/Q
+                         net (fo=7, routed)           0.611     6.357    endpoint/p_1_in[0]
+    SLICE_X47Y86         LUT2 (Prop_lut2_I1_O)        0.150     6.507 f  endpoint/irq_flags[1]_i_10/O
+                         net (fo=2, routed)           0.606     7.114    endpoint/irq_flags[1]_i_10_n_0
+    SLICE_X45Y88         LUT6 (Prop_lut6_I5_O)        0.332     7.446 f  endpoint/ov_addr[17]_i_5/O
+                         net (fo=1, routed)           0.652     8.098    endpoint/ov_addr[17]_i_5_n_0
+    SLICE_X41Y88         LUT6 (Prop_lut6_I5_O)        0.124     8.222 r  endpoint/ov_addr[17]_i_2/O
+                         net (fo=2, routed)           0.507     8.729    endpoint/ov_addr[17]_i_2_n_0
+    SLICE_X41Y95         LUT6 (Prop_lut6_I0_O)        0.124     8.853 r  endpoint/ov_addr[17]_i_1/O
+                         net (fo=77, routed)          0.980     9.833    endpoint/ov_addr[17]_i_1_n_0
+    SLICE_X39Y109        FDRE                                         r  endpoint/ov_addr_reg[17]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw200 rise edge)     5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     6.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     8.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     8.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    10.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.711     6.410 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           1.918     8.328    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.091     8.419 r  spi_clock/O
+                         net (fo=596, routed)         1.503     9.922    endpoint/clk200
+    SLICE_X39Y109        FDRE                                         r  endpoint/ov_addr_reg[17]/C
+                         clock pessimism              0.180    10.102    
+                         clock uncertainty           -0.045    10.057    
+    SLICE_X39Y109        FDRE (Setup_fdre_C_CE)      -0.205     9.852    endpoint/ov_addr_reg[17]
+  -------------------------------------------------------------------
+                         required time                          9.852    
+                         arrival time                          -9.833    
+  -------------------------------------------------------------------
+                         slack                                  0.019    
+
+Slack (MET) :             0.028ns  (required time - arrival time)
+  Source:                 endpoint/address_reg[24]/C
+                            (rising edge-triggered cell FDRE clocked by raw200  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Destination:            endpoint/ov_addr_reg[16]/CE
+                            (rising edge-triggered cell FDRE clocked by raw200  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Path Group:             raw200
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            5.000ns  (raw200 rise@5.000ns - raw200 rise@0.000ns)
+  Data Path Delay:        4.596ns  (logic 1.248ns (27.151%)  route 3.348ns (72.849%))
+  Logic Levels:           4  (LUT2=1 LUT6=3)
+  Clock Path Skew:        -0.126ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.922ns = ( 9.922 - 5.000 ) 
+    Source Clock Delay      (SCD):    5.228ns
+    Clock Pessimism Removal (CPR):    0.180ns
+  Clock Uncertainty:      0.045ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.056ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=2, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.939     1.491 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           2.012     3.503    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.096     3.599 r  spi_clock/O
+                         net (fo=596, routed)         1.628     5.228    endpoint/clk200
+    SLICE_X46Y87         FDRE                                         r  endpoint/address_reg[24]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X46Y87         FDRE (Prop_fdre_C_Q)         0.518     5.746 r  endpoint/address_reg[24]/Q
+                         net (fo=7, routed)           0.611     6.357    endpoint/p_1_in[0]
+    SLICE_X47Y86         LUT2 (Prop_lut2_I1_O)        0.150     6.507 f  endpoint/irq_flags[1]_i_10/O
+                         net (fo=2, routed)           0.606     7.114    endpoint/irq_flags[1]_i_10_n_0
+    SLICE_X45Y88         LUT6 (Prop_lut6_I5_O)        0.332     7.446 f  endpoint/ov_addr[17]_i_5/O
+                         net (fo=1, routed)           0.652     8.098    endpoint/ov_addr[17]_i_5_n_0
+    SLICE_X41Y88         LUT6 (Prop_lut6_I5_O)        0.124     8.222 r  endpoint/ov_addr[17]_i_2/O
+                         net (fo=2, routed)           0.507     8.729    endpoint/ov_addr[17]_i_2_n_0
+    SLICE_X41Y95         LUT6 (Prop_lut6_I0_O)        0.124     8.853 r  endpoint/ov_addr[17]_i_1/O
+                         net (fo=77, routed)          0.971     9.824    endpoint/ov_addr[17]_i_1_n_0
+    SLICE_X40Y109        FDRE                                         r  endpoint/ov_addr_reg[16]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw200 rise edge)     5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     6.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     8.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     8.419 r  base_clock/O
+                         net (fo=2, routed)           1.702    10.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.711     6.410 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           1.918     8.328    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.091     8.419 r  spi_clock/O
+                         net (fo=596, routed)         1.503     9.922    endpoint/clk200
+    SLICE_X40Y109        FDRE                                         r  endpoint/ov_addr_reg[16]/C
+                         clock pessimism              0.180    10.102    
+                         clock uncertainty           -0.045    10.057    
+    SLICE_X40Y109        FDRE (Setup_fdre_C_CE)      -0.205     9.852    endpoint/ov_addr_reg[16]
+  -------------------------------------------------------------------
+                         required time                          9.852    
+                         arrival time                          -9.824    
+  -------------------------------------------------------------------
+                         slack                                  0.028    
+
+
+
+

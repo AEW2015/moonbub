@@ -1,0 +1,207 @@
+Use this prompt:
+
+```text
+Implement a Wi-Fi game-streaming client for Game Bub using its ESP32-S3 and FPGA. The host is Sunshine; the client should reuse Moonlight functionality where practical. “Moonshine” is the working project name.
+
+Inspect the actual repositories and existing modifications before choosing implementation details. Work through implementation and meaningful tests, not just a proposed architecture.
+
+PROJECT LOCATIONS
+
+- Game Bub firmware/gateware: /home/lori/gamebub
+- Example core and framework: /home/lori/gamebub-core-example
+- Existing development tools: /home/lori/gamebub-tools
+
+Read applicable AGENTS.md files and the existing build documentation. There are existing local modifications, including SK-B1/controller integration and USB tooling. Preserve those changes and working firmware. Use isolated branches/worktrees where appropriate.
+
+Use multiple agents with distinct ownership:
+1. ESP32 firmware, GUI, networking, and QSPI transport.
+2. FPGA streaming core, decoder, SDRAM, and display integration.
+3. PC sender/Sunshine integration and codec compatibility.
+4. Integration review, tests, and documentation.
+
+Use Luna agents for straightforward documentation, inventory, and bounded checks. Assign one coordinator ownership of hardware access and programming so agents cannot compete for the board.
+
+HARDWARE AND PRIMARY TARGET
+
+Assume the production horizontal Game Bub Rev4, but verify the actual board configuration:
+
+- ESP32-S3 with 2.4 GHz Wi-Fi.
+- AMD Artix-7 XC7A100T.
+- 64 MiB FPGA-connected SDRAM.
+- 512 KiB FPGA-connected SRAM.
+- Native 720×480, 24-bit LCD; aspect ratio 3:2.
+- Existing MCU-to-FPGA quad SPI interface.
+- Current firmware offers data clocks up to 40 MHz: theoretical 20 MB/s before overhead.
+- Do not assume the 80 MHz FPGA-programming clock qualifies 80 MHz quad data transfers.
+- FPGA SDRAM is not directly usable as ordinary ESP32 PSRAM. Verify the MCU’s actual memory configuration.
+
+Target native 720×480 full-color streaming at 30 fps first. Treat 60 fps as a measured stretch goal, not a promise.
+
+Preserve 16:9 game proportions:
+- PC may render at 1280×720.
+- Downscale and letterbox into a 720×480 transmitted canvas.
+- Visible game content is approximately 720×405, with 37/38 black rows above/below.
+- Avoid stretching or cropping by default.
+- Keep native 1280×720 dock output as a separate future milestone.
+
+ARCHITECTURE
+
+PC capture/encode
+    → Wi-Fi
+    → ESP32 receive/reassemble
+    → DMA-backed QSPI transfers
+    → FPGA decode
+    → SDRAM framebuffer
+    → existing LCD/dock display path
+
+Keep video decoding off the ESP32 for the primary accelerated design. The ESP32 handles GUI, connection management, input, network transport, and forwarding compressed data.
+
+CODEC DECISION
+
+Evaluate these paths explicitly:
+
+A. Baseline JPEG/MJPEG decoded in FPGA:
+- Preferred initial acceleration candidate because an open decoder exists.
+- Stock Sunshine/Moonlight do not negotiate JPEG video.
+- First prove the hardware path with a standalone PC test sender.
+- Then integrate an explicitly negotiated extension into a Sunshine fork and the custom client.
+- Never label JPEG data as H.264 or imply compatibility with unmodified clients.
+- Constrain the encoder to the chosen decoder’s supported JPEG features.
+
+B. H.264 decoded in FPGA:
+- Better wireless compression and closer to the existing Moonlight video path.
+- Requires a decoder with suitable license, profile support, resource fit, memory interface, and timing.
+- Do not assume Baseline-only hardware accepts Sunshine’s normal High-profile stream.
+- Match the actual profile, entropy coding, reference-frame, slice, and B-frame capabilities.
+- Establish fit before committing to a large decoder integration.
+
+Start with an evidence-based comparison and select the least risky path to a working color prototype. Do not spend the entire task designing a new codec.
+
+Useful references:
+- https://github.com/ultraembedded/core_jpeg
+- https://github.com/ultraembedded/FPGAmp
+- https://github.com/moonlight-stream/moonlight-common-c
+
+ESP32 FIRMWARE AND GUI
+
+Extend Game Bub’s existing Rust/ESP-IDF firmware and Slint GUI rather than replacing its entire interface.
+
+Add a Streaming screen with:
+- Saved host address and connection status.
+- Discovery/manual host entry.
+- Pairing workflow where supported.
+- Available host applications.
+- Connect, start, disconnect, and reconnect controls.
+- Codec, bitrate, and FPS settings appropriate to implemented capabilities.
+- Basic diagnostics: received FPS, displayed FPS, bitrate, drops, queue depth, and errors.
+- Clear indication when an experimental mode needs the matching host extension.
+
+For the initial standalone sender, provide a clearly identified test-source connection mode without pretending Sunshine pairing is implemented.
+
+Reuse or port the necessary Moonlight common functionality; do not attempt to run the desktop Qt client directly on ESP32. Audit its OS and cryptography dependencies before adopting code.
+
+Preserve existing buttons and controller integrations. Give input handling priority so video transfers cannot starve controls. Release remote buttons/keys on disconnect.
+
+Use bounded queues and DMA-sized chunks. Avoid requiring a complete decoded framebuffer in ESP32 memory. Verify concurrent Wi-Fi reception and QSPI forwarding.
+
+Video-only operation is acceptable for the first milestone. Disable unnecessary audio transmission rather than merely muting playback. Document audio as a subsequent task.
+
+FPGA DESIGN REQUIREMENTS
+
+Build a dedicated streaming core compatible with the Game Bub framework. Preserve existing SPI framing and framework-reserved addresses.
+
+Implement:
+
+1. Compressed-video ingress
+   - Reuse the existing quad SPI receiver where practical.
+   - Add a documented core-owned register/FIFO interface.
+   - Define capabilities, protocol version, codec, frame ID, dimensions,
+     payload length, chunk offsets, and integrity/error status.
+   - Provide credits or free-space reporting for backpressure.
+   - Handle overflow, incomplete frames, disconnects, and unsupported formats.
+   - Use explicit clock-domain crossings.
+
+2. Video decoder
+   - Integrate and verify the selected decoder.
+   - For JPEG, document supported subsampling, Huffman tables, restart-marker
+     behavior, and other restrictions.
+   - Account for block-ordered decoder output when addressing the framebuffer.
+   - Detect malformed streams and recover without locking the display.
+
+3. SDRAM framebuffer subsystem
+   - Use external SDRAM for full-color frames.
+   - Implement burst transfers, arbitration, and sufficient line buffering.
+   - Budget simultaneous decoder writes and display reads.
+   - Implement double buffering; consider triple buffering only if justified.
+   - Present only completed frames at a display frame boundary.
+   - Never overwrite the buffer currently being scanned out.
+   - Define underrun and stale-frame behavior.
+   - RGB565 storage with expansion for the LCD is acceptable initially.
+
+4. Display integration
+   - Reuse existing panel initialization and verified timing.
+   - Keep LCD refresh independent of incoming video FPS.
+   - Repeat the last complete frame when no new frame is available.
+   - Preserve aspect ratio and letterboxing.
+   - Do not change the stock dock resolution during the first milestone.
+
+5. Diagnostics
+   - Counters for bytes, complete frames, decoded frames, presented frames,
+     dropped frames, decoder faults, FIFO overflows, and scanout underruns.
+   - Frame IDs and timestamps sufficient to measure queueing and frame age.
+   - A deterministic test-pattern/source mode independent of networking.
+
+HOST/SUNSHINE WORK
+
+Provide a reproducible PC sender for development:
+- Capture desktop or read a representative game-video clip.
+- Scale/letterbox to 720×480.
+- Encode only features supported by the FPGA decoder.
+- Pace packets and adapt bitrate/quality to the measured link budget.
+- Include frame identifiers and bounded buffering.
+- Do not accumulate old frames to preserve nominal FPS.
+
+After the standalone path works, integrate the selected codec into a separate Sunshine build with capability negotiation. Preserve normal behavior for existing clients. Coordinate any Windows installation/service changes separately from source development.
+
+TESTS AND PERFORMANCE
+
+Clearly separate calculated ceilings, external reference benchmarks, simulation results, and measurements on this Game Bub.
+
+Measure:
+- Sustained Wi-Fi reception.
+- Sustained QSPI writes into the actual FPGA sink.
+- Concurrent Wi-Fi → QSPI throughput and latency.
+- Decoder throughput and resource usage.
+- SDRAM bandwidth under simultaneous decode and scanout.
+- End-to-end received/decoded/displayed FPS.
+- Frame age, queue depth, drops, and input responsiveness.
+
+Use real game footage with camera motion and detailed scenes, not only static menus.
+
+Verification stages:
+1. Build firmware and FPGA components reproducibly.
+2. Simulate ingress, decoder integration, CDC, framebuffer ownership,
+   backpressure, malformed/truncated frames, and recovery.
+3. Establish post-route timing and resource fit without relaxed constraints.
+4. Display a local pattern.
+5. Decode known frames and compare output against a software reference.
+6. Stream a local clip through Wi-Fi and QSPI.
+7. Integrate the GUI and host connection.
+8. Run sustained gameplay tests at 720×480/30.
+9. Attempt 60 fps only after the 30 fps baseline is stable.
+
+Keep the existing working images and a documented rollback procedure. Hardware actions must be serialized through the coordinator. Report visual results as unconfirmed unless actually observed.
+
+DELIVERABLES
+
+- Working ESP32 firmware changes with the Streaming GUI.
+- FPGA streaming core and documented register/protocol interface.
+- Reproducible PC test sender and any Sunshine/Moonlight modifications.
+- Build commands, dependency versions, and source revision records.
+- Tests and measured performance results.
+- A concise README covering setup, use, recovery, limitations, and next steps.
+
+At completion, state the highest sustained rate actually demonstrated, its
+resolution/codec/quality, test duration, latency, and observed failures.
+Do not claim 30 or 60 fps merely because the bandwidth arithmetic permits it.
+```

@@ -1,0 +1,174 @@
+diff --git a/src_v/jpeg_output.v b/src_v/jpeg_output.v
+index b83e8a2..48a7326 100644
+--- a/src_v/jpeg_output.v
++++ b/src_v/jpeg_output.v
+@@ -71,7 +71,9 @@ localparam JPEG_YCBCR_420   = 2'd2;
+ localparam JPEG_UNSUPPORTED = 2'd3;
+ 
+ reg valid_r;
+-wire output_space_w = (!outport_valid_o || outport_accept_i);
++// Moonshine local integration patch: elastic color pipeline. Original
++// RAM->constant multiply->three adds->clamp path failed100MHz timing.
++wire output_space_w;
+ 
+ //-----------------------------------------------------------------
+ // FIFO: Y
+@@ -233,35 +235,7 @@ end
+ else if (valid_r && output_space_w && idx_q == 6'd63)
+     active_q <= 1'b0;
+ 
+-reg signed [31:0] r_conv_r;
+-reg signed [31:0] g_conv_r;
+-reg signed [31:0] b_conv_r;
+-
+-wire signed [31:0] cr_1_402_w = (cr_value_w * 5743) >>> 12; // cr_value_w * 1.402
+-wire signed [31:0] cr_0_714_w = (cr_value_w * 2925) >>> 12; // cr_value_w * 0.71414
+-wire signed [31:0] cb_0_344_w = (cb_value_w * 1410) >>> 12; // cb_value_w * 0.34414
+-wire signed [31:0] cb_1_772_w = (cb_value_w * 7258) >>> 12; // cb_value_w * 1.772
+-
+-always @ *
+-begin
+-    valid_r  = active_q;
+-    r_conv_r = 32'b0;
+-    g_conv_r = 32'b0;
+-    b_conv_r = 32'b0;
+-
+-    if (img_mode_i == JPEG_MONOCHROME)
+-    begin
+-        r_conv_r = 128 + y_value_w;
+-        g_conv_r = 128 + y_value_w;
+-        b_conv_r = 128 + y_value_w;
+-    end
+-    else// if (img_mode_i == JPEG_YCBCR_444)
+-    begin
+-        r_conv_r = 128 + y_value_w + cr_1_402_w;
+-        g_conv_r = 128 + y_value_w - cb_0_344_w - cr_0_714_w;
+-        b_conv_r = 128 + y_value_w + cb_1_772_w;
+-    end
+-end
++always @ * valid_r = active_q;
+ 
+ assign y_pop_w  = output_space_w && active_q;
+ assign cb_pop_w = output_space_w && active_q;
+@@ -271,58 +245,74 @@ assign id_pop_w = output_space_w && (idx_q == 6'd63);
+ //-----------------------------------------------------------------
+ // Outputs
+ //-----------------------------------------------------------------
+-reg        valid_q;
+-reg [15:0] pixel_x_q;
+-reg [15:0] pixel_y_q;
+-reg [7:0]  pixel_r_q;
+-reg [7:0]  pixel_g_q;
+-reg [7:0]  pixel_b_q;
+-
+-always @ (posedge clk_i )
+-if (rst_i)
+-    valid_q <= 1'b0;
+-else if (output_space_w)
+-    valid_q <= valid_r && (id_value_w[31:30] != BLOCK_EOF);
+-
+ wire [31:0] x_start_w = {13'b0, id_value_w[15:0],3'b0};
+ wire [31:0] y_start_w = {15'b0, id_value_w[29:16],3'b0};
+-
+-always @ (posedge clk_i )
+-if (rst_i)
+-begin
+-    pixel_x_q <= 16'b0;
+-    pixel_y_q <= 16'b0;
+-end
+-else if (output_space_w)
+-begin
+-    /* verilator lint_off WIDTH */
+-    pixel_x_q <= x_start_w + (idx_q % 8);
+-    pixel_y_q <= y_start_w + (idx_q / 8);
+-    /* verilator lint_on WIDTH */
+-end
+-
+-always @ (posedge clk_i )
+-if (rst_i)
+-begin
+-    pixel_r_q <= 8'b0;
+-    pixel_g_q <= 8'b0;
+-    pixel_b_q <= 8'b0;
++reg [4:0] pipe_valid;
++wire can4 = !pipe_valid[4] || outport_accept_i;
++wire can3 = !pipe_valid[3] || can4;
++wire can2 = !pipe_valid[2] || can3;
++wire can1 = !pipe_valid[1] || can2;
++wire can0 = !pipe_valid[0] || can1;
++assign output_space_w = can0;
++reg [15:0] x0,y0,x1,y1,x2,y2,x3,y3,x4,y4;
++reg signed [31:0] sy0,scb0,scr0;
++reg mono0;
++reg signed [31:0] ybias1,cr5743_1,cr2925_1,cb1410_1,cb7258_1;
++reg signed [31:0] r2,g2,b2,crgreen2;
++reg signed [31:0] r3,g3,b3;
++reg [7:0] r4,g4,b4;
++function [7:0] original_clip;
++ input signed [31:0] value;
++ begin original_clip=(|value[31:8]) ? (value[31:24]^8'hff):value[7:0];end
++endfunction
++always @(posedge clk_i)begin
++ if(rst_i || img_start_i)pipe_valid<=0;
++ else begin
++  if(can4)begin
++   pipe_valid[4]<=pipe_valid[3];
++   if(pipe_valid[3])begin x4<=x3;y4<=y3;r4<=original_clip(r3);g4<=original_clip(g3);b4<=original_clip(b3);end
++  end
++  if(can3)begin
++   pipe_valid[3]<=pipe_valid[2];
++   if(pipe_valid[2])begin x3<=x2;y3<=y2;r3<=r2;g3<=g2-crgreen2;b3<=b2;end
++  end
++  if(can2)begin
++   pipe_valid[2]<=pipe_valid[1];
++   if(pipe_valid[1])begin
++    x2<=x1;y2<=y1;r2<=ybias1+(cr5743_1>>>12);
++    g2<=ybias1-(cb1410_1>>>12);crgreen2<=cr2925_1>>>12;
++    b2<=ybias1+(cb7258_1>>>12);
++   end
++  end
++  if(can1)begin
++   pipe_valid[1]<=pipe_valid[0];
++   if(pipe_valid[0])begin
++    x1<=x0;y1<=y0;ybias1<=32'sd128+sy0;
++    //32-bit products and arithmetic shifts exactly preserve the original
++    // expression widths/rounding. Only register placement changes.
++    cr5743_1<=mono0 ? 32'sd0:scr0*32'sd5743;
++    cr2925_1<=mono0 ? 32'sd0:scr0*32'sd2925;
++    cb1410_1<=mono0 ? 32'sd0:scb0*32'sd1410;
++    cb7258_1<=mono0 ? 32'sd0:scb0*32'sd7258;
++   end
++  end
++  if(can0)begin
++   pipe_valid[0]<=valid_r && id_value_w[31:30]!=BLOCK_EOF;
++   if(valid_r)begin
++    x0<=x_start_w+(idx_q%8);y0<=y_start_w+(idx_q/8);
++    sy0<=y_value_w;scb0<=cb_value_w;scr0<=cr_value_w;mono0<=img_mode_i==JPEG_MONOCHROME;
++   end
++  end
++ end
+ end
+-else if (output_space_w)
+-begin
+-    pixel_r_q <= (|r_conv_r[31:8]) ? (r_conv_r[31:24] ^ 8'hff) : r_conv_r[7:0];
+-    pixel_g_q <= (|g_conv_r[31:8]) ? (g_conv_r[31:24] ^ 8'hff) : g_conv_r[7:0];
+-    pixel_b_q <= (|b_conv_r[31:8]) ? (b_conv_r[31:24] ^ 8'hff) : b_conv_r[7:0];
+-end
+-
+-assign outport_valid_o   = valid_q;
+-assign outport_pixel_x_o = pixel_x_q;
+-assign outport_pixel_y_o = pixel_y_q;
++assign outport_valid_o   = pipe_valid[4];
++assign outport_pixel_x_o = x4;
++assign outport_pixel_y_o = y4;
+ assign outport_width_o   = img_width_i;
+ assign outport_height_o  = img_height_i;
+-assign outport_pixel_r_o = pixel_r_q;
+-assign outport_pixel_g_o = pixel_g_q;
+-assign outport_pixel_b_o = pixel_b_q;
++assign outport_pixel_r_o = r4;
++assign outport_pixel_g_o = g4;
++assign outport_pixel_b_o = b4;
+ 
+ //-----------------------------------------------------------------
+ // Idle

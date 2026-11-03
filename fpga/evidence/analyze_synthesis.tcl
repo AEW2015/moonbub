@@ -1,0 +1,5 @@
+set root [file normalize [file join [file dirname [info script]] ..]]
+open_checkpoint [file join $root build-final synthesized.dcp]
+source [file join $root scripts timing-reviewed.tcl]
+report_timing -delay_type max -max_paths 30 -file [file join $root evidence synthesis_setup_paths.rpt]
+report_high_fanout_nets -fanout_greater_than 500 -file [file join $root evidence synthesis_high_fanout.rpt]
