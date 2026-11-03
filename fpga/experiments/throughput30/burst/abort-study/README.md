@@ -1,0 +1,22 @@
+# Experimental abort recovery at the JPEG-to-memory boundary
+
+This is isolated behavioral research, **not production RTL or a hardware fix**. An explicit register abort is wired to the tile buffer and to the experimental collector in the testbench. The host then waits for memory idle before starting another frame. The original front buffer must stay unchanged; after draining, another complete frame must decode and be published correctly.
+
+A 64 × 64 JPEG fixture drives the actual experimental JPEG core, tile transpose, BL8 burst controller, functional SDRAM model and LCD logic. The expected image is the first valid frame from the same decoder, rather than an independent JPEG reference. This is a directed corruption/recovery test, not an image-quality test.
+
+Verilator 5.020 results:
+
+| Case | Configuration | Result |
+|---|---|---|
+| Abort during partial tile | Original tile abort tied low | **Expected failure:** subsequent decode reports `RECOVERY_FAULT` |
+| Abort during partial tile | Tile abort connected | Pass; old front preserved and frame 3 recovered |
+| Abort with 1–2 collector words staged | Collector flush disabled | **Expected failure:** partial collector cannot drain (`ABORT_STAGING_NOT_DRAINED`) |
+| Abort with 1–2 collector words staged | Candidate collector flush | Pass; old front preserved and frame 3 recovered |
+| Abort with a complete BL8 staged while controller is not ready | Candidate collector flush | Pass under the test's selected cycle |
+| Abort during an already-issued BL8 SDRAM write | Candidate collector flush | Pass; issued write drains, old front preserved and frame 3 recovered |
+
+Run `run-verilator.sh` with Verilator and C++ build tools on PATH. Set `BUILD_DIR` to choose a writable output directory, and `JPEG_FILE` to override the fixture. The script verifies that each negative control fails with its **specific expected error**, and the candidate tests exit successfully. Tests are bounded by timeout and core dumps are disabled. Logs are retained in the build directory.
+
+The candidate drops unissued partial or full collector data and blocks a new write on an abort cycle. Already-issued writes and active line reads continue. The tile buffer must also receive the abort. This is only safe under the test's deliberate idle-before-reuse assumption; it is not a verified automatic cleanup protocol.
+
+Not covered: lost COMMIT response, source/QSPI ordering and stale commands, concurrent automatic decoder/protocol errors, reset and clock-domain races, repeated aborts, all possible timing interleavings, a full-resolution random regression, independent JPEG reconstruction, or physical SDRAM/FPGA timing. In particular, software quarantine alone cannot undo a frame already committed for presentation. A production design needs an acknowledged abort/quiesce and a separately verified frame ownership protocol before any integration.
