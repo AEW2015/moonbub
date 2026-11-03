@@ -39,7 +39,9 @@ measured.
   deliberately withheld guest ACK means guest recovery after that NACK is
   untested. A [separate continuation](../fpga/experiments/throughput30/burst/dual-compressed-bank-study/live-qspi-fpga-recovery/README.md)
   uses a synthetic QSPI sender to check FPGA-model recovery with a later clean
-  frame; it does not test guest or end-to-end recovery.
+  frame. A further [candidate guest-harness test](../fpga/experiments/throughput30/burst/dual-compressed-bank-study/live-guest-nack/README.md)
+  handles the NACK and sends a later frame using the unchanged receiver. Its
+  test-only NACK policy is not production firmware or a real-time measurement.
 - Narrow JPEG X/Y candidates passed separately scoped compositional stage
   proofs and 90-frame combined behavioral checks. The complete-IDCT inference
   requires the [documented initial-state/reset conditions](../fpga/experiments/throughput30/burst/idct-dsp-study/idct-composition-audit/README.md).
