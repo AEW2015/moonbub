@@ -81,11 +81,35 @@ assign a drop cause. Ingress counts do not imply display. Only observed
 `presented` events contribute to presentation coverage or capture-to-present
 latency. Every output group retains its `evidence_kind` label.
 
-The Sunshine sender's current JSONL logs use `frame_id`, `capture_us`, and
-elapsed timing fields but do not necessarily provide this full schema, a stable
-session identifier, monotonic host capture timestamps, `frame_seq`, or a true
-presented event. Convert them through a reviewed adapter before using this
-tool; do not relabel wall time or ingress feedback as display time.
+The standalone Sunshine study sender can write normalized host events directly
+with `--frame-telemetry PATH` (on the matching Sunshine study branch). Its
+capture event uses `timestamp_ns` for capture start and also retains
+`capture_end_ns` and `capture_wall_us` as separate fields. Capture start occurs
+before source acquisition; skipped clip slots can add discarded-frame decoding
+after that timestamp. Capture end follows selected-frame acquisition/decoding
+and canvas fitting/scaling. Consequently capture-to-send includes source/canvas
+preparation, encoding, queueing and local packet submission, not camera-only
+capture time. Its `send` event marks local completion of packet submission.
+Every record carries a run
+`session_id` (fresh UUID by default; `--telemetry-session-id` coordinates it
+with receiver instrumentation), capture-order `frame_seq`, and actual wire
+`frame_id`. Optional
+sender telemetry is bounded and can drop records; inspect its logging summary
+before analysis. This host log has no ingress, decode or presented event. Do not
+use send completion as receiver ingress or presentation, and do not relabel wall
+time as monotonic time. The sender labels evidence `simulated` by default; use
+`hardware` only for an actual identified hardware run.
+
+Both `session_id` and `frame_seq` are host-only and are not sent in MSV1. For
+receiver correlation, coordinate the session ID with instrumentation out of
+band, then map observed 32-bit wire IDs to host capture sequences. Preserve the
+session-local mapping across frame-ID wrap; raw IDs repeat after wrap and cannot
+identify a unique capture on their own.
+
+For sender capture/send-only analysis, pass the telemetry file directly to
+`correlate.py`. If combining it with receiver events, normalize receiver events
+to the same session ID, capture sequence and actual wire frame ID. Do not use a
+different run's session ID or synthesize absent stages.
 
 ## Reproduce the synthetic example
 
