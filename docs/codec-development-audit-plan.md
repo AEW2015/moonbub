@@ -12,7 +12,13 @@ and [Sunshine](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102
 
 ### Python prototype progress, 2026-11-03
 
-Current follow-up: [iteration6 key preparation, measured services and arithmetic](custom-codec-prototype-v6-2026-11-03.md)
+Current follow-up: [iteration7 application-priority coding](custom-codec-prototype-v7-2026-11-03.md)
+adds a faster compatible decoder, a real macroblock ROI format, and a negative
+dirty-tile comparison. The [application-specific codec plan](gamebub-application-specific-codec-plan.md)
+selects temporal residuals plus a quality map as the next combined prototype,
+with byte-cap, paid-search, reference-state and physical-memory gates retained.
+
+Previous follow-up: [iteration6 key preparation, measured services and arithmetic](custom-codec-prototype-v6-2026-11-03.md)
 reduces key preparation to27.67 ms mean in a paired token-entropy experiment,
 retains over-budget tails, and charges actual selected-packet Python service.
 The short model still misses30 diagnostic IDs/s; decoder, refresh, memory and

@@ -1,8 +1,13 @@
 # Moonshine / MoonBub prototype
 
-This `study/30fps-sim-20261102` branch contains experimental 30 fps work in
-addition to the baseline described below. Start with the [developer handoff](docs/dev-handoff-2026-11-03.md)
-and the matching [Sunshine study branch](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102).
+The latest application-specific codec handoff is
+[`handoff/gamebub-app-codec-v7-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v7-20261103).
+Start with the [application-specific plan](docs/gamebub-application-specific-codec-plan.md),
+[iteration7 results](docs/custom-codec-prototype-v7-2026-11-03.md), and
+[developer handoff](docs/dev-handoff-2026-11-03.md). The matching
+[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v7-20261103)
+contains the host laboratory and research references. The v6 handoff remains
+an unchanged prior snapshot.
 The baseline build and timing results below do not qualify the experimental
 dual-bank, SDRAM staging, gateway, or host candidates for hardware use.
 

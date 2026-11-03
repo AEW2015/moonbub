@@ -11,7 +11,14 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Start with [iteration6](custom-codec-prototype-v6-2026-11-03.md): faster key preparation
+Start with [iteration7](custom-codec-prototype-v7-2026-11-03.md) and the
+[application-specific codec plan](gamebub-application-specific-codec-plan.md).
+Python word decoding is faster and compatible; independent RG01 quality maps
+improve declared-region fidelity at background expense. RG01/DT01 require
+new decoders, and the proposed temporal-ROI combination is not implemented.
+The independent dirty-tile format is not selected as the gameplay base.
+
+The earlier [iteration6](custom-codec-prototype-v6-2026-11-03.md): faster key preparation
 and token entropy, actual per-selected-call Python service replay, and exact
 transform-width bounds. Keys reach27.67 ms mean but still have deadline misses;
 short modeled cadence remains28–29 IDs/s with assumed8 ms decode and21–24
