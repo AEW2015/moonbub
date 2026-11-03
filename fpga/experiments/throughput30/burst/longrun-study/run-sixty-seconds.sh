@@ -24,7 +24,7 @@ sha256sum "$here/tb_jpeg720_sixty_seconds.sv" "$burst/marker-audit/jpeg_input_ca
 files=()
 for f in "$fpga"/vendor/core_jpeg/src_v/*.v; do [[ "$f" == */jpeg_input.v ]] || files+=("$f"); done
 sha256sum "${files[@]}" "$root/host/evidence/jpeg-c-model-fixed-color-source.cpp" "$root/host/evidence/jpeg-c-model-fixed-color-main.cpp" "$fpga"/vendor/core_jpeg/c_model/*.h >> "$build/source-sha256.txt"
-"${PYTHON:-python3}" -c "import PIL; print("Pillow " + PIL.__version__)" | tee -a "$build/tool-version.txt"
+"${PYTHON:-python3}" -c 'import PIL; print("Pillow " + PIL.__version__)'  | tee -a "$build/tool-version.txt"
 verilator --binary --timing --assert -Wno-fatal -DSIMULATION --top-module tb_jpeg720_sixty_seconds --Mdir "$build/obj" \
  "$here/tb_jpeg720_sixty_seconds.sv" "$burst/marker-audit/jpeg_input_candidate.v" \
  "$burst/moonshine_memory_burst.sv" "$burst/moonshine_sdram_burst.sv" "$burst/sdram_model_burst_verilator.sv" \
