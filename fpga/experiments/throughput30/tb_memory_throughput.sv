@@ -2,7 +2,7 @@
 // Actual display line fetch + memory arbiter/controller; decoder/QSPI omitted.
 module tb_memory_throughput;
  reg clk=0,pclk=0;always #5 clk=~clk;always #17.029 pclk=~pclk;
- wire read_clk;assign #2.75 read_clk=~clk;
+ reg read_clk;always @(clk) read_clk <= #2.75 ~clk;
  reg reset=1,valid=0;reg[23:0] address=0;reg[15:0] data=0;
  integer mode;wire tile_in_ready,tile_out_valid,tile_first,tile_last,tile_fault;
  wire[23:0] tile_address;wire[15:0] tile_data;wire pixel_ready,mem_idle;
@@ -28,38 +28,48 @@ module tb_memory_throughput;
  sdram_model model(.clk(sclk),.a(a),.ba(ba),.cke(cke),.cs(cs),.ras(ras),.cas(cas),.we(we),.ldqm(ldqm),.udqm(udqm),.dq(dq));
  reg[23:0] trace_addr[0:345599];reg[15:0]trace_data[0:345599];
  integer fd,n,i,idx,value,x,y,cycles=0,begin_cycle,writes_before,underruns_before,frames_seen=0,frames_before;
+ integer pixel_count=345600, warmup_cycles=2000000, phase=0;
  reg[2047:0] trace_name;
  always @(posedge clk)begin cycles<=cycles+1;if(frame_boundary)frames_seen<=frames_seen+1;end
  initial begin
+  if ($value$plusargs("PIXELS=%d",pixel_count)) begin end
+  if ($value$plusargs("WARMUP_CYCLES=%d",warmup_cycles)) begin end
+  if(pixel_count<64 || pixel_count>345600 || pixel_count%64!=0 || warmup_cycles<0)
+   $fatal(1,"invalid pixel_count/warmup %0d/%0d",pixel_count,warmup_cycles);
+  $display("MEMORY_PROGRESS begin pixels=%0d warmup_cycles=%0d",pixel_count,warmup_cycles);$fflush();
   // Defined front-buffer contents; this test observes timing, not image quality.
   for(i=0;i<384000;i=i+1)model.mem[i]=0;
   if(!$value$plusargs("TRACE_FILE=%s",trace_name))trace_name="/ross-work/tile-study/decoded-rgb565.txt";
   fd=$fopen(trace_name,"r");if(!fd)$fatal(1,"missing trace");
-  for(i=0;i<345600;i=i+1)begin
+  for(i=0;i<pixel_count;i=i+1)begin
    n=$fscanf(fd,"%d %h\n",idx,value);if(n!=2)$fatal(1,"truncated trace");
    x=idx%720;y=idx/720;trace_addr[i]=24'h080000+(x+40)*480+y;trace_data[i]=value;
   end
-  $fclose(fd);
+  $fclose(fd);$display("MEMORY_PROGRESS trace_loaded time=%0t",$time);$fflush();
   for(mode=0;mode<2;mode=mode+1)begin
    reset=1;valid=0;
    // Poison every back-buffer location so stale pixels cannot pass readback.
-   for(i=0;i<345600;i=i+1)model.mem[trace_addr[i]]=~trace_data[i];
+   for(i=0;i<pixel_count;i=i+1)model.mem[trace_addr[i]]=~trace_data[i];
+   phase=1;$display("MEMORY_PROGRESS mode=%0d reset time=%0t",mode,$time);$fflush();
    repeat(5)@(negedge clk);reset=0;while(!mem_idle)@(negedge clk);
+   phase=2;$display("MEMORY_PROGRESS mode=%0d idle time=%0t",mode,$time);$fflush();
    // Warm LCD and line buffers for more than a display refresh before timing.
-   repeat(2000000)@(negedge clk);
+   repeat(warmup_cycles)@(negedge clk);
+   phase=3;$display("MEMORY_PROGRESS mode=%0d warm time=%0t",mode,$time);$fflush();
    begin_cycle=cycles;writes_before=model.writes;underruns_before=underruns;frames_before=frames_seen;
-   for(i=0;i<345600;i=i+1)begin
+   for(i=0;i<pixel_count;i=i+1)begin
+    if(i!=0 && i%65536==0)begin $display("MEMORY_PROGRESS mode=%0d accepted=%0d time=%0t",mode,i,$time);$fflush();end
     @(negedge clk);valid=1;address=trace_addr[i];data=trace_data[i];
     while(!(mode==1 ? tile_in_ready : pixel_ready))@(negedge clk);
    end
-   @(negedge clk);valid=0;while(!mem_idle || (mode==1 && (tile_out_valid || !tile_in_ready)))@(negedge clk);
+   phase=4;@(negedge clk);valid=0;while(!mem_idle || (mode==1 && (tile_out_valid || !tile_in_ready)))@(negedge clk);
    if(mode==1 && tile_fault)$fatal(1,"coalescer fault");
-   if(model.writes-writes_before!=345600)$fatal(1,"write conservation failure");
-   for(i=0;i<345600;i=i+1)
+   if(model.writes-writes_before!=pixel_count)$fatal(1,"write conservation failure");
+   for(i=0;i<pixel_count;i=i+1)
     if(model.mem[trace_addr[i]]!==trace_data[i])$fatal(1,"pixel mismatch mode=%0d index=%0d",mode,i);
    $display("MEMORY_RESULT mode=%0d cycles=%0d writes=%0d scanout_underruns=%0d display_boundaries=%0d",mode,cycles-begin_cycle,model.writes-writes_before,underruns-underruns_before,frames_seen-frames_before);
   end
   $display("TEST_PASS_MEMORY_TRACE");$finish;
  end
- initial begin #500000000;$fatal(1,"memory throughput watchdog");end
+ initial begin #500000000;$fatal(1,"memory throughput watchdog phase=%0d mode=%0d index=%0d",phase,mode,i);end
 endmodule

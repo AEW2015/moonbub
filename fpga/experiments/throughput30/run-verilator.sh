@@ -11,5 +11,5 @@ verilator --binary --timing --assert -Wno-fatal --top-module tb_moonbub_tile_tra
 timeout 120s "$build_dir/tile/Vtb_moonbub_tile_transpose"
 verilator --binary --timing --assert -Wno-fatal --top-module tb_tile_full_trace --Mdir "$build_dir/full" "$here/tb_tile_full_trace.sv" "$here/moonbub_tile_transpose.sv"
 timeout 180s "$build_dir/full/Vtb_tile_full_trace" "+TRACE_FILE=$fpga/sim/decoded-rgb565.txt"
-verilator --binary --timing --assert -Wno-fatal -DSIMULATION --top-module tb_memory_throughput --Mdir "$build_dir/memory" "$here/tb_memory_throughput.sv" "$here/moonbub_tile_transpose.sv" "$fpga/rtl/moonshine_memory.sv" "$fpga/rtl/moonshine_sdram.sv" "$fpga/rtl/moonshine_lcd.sv" "$fpga/sim/sdram_model.sv"
+verilator --binary --timing --assert -Wno-fatal -DSIMULATION --top-module tb_memory_throughput --Mdir "$build_dir/memory" "$here/tb_memory_throughput.sv" "$here/moonbub_tile_transpose.sv" "$fpga/rtl/moonshine_memory.sv" "$fpga/rtl/moonshine_sdram.sv" "$fpga/rtl/moonshine_lcd.sv" "$here/sdram_model_verilator.sv"
 timeout 300s "$build_dir/memory/Vtb_memory_throughput" "+TRACE_FILE=$fpga/sim/decoded-rgb565.txt"

@@ -50,3 +50,18 @@ frame age as well as cadence. Then corroborate on the real device. The current
 RTL includes single-pixel SDRAM writes; the previously measured XSim workload
 exceeded the 33.33 ms budget even with its experimental tile reorder. A new
 burst-write path is a candidate, not a tested implementation.
+
+## Follow-up: memory/LCD Verilator timeout resolved
+
+The original Verilator run above timed out; profiling identified excessive
+reevaluation around the testbench and behavioral model's delayed continuous
+clock assignments. A verification-only model changes these two simulated clock
+delays to edge-triggered delayed nonblocking assignments. Production RTL and
+hardware clocks are unchanged. The full 345,600-pixel Verilator test then
+completed with 8,875,956 cycles for original order and 5,310,461 cycles for
+the transpose candidate; both exactly match the earlier XSim results for this
+trace and report zero observed scanout underruns. The test still has a fixed
+front buffer and excludes decoder, ingress and frame swaps. This agreement is
+not formal equivalence, SDRAM electrical timing or a 30 fps demonstration.
+The detailed progress log and updated reproduction runner are in
+`fpga/experiments/throughput30/`.
