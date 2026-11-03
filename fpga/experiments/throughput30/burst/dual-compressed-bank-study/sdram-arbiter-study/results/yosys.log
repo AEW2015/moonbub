@@ -1,0 +1,244 @@
+
+ /----------------------------------------------------------------------------\
+ |                                                                            |
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |                                                                            |
+ |  Copyright (C) 2012 - 2020  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |                                                                            |
+ |  Permission to use, copy, modify, and/or distribute this software for any  |
+ |  purpose with or without fee is hereby granted, provided that the above    |
+ |  copyright notice and this permission notice appear in all copies.         |
+ |                                                                            |
+ |  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES  |
+ |  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF          |
+ |  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR   |
+ |  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    |
+ |  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN     |
+ |  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF   |
+ |  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.            |
+ |                                                                            |
+ \----------------------------------------------------------------------------/
+
+ Yosys 0.33 (git sha1 2584903a060)
+
+
+-- Running command `read_verilog -sv staging_arbiter.sv; hierarchy -check -top staging_arbiter; proc; opt; check; stat' --
+
+1. Executing Verilog-2005 frontend: staging_arbiter.sv
+Parsing SystemVerilog input from `staging_arbiter.sv' to AST representation.
+Generating RTLIL representation for module `\staging_arbiter'.
+Successfully finished Verilog frontend.
+
+2. Executing HIERARCHY pass (managing design hierarchy).
+
+2.1. Analyzing design hierarchy..
+Top module:  \staging_arbiter
+
+2.2. Analyzing design hierarchy..
+Top module:  \staging_arbiter
+Removed 0 unused modules.
+
+3. Executing PROC pass (convert processes to netlists).
+
+3.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+3.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 2 switch rules as full_case in process $proc$staging_arbiter.sv:43$36 in module staging_arbiter.
+Marked 11 switch rules as full_case in process $proc$staging_arbiter.sv:21$1 in module staging_arbiter.
+Removed a total of 0 dead cases.
+
+3.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 1 assignment to connection.
+
+3.4. Executing PROC_INIT pass (extract init attributes).
+
+3.5. Executing PROC_ARST pass (detect async resets in processes).
+
+3.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~18 debug messages>
+
+3.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\staging_arbiter.$proc$staging_arbiter.sv:43$36'.
+     1/5: $0\read_beat[2:0]
+     2/5: $0\pending_owner[0:0]
+     3/5: $0\pending_read[0:0]
+     4/5: $0\rr[1:0]
+     5/5: $0\protocol_fault[0:0]
+Creating decoders for process `\staging_arbiter.$proc$staging_arbiter.sv:21$1'.
+     1/11: $11\selected[2:0]
+     2/11: $10\selected[2:0]
+     3/11: $9\selected[2:0]
+     4/11: $8\selected[2:0]
+     5/11: $7\selected[2:0]
+     6/11: $6\selected[2:0]
+     7/11: $5\selected[2:0]
+     8/11: $4\selected[2:0]
+     9/11: $3\selected[2:0]
+    10/11: $2\selected[2:0]
+    11/11: $1\selected[2:0]
+
+3.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `\staging_arbiter.\selected' from process `\staging_arbiter.$proc$staging_arbiter.sv:21$1'.
+
+3.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\staging_arbiter.\protocol_fault' using process `\staging_arbiter.$proc$staging_arbiter.sv:43$36'.
+  created $dff cell `$procdff$222' with positive edge clock.
+Creating register for signal `\staging_arbiter.\rr' using process `\staging_arbiter.$proc$staging_arbiter.sv:43$36'.
+  created $dff cell `$procdff$223' with positive edge clock.
+Creating register for signal `\staging_arbiter.\pending_read' using process `\staging_arbiter.$proc$staging_arbiter.sv:43$36'.
+  created $dff cell `$procdff$224' with positive edge clock.
+Creating register for signal `\staging_arbiter.\pending_owner' using process `\staging_arbiter.$proc$staging_arbiter.sv:43$36'.
+  created $dff cell `$procdff$225' with positive edge clock.
+Creating register for signal `\staging_arbiter.\read_beat' using process `\staging_arbiter.$proc$staging_arbiter.sv:43$36'.
+  created $dff cell `$procdff$226' with positive edge clock.
+
+3.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+3.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Found and cleaned up 7 empty switches in `\staging_arbiter.$proc$staging_arbiter.sv:43$36'.
+Removing empty process `staging_arbiter.$proc$staging_arbiter.sv:43$36'.
+Found and cleaned up 11 empty switches in `\staging_arbiter.$proc$staging_arbiter.sv:21$1'.
+Removing empty process `staging_arbiter.$proc$staging_arbiter.sv:21$1'.
+Cleaned up 18 empty switches.
+
+3.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module staging_arbiter.
+<suppressed ~10 debug messages>
+
+4. Executing OPT pass (performing simple optimizations).
+
+4.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module staging_arbiter.
+
+4.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\staging_arbiter'.
+<suppressed ~87 debug messages>
+Removed a total of 29 cells.
+
+4.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \staging_arbiter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 1/2 on $mux $procmux$162.
+    dead port 2/2 on $mux $procmux$159.
+    dead port 1/2 on $mux $procmux$157.
+    dead port 1/2 on $mux $procmux$150.
+    dead port 2/2 on $mux $procmux$147.
+    dead port 1/2 on $mux $procmux$145.
+    dead port 1/2 on $mux $procmux$142.
+    dead port 1/2 on $mux $procmux$135.
+    dead port 1/2 on $mux $procmux$217.
+    dead port 1/3 on $pmux $procmux$131.
+    dead port 2/3 on $pmux $procmux$131.
+    dead port 1/2 on $mux $procmux$125.
+    dead port 1/3 on $pmux $procmux$121.
+    dead port 2/3 on $pmux $procmux$121.
+    dead port 1/2 on $mux $procmux$118.
+    dead port 1/2 on $mux $procmux$112.
+    dead port 1/2 on $mux $procmux$210.
+    dead port 1/3 on $pmux $procmux$108.
+    dead port 2/3 on $pmux $procmux$108.
+    dead port 2/2 on $mux $procmux$207.
+    dead port 1/2 on $mux $procmux$105.
+    dead port 1/2 on $mux $procmux$102.
+    dead port 1/2 on $mux $procmux$200.
+    dead port 2/2 on $mux $procmux$197.
+    dead port 1/2 on $mux $procmux$195.
+    dead port 1/2 on $mux $procmux$187.
+    dead port 2/2 on $mux $procmux$184.
+    dead port 1/2 on $mux $procmux$182.
+    dead port 1/2 on $mux $procmux$179.
+    dead port 1/2 on $mux $procmux$171.
+    dead port 2/2 on $mux $procmux$168.
+Removed 31 multiplexer ports.
+<suppressed ~9 debug messages>
+
+4.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \staging_arbiter.
+Performed a total of 0 changes.
+
+4.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\staging_arbiter'.
+Removed a total of 0 cells.
+
+4.6. Executing OPT_DFF pass (perform DFF optimizations).
+Adding SRST signal on $procdff$223 ($dff) from module staging_arbiter (D = $procmux$88_Y, Q = \rr, rval = 2'00).
+Adding EN signal on $auto$ff.cc:266:slice$227 ($sdff) from module staging_arbiter (D = $procmux$84_Y, Q = \rr).
+Adding SRST signal on $procdff$224 ($dff) from module staging_arbiter (D = $procmux$79_Y, Q = \pending_read, rval = 1'0).
+Adding SRST signal on $procdff$225 ($dff) from module staging_arbiter (D = $procmux$67_Y, Q = \pending_owner, rval = 1'0).
+Adding EN signal on $auto$ff.cc:266:slice$234 ($sdff) from module staging_arbiter (D = $eq$staging_arbiter.sv:51$49_Y, Q = \pending_owner).
+Adding SRST signal on $procdff$222 ($dff) from module staging_arbiter (D = $procmux$93_Y, Q = \protocol_fault, rval = 1'0).
+Adding EN signal on $auto$ff.cc:266:slice$238 ($sdff) from module staging_arbiter (D = 1'1, Q = \protocol_fault).
+Adding SRST signal on $procdff$226 ($dff) from module staging_arbiter (D = $procmux$60_Y, Q = \read_beat, rval = 3'000).
+Adding EN signal on $auto$ff.cc:266:slice$240 ($sdff) from module staging_arbiter (D = $procmux$60_Y, Q = \read_beat).
+
+4.7. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \staging_arbiter..
+Removed 9 unused cells and 142 unused wires.
+<suppressed ~10 debug messages>
+
+4.8. Executing OPT_EXPR pass (perform const folding).
+Optimizing module staging_arbiter.
+<suppressed ~2 debug messages>
+
+4.9. Rerunning OPT passes. (Maybe there is more to do..)
+
+4.10. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \staging_arbiter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~7 debug messages>
+
+4.11. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \staging_arbiter.
+Performed a total of 0 changes.
+
+4.12. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\staging_arbiter'.
+Removed a total of 0 cells.
+
+4.13. Executing OPT_DFF pass (perform DFF optimizations).
+
+4.14. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \staging_arbiter..
+
+4.15. Executing OPT_EXPR pass (perform const folding).
+Optimizing module staging_arbiter.
+
+4.16. Finished OPT passes. (There is nothing left to do.)
+
+5. Executing CHECK pass (checking for obvious problems).
+Checking module staging_arbiter...
+Found and reported 0 problems.
+
+6. Printing statistics.
+
+=== staging_arbiter ===
+
+   Number of wires:                 87
+   Number of wire bits:            710
+   Number of public wires:          36
+   Number of public wire bits:     582
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                 69
+     $add                            1
+     $eq                             6
+     $logic_and                     16
+     $logic_not                      7
+     $logic_or                       3
+     $mux                           22
+     $ne                             1
+     $pmux                           2
+     $reduce_and                     3
+     $reduce_bool                    3
+     $sdff                           1
+     $sdffe                          4
+
