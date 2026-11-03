@@ -44,8 +44,8 @@ Validation so far:
 - As a negative control, those same three frames with `STRICT_WINDOW=1`
   failed the aggregate 3-frame deadline (`strict-3-expected-failure.log`).
   This verifies that a missed deadline is not silently reported as PASS.
-- A bounded 1,800-frame run has been started separately; its eventual status
-  and full verified records must be checked before any result is reported.
+- The separately bounded 1,800-frame run subsequently **failed** its strict
+  window; its complete records and terminal assertion are documented below.
 
 Reproduce with Verilator 5.x, a C++ compiler, make, GNU timeout and Python /
 Pillow in a new writable build directory:
@@ -59,3 +59,13 @@ Use `FRAMES=3 STRICT_WINDOW=0` for the small smoke test. Generated binaries,
 fixtures and verified-hash records remain in the named build directory. The
 full test's successful result would be conditional on the model assumptions
 above and must not be presented as a deployed end-to-end demonstration.
+
+## Recorded 1,800-frame result
+
+The bounded run finished with **FAIL**, not PASS: all 1,800 frames eventually
+presented and passed the related C-model comparisons, but frame 1,800 missed
+the strict source-aligned 60-second window by 2.38483 ms. Detailed timing,
+complete log, hashes, provenance and model limitations are in
+[results-1800-strict-failed](results-1800-strict-failed/README.md). This is
+behavioral FPGA/QSPI simulation with an abstract queue, not an ESP32/Wi-Fi or
+physical hardware test.
