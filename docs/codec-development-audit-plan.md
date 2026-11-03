@@ -10,6 +10,25 @@ and [Sunshine](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102
 
 ## Recommendation
 
+### Python prototype progress, 2026-11-03
+
+The [executable codec study](../experiments/python-codec-study/README.md)
+now implements bounded intra tile modes, spatial DPCM, compact quantization
+indices, zero-residual runs, temporal reference ownership/recovery checks and
+a receiver-compatible JPEG size-budget search. A companion
+[memory-service study](../experiments/python-memory-study/README.md) compares
+compressed storage and background-reference traffic. These advance packages
+B–D and memory M3/M4 in software; they do not close native-capture, physical
+memory, FPGA fit, RTL or board gates.
+
+The initial same-canvas gameplay samples favor JPEG over the tested custom
+methods. Keep it as the control. Temporal mean-size savings must survive
+refresh bursts, reference loss and reference-copy traffic; average bitrate
+alone is not a reason to select temporal RTL. The linked reports preserve
+failed strict-window counts and differentiate model inputs from measurements.
+
+### Development direction
+
 Proceed with a bounded custom-codec research track alongside the existing
 JPEG implementation. First reproduce the existing models and establish a
 fair benchmark; then evaluate tile modes and intra-block DPCM in software.

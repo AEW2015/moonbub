@@ -11,6 +11,15 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
+New software-only evidence is in the
+[Python codec study](../experiments/python-codec-study/README.md) and
+[memory-service study](../experiments/python-memory-study/README.md). They
+include bounded parsers/reference-state tests and comparisons with exact
+receiver-profile JPEG on short, precompressed Mass Effect samples. JPEG remains
+the control; these additions do not change device firmware or the bitstream.
+Use the result manifests rather than inferring hardware FPS from offline
+frame counts or hypothetical vblank eligibility.
+
 The work is on the [Moonbub study branch](https://github.com/AEW2015/moonbub/tree/study/30fps-sim-20261102) and the [Sunshine study branch](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102). These branches contain experimental code and evidence; none of the new RTL should be treated as a production bitstream. Existing separately qualified device artifacts must be identified and preserved before testing.
 
 The memory architecture uses FPGA BRAM for a 256 KiB compressed-JPEG buffer and two 480-word LCD line banks. A 720×480 RGB565 framebuffer is 691,200 bytes and resides in external SDRAM. The board's SDRAM identity, population, timing and physical operation are unverified; the simulation memory is functional, not a vendor timing model. See [FPGA architecture](../fpga/README.md), [SDRAM controller](../fpga/rtl/moonshine_sdram.sv), [memory integration](../fpga/rtl/moonshine_memory.sv), and [LCD scanout](../fpga/rtl/moonshine_lcd.sv). BRAM use or fit is not evidence of external-memory throughput.

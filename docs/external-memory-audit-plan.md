@@ -23,6 +23,25 @@ not create independent data channels or guarantee useful concurrency.
 
 ## What is confirmed, and what is implemented
 
+### Software-model progress, 2026-11-03
+
+The [Python memory-service study](../experiments/python-memory-study/README.md)
+implements parameterized BRAM/shared-SDRAM/separate-SRAM comparisons, refresh,
+row locality, scanline deadlines, queue measurements and a bounded slot-owner
+oracle. It includes synthetic scenarios and actual JPEG sizes from the
+[codec study](../experiments/python-codec-study/README.md). This advances the
+software side of M3/M4; physical M0–M3 qualification and complete finite-buffer
+ownership remain open.
+
+The tested small intra-frame workloads show little memory-age advantage from
+SRAM under the stated service assumptions. Full-reference demand can grow
+reconstruction queues while all display-line deadlines pass. Preserve both
+observations when choosing a storage architecture; they favor measuring actual
+service and avoiding unnecessary reference copies rather than adding SRAM
+solely for its advertised capacity.
+
+### Baseline evidence
+
 The [official Rev4 overview](https://docs.gamebub.net/developing-cores/overview/)
 documents 64 MiB SDRAM across two chips, a shared-width 16-bit memory interface,
 and 512 KiB asynchronous SRAM. The [interface reference](https://docs.gamebub.net/developing-cores/reference-interfaces/)
