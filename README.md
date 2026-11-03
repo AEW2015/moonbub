@@ -1,5 +1,11 @@
 # Moonshine / MoonBub prototype
 
+This `study/30fps-sim-20261102` branch contains experimental 30 fps work in
+addition to the baseline described below. Start with the [developer handoff](docs/dev-handoff-2026-11-03.md)
+and the matching [Sunshine study branch](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102).
+The baseline build and timing results below do not qualify the experimental
+dual-bank, SDRAM staging, gateway, or host candidates for hardware use.
+
 Source attribution and component licenses are listed in [NOTICE.md](NOTICE.md).
 
 An isolated Game Bub Rev4 Wi-Fi video prototype: PC JPEG sender → ESP32-S3
