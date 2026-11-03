@@ -29,6 +29,13 @@ model and traffic pattern, not a physical panel or gameplay measurement. Full
 logs, per-frame analysis and C-comparison records are in `results/phase-833333/`;
 `results/comparison.json` contrasts the unshifted and shifted runs.
 
+Run `python3 strict_window_verdict.py results/phase-833333/analysis.json` for
+the separate strict gate. It passes only when every requested distinct frame
+was admitted and presented, there were no busy drops, and every presentation
+cycle is at or before the inclusive `window_end_cycle`. It reads analyzer JSON
+without changing it; its verdict applies only to this modeled run and is not
+physical proof.
+
 Use `build.sh` with an empty `BUILD_DIR` and `run.sh` with the same variables
 and dependencies described in `../qspi-cadence-jitter/README.md`, plus e.g.
 `CAPTURE_PHASE_CYCLES=833333 PCLK_HALF_PS=18470 JITTER_CYCLES=200000`. The
