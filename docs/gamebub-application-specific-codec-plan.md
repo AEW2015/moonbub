@@ -1,9 +1,13 @@
 # Game Bub application-specific codec: selected direction and gates
 
-This plan follows the executable [iteration7 results](custom-codec-prototype-v7-2026-11-03.md).
-It selects what to combine next; it does not claim the combined codec exists.
-The current JPEG implementation remains the hardware control. New RG01 and
-DT01 Python packets require their own decoders and cannot be sent to JPEG RTL.
+The [iteration8 results](custom-codec-prototype-v8-2026-11-03.md) now include
+an executable GM01 temporal-ROI Python codec, shared-transform two-candidate
+admission and replayable golden vectors. The prior
+[iteration7 results](custom-codec-prototype-v7-2026-11-03.md) selected this direction.
+These remain software prototypes: capability negotiation, actual firmware/FPGA
+support, physical memory service and hardware30 fps are not implemented gates.
+The current JPEG implementation remains the hardware control. Custom formats
+cannot be sent to JPEG RTL.
 
 ## Product target and split of work
 
@@ -36,20 +40,21 @@ BRAM/DSP fit or bandwidth. Existing exact Q14 arithmetic remains the golden.
 | Candidate | Decision | Reason |
 | --- | --- | --- |
 | MA01-style immutable anchor + CP02 residual | Base for next combined experiment | Better tested byte demand than independent dirty tiles; explicit ACK/reference identity |
-| RG01 macroblock quality map | Add to a new residual profile | Improves declared-region error at similar same-frame byte budget, with visible background tradeoff |
+| RG01 macroblock quality map | Implemented in GM01 Python residual profile | Improves declared-region error at similar same-frame byte budget, with visible background tradeoff |
 | Word CP02 reader | Carry into software oracle | Exact valid-output and sampled malformed-rejection compatibility; measured receive cost reduction |
 | DT01 independent dirty tiles | Exclude from gameplay base | Frequent cap failures and header/context cost; static tail is a possible separate UI mode |
 | Two asynchronous replacement anchors | Later measured option | Extra reference, control decode, lifetime and retirement costs remain |
 | Palette/lossless HUD patches | Next optional experiment | Could preserve colored glyph edges; no rate/quality/decoder win established yet |
 
-Independent ROI is implemented as RG01; adding its map to temporal residual
-coding changes reconstruction semantics and therefore needs a **new negotiated
-profile/version**, not a silent MA01 flag. Do not claim ROI gains and temporal
-rate savings multiply before actually encoding/decoding the combination.
+Independent ROI was implemented as RG01. The combined GM01 version now actually
+encodes/decodes the temporal residual and map together; it is not a silent MA01
+flag. Its measured region gains cost extra bytes versus uniform GM01, and the
+coarser background alternative has explicit quality loss. Actual capability
+negotiation remains required before a real peer can use this profile.
 
-## Work package A: executable combined reference
+## Work package A: implemented reference, now qualify coverage
 
-Build a new Python profile with an epoch, increasing capture/frame ID, explicit
+The GM01 Python profile now implements an epoch, increasing capture/frame ID, explicit
 key/residual kind, exact anchor ID, even geometry, declared macroblock map,
 bounded three-plane CP02 payload lengths and complete-frame CRC. Each16×16
 luma /8×8 chroma region selects scale8/16/32. At720×480 the uncompressed2-bit
@@ -72,13 +77,21 @@ SKIP, especially at chroma boundaries and after a quality-map change. A later
 copy mode needs an exact new reconstruction/reference contract. Do not splice
 these formats together by copying output tiles without a proof and tests.
 
-## Work package B: a practical bounded rate controller
+## Work package B: implemented bounded controller, now qualify worst cases
 
-Replace the current237–395 ms offline ROI search. Reuse source transforms and
-prepare at most a declared small number of real candidates (initial target:
-one normal map plus one fallback). Count transform, entropy, candidate assembly,
-selection and every rejected attempt in actual sender service. Never use an
-unmeasured constant because the average key benchmark is favorable.
+The implemented controller reuses one source/prediction/forward analysis and
+tries a normal ROI8/background16 map, then at most one ROI8/background32 fallback.
+It measures the complete preparation call and leaves state unchanged on total
+rejection. This replaces the old offline candidate search with a different,
+fixed two-map policy; their quality/budget targets are not identical.
+Keep every failed attempt and selected key reconstruction in sender service.
+The separate exact-size and conservative lower-bound experiments now avoid
+serializing some provably oversized candidates. The cheap gate cuts seeded
+noise-reject service substantially, but ordinary pressure/normal paths do not
+show a general speedup. Treat it as a measured rejection guard, keep the final
+actual-size check, and validate decisions against the unguarded codec.
+Worst-case noisy rejection and fallback tails still require qualification;
+never substitute a favorable mean for per-call service or a deadline bound.
 
 Declare a per-game priority-quality floor and maximum frame age. Size selection
 uses current data and past measured headroom, with hysteresis. Keep ROI at its
@@ -113,9 +126,10 @@ ROI quantization on the same glyph/real-game content before selecting it.
 
 ## Work package D: sender, firmware and FPGA handoff
 
-1. Freeze one combined syntax with golden packets, corrupt/partial/reordered
-   fixtures, reference/ACK/abort rules and a standalone sender/decoder adapter.
-   Add explicit capability negotiation before integrating a Sunshine output mode.
+1. Review the implemented GM01 golden packets and GF01 laboratory adapter,
+   corrupt/partial/reordered fixtures and reference/ACK/abort rules. Freeze a
+   target peer contract, then implement explicit capability negotiation and
+   serialized feedback before integrating a Sunshine output mode.
 2. Implement FPGA CP02 decode, inverse transform/map lookup, reference fetch and
    framebuffer publication against those vectors. Reuse the existing display
    and JPEG control. Prove real ingress/backpressure/CDC and ownership behavior.
@@ -129,9 +143,11 @@ ROI quantization on the same glyph/real-game content before selecting it.
 
 ## Ready now and remaining scope
 
-The word reader can be adopted into the **software custom-codec decoder** after
-its tests are reproduced. ROI and dirty-tile methods are executable experiments;
-there is no combined temporal-ROI sender, firmware or bitstream yet. Existing
-JPEG host telemetry/age/size policies can be tested with the matching hardware
-receiver independently. Hardware remains on another system; this study has
-not programmed or measured that board.
+The combined GM01 software decoder uses the word reader, with uniform-map
+compatibility tests and a real two-candidate controller. Reproduce these tests
+and the binary fixtures before target implementation. GF01 is an in-process lab
+container; it is not firmware ingress or a deployed streaming transport. There
+is still no installed custom Sunshine mode, ESP32 support or FPGA bitstream.
+Existing JPEG telemetry/age/size policies can be tested with the matching
+hardware independently. Hardware remains on another system; this study has not
+programmed or measured that board.

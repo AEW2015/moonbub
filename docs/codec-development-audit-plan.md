@@ -12,7 +12,14 @@ and [Sunshine](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102
 
 ### Python prototype progress, 2026-11-03
 
-Current follow-up: [iteration7 application-priority coding](custom-codec-prototype-v7-2026-11-03.md)
+Current follow-up: [iteration8 combined GM01 application-specific codec](custom-codec-prototype-v8-2026-11-03.md)
+implements temporal residuals plus the explicit priority map, one-analysis
+two-candidate admission, size guards and replayable golden packets. Normal
+preparation is promising, while fallback/noise tails and physical30 fps gates
+remain. The application-specific plan now tracks implemented software and
+remaining capture/feedback, native/RTL and hardware integration.
+
+Previous follow-up: [iteration7 application-priority coding](custom-codec-prototype-v7-2026-11-03.md)
 adds a faster compatible decoder, a real macroblock ROI format, and a negative
 dirty-tile comparison. The [application-specific codec plan](gamebub-application-specific-codec-plan.md)
 selects temporal residuals plus a quality map as the next combined prototype,

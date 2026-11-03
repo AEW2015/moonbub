@@ -11,12 +11,19 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Start with [iteration7](custom-codec-prototype-v7-2026-11-03.md) and the
-[application-specific codec plan](gamebub-application-specific-codec-plan.md).
-Python word decoding is faster and compatible; independent RG01 quality maps
-improve declared-region fidelity at background expense. RG01/DT01 require
-new decoders, and the proposed temporal-ROI combination is not implemented.
-The independent dirty-tile format is not selected as the gameplay base.
+Start with [iteration8](custom-codec-prototype-v8-2026-11-03.md): GM01 now combines
+temporal residuals and an application-priority map, with a real bounded
+controller and exact/cheap size guards. The
+[golden vectors and lab replay](../experiments/python-game-link-study/README.md)
+provide binary packets, coefficients, maps and expected RGB565 for target
+decoder work. These are software and in-process transport evidence; custom
+firmware, capability negotiation and physical30 fps remain open.
+
+The earlier [iteration7](custom-codec-prototype-v7-2026-11-03.md) established
+independent RG01 priority maps and faster word decoding, and rejected DT01 as
+the general gameplay base. The combined successor is GM01 above; see the
+[application-specific codec plan](gamebub-application-specific-codec-plan.md)
+for implemented software and remaining integration gates.
 
 The earlier [iteration6](custom-codec-prototype-v6-2026-11-03.md): faster key preparation
 and token entropy, actual per-selected-call Python service replay, and exact
