@@ -1,0 +1,15 @@
+# Tagged dual-bank ownership specification model
+
+This small executable Python model explores protocol semantics; it is **not production firmware, RTL, a CDC model, a bounded hardware design, or a correctness/performance proof**. Run with Python 3.10 or newer:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest -v
+```
+
+A successful BEGIN returns `(epoch, bank, generation)`. DATA carries that token and the exact next byte offset; COMMIT checks declared length and CRC-32; ABORT discards only the matching receiving bank. A valid COMMIT changes the bank to READY. RELEASE is a synthetic assertion by the caller that downstream use and memory operations have drained; this model does not implement decode, scanout, concurrent clocks or a drain protocol. Both banks may receive concurrently in this abstract API, unlike the current single-receive RTL. Stale tokens cannot affect a reused bank. Failed length/CRC COMMIT frees the matching receive; invalid DATA leaves it unchanged.
+
+Every request has an epoch-scoped request ID. An identical retry returns its **original historical ACK**, including after later bank reuse, without reapplying effects. It is not a current ownership/status query. Reusing an ID with a different request returns `REQUEST_ID_CONFLICT`; rejected results such as BUSY are also cached, so a later fresh attempt requires a new ID. The request history in this prototype is unbounded and retained until epoch change; practical finite storage requires an explicit replay window, safe eviction/retirement handshake and ID wrap policy. Exactly-once behavior here depends on retaining that history and on serial execution.
+
+Reset requires an explicitly higher epoch and clears banks and replay history. Requests from an old epoch are rejected, including retries whose earlier ACK was lost. This provides no way to recover the old result after reset: the caller must reconcile via a separately designed status/recovery procedure. Correctness across power loss requires an external mechanism that guarantees epochs are never reused; Python's arbitrary-precision counters are not a hardware implementation of persistence or wrap handling. ACK loss, reset or ambiguous transport ordering are modeled only as sequential API calls, not as an actual QSPI/CDC transport.
+
+The tests exercise stale DATA/COMMIT/ABORT after reuse, duplicate and lost-ACK retries, mismatched duplicate IDs, independent-bank abort, release, reset/epoch invalidation and length/CRC errors. This model does not claim safe reuse until real memory writes/reads drain, define decode/pending cancellation, check JPEG content, enforce physical memory or FIFO credits, or demonstrate hardware 30 fps. Authentication and multi-client ownership are outside scope.

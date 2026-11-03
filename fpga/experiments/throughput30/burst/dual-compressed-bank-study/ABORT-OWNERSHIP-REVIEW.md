@@ -19,3 +19,8 @@ On this review, re-running the previously built local `Vtb_two_bank` and `Vtb_tw
 5. **Ordering and representation need stress.** Commit order uses a 32-bit wrapping `frame_order` and signed difference; prove ordering assumptions or provide wrap-safe sequence handling. The experimental 48 KiB byte-array capacity, length/CRC and error flags need explicit oversize rejection, error attribution and credit rules. Generic inferred-memory shape is not target BRAM mapping or fit. Verify reset at each bank state, stale data after short reuse, equal-edge event conflicts, repeated sequence numbers, counter wrap, lost/duplicate ACK, and randomized independent CDC clocks with backpressure and reset.
 
 A practical next step is a separately versioned bank-aware command/status specification, followed by assertions for token ownership, no cross-bank corruption, receive CRC/length, accepted-byte accounting, drain-before-reuse and vblank/front atomicity. Use directed simultaneous-event and restart negatives, then bounded/formal control checks and asynchronous multi-clock verification before integrating actual firmware or drawing physical performance conclusions.
+
+The separate [tagged protocol model](tagged-protocol-model/README.md) explores
+one possible token and retry contract. It is an unbounded sequential Python
+specification prototype and does not resolve physical drain, reset persistence,
+bounded replay history, RTL integration or clock-domain behavior.
