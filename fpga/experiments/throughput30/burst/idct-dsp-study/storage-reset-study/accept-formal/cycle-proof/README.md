@@ -1,0 +1,15 @@
+# Fixed-gap transpose control recurrence
+
+Under the exact standalone GAP=2 contract below, acceptance holds for an unbounded run by a finite SAT check plus deterministic-state recurrence. This is a control-path inference, not a proof of the connected JPEG front end or a proof for arbitrary variable gaps.
+
+The harness applies an initial reset, then offers indices 0–63 on 64 consecutive cycles followed by exactly two invalid cycles, repeatedly. It increments on offered valid regardless of accept. Transpose ready is permanently 1, image start/end are 0 and data are constant 0. No later reset or start occurs. The modeled initial state uses `-set-init-zero` in addition to the explicit reset. The checked copy of original transpose RTL only adds an output exposing state; `prepare.py` verifies its insertion anchors and changes no existing logic. Original and generated hashes are retained.
+
+The 268-step Yosys SAT check proves (1) no offered valid beat is rejected during the checked prefix, and (2) the state sampled at harness cycle 134 is identical to that sampled at cycle 266. State includes the generator index and gap countdown and transpose `block_ready_q`, `block_wr_q`, `block_rd_q`, `rd_idx_q`, `rd_addr_q`, and `state_q`; reset is already permanently low at both points. Source inspection shows these are all state variables that can affect transpose control and acceptance. The four data RAMs and registered data outputs are deliberately excluded: none feeds the bank flags, pointers, FSM, valid, accept, or input generator. Output data and assertion bookkeeping cannot influence the control state. With no varying external inputs, the next relevant state and the valid/accept outputs are deterministic functions of this recorded state. Consequently the complete relevant state and outputs recur every 132 cycles, and the proved no-rejection prefix covers the initial transient and one whole recurrent period. This supplies the unbounded inference; the SAT query itself is bounded, not an inductive proof.
+
+Two negative controls verify sensitivity: replacing GAP=2 with GAP=1 causes the assertion query to fail, and corrupting one bit of the captured state causes the recurrence assertion query to fail. Complete compressed solver logs, the exact harness, preparation script, source hashes and tool version are retained in `results/`. The 90-second limit was not reached in the saved run. The separate parent directory retains concrete GAP=0/1 witness traces and the unsuccessful general temporal-induction attempts.
+
+```sh
+FPGA_DIR=/path/to/moonbub-30fps-study/fpga BUILD_DIR=/tmp/transpose-cycle-new ./run.sh
+```
+
+The fixed-gap result cannot be generalized to a stream with gaps longer than two or to actual reset/start interruptions without additional reasoning, even though the ordinary connected input RAM structurally introduces at least two invalid cycles. In particular X's first four valid pipeline registers do not clear on image-start, and the connected contract and error behavior need independent proof.
