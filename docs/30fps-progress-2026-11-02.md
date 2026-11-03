@@ -152,3 +152,28 @@ The ten synthetic frames are repeated. Its calibration misses one reference
 RTL swap by a display refresh, so results are sensitivity estimates rather
 than physical Wi-Fi or 60-second RTL evidence. Details:
 `fpga/experiments/throughput30/burst/transport-followup/README.md`.
+
+## Longer runs and FIFO-credit research
+
+A 60-frame Verilator run presented all 60 distinct 720×480 synthetic JPEGs,
+checked 20,736,000 SDRAM words and had no modeled drops or LCD underruns; its
+finite-window rate was 29.99574 fps. All outputs matched the related C decoder.
+This is about two seconds of modeled input, not the 60-second acceptance test,
+and assumes instantaneous compressed-frame arrival, an abstract one-slot
+queue and an optimistic register bus. See `burst/longrun-study/README.md`.
+A separately bounded 1,800-frame run was launched; no pass is claimed until it
+finishes, meets its strict time window and every frame is verified.
+
+The isolated FIFO-credit research candidate computes source-domain conservative
+free entries from the synchronized consumer pointer and exposes an experimental
+status register at `0xe0000054`. Verilator checked ordered transfers under
+three synthetic core-clock ratios and a 26,159-byte QSPI run using at most the
+reported credits per sub-burst; XSim independently passed the standalone 100 MHz
+case. It does not modify production firmware or RTL, and reset ordering,
+multiple producers, CDC timing, physical operation and formal properties remain
+unverified. See `burst/cdc-credit/README.md`.
+
+The extended JPEG marker stress suite checked 10 fixtures under 30 seeded
+source-gap/stall schedules against an independent entropy-byte oracle; one
+fixture/seed also matched XSim. This is parser-level verification only. See
+`burst/marker-stress/README.md`.
