@@ -5,10 +5,10 @@ from pathlib import Path
 HERE=Path(__file__).resolve().parent;SOURCE=HERE.parent/'scheduled-30hz-model/model.py'
 spec=importlib.util.spec_from_file_location('onebank30',SOURCE);source=importlib.util.module_from_spec(spec);spec.loader.exec_module(source)
 
-def two_bank(events,release_cycles=3397969,service_us_per_kib=200,bank_bytes=32768):
+def two_bank(events,release_cycles=3397969,service_us_per_kib=200,bank_bytes=32768,record_details=False):
  if release_cycles<0 or service_us_per_kib<1 or bank_bytes<1:raise ValueError('bad parameter')
  banks=[{'state':'FREE'},{'state':'FREE'}];q=collections.deque();occ=0;high=0;highslots=0;inflight=None
- receiving=None;decoder=None;completed=[];drops=[];drop_ids=set();actions=[];events_heap=[];serial=0;now=0;ready_order=[]
+ receiving=None;decoder=None;completed=[];drops=[];drop_ids=set();actions=[];bank_events=[];overlap_receives=[];events_heap=[];serial=0;now=0;ready_order=[]
  def put(t,kind,item):
   nonlocal serial
   serial+=1;heapq.heappush(events_heap,(t,serial,kind,item))
@@ -24,7 +24,7 @@ def two_bank(events,release_cycles=3397969,service_us_per_kib=200,bank_bytes=327
    else:kept.append(e)
   q=kept
   if receiving is not None and banks[receiving].get('id')==fid:
-   banks[receiving]={'state':'FREE'};receiving=None
+   bank_events.append({'event':'receive_abort','id':fid,'bank':receiving,'cycle':now,'reason':reason});banks[receiving]={'state':'FREE'};receiving=None
  def service():
   nonlocal inflight
   if inflight is not None or not q:return
@@ -36,7 +36,7 @@ def two_bank(events,release_cycles=3397969,service_us_per_kib=200,bank_bytes=327
   if decoder is None and ready_order:
    slot=ready_order.pop(0)
    if banks[slot]['state']!='READY':raise ValueError('bank state')
-   banks[slot]['state']='PRESENTING';decoder=slot;put(now+release_cycles,'present',slot)
+   banks[slot]['state']='PRESENTING';decoder=slot;bank_events.append({'event':'decode_start','id':banks[slot]['id'],'bank':slot,'cycle':now});put(now+release_cycles,'present',slot)
  while events_heap:
   now,_,kind,e=heapq.heappop(events_heap)
   if kind=='arrival':
@@ -60,7 +60,8 @@ def two_bank(events,release_cycles=3397969,service_us_per_kib=200,bank_bytes=327
      if not free:drop(fid,'no_free_bank_at_service')
      elif length<1 or length>bank_bytes:drop(fid,'oversized_frame')
      else:
-      receiving=free[0];banks[receiving]={'state':'RECEIVING','id':fid,'length':length,'expected_crc':int.from_bytes(b[13:17],'big'),'bytes':0,'crc':0}
+      receiving=free[0];banks[receiving]={'state':'RECEIVING','id':fid,'length':length,'expected_crc':int.from_bytes(b[13:17],'big'),'bytes':0,'crc':0};bank_events.append({'event':'receive_begin','id':fid,'bank':receiving,'cycle':now});
+      if decoder is not None:overlap_receives.append({'receiving_id':fid,'receiving_bank':receiving,'presenting_id':banks[decoder]['id'],'presenting_bank':decoder,'cycle':now})
    elif typ=='D':
     if receiving is None or banks[receiving].get('id')!=fid:drop(fid,'data_without_begin')
     else:
@@ -72,7 +73,7 @@ def two_bank(events,release_cycles=3397969,service_us_per_kib=200,bank_bytes=327
     else:
      bank=banks[receiving]
      if bank['bytes']!=bank['length'] or bank['crc']!=bank['expected_crc']:raise ValueError('commit CRC/length')
-     bank['state']='READY';ready_order.append(receiving);receiving=None;start_decode()
+     bank['state']='READY';bank_events.append({'event':'receive_commit','id':fid,'bank':receiving,'cycle':now});ready_order.append(receiving);receiving=None;start_decode()
    else:
     if receiving is None or banks[receiving].get('id')!=fid:drop(fid,'abort_without_begin')
     else:drop(fid,'recorded_guest_abort')
@@ -82,10 +83,12 @@ def two_bank(events,release_cycles=3397969,service_us_per_kib=200,bank_bytes=327
    if decoder!=slot or banks[slot]['state']!='PRESENTING':raise ValueError('present ownership')
    fid=banks[slot]['id'];capture=fid*source.PERIOD_NUM//source.PERIOD_DEN
    completed.append({'id':fid,'present_cycle':now,'synthetic_capture_cycle':capture,'model_age_ms':(now-capture)/100000,'crc32':f"{banks[slot]['crc']:08x}"})
-   banks[slot]={'state':'FREE'};decoder=None;start_decode();service()
+   bank_events.append({'event':'present_and_free','id':fid,'bank':slot,'cycle':now});banks[slot]={'state':'FREE'};decoder=None;start_decode();service()
  if q or inflight is not None or receiving is not None or decoder is not None or ready_order or occ!=0 or any(x['state']!='FREE' for x in banks):raise ValueError('unfinished')
  if {x['id'] for x in completed}|drop_ids!={0,1,2}:raise ValueError('accounting')
- return {'bank_count':2,'bank_capacity_bytes':bank_bytes,'release_cycles':release_cycles,'event_fifo_highwater_bytes':high,'event_fifo_highwater_slots':highslots,'presented':completed,'dropped':drops,'actions':actions}
+ result={'bank_count':2,'bank_capacity_bytes':bank_bytes,'release_cycles':release_cycles,'event_fifo_highwater_bytes':high,'event_fifo_highwater_slots':highslots,'presented':completed,'dropped':drops,'actions':actions}
+ if record_details:result.update(bank_events=bank_events,overlap_receives=overlap_receives)
+ return result
 
 def main():
  p=argparse.ArgumentParser();p.add_argument('--output',required=True,type=Path);a=p.parse_args();events=source.assign(source.load_events())

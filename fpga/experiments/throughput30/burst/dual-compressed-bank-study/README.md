@@ -34,3 +34,25 @@ The model uses exactly the hash-verified guest-produced bodies and the **same sy
 In the two-bank model, frame 1 is admitted into the free bank while frame 0 is pending; its recorded guest ABORT arrives at 64.35333 ms while frame 0 presents at 66.19969 ms. The model keeps frame 0 intact. Frame 1's final datagram was deliberately corrupted in the earlier guest capture, so it cannot be an additional valid presentation in either model. **This trace therefore shows admission overlap, not an extra valid frame, improved throughput or 30 fps.** Modeled capture-to-publication ages for valid frames remain 66.19969 and 67.39969 ms in both cases. All input/drop/present actions are in `results.json`.
 
 `OUTPUT=/tmp/repro.json ./run.sh` runs five directed checks and regenerates the result; the saved JSON reproduced byte-for-byte. The tests cover captured-workload state isolation and CRC, an oversize cap, FIFO overflow, and a separately constructed tiny synthetic control in which two READY/PRESENTING banks block a third BEGIN while preserving presentation order. None is RTL or physical timing proof. Next steps would include a bank-aware protocol and FPGA ownership specification, actual Vivado resource/timing checks on the correct part, directed abort/CDC/vblank tests and a valid multi-frame workload before claiming an advantage.
+
+## Separate clean three-distinct-frame workload
+
+`clean-study.py` builds a **new clean synthetic** B/D/C event sequence from fixtures 0, 1 and 2 after verifying their lengths and SHA-256 values against `../network-rtl-study/results-clean/trace-manifest.json`. The existing MSV1 packetizer provides frame metadata and DATA payloads, and every modeled COMMIT checks full byte count and CRC. This is deliberately **not** the recorded guest-event workload above: all three frames here are valid, and the guest/emulator is not run. The generated 85 length-prefixed event bodies have SHA-256 `9897963b54d2a4ce0be65f0146e7b94ec7c277a710e5ccde908f7991d136f92b`.
+
+Both architectures use the same explicit 30 Hz three-BEGIN schedule, 1 ms first-DATA delay, 1.2 ms DATA spacing, 200 µs/KiB modeled service, 20 µs control service, five-event FIFO and one decoder/display path. The one-bank model accepts all three fixture sizes; the hypothetical two-bank model caps each at 32 KiB. Post-commit release is a fixed modeled delay, not calibrated physical timing. The zero-delay row is an optimistic control; the 33.97969 ms value is the maximum observed in one earlier ten-frame RTL sample, reused as a constant, not a hardware bound. The slow-service row substitutes 2,000 µs/KiB to force queue stress.
+
+| Post-commit release / DATA service | One bank: presented; dropped | Two 32 KiB banks: presented; dropped | Max modeled event FIFO |
+| --- | --- | --- | ---: |
+| 0 ms / 200 µs/KiB | 0, 1, 2; none | 0, 1, 2; none | 1,039 B |
+| 20 ms / 200 µs/KiB | 0, 2; 1 busy | 0, 1, 2; none | 1,039 B |
+| 33.97969 ms / 200 µs/KiB | 0, 2; 1 busy | 0, 1, 2; none | 1,039 B |
+| 50 ms / 200 µs/KiB | 0; 1 and 2 busy | 0, 1; 2 no free bank | 1,039 B |
+| 33.97969 ms / 2,000 µs/KiB | none; 0, 1 and 2 FIFO full | none; 0, 1 and 2 FIFO full | 5,195 B |
+
+In the 33.97969 ms case, the model explicitly logs frame 1 beginning receive in bank 1 while frame 0 is in the single decoder/display path using bank 0, and frame 2 receiving in bank 0 while frame 1 uses bank 1. The two-bank model presents **one additional valid frame out of this finite three-frame sample**. Its modeled capture-to-release ages are 66.19969, 66.84605 and 67.49241 ms; these are not input-to-photon measurements. The single-bank model retains frames 0 and 2 at 66.19969 and 67.39969 ms. Per-input actions, drop IDs/times, presented IDs/CRCs/times and two-bank ownership transitions are retained in `clean-results.json`.
+
+The synthetic frame-2 COMMIT still lands 0.06666 ms after the next hypothetical 30 Hz BEGIN. No fourth frame or producer interleaving/arbitration policy is modeled, so a three-frame gain is **not** a sustained 30 fps demonstration. The assumed instantaneous abort/ownership handoff and constant release do not model physical bank ports, QSPI ACKs, CRC execution cost, SDRAM contention, display phase or target execution. As above, no RTL or hardware implementation of two banks exists in this study.
+
+To reproduce, set `FIXTURE_DIR` to the `fixtures` directory from a completed `../network-rtl-study/run.sh` build, set `OUTPUT` to a writable JSON path, and run `./run-clean.sh`. It runs seven directed tests including fixture/hash identity, CRC corruption, oversize rejection, bounded queue overflow, ordered presentation and fourth-frame overlap, then regenerates the result. The saved JSON reproduced byte-for-byte.
+
+The separate [`capacity-profile/`](capacity-profile/README.md) evaluates 32/48/64 KiB against three locally verified samples. In particular, **two frames in a distinct 90-frame accelerated combat sample exceed 32 KiB**; none of these samples exceeds 48 KiB. These are limited samples, not a general JPEG size bound.

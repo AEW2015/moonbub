@@ -17,6 +17,7 @@ class CleanTests(unittest.TestCase):
   self.assertEqual([x['id'] for x in a['presented']],[0,2]);self.assertEqual([(x['id'],x['reason']) for x in a['dropped']],[(1,'busy_begin')])
   self.assertEqual([x['id'] for x in b['presented']],[0,1,2]);self.assertEqual(b['dropped'],[])
   self.assertEqual([x['crc32'] for x in b['presented']],[x['crc32'] for x in self.info])
+  self.assertEqual([(x['receiving_id'],x['presenting_id']) for x in b['overlap_receives']],[(1,0),(2,1)])
  def test_two_bank_capacity_limit(self):
   r=clean.model.two_bank(self.events,bank_bytes=26000);self.assertEqual(r['presented'],[]);self.assertEqual([x['reason'] for x in r['dropped']],['oversized_frame']*3)
  def test_slow_service_overflow_is_bounded(self):

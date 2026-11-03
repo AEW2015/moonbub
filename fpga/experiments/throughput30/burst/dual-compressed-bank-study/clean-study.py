@@ -37,7 +37,7 @@ def run(fixtures):
  for name,release,service in scenarios:
   cases[name]={'release_cycles':release,'service_us_per_kib_assumed':service,
    'one_bank':source.simulate(events,release,service_us_per_kib=service),
-   'two_bank_32KiB':model.two_bank(events,release_cycles=release,service_us_per_kib=service)}
+   'two_bank_32KiB':model.two_bank(events,release_cycles=release,service_us_per_kib=service,record_details=True)}
  return {'scope':'new fixture-generated clean synthetic workload; no guest, FPGA, firmware or hardware execution',
   'fixture_info':info,'events':len(events),'producer_events_sha256':hashlib.sha256(b''.join(struct.pack('>I',len(x['body']))+x['body'] for x in raw)).hexdigest(),'data_spacing_ms':1.2,'first_data_delay_ms':1.0,'nominal_capture_hz':30,
   'last_captured_event_cycle':events[-1]['at'],'next_fourth_frame_cycle':3*source.PERIOD_NUM//source.PERIOD_DEN,'cases':cases}
