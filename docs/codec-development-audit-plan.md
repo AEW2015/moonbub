@@ -22,6 +22,11 @@ Treat 60 fps, 4–8 Mb/s, and sub-50 ms capture-to-photon latency as independent
 stretch objectives. The supplied plan is a useful direction, but its phase
 order and effort estimates understate memory, protocol and verification work.
 
+The follow-up [external-memory audit and plan](external-memory-audit-plan.md)
+adds required memory gates to this sequence. External SRAM is a compressed
+storage candidate to qualify, not a new prerequisite; the existing SDRAM
+writer/reader simulations remain the comparison path.
+
 ## Audit findings
 
 | Priority | Finding | Required change |
@@ -48,6 +53,13 @@ not establish access to the entire advertised capacity. See the
 [interface specification](https://docs.gamebub.net/developing-cores/reference-interfaces/),
 [screen FAQ](https://docs.gamebub.net/faq/), and local
 [SDRAM map study](../fpga/experiments/throughput30/burst/dual-compressed-bank-study/sdram-storage-model/README.md).
+
+Current controller sources select only SDRAM chip 0, and the streaming top
+has no SRAM ports. Generic firmware memory helpers do not establish support
+in this streaming bitstream. Package A must qualify chip selection, address
+aliases and SRAM pin/timing/controller support before allocating the advertised
+memories. Keep software/protocol byte addresses distinct from controller word
+addresses.
 
 ## Numerical constraints to put in the specification
 
@@ -90,6 +102,13 @@ the next framebuffer, the read plus write costs **41.472 MB/s at 30 fps** or
 indirection or extra buffers can avoid some copies, but add ownership,
 fragmentation and scanout complexity. Two physical SDRAM chips sharing a bus
 do not double instantaneous bus bandwidth.
+
+The external-memory proposal's 60% efficiency assumption is not measured
+headroom. At 60 video fps and 60 Hz scanout, scanout plus reconstruction writes
+and one complete reference read require **124.416 MB/s**, already above the
+assumed 120 MB/s before other costs. At 30 video fps with 60 Hz scanout the
+same example is **82.944 MB/s**. Use the actual access mix, controller service
+and line deadlines to select BRAM, SRAM or SDRAM compressed storage.
 
 The retained baseline used 7,362 LUTs, **120.5/135 BRAM tiles**, and 32 DSPs,
 with only +0.031 ns reported setup slack. These belong to a particular routed
@@ -178,11 +197,11 @@ CDC, physical drain and complete custom packet decoding remain open.
 
 | Package | Owner | Concrete deliverable | Exit gate |
 | --- | --- | --- | --- |
-| A. Reconcile baseline and constraints | integration + hardware | Exact board/panel/framework IDs, preserved JPEG artifacts, usable memory map, clocks, measured concurrent Wi-Fi/QSPI service, baseline resource and timing report | One agreed manifest; unresolved facts labeled; do not assume 60 Hz or full advertised RAM access |
+| A. Reconcile baseline and constraints | integration + hardware | Exact board/panel/framework IDs, preserved JPEG artifacts, memory audit M0–M3 including SRAM/chip selection and actual service, clocks, concurrent Wi-Fi/QSPI measurements, resource/timing report | One agreed manifest; unresolved facts labeled; do not assume 60 Hz, SRAM support or full advertised RAM access |
 | B. Common corpus and harness | host + verification | Native 30 fps captures, separate native 60 fps set, hashes/PTS, one preprocessing path, encoder/decoder adapters, structured metrics | Identical source IDs and aligned output; existing JPEG and software baselines reproduce |
 | C. Tile/RLE software study | codec + verification | Bounded intra syntax, encoder, separate decoder, RAW/FILL/RLE results and worst-case tests | Exact RGB565 round trip; expansion bounded; complete size/decode-cost accounting |
 | D. DPCM software study | codec + verification | Tile-local predictor/quantizer/Rice-or-fixed-width alternatives, matched reconstructed-reference tests | Independent decoder exact to encoder reconstruction; measurable advantage over simpler modes |
-| E. Select one FPGA candidate | hardware + integration | Written comparison against JPEG and existing custom work, full-design resource/service estimate, frozen profile | A measured benefit and a credible memory/timing implementation, not just lower average bytes |
+| E. Select one FPGA candidate | hardware + integration | Written comparison against JPEG and existing custom work, full-design resource/service estimate, frozen profile, measured storage choice from memory gate M4 | A measured benefit and a credible memory/timing implementation, not just lower average bytes |
 | F. RTL and firmware integration | hardware + firmware | Codec parser/reconstructor, bounded transport, CRC/length/drain, reference protocol and real display path | Verilator adversarial tests, independent reference outputs, target synthesis/place/route and correct fault behavior |
 | G. Physical gameplay qualification | hardware + host + verification | Actual board, real Windows capture/encode, weak-link/reconnect tests and synchronized/optical latency | Predeclared sustained cadence/age/loss/quality gates met with complete artifact provenance |
 | H. Motion or transforms | codec + hardware | One-reference integer-motion or transform branch chosen by evidence | Incremental benefit survives memory/latency/quality/resource accounting |
@@ -283,7 +302,9 @@ delivery, encoder deadlines and complete memory service pass the 30 fps gate.
 ## First reviewable work items
 
 1. Preserve the JPEG control and publish the board/panel/clock discrepancy
-   with a hardware-identification checklist for the board-owning team.
+   with a hardware-identification and external-memory qualification checklist
+   for the board-owning team. Reuse the existing controllers; qualify SRAM and
+   second-chip support separately before assigning their storage.
 2. Inventory and reproduce the existing custom/standard software studies;
    add a common source/decoder adapter and explicit result schema rather than
    starting a second incompatible harness.
