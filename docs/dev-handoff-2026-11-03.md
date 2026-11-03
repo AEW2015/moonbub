@@ -11,19 +11,25 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Read the latest [iteration4 report](custom-codec-prototype-v4-2026-11-03.md) for
+Start with [iteration5](custom-codec-prototype-v5-2026-11-03.md): faster byte-identical
+host preparation, asynchronous two-anchor refresh, causal quality recovery and
+corpus-overlap checks. P preparation reaches23–25 ms medians on this host, but
+key means remain78–111 ms and physical30 fps is unproven. The formats and policy
+prototypes need sender/receiver/memory integration before device use.
+
+The earlier [iteration4 report](custom-codec-prototype-v4-2026-11-03.md) records
 actual-codec capture/feedback simulations, immutable-anchor overlap and cap
 stress. They improve the software evidence but expose short-window/cap failures
 and reference-Python costs above real-time budgets. Device formats, firmware,
 memory/clock qualification and hardware30 fps remain unimplemented gates.
 
-The latest [iteration3 report](custom-codec-prototype-v3-2026-11-03.md) adds
+The earlier [iteration3 report](custom-codec-prototype-v3-2026-11-03.md) adds
 CP02 coefficient coding, an actual byte-driven stripe decoder and MT02
 reconstructed-reference prediction. Their software tests/result manifests are
 published; formats still need real sender/firmware/RTL integration. Temporal
 rate savings do not close feedback latency, reference-memory service or FPS.
 
-For the latest custom-codec direction and result table, read the
+For the original custom-codec comparison, read the
 [Python prototype follow-up](custom-codec-prototype-progress-2026-11-03.md).
 MED and fixed-Q14 transform formats are executable research, not integrated
 receiver modes. The finite delivery model adds bounded slot/framebuffer roles

@@ -12,7 +12,12 @@ and [Sunshine](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102
 
 ### Python prototype progress, 2026-11-03
 
-Current follow-up: [iteration4 actual codec/capture/feedback coupling](custom-codec-prototype-v4-2026-11-03.md)
+Current follow-up: [iteration5 host optimizations, asynchronous anchors and quality recovery](custom-codec-prototype-v5-2026-11-03.md)
+adds byte-identical faster preparation, explicit reference-only refresh, causal
+quality restoration and an independent corpus-overlap audit. Measured key stalls
+and conditional model failures remain open; this does not qualify hardware30 fps.
+
+Previous follow-up: [iteration4 actual codec/capture/feedback coupling](custom-codec-prototype-v4-2026-11-03.md)
 tests re-encoding after skips, bounded immutable-anchor overlap and cap backoff.
 It records rate/cap/quality failures and slower measured Python service; virtual
 30-ID/s cases do not establish real-time or hardware performance.
