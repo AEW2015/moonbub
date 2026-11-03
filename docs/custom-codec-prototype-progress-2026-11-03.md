@@ -1,5 +1,8 @@
 # Custom streaming codec: Python prototype progress
 
+This preserves iteration2. Read the [iteration3 follow-up](custom-codec-prototype-v3-2026-11-03.md)
+for improved coefficients, actual compressed stripes and temporal/motion results.
+
 This continues the [codec plan](codec-development-audit-plan.md), rather than
 ending the custom-codec track when JPEG wins an experiment. Work remains on
 the paired study branches. The new evidence is software correctness and

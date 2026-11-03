@@ -12,6 +12,11 @@ and [Sunshine](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102
 
 ### Python prototype progress, 2026-11-03
 
+Latest: [iteration3 coefficients, compressed stripes and temporal prediction](custom-codec-prototype-v3-2026-11-03.md)
+now implements those next custom-codec steps. Its temporal samples are promising
+against JPEG, with different reconstructed pixels and unclosed feedback/memory
+gates; this does not qualify a hardware replacement.
+
 The [executable codec study](../experiments/python-codec-study/README.md)
 now implements bounded intra tile modes, spatial DPCM, compact quantization
 indices, zero-residual runs, temporal reference ownership/recovery checks and

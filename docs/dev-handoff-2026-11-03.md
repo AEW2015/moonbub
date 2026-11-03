@@ -11,6 +11,12 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
+The latest [iteration3 report](custom-codec-prototype-v3-2026-11-03.md) adds
+CP02 coefficient coding, an actual byte-driven stripe decoder and MT02
+reconstructed-reference prediction. Their software tests/result manifests are
+published; formats still need real sender/firmware/RTL integration. Temporal
+rate savings do not close feedback latency, reference-memory service or FPS.
+
 For the latest custom-codec direction and result table, read the
 [Python prototype follow-up](custom-codec-prototype-progress-2026-11-03.md).
 MED and fixed-Q14 transform formats are executable research, not integrated
