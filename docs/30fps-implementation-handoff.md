@@ -1,6 +1,6 @@
 # Game Bub streaming: simulation handoff
 
-Status snapshot: 2026-11-03 10:30 UTC. This is a research branch, not a
+Status snapshot: 2026-11-03 11:00 UTC. This is a research branch, not a
 hardware release. The required target is 720×480 at 30 **distinct displayed**
 frames per second; no complete physical end-to-end 30 fps result has been
 measured.
@@ -15,8 +15,9 @@ measured.
 - A separate 1,800-frame register-bus run eventually displayed and checked all
   frames but **failed** its strict 60-second capture window by 2.38483 ms.
   See [failure evidence](../fpga/experiments/throughput30/burst/longrun-study/results-1800-failed/README.md).
-  The independent 1,800-frame modeled QSPI run was still running at this
-  snapshot; do not infer its verdict from partial progress.
+  The independent 1,800-frame modeled QSPI run also **failed** the strict
+  window by 2.38483 ms after all frames eventually matched the reference; see
+  [QSPI failure evidence](../fpga/experiments/throughput30/burst/qspi-longrun/results-1800-strict-failed/README.md).
 - A live, stop-and-wait functional bridge ran the unchanged Rust receiver on
   emulated ESP32-S3, delivered accepted bytes to the Verilator FPGA model,
   checked a clean frame and a corrupt-frame abort/recovery sequence. The guest

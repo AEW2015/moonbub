@@ -42,10 +42,12 @@ behavioral simulations unless explicitly stated otherwise:
   separate packet-trace study passed clean and lossy ten-frame workloads.
   Its whole-frame network staging and FIFO credits are hypothetical; neither
   is a production ESP32/FPGA integration. See [network study](../fpga/experiments/throughput30/burst/network-rtl-study/README.md).
-- Two 1,800-frame runs are **in progress**, one with optimistic register-bus
-  upload and one through modeled QSPI. Neither is a completed 60-second pass.
-  Partial results also show that display cadence does not establish a 33.3 ms
-  per-frame latency deadline. See [latency study](../fpga/experiments/throughput30/burst/latency-study/README.md).
+- The 1,800-frame register-bus and modeled QSPI runs both **failed** the strict
+  60-second capture window by 2.38483 ms, despite all frames eventually passing
+  their framebuffer comparisons. The QSPI run had 477 individual frame ages
+  above 33.3 ms. See [QSPI failure evidence](../fpga/experiments/throughput30/burst/qspi-longrun/results-1800-strict-failed/README.md).
+  A separate strict ten-second test passed 300 distinct game-derived inputs;
+  it does not erase the 60-second failure or prove real hardware performance.
 - Directed abort tests exposed partial-staging and simultaneous abort/vblank
   issues; isolated candidates pass selected Verilator tests and XSim checks.
   Production recovery, command acknowledgment and buffer ownership remain open.
