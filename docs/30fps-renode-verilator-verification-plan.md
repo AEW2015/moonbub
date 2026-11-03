@@ -50,10 +50,13 @@ behavioral simulations unless explicitly stated otherwise:
   issues; isolated candidates pass selected Verilator tests and XSim checks.
   Production recovery, command acknowledgment and buffer ownership remain open.
   See [abort study](../fpga/experiments/throughput30/burst/abort-study/README.md).
-- No ESP32-S3 firmware has been booted in Renode and no Renode–Verilator
-  full-system bridge has been demonstrated. An Espressif emulator is being
-  evaluated as an alternative; its peripheral support must be checked rather
-  than assumed.
+- No ESP32-S3 firmware has been booted in Renode. As an alternative, an
+  isolated Espressif ESP32-S3 emulator harness runs the unchanged Rust
+  receiver and passes virtual UDP data over a synthetic live IPC bridge to
+  Verilator. Clean frames and a pre-commit corruption/abort recovery scenario
+  passed. The modified harness is not the complete production app, and the
+  simulators have no shared clock, so this is functional integration rather
+  than 30 fps or hardware proof. See [the live bridge](../fpga/experiments/throughput30/burst/live-multiframe-bridge/README.md).
 
 ## Current evidence and constraints
 
