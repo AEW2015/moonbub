@@ -41,3 +41,25 @@ for test in partial staging full inflight; do
     echo "$test flush=$flush checked (exit $status)"
   done
 done
+# Directed simultaneous-abort/vblank control: the original core exhibits
+# publication; the isolated candidate gives the abort priority.
+for variant in original candidate; do
+  core=rtl/moonshine_core.sv
+  [[ $variant == candidate ]] && core=$base/abort-study/moonshine_core_abort_priority.sv
+  out=$build/vblank-$variant
+  verilator --binary --timing --assert -Wno-fatal -DSIMULATION -GFLUSH_COLLECTOR=1 --top-module tb_abort_vblank --Mdir "$out" \
+    "$base/abort-study/tb_abort_vblank.sv" "$base/abort-study/moonshine_memory_burst_abort.sv" \
+    "$base/moonshine_sdram_burst.sv" "$base/sdram_model_burst_verilator.sv" \
+    "$base/marker-followup/jpeg_input_followup.v" experiments/throughput30/moonbub_tile_transpose.sv \
+    "$core" rtl/moonshine_lcd.sv "${vendor[@]}" > "$build/vblank-$variant.build.log" 2>&1
+  set +e
+  timeout 180s "$out/Vtb_abort_vblank" +JPEG_FILE="$fixture" > "$build/vblank-$variant.run.log" 2>&1
+  status=$?
+  set -e
+  if [[ $variant == original ]]; then
+    [[ $status != 0 && $status != 124 ]] && grep -q ABORT_VBLANK_PUBLISHED_ABORTED_FRAME "$build/vblank-$variant.run.log"
+  else
+    [[ $status == 0 ]] && grep -q TEST_PASS_ABORT_VBLANK "$build/vblank-$variant.run.log"
+  fi
+  echo "vblank $variant checked (exit $status)"
+done
