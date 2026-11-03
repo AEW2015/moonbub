@@ -1,0 +1,24 @@
+# Missing-packet inactivity timeout sensitivity
+
+This is a **synthetic discrete-event study**, not a Wi-Fi measurement, firmware execution or a replay of the testbench's 2 ms timer. It reuses `../transport-followup/recovery-study/study.py`: ten synthetic JPEGs repeated for 300 captures per seed at 30 Hz, assumed 8 Mbps L3 serialization, existing MSV1 packetization, independent uniform per-packet receive jitter, and either no loss or independently sampled 0.5% packet loss. Seeds 73–82 produce 3,000 frames in each case. Source queue replacement/expiry/wait must remain zero or the study stops. The model omits MAC/PHY overhead, wireless retransmissions, contention, CPU, QSPI, audio, and callback scheduling; its timer resets on **packet acceptance**, unlike the earlier RTL bench's testbench timer after completed forwarding.
+
+For each frame, the model checks offsets in arrival order. SOF starts a frame, an accepted packet resets the timer, EOF completes it, a wrong next offset causes a sequence error, and a newer SOF supersedes an unfinished frame if its timer has not yet expired. A timeout due at exactly the next packet's arrival wins the tie. Missing SOF has no active timer. Packet arrivals that come after a timeout or failed frame do not restart it without a new SOF. This is an explicit model policy, not production semantics or a reorder-window implementation.
+
+**Complete, ordered frames** below had every packet arrive in order in the underlying trace. A false timeout is a timer firing before that otherwise complete ordered frame could finish. The table excludes complete-but-reordered frames and all frames with loss from the false-timeout denominator. For **EOF-only loss**, every earlier packet arrived in order and only the last packet is absent. We separately count early timeouts that occur *before* the last received packet, timeouts that occur after that last received packet, and cases superseded by the next SOF before timeout. Detection delay for a timeout after the last received packet is measured relative to the **nominal end of sender L3 serialization** of the missing EOF packet. An actually lost packet has no measured receive time, so this is only a synthetic reference; receive jitter can make the reported delay larger than the configured threshold. Since the timer is reset at the last accepted packet, its delay from that accepted packet is exactly the selected threshold by construction.
+
+| Jitter max; IID 0.5% loss | Threshold | False timeouts / complete ordered | EOF-only: after-last / early / superseded | EOF-only timeout delay vs nominal end, median / p95 |
+| --- | ---: | ---: | ---: | ---: |
+| 300 µs | 1 ms | 2,640 / 2,640 | 0 / 11 / 0 | — |
+| 300 µs | 2 ms | 0 / 2,640 | 11 / 0 / 0 | 1.536 / 1.991 ms |
+| 300 µs | 3 ms | 0 / 2,640 | 11 / 0 / 0 | 2.536 / 2.991 ms |
+| 300 µs | 5 ms | 0 / 2,640 | 11 / 0 / 0 | 4.536 / 4.991 ms |
+| 300 µs | 10 or 20 ms | 0 / 2,640 | 0 / 0 / 11 | — |
+| 1,200 µs | 1 ms | 1,869 / 1,869 | 0 / 13 / 0 | — |
+| 1,200 µs | 2 ms | 969 / 1,869 | 7 / 6 / 0 | 2.661 / 2.821 ms |
+| 1,200 µs | 3 ms | 0 / 1,869 | 13 / 0 / 0 | 3.385 / 3.821 ms |
+| 1,200 µs | 5 ms | 0 / 1,869 | 13 / 0 / 0 | 5.385 / 5.821 ms |
+| 1,200 µs | 10 or 20 ms | 0 / 1,869 | 0 / 0 / 13 | — |
+
+The 2 ms testbench choice survives this model's low-jitter complete-ordered sample but fails many otherwise complete ordered frames at 1,200 µs jitter. A 3 ms threshold avoids false timeouts in those **specific** ordered samples, with later detection; it is not a measured safe value. Only 11 and 13 EOF-only loss samples are present respectively, and the zero false counts do not imply zero risk. The model sees 10 complete-but-reordered and 18 missing-SOF frames in the 300 µs loss case, and 779 reordered and 15 missing-SOF frames in the 1,200 µs loss case; increasing the inactivity threshold does not repair ordering or establish SOF reception. At 3,000 µs jitter, almost all frames reorder in this independent-jitter model (2,625 of the 3,000 captured frames are complete but reordered in the loss case and only one is complete ordered), so a timeout choice cannot be assessed meaningfully from that tiny ordered subset. Full classification and outcomes, including no-loss and 3,000 µs cases, are retained in `results.json`.
+
+`results.json` was regenerated identically with `FIXTURE_DIR=/path/to/fixtures OUTPUT=/tmp/results.json ./run.sh`. The wrapper runs ten unit tests first, including exact-deadline tie, last-packet timeout, next-SOF supersession, middle loss and missing SOF. Fixture files are produced by `../network-rtl-study/run.sh`. The model records six thresholds and distinguishes early timeout from actual timeout after all prior packets; it does not quantify device execution time, reorder-window expiry, lost aborts, recovery races or real-time scheduling. Measure inter-arrival and accepted/forwarded times on the real ESP32 before choosing a production threshold.
