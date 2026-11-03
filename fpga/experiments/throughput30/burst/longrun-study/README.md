@@ -110,3 +110,64 @@ arrival-to-presentation ages above 33.333 ms. This illustrates why throughput
 and latency must be reported separately; the prefix is not a final result.
 The fixture manifest was independently checked for 1,800 unique hashes, matching
 file sizes and SHA-256 values; source content remains synthetic.
+
+## Recorded 1,800-frame strict-window failure
+
+The bounded 1,800-frame Verilator run completed 1,800 distinct generated
+JPEGs, but **failed** its strict 60-second source-window assertion. All 1,800
+frames were eventually presented in order with no modeled queue/core overflow,
+drop or LCD underrun, and all 622,080,000 decoded RGB565 pixels matched the
+related fixed-color C model. Only 1,799 frame IDs were presented within the
+60-second capture window. The final frame was **2.38483 ms late** relative to
+that fixed window. This result is a failure of the specified test, not a pass.
+
+The first-to-last presentation rate was 29.995089 fps over 1,799 intervals;
+the strict capture-window count was 1,799/60 = 29.98333 frames/s. Modeled
+arrival-to-swap age p50/p95/p99/max was 28.78737/35.70993/36.31573/36.45743 ms
+(nearest-rank). Of 1,800 frames, 370 exceeded a nominal 33.33333 ms frame-age
+interval. One-second capture-aligned presentation counts were 29 in five
+windows, 30 in 51, and 31 in four. Timing is specific to the chosen initial
+phase of 30 Hz arrivals relative to the modeled ~65 Hz LCD refresh.
+
+`sixtysec-strict-failure.log` records every frame and final fatal assertion;
+`results-1800-failed/verified.jsonl` records JPEG and RTL dump hashes and
+C-model verdicts per frame, and `sixtysec-analysis.json` summarizes the result.
+All large raw frame dumps were removed **after** exact comparison and hash
+recording; the generated JPEGs remain in the local run directory. The C model
+shares upstream algorithms with the RTL. RTL-scanout output pixels were not
+independently sampled. Results assume synthetic video, immediate complete JPEG
+arrival, abstract one-slot external queue, optimistic two-cycle byte-register
+bus, functional SDRAM and no real Wi-Fi/QSPI, CPU/network latency, actual
+hardware timing or user input. They do not establish live or hardware FPS.
+
+Shifting the sender's phase relative to LCD scanout is a valid separate
+sensitivity experiment, but would change both the arrival/decode schedule and
+its 60-second window. It cannot relabel this failed run or guarantee real
+hardware behavior without a real synchronization mechanism and drift tests.
+
+## Short source-to-display phase sensitivity experiment
+
+A separate test waits an additional configurable number of 100 MHz cycles
+between LCD warmup and the first 30 Hz source capture. It does not change the
+simulated LCD pixel clock. Three 10-frame runs using the broader marker
+candidate, abstract queue and optimistic register upload yielded:
+
+| Startup phase shift | First-to-last fps (9 intervals) | Maximum modeled frame age | Margin before the 10-frame capture-window end |
+| ---: | ---: | ---: | ---: |
+| 0 ms | 29.284 | 36.067 ms | 0.098 ms |
+| 2.5 ms | 29.284 | 36.167 ms | 2.598 ms |
+| 7.68338 ms | 30.825 | 35.951 ms | 7.781 ms |
+
+All 30 output frame dumps matched the earlier related-C-model-checked baseline
+byte-for-byte. The earlier strict 1,800-frame result still **failed**; these are
+only ten-frame phase-sensitivity experiments, not a prediction of a different
+60-second run. The 10-frame first-to-last fps varies with the sample boundaries,
+and the apparent margin does not imply a stable or low-latency physical system.
+Actual sender/display phase control, clock drift, real QSPI, queue capacity,
+latency, gameplay and the physical panel remain unmodeled.
+
+From the repo root, reproduce with
+`fpga/experiments/throughput30/burst/longrun-study/run-phase-sensitivity.sh`.
+It runs the three phases and checks all 30 frames against the related C model.
+The separate phase testbench and the per-phase output logs and hashes are in
+this directory; no production clock or sender was changed.
