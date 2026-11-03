@@ -1,0 +1,117 @@
+{
+  "study": "Offline sender JPEG size and encode timing; no transmission",
+  "source_file": "/home/lori/gamebub-streaming-prototype/media/mass-effect-2600.mp4",
+  "source_sha256": "cf79e7bef47b242005eff912c9da40404aadcd3fb4154c7fd1a84ab95ecfd311",
+  "source_video": {
+    "width": 1280,
+    "height": 720,
+    "average_rate": "747/25",
+    "decoded_frame_count": 360
+  },
+  "canvas": "720x480 RGB, source fitted into centered 720x405 region with black letterbox",
+  "encoder": "sunshine-30fps-study/tools/gamebub/msv1.py::encode_receiver_jpeg",
+  "cap_bytes": 49152,
+  "qualities": {
+    "75": {
+      "jpeg_bytes": {
+        "count": 360,
+        "mean": 18150.411111111112,
+        "p95": 18693.35,
+        "max": 19560,
+        "min": 15468
+      },
+      "encode_time_ms": {
+        "count": 360,
+        "mean": 1.3522324888888888,
+        "p95": 1.6145072,
+        "max": 10.167577,
+        "min": 1.108102
+      },
+      "over_cap_count": 0,
+      "over_cap_fraction": 0.0
+    },
+    "80": {
+      "jpeg_bytes": {
+        "count": 360,
+        "mean": 20384.133333333335,
+        "p95": 20941.0,
+        "max": 21928,
+        "min": 17388
+      },
+      "encode_time_ms": {
+        "count": 360,
+        "mean": 1.289836,
+        "p95": 1.5338887000000003,
+        "max": 1.846749,
+        "min": 1.081433
+      },
+      "over_cap_count": 0,
+      "over_cap_fraction": 0.0
+    },
+    "85": {
+      "jpeg_bytes": {
+        "count": 360,
+        "mean": 23670.61111111111,
+        "p95": 24315.15,
+        "max": 25547,
+        "min": 20282
+      },
+      "encode_time_ms": {
+        "count": 360,
+        "mean": 1.317558536111111,
+        "p95": 1.5711032,
+        "max": 2.035509,
+        "min": 1.10675
+      },
+      "over_cap_count": 0,
+      "over_cap_fraction": 0.0
+    },
+    "90": {
+      "jpeg_bytes": {
+        "count": 360,
+        "mean": 29650.222222222223,
+        "p95": 30449.35,
+        "max": 32085,
+        "min": 25723
+      },
+      "encode_time_ms": {
+        "count": 360,
+        "mean": 1.3868091555555555,
+        "p95": 1.6655745499999999,
+        "max": 1.939982,
+        "min": 1.154217
+      },
+      "over_cap_count": 0,
+      "over_cap_fraction": 0.0
+    }
+  },
+  "q90_then_q80_retry": {
+    "policy": "q90 if <= cap, otherwise encode/use same-frame q80; drop if q80 also exceeds cap",
+    "sent_count": 360,
+    "dropped_count": 0,
+    "q90_count": 360,
+    "q80_retry_count": 0,
+    "chosen_jpeg_bytes": {
+      "count": 360,
+      "mean": 29650.222222222223,
+      "p95": 30449.35,
+      "max": 32085,
+      "min": 25723
+    },
+    "encode_time_ms_sequential_q90_plus_retry": {
+      "count": 360,
+      "mean": 1.3868091555555555,
+      "p95": 1.6655745499999999,
+      "max": 1.939982,
+      "min": 1.154217
+    },
+    "note": "Sequential offline timing includes q90 then q80 only on fallback frames; excludes capture, transfer, receiver and presentation."
+  },
+  "caveats": [
+    "This is a separate local Mass Effect clip at native average rate, not the earlier 512x288 25fps combat clip.",
+    "The source is a finite prerecorded gameplay segment; its scene content and encoding are not representative of all games or direct capture.",
+    "JPEG size cap excludes protocol headers and transport framing.",
+    "Encode times are offline sequential Python measurements on this host; they are not real-time game capture or target-device throughput.",
+    "No claims are made about transmission, receiver behavior, display presentation, perceived quality or gameplay acceptance."
+  ]
+}
