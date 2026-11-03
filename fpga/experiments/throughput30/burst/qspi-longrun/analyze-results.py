@@ -17,18 +17,27 @@ text=(checked/'simulation.log').read_text()
 rows=[json.loads(x) for x in (checked/'verified.jsonl').read_text().splitlines()]
 if not rows: raise SystemExit('no verified frames')
 if [x['frame_id'] for x in rows]!=list(range(1,len(rows)+1)):raise ValueError('noncontiguous checked frames')
-required={'arrival_cycle','commit_cycle','present_cycle','arrival_to_present_cycles','writes','bursts','underruns','rtl_dump_sha256','jpeg_sha256','cmodel_exact_pixels'}
-for row in rows:
+required={'arrival_cycle','commit_cycle','present_cycle','arrival_to_present_cycles','writes','bursts','underruns','rtl_dump_sha256','jpeg_sha256','cmodel_exact_pixels','upload_cycles'}
+source_epoch=rows[0]['arrival_cycle']
+previous_present=None
+for i,row in enumerate(rows):
  if not required.issubset(row):raise ValueError('incomplete frame record')
- if row['writes']!=345600 or row['cmodel_exact_pixels']!=345600 or row['underruns']!=0:raise ValueError('incorrect frame counters')
+ if row['writes']!=345600 or row['bursts']!=43200 or row['cmodel_exact_pixels']!=345600 or row['underruns']!=0:raise ValueError('incorrect frame counters')
+ if row['arrival_cycle']!=source_epoch+(i*10000000)//3:raise ValueError('capture timestamp violates rational 30 Hz schedule')
+ if not row['arrival_cycle']<=row['commit_cycle']<=row['present_cycle']:raise ValueError('capture/commit/presentation timestamps out of order')
+ if previous_present is not None and row['present_cycle']<=previous_present:raise ValueError('presentation timestamps must be strictly increasing')
  if row['present_cycle']-row['arrival_cycle'] != row['arrival_to_present_cycles']:raise ValueError('incorrect frame age')
+ previous_present=row['present_cycle']
 if len({x['jpeg_sha256'] for x in rows})!=len(rows):raise ValueError('repeated input JPEG hash')
 summary_path=checked/'summary.json';summary=json.loads(summary_path.read_text()) if summary_path.is_file() else None
+events=[{k:int(v) for k,v in re.findall(r'(\w+)=(\d+)',line)} for line in text.splitlines() if line.startswith('FRAME_RESULT ')]
+compare_keys=('arrival_cycle','commit_cycle','present_cycle','arrival_to_present_cycles','writes','bursts','underruns','upload_cycles')
+log_match=len(events)==len(rows) and all(event.get('id')==row['frame_id'] and all(event.get(k)==row[k] for k in compare_keys) for event,row in zip(events,rows))
 marker=bool(re.search(r'^TEST_PASS_JPEG720_60S frames=1800\b',text,re.M))
 fatal=bool(re.search(r'%Fatal|^FATAL:',text,re.M))
 epoch=rows[0]['arrival_cycle'];end=epoch+6000000000
 w=summary.get('window',{}) if summary else {}
-pass_strict=bool(summary and summary.get('pass_marker') and summary.get('frames')==1800 and w.get('strict')==1 and w.get('elapsed_cycles')==6000000000 and w.get('epoch')==epoch and w.get('end')==end and marker and not fatal and len(rows)==1800 and rows[-1]['present_cycle']<=end)
+pass_strict=bool(summary and summary.get('pass_marker') and summary.get('frames')==1800 and w.get('strict')==1 and w.get('elapsed_cycles')==6000000000 and w.get('epoch')==epoch and w.get('end')==end and marker and log_match and not fatal and len(rows)==1800 and epoch<rows[0]['present_cycle'] and rows[-1]['present_cycle']<=end)
 ages=sorted(x['arrival_to_present_cycles'] for x in rows)
 def percentile(q):return ages[math.ceil(q*len(ages))-1]/100000
 intervals=[b['present_cycle']-a['present_cycle'] for a,b in zip(rows,rows[1:])]
@@ -39,7 +48,7 @@ result={'status':'PASS_STRICT' if pass_strict else ('FAIL_STRICT' if fatal else 
         'input':'1800 distinct synthetic 720x480 JPEGs, QSPI RTL, abstract instant-availability one-slot queue; no ESP32, Wi-Fi, host capture, or physical timings',
         'scope':'verilator behavioral; related C decoder pixel comparison, SDRAM readback, LCD swap/underrun; LCD output pixels not individually checked',
         'verified_frames':len(rows),'distinct_jpeg_hashes':len({x['jpeg_sha256'] for x in rows}),'verified_pixels':sum(x['cmodel_exact_pixels'] for x in rows),
-        'pass_marker':marker,'fatal_seen':fatal,'summary_present':summary is not None,'capture_epoch_cycle':epoch,'strict_window_end_cycle':end,
+        'pass_marker':marker,'frame_log_records_match':log_match,'fatal_seen':fatal,'summary_present':summary is not None,'capture_epoch_cycle':epoch,'strict_window_end_cycle':end,
         'within_strict_window':within,'final_present_cycle':rows[-1]['present_cycle'],'final_window_offset_ms':(rows[-1]['present_cycle']-end)/100000 if len(rows)==1800 else None,
         'presentation_fps_first_to_last':((len(rows)-1)*1e8/(rows[-1]['present_cycle']-rows[0]['present_cycle'])) if len(rows)>1 else None,
         'fps_60s_capture_window':within/60 if len(rows)==1800 else None,'age_ms_p50':percentile(.5),'age_ms_p95':percentile(.95),'age_ms_p99':percentile(.99),'age_ms_max':ages[-1]/100000,
