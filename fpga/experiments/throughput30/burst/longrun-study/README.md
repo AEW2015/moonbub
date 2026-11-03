@@ -87,3 +87,17 @@ wall timeout is not a success; inspected data may be found in `checked/`.
 A successful result would still apply only to this isolated behavioral design,
 synthetic video, instantaneous JPEG availability and abstract external queue,
 not a real ESP32, Wi-Fi, QSPI, physical memory or board timing.
+
+For long host runs, `resource-monitor.py --pid PID --output PATH` records
+available RAM and memory PSI plus a secondary `(RAM total - RAM available +
+swap used)/(RAM total + swap total)` indicator at 30-second intervals. This
+is telemetry only; it does not set a policy, pause, or stop a build. The
+recorded ratio uses Linux `MemAvailable` as an estimate and is not resident
+working-set utilization. The PID's start time is checked to avoid monitoring a
+new process after PID reuse.
+
+The long-run scoreboard checks every decoder pixel against the related C model
+and every corresponding back-buffer SDRAM location. It does **not** sample and
+compare every RGB pixel actually emitted by the LCD output. The presentation
+check observes the core's frame ID and the LCD's swap boundary, plus the modeled
+underrun counter. Full scanout pixel checking remains a separate gap.

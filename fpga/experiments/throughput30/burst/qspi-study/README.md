@@ -79,3 +79,25 @@ with one fixed 200 MHz sampling clock and do not establish physical timing,
 metastability margin, SPI-driver operation, all phase offsets or actual device
 capability. The currently documented firmware write cap remains 40 MHz; no
 faster operating rate is recommended or enabled by this experiment.
+
+## Ten-frame QSPI integration experiment
+
+A separate Verilator 5.020 bench connects QSPI and the CDC bridge to the
+experimental burst/LCD pipeline and the later isolated EOI guard. It schedules
+ten distinct generated 720×480 JPEGs at rational 30 Hz, each instantly present
+in an abstract one-frame upstream queue. Each frame is uploaded via modeled
+40 MHz QSPI in 1,024-byte chunks with a 16 MHz 0x0c read per chunk. It checks
+all 3,456,000 decoder/SDRAM pixel words, ordered presentation IDs, lost-word
+counter, no reported decoder drops, queue overflow or LCD underruns. The ten
+outputs are byte-identical to the earlier related-C-model-checked frames;
+`jpeg720-ten-hashes.json` records hashes. First-to-last presentation spans
+307.33531 ms over nine intervals, or 29.284 fps for this short, phase-sensitive
+window; maximum arrival-to-presentation age is 36.06722 ms. Upload intervals
+are about 1.4 ms per frame for this ideal digital QSPI driver.
+
+Run `run-jpeg720-ten-verilator.sh` to generate inputs, run a bounded test and
+compare all outputs to the related C model. There is no Wi-Fi, actual ESP32,
+CPU processing, DMA-driver scheduling or modeled receiver memory allocation;
+the external buffer does not exist in production firmware. The QSPI parser is
+the actual RTL, but the source directly follows its pin protocol. Ten frames do
+not establish sustained FPS, physical timing, or a stable hardware service.

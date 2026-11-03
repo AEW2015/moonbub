@@ -63,3 +63,29 @@ is a four-state behavioral cross-check, not target-device synthesis, timing or
 proof of metastability safety. XSim reported that existing RTL reads pointer
 `rp` before its declaration; it compiled and ran, but the warning remains a
 candidate cleanup item.
+
+## Ten-frame full FPGA-side pipeline experiment
+
+A separate Verilator test connects the experimental credit endpoint and CDC
+FIFO to the actual JPEG core with the later isolated EOI guard, the
+experimental tile/burst path, and the active LCD. Ten distinct 720×480 JPEGs
+are scheduled at 30 Hz. The source has an abstract upstream one-frame queue
+and uses QSPI at 40 MHz writes / 16 MHz reads. It reads both remaining bytes
+and experimental FIFO credits and writes no more than the reported credits in
+one transaction. It reports ten presentation IDs, 3,456,000 pixel writes, no
+modeled drops, FIFO loss or LCD underruns, and 4,252 credit reads. The ten
+coordinate dumps are byte-identical to previous outputs checked against the
+related C decoder (`jpeg720-ten-hashes.json`). The longest modeled
+arrival-to-presentation age is 38.66702 ms; nine output intervals span 307.33531
+ms (29.284 fps in this short phase-sensitive window). The extra status reads
+cost time: frame 10's synthetic-QSPI upload used 389,590 cycles, or 3.8959 ms
+at 100 MHz. All figures are modeled.
+
+`run-jpeg720-ten-verilator.sh` generates the ten fixtures, builds the
+experiment, bounds execution and checks every output against the related C
+model. The full wrapper was rerun successfully, including ten exact related-C-model
+comparisons. The external queue, CRC/setup CPU
+time, ESP32 firmware, radio, security, physical QSPI/CDC timing, SDRAM timing,
+actual Artix-7 fit and LCD hardware are not modeled or proven. The experimental
+status endpoint and sub-burst policy are **not implemented in production**;
+this is not a sustained 30 fps result or a deployment recommendation.
