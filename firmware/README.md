@@ -66,10 +66,13 @@ compilation alone does not prove it on the streaming image.
 
 The firmware forwards a strictly ordered stream of at most 1024-byte compressed
 chunks from a 1065-byte internal DMA buffer, checks metadata and incremental
-IEEE CRC32, and aborts incomplete frames after 500 ms. FPGA free-space credits
-are checked before every chunk. No full compressed or decoded frame is held in
-ESP memory. The existing SPI driver is DMA-enabled; QSPI writes are capped at
-40 MHz and reads at 16 MHz. Neither rate has been qualified by this firmware
+IEEE CRC32, and aborts incomplete frames after 500 ms. The firmware checks
+FPGA register `0x0c` before every chunk. It reports bytes remaining in the
+current compressed frame, not free entries in the clock-crossing write FIFO;
+it does not by itself prevent FIFO overflow. The separate transport overflow
+counter at `0x50` records lost bus words. No full compressed or decoded frame
+is held in ESP memory. The existing SPI driver is DMA-enabled; QSPI writes
+are capped at 40 MHz and reads at 16 MHz. Neither rate has been qualified by this firmware
 build. sdkconfig.defaults does not enable external PSRAM; no PSRAM is assumed.
 
 The worker uses a bounded two-command queue. New connect generations invalidate

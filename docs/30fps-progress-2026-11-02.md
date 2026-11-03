@@ -123,3 +123,32 @@ acceptable visual tolerance.
   is modeled, and average payload for this sequence exceeds that rate. See
   `burst/link-study/README.md`. Short-window rates are phase-sensitive and do
   not establish sustained 30 fps.
+
+## Follow-up: QSPI path and real EOI backpressure
+
+An isolated Verilator test transmitted the q65 frame-sized 26,159-byte payload
+through the actual QSPI endpoint and CDC FIFO in 26 chunks, with one modeled
+16 MHz read per chunk and 40 MHz QSPI writes; four tested phases completed in
+1.39645 ms with ordered data and no modeled overflow. A separate one-frame
+Verilator test connected those RTL blocks to the actual JPEG core, experimental
+burst writer and LCD: one 720×480 synthetic frame presented, no lost CDC words
+or modeled LCD underruns, and its pixel dump matched the prior shared-C-model
+result. These are functional FPGA-side simulations, not ESP32/Wi-Fi execution,
+physical QSPI timing, sustained streaming or 30 fps. `0x0c` is remaining frame
+bytes, not free CDC entries; the firmware README has been corrected. Details:
+`fpga/experiments/throughput30/burst/qspi-study/README.md`.
+
+The 40 MHz firmware cap is unchanged. An isolated higher-frequency digital
+stress sweep also passed selected phases; it does not establish physical timing
+or authorize a faster device setting. The SOF/EOI marker audit additionally
+found the earlier candidate could assert `data_last_o` on a genuine but stalled
+EOI byte. A further isolated guard passes directed Verilator/XSim tests and a
+10-frame Verilator regression; it is not integrated and other marker cases
+need audit. Details: `fpga/experiments/throughput30/burst/marker-followup/`.
+
+A separate packet-level 1,800-capture analytical study uses the actual Python
+MSV1 packetizer/reassembler with hypothetical queues, service, loss and jitter.
+The ten synthetic frames are repeated. Its calibration misses one reference
+RTL swap by a display refresh, so results are sensitivity estimates rather
+than physical Wi-Fi or 60-second RTL evidence. Details:
+`fpga/experiments/throughput30/burst/transport-followup/README.md`.
