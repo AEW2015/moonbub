@@ -1,0 +1,4214 @@
+{
+  "scope": "host-only actual Rust MSV1 receiver + ideal synthetic network, candidate single-frame reorder/XOR repair; not hardware",
+  "python_version": "3.12.3",
+  "frames_per_seed": 600,
+  "seed_count": 5,
+  "wire_service_mbps": 8.0,
+  "deadline_ms": 100,
+  "fixture_sha256": [
+    "8cc99ea7d50d1d20255e41ff7247b0770b3349e705c27152a41817418ce5c9de",
+    "c7db8fa330fca9bf715ad2e915dd84051b43de0e70009a8b93f181046a805fb0",
+    "a76055f8d43e1b0affe2810697f0f2f795302751ab2e592c43eb83cd19cfa13e",
+    "f3037dd5c0f873dab3584d8517322f19ce1ae74f18ba9fb36f766696d50c0b47",
+    "6993eb71ba337396c839cd93af7c608c80127308fa90067f0b824b8a36a47137",
+    "8e4d1750631c7a2e0b92ce7e36817641bde5d520d4bade4874ea2670d6a419af",
+    "013dc842ef06b249da968c009c57bff4905728d40c6166f22147302a37af6e38",
+    "81c99409e6027703ac1c8cb6a67333e872a471f19d4b5f1e175151f2fec39ed2",
+    "ec6fb6ca2786cd4d388f2d49e22cd5bcbd9c426d26e781617ab2d029a84d825f",
+    "3f7af5140d6b34f4b3793bd6329c42d5ef88f6104b721c62905c942a6e1bf7aa"
+  ],
+  "rust_receiver_source_sha256": "32a91ffaf0b39a82f11036be7e501765cd3f9fed6905c27b6efc01f358d79e64",
+  "python_reference_source_sha256": "01a083f4794c7ced7e73eece60eac9d32cdacf589c6bc72b6c91c72e945cc9e5",
+  "conditions": {
+    "jitter": "independent uniform 0-1200 us per packet",
+    "iid": "0.5% independent packet loss",
+    "bursty": "packet-step GE: good->bad 0.002, bad->good 0.25; per-state losses good 0.0005, bad 0.5",
+    "rate": "constant L3 byte service shared by data and parity; no Wi-Fi MAC/PHY, audio or host/device timing",
+    "parity": "one parity datagram per eight complete MSV1 datagrams, +24 assumed metadata bytes and IPv4/UDP; no negotiated implementation, auth, or ESP32 RAM timing",
+    "source": "10 repeated synthetic frames, not gameplay"
+  },
+  "summary": [
+    {
+      "scenario": "clean",
+      "policy": "strict",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 3000,
+      "mean_complete": 600.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.136,
+      "peak_reorder_bytes": 0,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 3000,
+      "mean_complete": 600.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.136,
+      "peak_reorder_bytes": 0,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4p1",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 3000,
+      "mean_complete": 600.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.136,
+      "peak_reorder_bytes": 0,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "clean",
+      "policy": "reorder",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 3000,
+      "mean_complete": 600.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.136,
+      "peak_reorder_bytes": 28380,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "clean",
+      "policy": "fec8",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 3000,
+      "mean_complete": 600.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 7.9284,
+      "worst_p95_complete_age_ms": 32.484,
+      "peak_reorder_bytes": 31644,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "jitter",
+      "policy": "strict",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2171,
+      "mean_complete": 434.2,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 30.035,
+      "peak_reorder_bytes": 0,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2995,
+      "mean_complete": 599.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.985,
+      "peak_reorder_bytes": 3192,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4p1",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 3000,
+      "mean_complete": 600.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.985,
+      "peak_reorder_bytes": 1064,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "jitter",
+      "policy": "reorder",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 3000,
+      "mean_complete": 600.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.985,
+      "peak_reorder_bytes": 28380,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "jitter",
+      "policy": "fec8",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 3000,
+      "mean_complete": 600.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 7.9284,
+      "worst_p95_complete_age_ms": 33.33467,
+      "peak_reorder_bytes": 32423,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "iid",
+      "policy": "strict",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 1938,
+      "mean_complete": 387.6,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.975,
+      "peak_reorder_bytes": 0,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2618,
+      "mean_complete": 523.6,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.896,
+      "peak_reorder_bytes": 3460,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4p1",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2635,
+      "mean_complete": 527.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.896,
+      "peak_reorder_bytes": 3460,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "iid",
+      "policy": "reorder",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2635,
+      "mean_complete": 527.0,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.896,
+      "peak_reorder_bytes": 28380,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "iid",
+      "policy": "fec8",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2992,
+      "mean_complete": 598.4,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 7.9284,
+      "worst_p95_complete_age_ms": 33.39967,
+      "peak_reorder_bytes": 32732,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "bursty",
+      "policy": "strict",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2099,
+      "mean_complete": 419.8,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.952,
+      "peak_reorder_bytes": 0,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2837,
+      "mean_complete": 567.4,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.917,
+      "peak_reorder_bytes": 3192,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4p1",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2844,
+      "mean_complete": 568.8,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.917,
+      "peak_reorder_bytes": 3192,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "bursty",
+      "policy": "reorder",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2844,
+      "mean_complete": 568.8,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 6.85704,
+      "worst_p95_complete_age_ms": 29.917,
+      "peak_reorder_bytes": 28380,
+      "rust_mismatches": 0
+    },
+    {
+      "scenario": "bursty",
+      "policy": "fec8",
+      "seeds": 5,
+      "frames": 3000,
+      "complete": 2927,
+      "mean_complete": 585.4,
+      "mean_sender_replaced": 0.0,
+      "mean_wire_mbps": 7.9284,
+      "worst_p95_complete_age_ms": 33.35566,
+      "peak_reorder_bytes": 32732,
+      "rust_mismatches": 0
+    }
+  ],
+  "runs": [
+    {
+      "scenario": "clean",
+      "policy": "strict",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "rejected_datagrams": 0,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 0,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0,
+        "frame_ids_seen_without_active_receiver": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4p1",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 0,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "pre_sof_expired": 0,
+        "pre_sof_accepted": 0,
+        "pre_sof_rejected": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "reorder",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "strict",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "rejected_datagrams": 0,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 0,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0,
+        "frame_ids_seen_without_active_receiver": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4p1",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 0,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "pre_sof_expired": 0,
+        "pre_sof_accepted": 0,
+        "pre_sof_rejected": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "reorder",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "strict",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "rejected_datagrams": 0,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 0,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0,
+        "frame_ids_seen_without_active_receiver": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4p1",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 0,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "pre_sof_expired": 0,
+        "pre_sof_accepted": 0,
+        "pre_sof_rejected": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "reorder",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "strict",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "rejected_datagrams": 0,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 0,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0,
+        "frame_ids_seen_without_active_receiver": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4p1",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 0,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "pre_sof_expired": 0,
+        "pre_sof_accepted": 0,
+        "pre_sof_rejected": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "reorder",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "strict",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "rejected_datagrams": 0,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 0,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0,
+        "frame_ids_seen_without_active_receiver": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "window4p1",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 0,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "pre_sof_expired": 0,
+        "pre_sof_accepted": 0,
+        "pre_sof_rejected": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "reorder",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 28.659,
+        "p95_complete_age_ms": 29.136,
+        "p99_complete_age_ms": 29.136,
+        "max_complete_age_ms": 29.136,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "fec8",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.007,
+        "p95_complete_age_ms": 32.484,
+        "p99_complete_age_ms": 32.484,
+        "max_complete_age_ms": 32.484,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 31644,
+        "parity_received": 1800,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "fec8",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.007,
+        "p95_complete_age_ms": 32.484,
+        "p99_complete_age_ms": 32.484,
+        "max_complete_age_ms": 32.484,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 31644,
+        "parity_received": 1800,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "fec8",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.007,
+        "p95_complete_age_ms": 32.484,
+        "p99_complete_age_ms": 32.484,
+        "max_complete_age_ms": 32.484,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 31644,
+        "parity_received": 1800,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "fec8",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.007,
+        "p95_complete_age_ms": 32.484,
+        "p99_complete_age_ms": 32.484,
+        "max_complete_age_ms": 32.484,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 31644,
+        "parity_received": 1800,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "clean",
+      "policy": "fec8",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.007,
+        "p95_complete_age_ms": 32.484,
+        "p99_complete_age_ms": 32.484,
+        "max_complete_age_ms": 32.484,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 31644,
+        "parity_received": 1800,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "strict",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 428,
+        "received_fps_over_capture_duration": 21.4,
+        "p50_complete_age_ms": 29.265,
+        "p95_complete_age_ms": 30.035,
+        "p99_complete_age_ms": 30.297,
+        "max_complete_age_ms": 30.33,
+        "rejected_datagrams": 1132,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.27,
+        "p95_complete_age_ms": 29.985,
+        "p99_complete_age_ms": 30.265,
+        "max_complete_age_ms": 30.33,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 1064,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0,
+        "frame_ids_seen_without_active_receiver": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4p1",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.27,
+        "p95_complete_age_ms": 29.985,
+        "p99_complete_age_ms": 30.265,
+        "max_complete_age_ms": 30.33,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 1064,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "pre_sof_expired": 0,
+        "pre_sof_accepted": 0,
+        "pre_sof_rejected": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "reorder",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.27,
+        "p95_complete_age_ms": 29.985,
+        "p99_complete_age_ms": 30.265,
+        "max_complete_age_ms": 30.33,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "strict",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 428,
+        "received_fps_over_capture_duration": 21.4,
+        "p50_complete_age_ms": 29.301,
+        "p95_complete_age_ms": 29.974,
+        "p99_complete_age_ms": 30.279,
+        "max_complete_age_ms": 30.328,
+        "rejected_datagrams": 1117,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 598,
+        "received_fps_over_capture_duration": 29.9,
+        "p50_complete_age_ms": 29.296,
+        "p95_complete_age_ms": 29.915,
+        "p99_complete_age_ms": 30.279,
+        "max_complete_age_ms": 30.328,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 2128,
+        "gap_timeouts": 2,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 47,
+        "frame_ids_seen_without_active_receiver": 2
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16018,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4p1",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.294,
+        "p95_complete_age_ms": 29.886,
+        "p99_complete_age_ms": 30.269,
+        "max_complete_age_ms": 30.328,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 1064,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "pre_sof_expired": 0,
+        "pre_sof_accepted": 2,
+        "pre_sof_rejected": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "reorder",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.294,
+        "p95_complete_age_ms": 29.886,
+        "p99_complete_age_ms": 30.269,
+        "max_complete_age_ms": 30.328,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "strict",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 436,
+        "received_fps_over_capture_duration": 21.8,
+        "p50_complete_age_ms": 29.285,
+        "p95_complete_age_ms": 29.961,
+        "p99_complete_age_ms": 30.216,
+        "max_complete_age_ms": 30.26,
+        "rejected_datagrams": 1081,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 599,
+        "received_fps_over_capture_duration": 29.95,
+        "p50_complete_age_ms": 29.279,
+        "p95_complete_age_ms": 29.949,
+        "p99_complete_age_ms": 30.209,
+        "max_complete_age_ms": 30.26,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 1,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 23,
+        "frame_ids_seen_without_active_receiver": 1
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16018,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4p1",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.279,
+        "p95_complete_age_ms": 29.949,
+        "p99_complete_age_ms": 30.176,
+        "max_complete_age_ms": 30.26,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 1064,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "pre_sof_expired": 0,
+        "pre_sof_accepted": 1,
+        "pre_sof_rejected": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "reorder",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.279,
+        "p95_complete_age_ms": 29.949,
+        "p99_complete_age_ms": 30.176,
+        "max_complete_age_ms": 30.26,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "strict",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 441,
+        "received_fps_over_capture_duration": 22.05,
+        "p50_complete_age_ms": 29.24,
+        "p95_complete_age_ms": 29.965,
+        "p99_complete_age_ms": 30.301,
+        "max_complete_age_ms": 30.333,
+        "rejected_datagrams": 781,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 599,
+        "received_fps_over_capture_duration": 29.95,
+        "p50_complete_age_ms": 29.264,
+        "p95_complete_age_ms": 29.928,
+        "p99_complete_age_ms": 30.281,
+        "max_complete_age_ms": 30.333,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 2128,
+        "gap_timeouts": 1,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 24,
+        "frame_ids_seen_without_active_receiver": 1
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16019,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4p1",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.264,
+        "p95_complete_age_ms": 29.921,
+        "p99_complete_age_ms": 30.279,
+        "max_complete_age_ms": 30.333,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 1064,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "pre_sof_expired": 0,
+        "pre_sof_accepted": 1,
+        "pre_sof_rejected": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "reorder",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.264,
+        "p95_complete_age_ms": 29.921,
+        "p99_complete_age_ms": 30.279,
+        "max_complete_age_ms": 30.333,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "strict",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 438,
+        "received_fps_over_capture_duration": 21.9,
+        "p50_complete_age_ms": 29.244,
+        "p95_complete_age_ms": 29.886,
+        "p99_complete_age_ms": 30.269,
+        "max_complete_age_ms": 30.331,
+        "rejected_datagrams": 1000,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 599,
+        "received_fps_over_capture_duration": 29.95,
+        "p50_complete_age_ms": 29.278,
+        "p95_complete_age_ms": 29.868,
+        "p99_complete_age_ms": 30.269,
+        "max_complete_age_ms": 30.331,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 1,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 23,
+        "frame_ids_seen_without_active_receiver": 1
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16018,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "window4p1",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.278,
+        "p95_complete_age_ms": 29.852,
+        "p99_complete_age_ms": 30.265,
+        "max_complete_age_ms": 30.331,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 1064,
+        "gap_timeouts": 0,
+        "window_overflows": 0,
+        "pre_sof_expired": 0,
+        "pre_sof_accepted": 1,
+        "pre_sof_rejected": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "reorder",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 29.278,
+        "p95_complete_age_ms": 29.852,
+        "p99_complete_age_ms": 30.265,
+        "max_complete_age_ms": 30.331,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "fec8",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.689,
+        "p95_complete_age_ms": 33.326,
+        "p99_complete_age_ms": 33.523,
+        "max_complete_age_ms": 33.681,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32423,
+        "parity_received": 1802,
+        "packets_reconstructed": 4
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "fec8",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.658,
+        "p95_complete_age_ms": 33.33466,
+        "p99_complete_age_ms": 33.632,
+        "max_complete_age_ms": 33.67,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32308,
+        "parity_received": 1802,
+        "packets_reconstructed": 6
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "fec8",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.67633,
+        "p95_complete_age_ms": 33.25967,
+        "p99_complete_age_ms": 33.525,
+        "max_complete_age_ms": 33.624,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32308,
+        "parity_received": 1804,
+        "packets_reconstructed": 9
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "fec8",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.692,
+        "p95_complete_age_ms": 33.33467,
+        "p99_complete_age_ms": 33.482,
+        "max_complete_age_ms": 33.635,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32284,
+        "parity_received": 1801,
+        "packets_reconstructed": 6
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "jitter",
+      "policy": "fec8",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 0,
+        "lost_parity": 0,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.675,
+        "p95_complete_age_ms": 33.293,
+        "p99_complete_age_ms": 33.528,
+        "max_complete_age_ms": 33.668,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 31644,
+        "parity_received": 1800,
+        "packets_reconstructed": 4
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "strict",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 76,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 392,
+        "received_fps_over_capture_duration": 19.6,
+        "p50_complete_age_ms": 29.257,
+        "p95_complete_age_ms": 29.975,
+        "p99_complete_age_ms": 30.313,
+        "max_complete_age_ms": 30.335,
+        "rejected_datagrams": 1912,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15944,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 76,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 524,
+        "received_fps_over_capture_duration": 26.2,
+        "p50_complete_age_ms": 29.28,
+        "p95_complete_age_ms": 29.896,
+        "p99_complete_age_ms": 30.247,
+        "max_complete_age_ms": 30.335,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 71,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 969,
+        "frame_ids_seen_without_active_receiver": 68
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15846,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4p1",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 76,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 529,
+        "received_fps_over_capture_duration": 26.45,
+        "p50_complete_age_ms": 29.28,
+        "p95_complete_age_ms": 29.896,
+        "p99_complete_age_ms": 30.247,
+        "max_complete_age_ms": 30.335,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 66,
+        "window_overflows": 0,
+        "pre_sof_expired": 7,
+        "pre_sof_accepted": 6,
+        "pre_sof_rejected": 837,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15011,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "reorder",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 76,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 529,
+        "received_fps_over_capture_duration": 26.45,
+        "p50_complete_age_ms": 29.28,
+        "p95_complete_age_ms": 29.896,
+        "p99_complete_age_ms": 30.247,
+        "max_complete_age_ms": 30.335,
+        "incomplete_evictions": 71,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 14118,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "strict",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 80,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 398,
+        "received_fps_over_capture_duration": 19.9,
+        "p50_complete_age_ms": 29.244,
+        "p95_complete_age_ms": 29.936,
+        "p99_complete_age_ms": 30.305,
+        "max_complete_age_ms": 30.333,
+        "rejected_datagrams": 1745,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15940,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 80,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 525,
+        "received_fps_over_capture_duration": 26.25,
+        "p50_complete_age_ms": 29.288,
+        "p95_complete_age_ms": 29.894,
+        "p99_complete_age_ms": 30.245,
+        "max_complete_age_ms": 30.333,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 74,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 793,
+        "frame_ids_seen_without_active_receiver": 67
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15843,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4p1",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 80,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 526,
+        "received_fps_over_capture_duration": 26.3,
+        "p50_complete_age_ms": 29.283,
+        "p95_complete_age_ms": 29.894,
+        "p99_complete_age_ms": 30.245,
+        "max_complete_age_ms": 30.333,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 73,
+        "window_overflows": 0,
+        "pre_sof_expired": 2,
+        "pre_sof_accepted": 2,
+        "pre_sof_rejected": 767,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15076,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "reorder",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 80,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 526,
+        "received_fps_over_capture_duration": 26.3,
+        "p50_complete_age_ms": 29.283,
+        "p95_complete_age_ms": 29.894,
+        "p99_complete_age_ms": 30.245,
+        "max_complete_age_ms": 30.333,
+        "incomplete_evictions": 74,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 14049,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "strict",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 83,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 382,
+        "received_fps_over_capture_duration": 19.1,
+        "p50_complete_age_ms": 29.296,
+        "p95_complete_age_ms": 29.909,
+        "p99_complete_age_ms": 30.247,
+        "max_complete_age_ms": 30.332,
+        "rejected_datagrams": 2017,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15937,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 83,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 518,
+        "received_fps_over_capture_duration": 25.9,
+        "p50_complete_age_ms": 29.296,
+        "p95_complete_age_ms": 29.894,
+        "p99_complete_age_ms": 30.234,
+        "max_complete_age_ms": 30.332,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 71,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 922,
+        "frame_ids_seen_without_active_receiver": 67
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15842,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4p1",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 83,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 519,
+        "received_fps_over_capture_duration": 25.95,
+        "p50_complete_age_ms": 29.299,
+        "p95_complete_age_ms": 29.894,
+        "p99_complete_age_ms": 30.234,
+        "max_complete_age_ms": 30.332,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 70,
+        "window_overflows": 0,
+        "pre_sof_expired": 11,
+        "pre_sof_accepted": 2,
+        "pre_sof_rejected": 872,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 14959,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "reorder",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 83,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 519,
+        "received_fps_over_capture_duration": 25.95,
+        "p50_complete_age_ms": 29.299,
+        "p95_complete_age_ms": 29.894,
+        "p99_complete_age_ms": 30.234,
+        "max_complete_age_ms": 30.332,
+        "incomplete_evictions": 81,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 13860,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "strict",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 76,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 390,
+        "received_fps_over_capture_duration": 19.5,
+        "p50_complete_age_ms": 29.256,
+        "p95_complete_age_ms": 29.903,
+        "p99_complete_age_ms": 30.133,
+        "max_complete_age_ms": 30.276,
+        "rejected_datagrams": 1934,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15944,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 76,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 525,
+        "received_fps_over_capture_duration": 26.25,
+        "p50_complete_age_ms": 29.276,
+        "p95_complete_age_ms": 29.89,
+        "p99_complete_age_ms": 30.089,
+        "max_complete_age_ms": 30.276,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3460,
+        "gap_timeouts": 70,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 915,
+        "frame_ids_seen_without_active_receiver": 66
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15851,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4p1",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 76,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 530,
+        "received_fps_over_capture_duration": 26.5,
+        "p50_complete_age_ms": 29.268,
+        "p95_complete_age_ms": 29.89,
+        "p99_complete_age_ms": 30.089,
+        "max_complete_age_ms": 30.276,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3460,
+        "gap_timeouts": 65,
+        "window_overflows": 0,
+        "pre_sof_expired": 6,
+        "pre_sof_accepted": 5,
+        "pre_sof_rejected": 792,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15059,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "reorder",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 76,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 530,
+        "received_fps_over_capture_duration": 26.5,
+        "p50_complete_age_ms": 29.268,
+        "p95_complete_age_ms": 29.89,
+        "p99_complete_age_ms": 30.089,
+        "max_complete_age_ms": 30.276,
+        "incomplete_evictions": 70,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 14151,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "strict",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 72,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 376,
+        "received_fps_over_capture_duration": 18.8,
+        "p50_complete_age_ms": 29.315,
+        "p95_complete_age_ms": 29.954,
+        "p99_complete_age_ms": 30.281,
+        "max_complete_age_ms": 30.32,
+        "rejected_datagrams": 2096,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15948,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 72,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 526,
+        "received_fps_over_capture_duration": 26.3,
+        "p50_complete_age_ms": 29.298,
+        "p95_complete_age_ms": 29.892,
+        "p99_complete_age_ms": 30.251,
+        "max_complete_age_ms": 30.32,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3431,
+        "gap_timeouts": 70,
+        "window_overflows": 0,
+        "late_datagrams": 0,
+        "rejected_datagrams": 871,
+        "frame_ids_seen_without_active_receiver": 64
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15862,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "window4p1",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 72,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 531,
+        "received_fps_over_capture_duration": 26.55,
+        "p50_complete_age_ms": 29.298,
+        "p95_complete_age_ms": 29.892,
+        "p99_complete_age_ms": 30.251,
+        "max_complete_age_ms": 30.32,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3431,
+        "gap_timeouts": 65,
+        "window_overflows": 0,
+        "pre_sof_expired": 2,
+        "pre_sof_accepted": 5,
+        "pre_sof_rejected": 754,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15113,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "reorder",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 72,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 531,
+        "received_fps_over_capture_duration": 26.55,
+        "p50_complete_age_ms": 29.298,
+        "p95_complete_age_ms": 29.892,
+        "p99_complete_age_ms": 30.251,
+        "max_complete_age_ms": 30.32,
+        "incomplete_evictions": 69,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 14180,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "fec8",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 76,
+        "lost_parity": 12,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 598,
+        "received_fps_over_capture_duration": 29.9,
+        "p50_complete_age_ms": 32.677,
+        "p95_complete_age_ms": 33.315,
+        "p99_complete_age_ms": 33.638,
+        "max_complete_age_ms": 34.346,
+        "incomplete_evictions": 2,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32423,
+        "parity_received": 1801,
+        "packets_reconstructed": 83
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15967,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "fec8",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 79,
+        "lost_parity": 11,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 598,
+        "received_fps_over_capture_duration": 29.9,
+        "p50_complete_age_ms": 32.671,
+        "p95_complete_age_ms": 33.39067,
+        "p99_complete_age_ms": 33.68367,
+        "max_complete_age_ms": 34.486,
+        "incomplete_evictions": 2,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32732,
+        "parity_received": 1806,
+        "packets_reconstructed": 78
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15967,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "fec8",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 82,
+        "lost_parity": 13,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 600,
+        "received_fps_over_capture_duration": 30.0,
+        "p50_complete_age_ms": 32.635,
+        "p95_complete_age_ms": 33.39967,
+        "p99_complete_age_ms": 33.672,
+        "max_complete_age_ms": 34.212,
+        "incomplete_evictions": 0,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32732,
+        "parity_received": 1800,
+        "packets_reconstructed": 86
+      },
+      "rust_reference_comparison": {
+        "packet_events": 16020,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "fec8",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 70,
+        "lost_parity": 9,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 598,
+        "received_fps_over_capture_duration": 29.9,
+        "p50_complete_age_ms": 32.683,
+        "p95_complete_age_ms": 33.39267,
+        "p99_complete_age_ms": 33.57,
+        "max_complete_age_ms": 34.37067,
+        "incomplete_evictions": 2,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32423,
+        "parity_received": 1803,
+        "packets_reconstructed": 69
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15966,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "iid",
+      "policy": "fec8",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 68,
+        "lost_parity": 9,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 598,
+        "received_fps_over_capture_duration": 29.9,
+        "p50_complete_age_ms": 32.699,
+        "p95_complete_age_ms": 33.37,
+        "p99_complete_age_ms": 33.732,
+        "max_complete_age_ms": 34.525,
+        "incomplete_evictions": 2,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32423,
+        "parity_received": 1808,
+        "packets_reconstructed": 67
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15966,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "strict",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 87,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 424,
+        "received_fps_over_capture_duration": 21.2,
+        "p50_complete_age_ms": 29.278,
+        "p95_complete_age_ms": 29.89,
+        "p99_complete_age_ms": 30.213,
+        "max_complete_age_ms": 30.314,
+        "rejected_datagrams": 1445,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15933,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 87,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 562,
+        "received_fps_over_capture_duration": 28.1,
+        "p50_complete_age_ms": 29.282,
+        "p95_complete_age_ms": 29.887,
+        "p99_complete_age_ms": 30.207,
+        "max_complete_age_ms": 30.314,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 31,
+        "window_overflows": 2,
+        "late_datagrams": 0,
+        "rejected_datagrams": 452,
+        "frame_ids_seen_without_active_receiver": 33
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15901,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4p1",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 87,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 565,
+        "received_fps_over_capture_duration": 28.25,
+        "p50_complete_age_ms": 29.284,
+        "p95_complete_age_ms": 29.887,
+        "p99_complete_age_ms": 30.207,
+        "max_complete_age_ms": 30.314,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 28,
+        "window_overflows": 2,
+        "pre_sof_expired": 5,
+        "pre_sof_accepted": 3,
+        "pre_sof_rejected": 376,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15524,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "reorder",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 87,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 565,
+        "received_fps_over_capture_duration": 28.25,
+        "p50_complete_age_ms": 29.284,
+        "p95_complete_age_ms": 29.887,
+        "p99_complete_age_ms": 30.207,
+        "max_complete_age_ms": 30.314,
+        "incomplete_evictions": 35,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15085,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "strict",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 72,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 422,
+        "received_fps_over_capture_duration": 21.1,
+        "p50_complete_age_ms": 29.278,
+        "p95_complete_age_ms": 29.934,
+        "p99_complete_age_ms": 30.172,
+        "max_complete_age_ms": 30.327,
+        "rejected_datagrams": 1334,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15948,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 72,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 568,
+        "received_fps_over_capture_duration": 28.4,
+        "p50_complete_age_ms": 29.296,
+        "p95_complete_age_ms": 29.892,
+        "p99_complete_age_ms": 30.168,
+        "max_complete_age_ms": 30.327,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 27,
+        "window_overflows": 1,
+        "late_datagrams": 0,
+        "rejected_datagrams": 353,
+        "frame_ids_seen_without_active_receiver": 30
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15916,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4p1",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 72,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 568,
+        "received_fps_over_capture_duration": 28.4,
+        "p50_complete_age_ms": 29.296,
+        "p95_complete_age_ms": 29.892,
+        "p99_complete_age_ms": 30.168,
+        "max_complete_age_ms": 30.327,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 27,
+        "window_overflows": 1,
+        "pre_sof_expired": 4,
+        "pre_sof_accepted": 0,
+        "pre_sof_rejected": 349,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15563,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "reorder",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 72,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 568,
+        "received_fps_over_capture_duration": 28.4,
+        "p50_complete_age_ms": 29.296,
+        "p95_complete_age_ms": 29.892,
+        "p99_complete_age_ms": 30.168,
+        "max_complete_age_ms": 30.327,
+        "incomplete_evictions": 32,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15164,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "strict",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 57,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 412,
+        "received_fps_over_capture_duration": 20.6,
+        "p50_complete_age_ms": 29.256,
+        "p95_complete_age_ms": 29.848,
+        "p99_complete_age_ms": 30.203,
+        "max_complete_age_ms": 30.296,
+        "rejected_datagrams": 1385,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15963,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 57,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 563,
+        "received_fps_over_capture_duration": 28.15,
+        "p50_complete_age_ms": 29.294,
+        "p95_complete_age_ms": 29.84,
+        "p99_complete_age_ms": 30.211,
+        "max_complete_age_ms": 30.296,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 34,
+        "window_overflows": 2,
+        "late_datagrams": 0,
+        "rejected_datagrams": 324,
+        "frame_ids_seen_without_active_receiver": 29
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15921,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4p1",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 57,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 565,
+        "received_fps_over_capture_duration": 28.25,
+        "p50_complete_age_ms": 29.296,
+        "p95_complete_age_ms": 29.84,
+        "p99_complete_age_ms": 30.211,
+        "max_complete_age_ms": 30.296,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 32,
+        "window_overflows": 2,
+        "pre_sof_expired": 2,
+        "pre_sof_accepted": 2,
+        "pre_sof_rejected": 276,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15646,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "reorder",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 57,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 565,
+        "received_fps_over_capture_duration": 28.25,
+        "p50_complete_age_ms": 29.296,
+        "p95_complete_age_ms": 29.84,
+        "p99_complete_age_ms": 30.211,
+        "max_complete_age_ms": 30.296,
+        "incomplete_evictions": 35,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15087,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "strict",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 80,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 417,
+        "received_fps_over_capture_duration": 20.85,
+        "p50_complete_age_ms": 29.259,
+        "p95_complete_age_ms": 29.952,
+        "p99_complete_age_ms": 30.304,
+        "max_complete_age_ms": 30.326,
+        "rejected_datagrams": 1399,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15940,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 80,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 565,
+        "received_fps_over_capture_duration": 28.25,
+        "p50_complete_age_ms": 29.258,
+        "p95_complete_age_ms": 29.917,
+        "p99_complete_age_ms": 30.294,
+        "max_complete_age_ms": 30.326,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 27,
+        "window_overflows": 2,
+        "late_datagrams": 0,
+        "rejected_datagrams": 369,
+        "frame_ids_seen_without_active_receiver": 30
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15911,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4p1",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 80,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 567,
+        "received_fps_over_capture_duration": 28.35,
+        "p50_complete_age_ms": 29.258,
+        "p95_complete_age_ms": 29.917,
+        "p99_complete_age_ms": 30.294,
+        "max_complete_age_ms": 30.326,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 25,
+        "window_overflows": 2,
+        "pre_sof_expired": 7,
+        "pre_sof_accepted": 2,
+        "pre_sof_rejected": 317,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15590,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "reorder",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 80,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 567,
+        "received_fps_over_capture_duration": 28.35,
+        "p50_complete_age_ms": 29.258,
+        "p95_complete_age_ms": 29.917,
+        "p99_complete_age_ms": 30.294,
+        "max_complete_age_ms": 30.326,
+        "incomplete_evictions": 33,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15136,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "strict",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 37,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 424,
+        "received_fps_over_capture_duration": 21.2,
+        "p50_complete_age_ms": 29.278,
+        "p95_complete_age_ms": 29.945,
+        "p99_complete_age_ms": 30.153,
+        "max_complete_age_ms": 30.281,
+        "rejected_datagrams": 1366,
+        "late_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15983,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 37,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 579,
+        "received_fps_over_capture_duration": 28.95,
+        "p50_complete_age_ms": 29.298,
+        "p95_complete_age_ms": 29.901,
+        "p99_complete_age_ms": 30.153,
+        "max_complete_age_ms": 30.281,
+        "window_slots": 4,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 17,
+        "window_overflows": 2,
+        "late_datagrams": 0,
+        "rejected_datagrams": 258,
+        "frame_ids_seen_without_active_receiver": 20
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15957,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "window4p1",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 37,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 579,
+        "received_fps_over_capture_duration": 28.95,
+        "p50_complete_age_ms": 29.298,
+        "p95_complete_age_ms": 29.901,
+        "p99_complete_age_ms": 30.153,
+        "max_complete_age_ms": 30.281,
+        "window_slots": 4,
+        "pre_sof_slots": 1,
+        "gap_ms": 2,
+        "max_buffered_datagram_bytes": 3192,
+        "gap_timeouts": 17,
+        "window_overflows": 2,
+        "pre_sof_expired": 2,
+        "pre_sof_accepted": 0,
+        "pre_sof_rejected": 256,
+        "late_datagrams": 0,
+        "rejected_datagrams": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15699,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "reorder",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 0,
+        "lost_data": 37,
+        "lost_parity": 0,
+        "wire_bytes": 17142600,
+        "data_bytes": 17142600,
+        "parity_bytes": 0,
+        "sender_wait_highwater_bytes": 0,
+        "sender_max_wait_ms": 0.0
+      },
+      "result": {
+        "complete": 579,
+        "received_fps_over_capture_duration": 28.95,
+        "p50_complete_age_ms": 29.298,
+        "p95_complete_age_ms": 29.901,
+        "p99_complete_age_ms": 30.153,
+        "max_complete_age_ms": 30.281,
+        "incomplete_evictions": 21,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 28380,
+        "parity_received": 0,
+        "packets_reconstructed": 0
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15459,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "fec8",
+      "seed": 71,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 84,
+        "lost_parity": 13,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 584,
+        "received_fps_over_capture_duration": 29.2,
+        "p50_complete_age_ms": 32.63,
+        "p95_complete_age_ms": 33.319,
+        "p99_complete_age_ms": 33.66,
+        "max_complete_age_ms": 34.74,
+        "incomplete_evictions": 16,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32732,
+        "parity_received": 1814,
+        "packets_reconstructed": 41
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15594,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "fec8",
+      "seed": 72,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 71,
+        "lost_parity": 11,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 581,
+        "received_fps_over_capture_duration": 29.05,
+        "p50_complete_age_ms": 32.674,
+        "p95_complete_age_ms": 33.34,
+        "p99_complete_age_ms": 33.628,
+        "max_complete_age_ms": 34.018,
+        "incomplete_evictions": 19,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32423,
+        "parity_received": 1815,
+        "packets_reconstructed": 28
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15512,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "fec8",
+      "seed": 73,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 61,
+        "lost_parity": 7,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 590,
+        "received_fps_over_capture_duration": 29.5,
+        "p50_complete_age_ms": 32.643,
+        "p95_complete_age_ms": 33.35566,
+        "p99_complete_age_ms": 33.666,
+        "max_complete_age_ms": 34.31767,
+        "incomplete_evictions": 10,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32423,
+        "parity_received": 1809,
+        "packets_reconstructed": 36
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15752,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "fec8",
+      "seed": 74,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 77,
+        "lost_parity": 10,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 579,
+        "received_fps_over_capture_duration": 28.95,
+        "p50_complete_age_ms": 32.63466,
+        "p95_complete_age_ms": 33.27866,
+        "p99_complete_age_ms": 33.635,
+        "max_complete_age_ms": 34.209,
+        "incomplete_evictions": 21,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32308,
+        "parity_received": 1815,
+        "packets_reconstructed": 22
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15458,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    },
+    {
+      "scenario": "bursty",
+      "policy": "fec8",
+      "seed": 75,
+      "network": {
+        "captures": 600,
+        "started": 600,
+        "sender_replaced": 0,
+        "sender_expired": 0,
+        "sent_data": 16020,
+        "sent_parity": 2400,
+        "lost_data": 42,
+        "lost_parity": 4,
+        "wire_bytes": 19821000,
+        "data_bytes": 17142600,
+        "parity_bytes": 2678400,
+        "sender_wait_highwater_bytes": 26858,
+        "sender_max_wait_ms": 0.26667
+      },
+      "result": {
+        "complete": 593,
+        "received_fps_over_capture_duration": 29.65,
+        "p50_complete_age_ms": 32.68133,
+        "p95_complete_age_ms": 33.326,
+        "p99_complete_age_ms": 33.577,
+        "max_complete_age_ms": 33.671,
+        "incomplete_evictions": 7,
+        "late_datagrams": 0,
+        "max_buffered_bytes": 32732,
+        "parity_received": 1805,
+        "packets_reconstructed": 21
+      },
+      "rust_reference_comparison": {
+        "packet_events": 15832,
+        "mismatch_count": 0,
+        "first_mismatches": []
+      }
+    }
+  ]
+}
