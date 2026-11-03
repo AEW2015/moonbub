@@ -73,3 +73,30 @@ of 15 quantized units; investigate the discrepancy and visual quality. See the
 burst README and exact logs. This is one synthetic frame and excludes network,
 QSPI and continuous multi-frame operation. It is not an end-to-end FPS result
 or proof that all game scenes fit the budget.
+
+## Ten-frame cadence and parser fault
+
+Ten synthetic 720×480 q65 JPEGs were scheduled at 30 Hz. With the unmodified
+JPEG input and no external queue, frame 4 arrived while the preceding frame
+was pending; the test failed explicitly. With a hypothetical one-frame external
+queue, frame 7 independently exposed an ungated SOF marker side effect: during
+an invalid/stalled input cycle the decoder cleared width/height. The preserved
+diagnostic identifies the byte values and confirms the actual JPEG was valid.
+
+With an **experimental, unintegrated SOF guard** and the abstract external
+queue, XSim and Verilator presented all 10 frame IDs with no modeled drops,
+queue overflows or LCD underruns; output dumps match across simulators and
+match the related C model. The 9 presentation intervals cover 307.33531 ms,
+or 29.284 fps, and maximum modeled arrival-to-present age was 36.06722 ms.
+All compressed inputs arrive instantaneously in the test, the buffer does not
+model ESP32 memory or networking, and the transfer to the core uses an
+optimistic synthetic register bus. This is not a 30 displayed fps pass, a
+60-second stability test, hardware proof, or a verified deployed fix. The guard
+covers only SOF0 metadata; audit other marker side effects before integration.
+See `fpga/experiments/throughput30/burst/README.md` and its saved pass/fail logs.
+
+The independent Pillow discrepancy is analyzed in
+`experiments/jpeg-discrepancy/README.md`: edge clustering and a combined
+nearest-style upsampling/fast-IDCT setting point to upsampling as a likely
+contributor, but the experiment does not isolate its cause or establish an
+acceptable visual tolerance.

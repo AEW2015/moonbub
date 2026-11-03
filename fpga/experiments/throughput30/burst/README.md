@@ -155,3 +155,85 @@ including real ingress/receiver timing, swaps, content checks and a vendor
 SDRAM timing model. Obtain actual Artix-7 synthesis, constraints and timing
 before any hardware use. Do not interpret the present one-frame PASS as that
 next gate.
+
+## Ten-frame 30 Hz study and decoder fault
+
+A deterministic generator creates ten **distinct synthetic**, 720×480 4:2:0
+JPEGs at q65; they are not gameplay. The manifest records all SHA-256 hashes
+and sizes; these ten frames are 26,159–27,300 bytes. The FPGA testbenches
+feed them at 30 Hz in simulated time, count actual LCD frame-boundary swaps
+and validate all decoded pixel addresses and all SDRAM words. These are short
+functional experiments, not evidence for sustained 60-second performance.
+
+- **Stock core, strict unbuffered arrival:** three frames presented; at the
+  fourth 30 Hz arrival the core remained pending. Frame 3 arrived at cycle
+  8,686,703 but was presented at 12,293,425; frame 4 was due at 12,020,037.
+  The test failed rather than silently delaying that arrival. See
+  `ten-frame-strict-stock-fail.log`.
+- **Stock core plus hypothetical one-frame external queue:** the first six
+  frames presented, but frame 7 faulted in the JPEG core. The burst staging
+  fault and modeled LCD-underrun counters remained zero; see
+  `ten-frame-queue1-stock-fail.log`.
+- **Experimental guarded JPEG parser plus that hypothetical queue:** ten
+  frames entered at 30 Hz and ten unique IDs were presented; 3,456,000 pixels
+  and SDRAM words were checked, with no model-reported queue overflow, core
+  drop/overflow or LCD underrun. First and last presentation were 30,733,531
+  cycles apart: **29.284 displayed frames/s over the nine measured intervals**,
+  not 30 fps. Maximum modeled arrival-to-presentation age was 3,606,722 cycles
+  (36.06722 ms). XSim reproduced the same frame IDs and timing; all ten
+  output dumps match byte-for-byte between XSim and Verilator. Results:
+  `ten-frame-queue1-guarded-verilator.log`, `ten-frame-queue1-guarded-xsim.log`
+  and `ten-frame-cross-simulator-dump-hashes.json`.
+
+The queue exists **only in the testbench**. It assumes an entire JPEG is
+instantly available at each scheduled arrival and retains at most one frame
+identity while the core is busy. Its byte capacity, receiver RAM use, CPU
+CRC time, packetization, Wi-Fi, QSPI, actual backpressure and security are
+not simulated. The register bus then uploads one byte in two modeled 100 MHz
+cycles with no QSPI or CPU overhead. Frame waiting time is included in the
+reported arrival-to-presentation age; the test does not prove the ESP32 can
+supply this rate. It also omits audio/input, physical SDRAM timing, implementation
+fit and other error recovery. The short synthetic run's PASS marker means its
+internal assertions passed, **not that the 30 displayed fps target is met**.
+
+### Stale marker diagnosis and isolated candidate
+
+Fixture `0006.jpg`, SHA-256
+`013dc842ef06b249da968c009c57bff4905728d40c6166f22147302a37af6e38`,
+reproduces the failure even as the first and only frame. At cycle 3,109,390,
+JPEG input is in entropy state 14 with `valid=0`, `accept=0`, `byte_idx=0`,
+`last_b=ff`, `data_r=c0` and stale word `ff1465c0`. An ungated SOF0 token
+clears width and height despite no accepted byte. The actual bytes at offsets
+`0x2134..0x2139` are `c0 65 14 ff 00 26`: `ff 00` is legal entropy byte
+stuffing; this location is not an SOF marker. The core then rejected a decoder
+pixel because the dimensions had become zero after 170,176 accepted pixels.
+The decoder watchdog was only 1,035,630 of its 50,000,000 cycle limit. The
+complete diagnostic is in `frame6-stock-diagnostic-fail.log`.
+
+`jpeg_input_guarded.v` is an **experimental copy**, not a modification of the
+production decoder. It qualifies the SOF0 state transition and eleven header
+metadata reset sites on a valid, accepted SOF0 in header state. A directed test
+with fixture 0006 observes the stale token twice and checks that the header
+metadata remains unchanged; it completes the whole frame in both XSim and
+Verilator. Their decoded pixel dumps are byte-identical and match the related
+fixed-color C model exactly. `frame6-guarded-directed-{verilator,xsim}.log`
+records the runs. Other tokens—including SOI/EOI state/end side effects—are
+not fully audited by this narrow change; it must not be treated as a complete
+JPEG parser fix or deployed without further review and regression.
+
+All ten guarded-queue output dumps matched the related shared-algorithm C model
+exactly for all 345,600 pixels per frame. These checks are not independent
+implementations. Independent Pillow comparisons and their full error
+histograms are recorded in `jpeg720-queue1-guard-comparisons.json`; every frame
+has a worst component difference of 15 quantized units in that comparison.
+No subjective-quality threshold has been approved.
+
+Reproduce with `./run-directed-guard-verilator.sh` and
+`MODE=queue1 JPEG_DECODER=guarded ./run-ten-frames-verilator.sh`; both require
+Verilator 5.x, a C++ compiler, make, GNU timeout and Python with Pillow. They
+generate new fixtures under `BUILD_DIR` and refuse to overwrite an existing
+fixture directory. `MODE=strict JPEG_DECODER=stock` reproduces the unbuffered
+failure; `MODE=queue1 JPEG_DECODER=stock` reproduces the stock decoder fault.
+Both expected-failure runs return nonzero. The scripts set `ulimit -c 0` and
+bound wall-clock runtime. The guard, queue, burst write controller and tile
+arbiter are all research artifacts; production RTL has not been changed.
