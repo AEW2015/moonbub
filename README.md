@@ -1,5 +1,10 @@
 # Moonshine / MoonBub prototype
 
+Current product priority: **720×480 coded video at30fps**, with720×405 active
+16:9 game content. Lower-resolution/FPS results are diagnostic comparisons.
+The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
+compression, decoder service and refresh scheduling while retaining resolution.
+
 The latest application-specific codec handoff is
 [`handoff/gamebub-app-codec-v11-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v11-20261103).
 Start with the [application-specific plan](docs/gamebub-application-specific-codec-plan.md),

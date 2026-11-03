@@ -10,10 +10,16 @@ is a substantially larger project. The public implementation examined here
 exceeds this FPGA's resources unchanged; that does not establish that every
 serialized 720×480 AV1 or HEVC architecture is impossible.
 
-Use **512×288 at 30 fps** as the first reduced-resolution software-model
-baseline, with **20 fps** as a secondary bandwidth/compute tradeoff. Keep
-720×480 at 60 Hz display refresh independent. This changes the research
-target; no decoder or hardware behavior has been changed.
+Keep **720×480 coded video at30fps** as the primary product target.
+The512×288 and20fps cases below are sensitivity studies used to understand
+compute/memory bottlenecks. They do not replace the required spatial resolution
+or frame rate. Keep the assumed720×48060Hz display service independent.
+
+At the primary resolution, investigate a constrained conformant HEVC stream
+and a custom inspired decoder with explicit tool/reference/transform limits.
+Prioritize native decoder/entropy service, reference reuse and refresh scheduling
+before accepting a lower-resolution target. No decoder or hardware behavior has
+been changed by this planning update; whole-design fit and30fps remain unproved.
 
 ## Target and memory constraints
 

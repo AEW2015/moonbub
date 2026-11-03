@@ -1,5 +1,11 @@
 # MoonBub developer handoff — 2026-11-03
 
+Current product priority is **720×480 coded video at30fps**. Treat the reduced
+resolution/FPS results below as diagnostic evidence, not the preferred delivery
+target. Use the [current plan](gamebub-application-specific-codec-plan.md) for
+resolution-preserving optimization priorities; no new performance result is
+claimed by this documentation update.
+
 For proposed custom codec work, read the [codec audit and revised plan](codec-development-audit-plan.md)
 before selecting a new decoder. It preserves JPEG as the baseline and defines
 software comparison, reference-state and memory-service gates.

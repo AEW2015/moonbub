@@ -7,14 +7,17 @@ Temporal compact packets shrink34.44% versus HP01 at identical exact area.
 A separate BM01 integer block-motion prototype produces mixed real results;
 its sidebytes and search cost prevent a general improvement.
 
-Use **512×288 at30fps** as the next coded software target, with20fps as a secondary
-tradeoff and720×480 retained as the comparison. Under short measured-call replay,
-512 base reaches30 diagnostic IDs/s, periodic-refresh UI29 and20fps UI20. A
-separate initial-key-only UI probe reaches30 diagnostic IDs/s, but misses startup
-frames and does not qualify a default refresh policy or sustained hardware rate.
-The [FPGA decoder study](gamebub-hevc-av1-fpga-plan.md) distinguishes full HEVC/AV1,
-constrained standard streams and custom inspired decoders. Lower dimensions help
-work/storage, not proportional area shrink or automatic standard conformance.
+Keep **720×480 at30fps** as the primary coded target, preserving720×405
+active16:9 game content. Resolution and frame rate remain product requirements;
+512×288 and20fps are diagnostic comparisons, not the preferred delivery mode.
+The current short720×480 replay remains below30 diagnostic IDs/s, especially
+with exact UI patches, so the performance gap is an open engineering requirement.
+
+Improve compression, decoder service and refresh scheduling at this resolution.
+The [FPGA decoder study](gamebub-hevc-av1-fpga-plan.md) compares constrained HEVC
+with custom inspired decoding at720×480; full standards support still requires
+an exact supported syntax and measured whole-design fit. Smaller-picture results
+remain useful for identifying bottlenecks, without satisfying the primary target.
 
 The [iteration10 results](custom-codec-prototype-v10-2026-11-03.md) implement
 bounded selective UI admission and exact GM01 fallback, plus a separate HR01
@@ -48,13 +51,14 @@ and hardware30 fps remain open. JPEG remains the hardware comparison control.
 
 ## Product target and split of work
 
-The comparison baseline is a720×480 coded canvas with720×405 active16:9 content.
-The next qualification target is a512×288 coded picture at30 distinct displayed
-frames/s, with20fps as a secondary tradeoff. Keep stable HUD/text and bounded
-frame age. Native display scaling/letterboxing, its arithmetic/storage and fixed
-scanout traffic still need implementation and qualification. Rate alone is insufficient if the newest input or game
-response waits behind stale frames. The working comparison is the existing
-JPEG path, using the same captures, canvas, display and wire accounting.
+The primary target is a720×480 coded canvas with720×405 active16:9 content,
+30 distinct displayed frames/s, legible HUD/text and bounded frame age. Preserve
+full-frame spatial resolution while optimizing coding and execution. The lower
+resolution/FPS studies remain explicit comparisons and require an explicit
+product decision before becoming a delivery target. Native display mapping and
+fixed scanout traffic still need qualification. Rate alone is insufficient if
+fresh input waits behind stale frames. Keep the existing JPEG path as a control
+using the same captures, canvas, display and wire accounting.
 
 The PC performs motion/region decisions, transform/quantization, entropy and
 byte-budget selection. Game-specific profiles declare HUD/text rectangles;
@@ -201,12 +205,15 @@ as a best-case control and require held-out antialiased/real gameplay evaluation
    assumptions with the intended shared-resource schedule. Live capture/readback
    is still absent; link/QSPI/vblank timing is assumed. Sweep phase/jitter/loss
    and long tails before rate claims. Keep every rejected call and reader paid.
-2. Qualify the integrated HG01/GM01 path at512×288 under fixed replayed service
+2. Qualify the integrated HG01/GM01 path at720×480 under fixed replayed service
    traces, periodic/scene-aware refresh, true distinct-source capture and long
    fault/load/phase tests. Initial-key-only probes are not a production policy.
-   Add paid actual-rate zero/block choice, per-block residual skip or bounded intra
-   modes after BM01's mixed results. Keep native/JPEG/common-color standard controls,
-   exact-area quality and full cost visible. BM01 still needs separate integration.
+   First measure refresh/key/ACK stalls, native decoder/parser service and shared
+   resource scheduling. Add paid actual-rate zero/block choice, per-block residual
+   skip or bounded intra modes after BM01's mixed results. Charge every attempted
+   mode and side byte; do not silently reduce resolution to pass. Keep UI patches
+   bounded by complete-frame cost and report exact-area coverage. Native/JPEG/
+   common-color HEVC/AV1 controls stay at the same720×480 target.
 3. Collect native distinct30-fps captures covering scene cuts, particles, text,
    menus and dark motion, then run at least1,800 captures with fixed strict,
    diagnostic and drain windows. Preserve unselected and rejected capture IDs.
