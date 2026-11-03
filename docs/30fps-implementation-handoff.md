@@ -46,7 +46,9 @@ measured.
    per-bank CRC/length, CDC ordering and actual QSPI credit/ownership semantics.
    The 48 KiB cap passed the limited local frame-size samples but is not a
    general bound; add safe oversize drop or quality adaptation. Never silently
-   truncate a JPEG.
+   truncate a JPEG. The [abort and ownership review](../fpga/experiments/throughput30/burst/dual-compressed-bank-study/ABORT-OWNERSHIP-REVIEW.md)
+   distinguishes tested cases from stale-command, acknowledgment and drain
+   hazards that still need a production protocol.
 2. Integrate the narrowed JPEG candidates only after reviewing their reset
    conditions. Run complete target-part synthesis, placement, routed timing,
    BRAM utilization and hardware timing checks. The prior routed baseline was
