@@ -34,6 +34,9 @@ measured.
   pixel by pixel. The deliberately serialized bridge freezes RTL time while
   awaiting IPC, so this establishes functional integration only; see
   [dual-bank live test](../fpga/experiments/throughput30/burst/dual-compressed-bank-study/live-qspi-banks/README.md).
+  A separate [post-guest corruption test](../fpga/experiments/throughput30/burst/dual-compressed-bank-study/live-qspi-corrupt/README.md)
+  verifies FPGA-side CRC rejection and another intact display scan; its
+  deliberately withheld guest ACK means recovery after that NACK is untested.
 - Narrow JPEG X/Y candidates passed separately scoped compositional stage
   proofs and 90-frame combined behavioral checks. The complete-IDCT inference
   requires the [documented initial-state/reset conditions](../fpga/experiments/throughput30/burst/idct-dsp-study/idct-composition-audit/README.md).
