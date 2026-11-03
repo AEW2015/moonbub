@@ -40,3 +40,22 @@ Run focused math, threshold, and generated-result consistency checks with:
 /home/lori/gamebub-streaming-prototype/.venv/bin/python -m unittest \
   repos/moonbub-30fps-study/experiments/jpeg-cap-quality-study/test_measure.py
 ```
+
+## Second clip at 29.88 fps
+
+`mass-effect-29_88/` preserves a separate study of `media/mass-effect-2600.mp4`
+(1280×720, native average rate 747/25 fps, 360 decoded frames). It measures
+the sender JPEG encoder at q75/q80/q85/q90, 48 KiB overflow, sequential offline
+encode time, and a q90 then same-frame q80 retry policy. No retry was needed in
+this particular clip. Results are intentionally separate from the 25 fps,
+512×288 combat clip above; they are not pooled or treated as representative
+gameplay. The source remains a short compressed prerecorded segment.
+
+Reproduce and test from the prototype root:
+
+```sh
+/home/lori/gamebub-streaming-prototype/.venv/bin/python \
+  repos/moonbub-30fps-study/experiments/jpeg-cap-quality-study/mass-effect-29_88/measure.py
+/home/lori/gamebub-streaming-prototype/.venv/bin/python -m unittest \
+  repos/moonbub-30fps-study/experiments/jpeg-cap-quality-study/mass-effect-29_88/test_measure.py
+```
