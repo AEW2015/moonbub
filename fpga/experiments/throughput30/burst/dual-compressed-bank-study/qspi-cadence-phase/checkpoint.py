@@ -2,7 +2,9 @@
 """Summarize a separately C-checked prefix of an incomplete RTL run."""
 import hashlib,json,pathlib,re,sys
 run,checks,fixtures,out=map(pathlib.Path,sys.argv[1:]);n=30
-s=(run/'run.log').read_text()
+log=run/'run.log'
+if not log.exists():log=run/'log-snapshot.txt'
+s=log.read_text()
 def rows(prefix):return [{k:int(v) for k,v in re.findall(r'(\w+)=(\d+)',line)} for line in s.splitlines() if line.startswith(prefix+' ')]
 cfg=rows('CONFIG');arr=rows('ARRIVAL');p=rows('PRESENT_PASS');scans=rows('SCAN_PASS');manifest=json.loads((fixtures/'manifest.json').read_text())
 if len(cfg)!=1 or cfg[0]!={'frames':300,'jitter_cycles':200000,'pclk_half_ps':18470,'capture_phase_cycles':833333}:raise ValueError('wrong test config')
