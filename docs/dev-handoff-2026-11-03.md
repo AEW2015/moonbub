@@ -11,6 +11,13 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
+For the latest custom-codec direction and result table, read the
+[Python prototype follow-up](custom-codec-prototype-progress-2026-11-03.md).
+MED and fixed-Q14 transform formats are executable research, not integrated
+receiver modes. The finite delivery model adds bounded slot/framebuffer roles
+but still assumes service times and immediate credits; its phase sweep includes
+a failed count criterion and latency tails above50 ms.
+
 New software-only evidence is in the
 [Python codec study](../experiments/python-codec-study/README.md) and
 [memory-service study](../experiments/python-memory-study/README.md). They

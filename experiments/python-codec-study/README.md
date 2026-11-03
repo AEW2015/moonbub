@@ -1,5 +1,10 @@
 # Python codec and delivery design study
 
+The [follow-up results and next custom-codec steps](../../docs/custom-codec-prototype-progress-2026-11-03.md)
+add MED prediction, fixed-point transform/stripe prototypes and finite-buffer
+delivery with capture-phase/jitter sweeps. This directory preserves the first
+iteration's sources and artifacts.
+
 This implements the software comparison stage of the
 [codec plan](../../docs/codec-development-audit-plan.md), paired with the
 [memory-service model](../python-memory-study/README.md). Keep JPEG as the

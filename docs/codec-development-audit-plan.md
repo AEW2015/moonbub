@@ -29,6 +29,12 @@ failed strict-window counts and differentiate model inputs from measurements.
 
 ### Development direction
 
+The [next Python iteration report](custom-codec-prototype-progress-2026-11-03.md)
+extends this with MED prediction, a fixed-point DCT candidate, a sample-stripe
+oracle and finite-buffer/jitter/phase delivery tests. It records the actual
+custom-codec results and the remaining coefficient, stripe-protocol and motion
+steps; these software experiments do not complete the hardware gates.
+
 Proceed with a bounded custom-codec research track alongside the existing
 JPEG implementation. First reproduce the existing models and establish a
 fair benchmark; then evaluate tile modes and intra-block DPCM in software.
