@@ -6,13 +6,18 @@ The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
 The latest application-specific codec handoff is
-[`handoff/gamebub-app-codec-v11-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v11-20261103).
+[`handoff/gamebub-app-codec-v12-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v12-20261103).
 Start with the [application-specific plan](docs/gamebub-application-specific-codec-plan.md),
-[iteration11 results](docs/custom-codec-prototype-v11-2026-11-03.md), and
+[iteration 12 results](docs/custom-codec-prototype-v12-2026-11-03.md), and
 [developer handoff](docs/dev-handoff-2026-11-03.md). The matching
-[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v11-20261103)
+[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v12-20261103)
 contains host-laboratory references. Earlier handoffs remain frozen snapshots.
-V11 integrates temporal exact565 UI patches with actual GF02/GA01 software
+V12 measures bit-exact decoder bypass, exact repeated-source host reuse, actual
+rate/motion selection and controlled refresh policies at 720×480. Whole Python
+receive improves approximately 8–11%; unconditional motion search is too costly
+on the real samples. No full strict 30 fps or target implementation is proved.
+Run `python experiments/verify_prototype_v12.py` to check the retained evidence.
+V11 integrated temporal exact565 UI patches with actual GF02/GA01 software
 replay, tests bounded block prediction and512×288 at30/20fps, and adds a
 [HEVC/AV1 FPGA decoder investigation](docs/gamebub-hevc-av1-fpga-plan.md).
 These remain software studies; sustained30fps and target decoder fit are unproved.

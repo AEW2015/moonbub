@@ -1,5 +1,28 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [iteration 12 results](custom-codec-prototype-v12-2026-11-03.md) preserve
+720×480 and measure four improvements rather than reducing resolution. Exact
+zero/DC bypass plus cached tables improves complete Python receive by 8–11%
+with identical GM01/HG01 output. Exact source reuse improves repeated-frame
+host preparation but adds a small miss overhead on distinct content. Actual
+dual-motion selection saves little on real samples while tripling preparation;
+use a cheap causal shortlist before enabling more search.
+
+Controlled refresh scenarios add two strict deliveries per 60-ID native window
+when removing the mid-window key, but no case delivers all 60 on time. New
+scheduler code rejects ACKs after requested expiry and drains physical readers;
+frozen v11 evidence is preserved with its known late-ACK issue documented.
+The fixed service tables are conditional scenarios, separate from measured
+per-call wall times and from target execution.
+
+Next implementation order is native exact decoder bypass, preview/commit-aware
+host reuse, causal motion/skip selection, then separately versioned ACKed-P
+references and bounded UI change processing. Every step must retain complete
+packet costs, reference correctness and 720×480/30 requirements. The detailed
+v12 report defines tests, memory and integration gates. Standalone memoization
+currently does not run through the finite controller; do not add its gains to
+the refresh results or infer a hardware frame rate.
+
 The [iteration11 results](custom-codec-prototype-v11-2026-11-03.md) integrate
 actual HP01/HR01 selection with GM01 temporal prediction, then carry complete
 HG01/GM01 bytes through GF02 and outer-content-bound GA01 in the finite model.

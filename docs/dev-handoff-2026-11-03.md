@@ -3,8 +3,7 @@
 Current product priority is **720×480 coded video at30fps**. Treat the reduced
 resolution/FPS results below as diagnostic evidence, not the preferred delivery
 target. Use the [current plan](gamebub-application-specific-codec-plan.md) for
-resolution-preserving optimization priorities; no new performance result is
-claimed by this documentation update.
+resolution-preserving optimization priorities.
 
 For proposed custom codec work, read the [codec audit and revised plan](codec-development-audit-plan.md)
 before selecting a new decoder. It preserves JPEG as the baseline and defines
@@ -17,7 +16,20 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Latest: [iteration11](custom-codec-prototype-v11-2026-11-03.md) now integrates
+Latest: [iteration 12](custom-codec-prototype-v12-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v12-20261103`, adds exact zero/DC inverse bypass,
+exact repeated-source P-payload reuse, shared-reference actual motion selection
+and controlled refresh replay at 720×480. The wire-compatible decoder is the
+first native-port candidate; host reuse still needs the real candidate/commit
+controller integration. RM01 is a separate experimental dialect. The new
+refresh scheduler fixes requested-expiry/late-ACK handling; apply that ownership
+repair when reusing the model. Complete Python receive improves 8–11% on the
+short corpus; no full strict 30 fps or native target fit is established.
+Start with the four study READMEs and the independent v12 audit linked in the
+report. `python experiments/verify_prototype_v12.py` checks retained evidence;
+it does not run hardware or regenerate performance timings.
+
+Historical [iteration11](custom-codec-prototype-v11-2026-11-03.md) integrates
 temporal HR01/HP01 selective HG01 with actual GF02/GA01 software replay and outer
 content binding. It adds BM01 block prediction (mixed results), reduced512×288
 30/20fps cases and a [full/constrained/custom FPGA codec plan](gamebub-hevc-av1-fpga-plan.md).
