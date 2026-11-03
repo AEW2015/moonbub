@@ -1,5 +1,9 @@
 # Custom codec iteration3: coefficients, compressed stripes and motion
 
+This preserves iteration3. [Iteration4](custom-codec-prototype-v4-2026-11-03.md)
+couples actual re-encoding to capture/ACK timing and evaluates bounded overlap
+and quality backoff, including failures absent from these short packet tests.
+
 This continues the [codec plan](codec-development-audit-plan.md) and
 [previous prototype report](custom-codec-prototype-progress-2026-11-03.md).
 It implements the three next software steps: better coefficient coding,

@@ -12,6 +12,11 @@ and [Sunshine](https://github.com/AEW2015/Sunshine/tree/study/30fps-sim-20261102
 
 ### Python prototype progress, 2026-11-03
 
+Current follow-up: [iteration4 actual codec/capture/feedback coupling](custom-codec-prototype-v4-2026-11-03.md)
+tests re-encoding after skips, bounded immutable-anchor overlap and cap backoff.
+It records rate/cap/quality failures and slower measured Python service; virtual
+30-ID/s cases do not establish real-time or hardware performance.
+
 Latest: [iteration3 coefficients, compressed stripes and temporal prediction](custom-codec-prototype-v3-2026-11-03.md)
 now implements those next custom-codec steps. Its temporal samples are promising
 against JPEG, with different reconstructed pixels and unclosed feedback/memory

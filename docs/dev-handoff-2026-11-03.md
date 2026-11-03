@@ -11,6 +11,12 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
+Read the latest [iteration4 report](custom-codec-prototype-v4-2026-11-03.md) for
+actual-codec capture/feedback simulations, immutable-anchor overlap and cap
+stress. They improve the software evidence but expose short-window/cap failures
+and reference-Python costs above real-time budgets. Device formats, firmware,
+memory/clock qualification and hardware30 fps remain unimplemented gates.
+
 The latest [iteration3 report](custom-codec-prototype-v3-2026-11-03.md) adds
 CP02 coefficient coding, an actual byte-driven stripe decoder and MT02
 reconstructed-reference prediction. Their software tests/result manifests are
