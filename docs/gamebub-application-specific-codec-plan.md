@@ -1,31 +1,40 @@
 # Game Bub application-specific codec: selected direction and gates
 
-The [iteration 18 results](custom-codec-prototype-v18-2026-11-03.md) now integrate
-actual AR03 candidate build/admit/commit/discard, individual GF03/PC18/QC18 packet
-credits and decoded AF03 reference publication in one finite Python controller.
-Rejected candidates pay their build costs without consuming wire or publication
-identity. Native candidate controls match frozen bytes/pixels, and exported AR03
-vectors retain decoded references and exact UI. These are prospective protocol and
-Python correctness results; current ESP32 firmware remains MSV1 JPEG.
+The [iteration 19 results](custom-codec-prototype-v19-2026-11-03.md) add receiver
+frame-slot reservation before AR03 commit, independently acknowledged FINISH and
+RELEASE, exact sparse Q14 inverse arithmetic, and bit-exact compact YUV8 storage.
+The frame controller and conditional stripe scheduler are separate Python studies.
+No installed firmware/bitstream, calibrated ESP32/RF model or physical 30 fps is supplied.
 
-Full-resolution admission trades drops for bounded latency/backlog: the 150-ms,
-8-ms-batch case presents 70/90 and pays for 15 discarded builds, with zero receiver
-NACKs. The six native profiles give 19.5–29 short diagnostic IDs/s and do not prove
-sustained 30 fps. Independent timing measurements prevent treating profile ranking
-as a controlled policy speedup. All decoded native selected UI words are exact.
+Actual sparse GENERAL inverse work falls 84.64% beyond existing zero/DC bypass,
+but paid memory/color/tag/scans limit modeled service improvement to 4.27%.
+Compact YUV8 preserves canonical tags and saves another 20.18% in that schedule.
+All native decoder profiles still miss 33.33 ms; more DSP lanes alone do not solve
+this model. Its 100,112-byte local planning footprint includes 49,152 bytes of
+compressed cache but excludes control/parser state and external frame banks.
 
-Next add receiver-capacity reservation and fixed-cost causal replay; then connect
-the actual AR03 coefficient/refill trace to bounded incremental decode, SDRAM and
-full-panel epoch deadlines. One native stripe needs 9.05× mean token bytes. Calibrate
-ESP32 CRC/copy/DMA/heap, RF aggregation/RTT and FIFO/QSPI contention before assigning
-native service budgets. Preserve full resolution and the JPEG baseline while new
-contracts pass portable byte/pixel, reset/loss, memory and timing gates. Validate
-policies on fresh long gameplay; this short source is reused regression evidence.
+FG19 frame permission, PC18 packet consumption and AF03 reference publication are
+separate. The new FINISHED acknowledgment lets another request proceed while the
+receiver drains; only RELEASE frees the exact frame owner. Shared fixed-service
+profiles and a five-token-only control expose overhead rather than attributing
+remeasured Python scheduling to policy speedup. Unknown control outcomes stop
+with bounded retained ownership. Reset/negotiation and actual service calibration remain open.
 
-Historical [iteration 17](custom-codec-prototype-v17-2026-11-03.md) introduced
-AR03 bank-local refresh (178/180 eventual versus 161/180 global in its separate
-codec model), size-only pacing and repeated-template memory service. Those rates
-are not additive with the joint v18 controller. Use its frozen branch for provenance.
+The more complex scene sometimes omits one requested HUD patch to meet the 49,152-byte
+cap. Selected pixels are exact, but full requested HUD coverage remains unmet.
+Next reserve mandatory HUD bytes before adapting background quantization, retaining
+720×480 geometry and reporting quality loss. Also overlap/reserve capacity earlier
+without weakening identity, fuse ordered
+canonical tagging into reconstruction, test compact reconstruction/color output,
+model a smaller refill cache with shared-memory arbitration, and port exact kernels
+to bounded native/RTL implementations. Qualify resources, mapped memory and full
+panel deadlines on fresh long gameplay before selecting defaults. Preserve the
+working MSV1 JPEG baseline throughout; custom AR03 remains an experimental contract.
+
+Historical [iteration 18](custom-codec-prototype-v18-2026-11-03.md) integrated
+actual candidate/admission/commit and packet-credit/AF03 state, exported AR03 vectors
+and found GF03 busy ingress contention. Frozen v18 and v17 remain reproducible on
+their original branches; their separate rates are not additive with v19 studies.
 
 ## Historical v16 contracts and service budgets
 

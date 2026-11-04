@@ -16,16 +16,20 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Latest: [iteration 18](custom-codec-prototype-v18-2026-11-03.md), branch
-`handoff/gamebub-app-codec-v18-20261103`, adds source-leased AR03 candidates,
-actual-byte precommit admission and GF03/PC18/QC18 gateway/reassembly/AF03 decode
-publication, plus AR03 vectors and causal refill traces. Candidate commits match
-frozen bytes/pixels; all decoded native UI words are exact. Eight joint cases
-cover 636 captures. Full-resolution gameplay still misses sustained 30 fps.
-Next reserve actual receiver capacity, drive stripe/memory service from these
-packets, port bounded integer kernels and calibrate ESP32/RF/FIFO budgets.
-Run `python experiments/verify_prototype_v18.py`. Current native firmware remains
-MSV1 JPEG; no bitstream, heap/resource fit or physical rate qualification is added.
+Latest: [iteration 19](custom-codec-prototype-v19-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v19-20261103`, adds CRC-bound FG19 frame grants with
+separate FINISHED/RELEASE permissions, fixed-service causal comparisons, and exact
+sparse Q14 inverse/compact YUV8 experiments. All 97,308 coefficient blocks match
+frozen vectors. New sparse GENERAL products fall 84.64%; paid whole-model service
+saves 4.27%, then compact storage saves 20.18%. All native decoder schedules still
+miss 33.33 ms; no native or physical 30 fps or fitted FPGA proof is supplied.
+Run `python experiments/verify_prototype_v19.py`. Next fuse canonical tags and
+compact output, reduce/cache/arbitrate memory traffic, and port bounded exact
+kernels with actual ESP32/RF/resource/timing calibration. Current firmware is MSV1 JPEG.
+
+Historical [iteration 18](custom-codec-prototype-v18-2026-11-03.md) is frozen at
+`handoff/gamebub-app-codec-v18-20261103`. Its actual AR03 packets, vectors and
+GF03 busy diagnosis underpin the new studies; use its frozen snapshot verifier.
 
 Historical [iteration 17](custom-codec-prototype-v17-2026-11-03.md) is frozen at
 `handoff/gamebub-app-codec-v17-20261103`. Its separate codec, size-only transport

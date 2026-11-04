@@ -1,24 +1,24 @@
 # Moonshine / MoonBub prototype
 
-Current product priority: **720×480 coded video at30fps**, with720×405 active
+Current product priority: **720×480 coded video at 30 fps**, with 720×405 active
 16:9 game content. Lower-resolution/FPS results are diagnostic comparisons.
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
 The latest application-specific codec handoff is
-[`handoff/gamebub-app-codec-v18-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v18-20261103).
-Read the [iteration 18 results](docs/custom-codec-prototype-v18-2026-11-03.md),
+[`handoff/gamebub-app-codec-v19-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v19-20261103).
+Read the [iteration 19 results](docs/custom-codec-prototype-v19-2026-11-03.md),
 [current plan](docs/gamebub-application-specific-codec-plan.md) and
 [developer handoff](docs/dev-handoff-2026-11-03.md). The matching
-[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v18-20261103)
+[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v19-20261103)
 provides host-development references. Earlier branches remain frozen.
-V18 integrates actual AR03 candidate admission/commit, GF03 packet credits,
-reassembly and AF03 decoded-reference publication. Portable vectors preserve exact
-selected UI words and expose nonuniform coefficient demand. All eight joint cases
-drain their bounded state, including fault cases. Full-resolution gameplay still
-misses sustained 30 fps; ESP32 service, RF and FIFO timing remain assumptions, and
-FPGA memory/scanline cycles are not integrated. Installed firmware remains MSV1 JPEG.
-Run `python experiments/verify_prototype_v18.py` for retained checks.
+V19 adds receiver frame-slot grants before AR03 commit and separate FINISHED/drained
+RELEASE permissions. A separate decoder study proves exact sparse inverse and compact
+YUV8 vectors: 84.64% fewer new general-block products, 4.27% conditional service saving,
+then another 20.18% from compact storage. Memory/color/tag costs remain dominant;
+all native decoder schedules miss 33.33 ms. ESP32/RF/native resource and timing fit
+remain unproved. Installed firmware is MSV1 JPEG.
+Run `python experiments/verify_prototype_v19.py` for retained checks.
 V11 integrated temporal exact565 UI patches with actual GF02/GA01 software
 replay, tests bounded block prediction and512×288 at30/20fps, and adds a
 [HEVC/AV1 FPGA decoder investigation](docs/gamebub-hevc-av1-fpga-plan.md).
