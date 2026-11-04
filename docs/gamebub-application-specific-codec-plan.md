@@ -1,5 +1,32 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [iteration 13 results](custom-codec-prototype-v13-2026-11-03.md) implement
+the candidate/commit integration that v12 lacked. Exact full-source reuse now
+checks complete cap before commit, including cached rejections and fallback maps.
+An independent four-region RGB565 cache reuses exact UI payloads even while the
+game background changes: 176 region hits occur on changed full-source images.
+All paired output bytes match controls. Native misses pay small overhead.
+
+The finite measured-stage combination of source reuse and decoder bypass improves
+delivery but still exposes substantial credit waiting. Its 180-distinct-image
+held-out UI case improves from 119 to 121 strict presentations and 19.6 to 20.0
+diagnostic IDs/s. A separate study integrates UI reuse and tests three host
+transactions while retaining two receiver ingress slots and three framebuffer
+roles. Credit changes require bounded/fault-tested admission and negotiation;
+they are not an installed hardware default.
+
+Keep plain GM as the native-source motion default: the cheap causal screen avoids
+full BM search on all tested real images, trading away at most 2.61% possible
+byte savings. Its large compression win remains synthetic. Progress the coherent
+GM01/HG01/GF02/GA01 path through native ports and physical memory service before
+adding a full standards decoder. More compression should use a separately
+versioned ACKed-P reference/skip design with quality and recovery gates.
+
+Qualification must report warm-up, rolling cadence, frame age, interior losses
+and drain alongside strict capture-window counts. Last captures can legitimately
+display during drain in a real-time pipeline; strict count alone is insufficient.
+None of the Python/link assumptions proves live sustained hardware 30 fps.
+
 The [iteration 12 results](custom-codec-prototype-v12-2026-11-03.md) preserve
 720×480 and measure four improvements rather than reducing resolution. Exact
 zero/DC bypass plus cached tables improves complete Python receive by 8–11%

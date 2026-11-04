@@ -16,7 +16,19 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Latest: [iteration 12](custom-codec-prototype-v12-2026-11-03.md), branch
+Latest: [iteration 13](custom-codec-prototype-v13-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v13-20261103`, integrates candidate/commit-aware
+source reuse, exact UI region reuse, causal motion screening, measured-stage
+finite execution and bounded host credit experiments at 720×480. Start with
+the v13 report and each study's source-pinned results and verifier. The current
+coherent wire profile remains GM01/HG01/GF02/GA01; RM01 is separate. Host cache
+storage and logical framebuffer roles do not prove target memory fit. No native
+codec or installed firmware/bitstream is added. Run
+`python experiments/verify_prototype_v13.py` for read-only retained checks.
+Use the new credit-study scheduler for further work: it also closes a reproduced
+deferred-ACK-after-expiry edge retained in the frozen earlier execution copies.
+
+Historical [iteration 12](custom-codec-prototype-v12-2026-11-03.md), branch
 `handoff/gamebub-app-codec-v12-20261103`, adds exact zero/DC inverse bypass,
 exact repeated-source P-payload reuse, shared-reference actual motion selection
 and controlled refresh replay at 720×480. The wire-compatible decoder is the
