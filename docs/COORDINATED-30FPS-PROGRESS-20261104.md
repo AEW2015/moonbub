@@ -141,7 +141,8 @@ canonical tags, write drain and atomic presentation. Its64-bit opaque owner must
 be preserved by an explicit wrapper around the entropy seam's32-bit identity;
 silent truncation is not an integration strategy.
 
-The separate GM01 section/map validator passes62 cases:28 certificates and34
+The [GM01 section/map source export](../fpga/ar03-gm01-20261104/README.md)
+reproduces62 cases:28 certificates and34
 rejections, including20 retained real GM01 packets,178,469 queried block
 descriptors and12 cancellation phases. It checks inner CRC, exact header/map/
 section bounds, zero motion vectors required by AR03, map domain/padding and
