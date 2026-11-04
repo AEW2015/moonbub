@@ -1,5 +1,33 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v26 application-specific prototypes](custom-codec-prototype-v26-2026-11-04.md)
+now supply three measured tools at720×480 coded /720×405 active:
+
+- Exact CP02 bit counting preserves every v25 packet while reducing paired
+  Python encode-prepared work359.5→39.7ms; shared analysis still totals54.7ms
+  before HUD and transport. Port this host optimization independently first.
+- EC26 sparse-band runs produce actual CP26/JA26 streams at2.859/6.328Mb/s,
+  saving9.54%/7.82% complete bytes with identical displayed pixels and exact HUD.
+  A four-cursor block iterator proves the coefficient order with one128-byte
+  output block. Hardware ports/arbitration/clock timing remain unproved.
+- Compact half-pixel vectors plus a causal actual-byte/current-source-SSE guard
+  produce actual CP2F streams at2.905/6.446Mb/s with lower measured error. All
+  losing work is paid; Python build cost652/676ms and four-tap reference fetches
+  show why native/FPGA qualification is still required.
+
+Next combine EC26 block-major coefficient streams and compact fractional vectors
+in one negotiated codec, then remeasure full bytes, quality, credits, memory and
+native/RTL service. The independent gains cannot be multiplied. Keep all exact
+HUD words, complete49,152-byte admission and real reconstructed reference tags.
+The Python fractional decoder currently re-encodes map alternatives to check
+minimality; retain bounded syntax checks while qualifying a cheaper validation
+policy for the native/RTL decoder.
+The standards comparison still favors HEVC/AV1 by roughly1.6–1.7× body bytes at
+sampled quality thresholds; neither compression parity nor physical30fps is
+proved. Existing JPEG and v20 hardware support remain unchanged.
+
+The following v25 and older sections retain their historical evidence.
+
 The [v25 results](custom-codec-prototype-v25-2026-11-04.md) reduce complete custom
 video/HUD bodies4.600→3.160Mb/s and10.287→6.865Mb/s, preserving720×480 coded /
 720×405 active resolution and21,120 exact HUD words/frame, with improved measured

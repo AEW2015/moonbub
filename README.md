@@ -5,6 +5,15 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v26 study](docs/custom-codec-prototype-v26-2026-11-04.md) proves exact RDO
+bit counting with9.06× faster paired Python encode-prepared work and identical
+packets. New sparse-band coefficient coding cuts complete bytes another7.8–9.5%
+without changing pixels; a separate compact fractional-vector/SSE-guarded path
+saves6.1–8.1% while improving measured mean error. The two codec gains have not
+been merged. Run `python experiments/verify_prototype_v26.py`; no native/FPGA or
+physical30fps result follows. Historical verification commands below apply to
+their frozen study branches.
+
 The [v25 study](docs/custom-codec-prototype-v25-2026-11-04.md) adds exact HD25 HUD
 coding, reconstructed-reference GM25 motion/SKIP and actual CP25/JA25 replay.
 One fixed policy reduces complete bytes31.3%/33.3% at better measured mean MSE,
