@@ -16,16 +16,22 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Latest: [iteration 15](custom-codec-prototype-v15-2026-11-03.md), branch
-`handoff/gamebub-app-codec-v15-20261103`, implements one AR02/GF02/AF02 stream:
-acknowledged recent YUV references, GM/SR residual dispatch and exact RGB565 UI.
-GM+four UI regions reaches 30 modeled IDs/s over five seconds (150 distinct
-inputs/decoded images), 178/180 eventual presentations. Optional exact SR saves
-matched base bytes but costs cadence; fixed sparse screening is a negative result.
-Run `python experiments/verify_prototype_v15.py`: 49 recorded tests, four retained
-runs and independent audit. Next export golden/negative vectors, port native code,
-model bounded cycles/memory and qualify refresh. No native mode, target fit or
-physical 30 fps is supplied; installed peers cannot consume AR02/AF02.
+Latest: [iteration 16](custom-codec-prototype-v16-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v16-20261103`, supplies complete golden/negative
+AR02/GF02/AF02 vectors, actual-packet cycle/memory budgets and full-UI refresh
+experiments. Matched coarser keys save 16.07% with explicit quality/history cost;
+periodic refresh remains below 30 modeled fps. Start native/FPGA ports from the
+portable vector schema and exact bank/display/feedback outputs; do not infer
+hardware fit from average budgets. Next qualify bounded stripes, canonical tag
+ordering, memory/scanline service and bank-local refresh. Run
+`python experiments/verify_prototype_v16.py` for retained checks. No installed
+Sunshine/ESP32/FPGA mode, target timing or physical 30 fps is supplied.
+
+Historical [iteration 15](custom-codec-prototype-v15-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v15-20261103`, unifies recent references, GM/SR and exact
+UI. Its initial-only GM+UI case reaches 150 distinct images in five modeled seconds,
+178/180 eventual. The v16 repeat at 29.8 illustrates host-service margin limits.
+Use the frozen v15 branch for its full snapshot verifier.
 
 Historical [iteration 14](custom-codec-prototype-v14-2026-11-03.md), branch
 `handoff/gamebub-app-codec-v14-20261103`, contains separate acknowledged-reference,

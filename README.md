@@ -6,19 +6,24 @@ The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
 The latest application-specific codec handoff is
-[`handoff/gamebub-app-codec-v15-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v15-20261103).
+[`handoff/gamebub-app-codec-v16-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v16-20261103).
 Start with the [current plan](docs/gamebub-application-specific-codec-plan.md),
-[iteration 15 results](docs/custom-codec-prototype-v15-2026-11-03.md), and
+[iteration 16 results](docs/custom-codec-prototype-v16-2026-11-03.md), and
 [developer handoff](docs/dev-handoff-2026-11-03.md). The matching
-[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v15-20261103)
+[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v16-20261103)
 contains host-laboratory references. Earlier branches remain frozen.
-V15 unifies recent references, GM/SR dispatch and exact RGB565 UI in AR02/AF02.
-GM plus all four UI patches reaches 150 distinct decoded images in five modeled
-seconds at full resolution (178/180 eventual IDs). Always-evaluate exact SR saves
-base bytes but costs encoder service; the fixed sparse gate provides no benefit
-on the tested gameplay. Run `python experiments/verify_prototype_v15.py` to check
-retained evidence. These are Python research dialects; native/physical 30 fps,
-production refresh and target memory fit remain open.
+V16 supplies portable AR02/GF02/AF02 golden and negative vectors, actual-packet
+cycle/memory planning and GM refresh experiments at full resolution. Coarser
+refresh keys shrink 16.07% on matched independent-key IDs, with explicit quality
+and future-reference costs; periodic refresh still falls short of 30 modeled fps.
+The decoder budget identifies memory/publication work alongside arithmetic.
+A separate ESP32 gateway budget distinguishes firmware constraints from assumed
+CPU/RF/DMA service. Current firmware is MSV1 JPEG, not an AR02 implementation;
+Python transport timing and raw QSPI clock do not establish ESP32 throughput.
+V15's GM+UI initial-only result reached 30 modeled IDs/s over five seconds; the new
+repeat reaches 29.8, showing limited Python timing margin. Native/physical 30 fps,
+production recovery and target memory service remain unproved. Run
+`python experiments/verify_prototype_v16.py` to check retained evidence.
 V11 integrated temporal exact565 UI patches with actual GF02/GA01 software
 replay, tests bounded block prediction and512×288 at30/20fps, and adds a
 [HEVC/AV1 FPGA decoder investigation](docs/gamebub-hevc-av1-fpga-plan.md).

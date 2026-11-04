@@ -1,5 +1,33 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [iteration 16 results](custom-codec-prototype-v16-2026-11-03.md) move the
+AR02 application-specific codec toward an implementation contract. Portable
+complete packets, reconstructed YUV banks, display words and binding-negative
+vectors now let host/native/FPGA developers test the same outputs. Actual packet
+coefficient traces feed an explicit cycle/memory budget; full-frame scratch and
+publication hashing are now explicit planning costs rather than implicit free
+work. These remain Python models and conditional architectural assumptions.
+
+GM periodic-refresh tests preserve all four exact UI regions and full resolution.
+Coarser refresh-key backgrounds save 16.07% on five matched independent-key bodies,
+but change source quality and future prediction history; they do not save net
+wire bytes in the measured coarse-30 case. Refresh-30 gives 26.6–27.0 modeled IDs/s,
+refresh-90 reaches 29.2 and initial-only 29.8. Robust 30 fps refresh remains open.
+
+Current order: freeze/expand the golden contract, qualify the ESP32 gateway,
+then port bounded integer decode, replace full coefficient scratch with block/stripe service, prove canonical
+inline-tag ordering, model burst/scanline deadlines, then design bank-local/sliced
+refresh with explicit loss/publication rules. Qualify actual mapped memory ranges
+and arbitration; the current 2 MiB functional-model window is not physical capacity.
+The current ESP32 snapshot is ordered MSV1 JPEG with no enabled PSRAM; it does
+not implement AR02/GF02. Calibrate bounded RX queues, CRC/driver costs, DMA heap,
+RF bursts, QSPI/UI contention and actual FIFO backpressure before an end-to-end
+rate claim. An assumed service budget is not ESP32 CPU/firmware emulation.
+Use fresh gameplay for policy validation; the refresh regression window was
+already used in v15. The report gives concrete assumptions and next gates.
+
+## Historical v15 integration results
+
 The [iteration 15 results](custom-codec-prototype-v15-2026-11-03.md) complete
 one experimental AR02/GF02/AF02 path with acknowledged recent YUV references,
 GM/SR inner selection and display-only exact RGB565 patches. One shared analysis
@@ -33,9 +61,9 @@ frozen; source-pinned publication/expiry and lost-ACK safety are retained in v15
 
 The following results and work packages are retained as research history. Their
 references to “current”, “next” or “ready now” describe those earlier iterations.
-For the current profile, qualification order and handoff, use the v15 section
-above and the linked v15 report. In particular, the older below-30 UI result,
-GM01/HG01/GA01 selection and v9 verification instructions do not describe v15.
+For the current profile, qualification order and handoff, use the v16 section
+above and the linked v16 report. In particular, the older below-30 UI result,
+GM01/HG01/GA01 selection and v9 verification instructions do not describe v16.
 
 The [iteration 13 results](custom-codec-prototype-v13-2026-11-03.md) implement
 the candidate/commit integration that v12 lacked. Exact full-source reuse now
