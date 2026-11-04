@@ -61,8 +61,12 @@ Current offline implementation order:
    complete decoder is not an assumed fit. Choose an explicit synthesis variant
    or verified storage sharing before a board build.
 3. Close actual board constraints/routing and produce a source-bound diagnostic
-   image before requesting programming. This first test measures computation;
-   it does not implement networked custom playback.
+   image before requesting programming. Add a separate restricted ESP diagnostic
+   control only after its CSR contract is frozen: verify diagnostic magic/schema
+   and exact core build, require video disconnected and AV inactive, then start
+   and poll boundedly with short Device-lock holds. Existing USB commands cannot
+   access the new CSR window, and v24's `?` query does not add that access.
+   This first test measures computation; it does not implement networked custom playback.
 4. Complete HUD/reference-bank/memory/scanout integration and the agreed live
    backend/transport gates below, then start the custom physical rate ladder.
 

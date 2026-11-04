@@ -185,6 +185,26 @@ measure combined resources and choose either a separate synthesis variant or
 an explicitly verified shared-storage design before routing. Existing JPEG/AV
 remains the recovery image.
 
+The first isolated fixture-diagnostic OOC synthesis has now mapped the full
+default private KEY/raster/tag path plus its fixture ROM: 15,428 LUTs,
+13,503 FFs, 53 RAMB36 and 33 DSPs. These are synthesized estimates, not a routed
+board design. At a 10 ns clock its internal setup slack is **-2.961 ns**;
+hold is +0.186 ns. The critical path crosses GM01 geometry/header validation.
+The raster adapter also uses 2,202 LUTs as memory and zero BRAM in this run.
+Separate registered-validation and raster-memory variants are being tested;
+the baseline and failed timing report remain retained. The diagnostic CSR
+controller is not yet connected to a board image or live receiver.
+Its sealed full fixture replay checked 518,400 samples, the stored tag and
+48,203 ingress bytes in 2,997,214 actual simulated clocks, with busy-command
+rejection and abort/recovery. The ROM feeder differs from the earlier controlled
+A/B, so these cycle counts are different experiments. Baseline diagnostic
+manifest: `4b1edb00c306ae8e71a003a2d6b67bff6e250c255465f5fb5f0ee400d7147a4b`.
+
+The existing ESP USB command set cannot start/read this proposed CSR window.
+A separate restricted command with core-identity checks, idle-session guards and
+bounded polling is therefore another pre-hardware gate. The current v24 runtime
+query does not provide arbitrary register access.
+
 Local evidence anchors (not portable source exports):
 
 | Record | SHA-256 |
@@ -209,10 +229,26 @@ was 25/32. Core fault count was zero. These independently sampled counters do
 not establish atomic correspondence between pipeline stages.
 
 The demo is stopped, remote controls released, and v22 remains installed.
-The next isolated v24 application adds a read-only reset/uptime/image-identity
+The isolated v24 application adds a read-only reset/uptime/image-identity
 query and bounded diagnostic pages to replace truncated large debug lines.
 It preserves the streaming contracts and current task/queue settings. Its
-build and packaging gates must finish before a future hardware window.
+371 host-test executions, target check/build and production parser verification
+of 12,301 UF2 blocks passed. Static SRAM is 121,780 bytes; all 553 source inputs
+and 180 artifact hashes were rechecked. Compiled SDK configuration matches v22
+byte-for-byte. Its candidate UF2 SHA-256 is
+`c13c4f4183092fdf9c897fdf083e492e66ea6112c84c8412f5930ae250488c20`;
+build manifest SHA-256 is
+`8c5d2792da22742ba087fc404ae5580cae2625b9a926a5334190b776778125d8`.
+The [seven-file diagnostic source export](../host/runtime-diagnostics-20261104/README.md)
+reproduces the 14 SDK-free formatting/telemetry tests, separately from the full
+application build. All exported bytes match the sealed candidate.
+
+The image is **unflashed and physically unqualified**. The 161-byte maximum
+tested page payload is not a measured logger-line or runtime-stack bound.
+Selected ELF frame sizes changed, including new nested formatting calls; no
+overflow cause or stack-safety proof follows from those figures. Follow
+[the diagnostic regression checklist](V24-DIAGNOSTIC-REGRESSION-20261104.md)
+at a future coordinated window. This candidate does not claim to fix the reboot.
 Evidence is retained under
 `evidence/15fps-controller-demo-20261104T193749Z/`.
 
