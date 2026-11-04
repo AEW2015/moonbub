@@ -1,37 +1,41 @@
 # Game Bub application-specific codec: selected direction and gates
 
-The [iteration 14 results](custom-codec-prototype-v14-2026-11-03.md) implement
-the previously proposed acknowledged-P references and residual decisions.
-AR01/AF01 uses a key bank and one tagged reconstructed-P bank, content-bound
-publication ACKs, explicit reader/writer reservations and lost-ACK uncertainty.
-Against the same-envelope immutable control, recent references save 25–29% of
-native bytes with small measured quality differences and paid reconstruction.
+The [iteration 15 results](custom-codec-prototype-v15-2026-11-03.md) complete
+one experimental AR02/GF02/AF02 path with acknowledged recent YUV references,
+GM/SR inner selection and display-only exact RGB565 patches. One shared analysis
+pays actual candidate work and complete cap validation before admission. UI
+validation precedes bank publication; tagged feedback binds the outer body CRC.
 
-SR01 separately codes actual zero/DC/full coefficient modes. Exact syntax saves
-3.3% on one native sample and loses 63 header bytes on the other. Optional bounded
-background pruning saves about 13%, but is explicitly lossy and moves substantial
-work to the host. Protecting priority output requires the bilinear chroma halo;
-priority equality is against quantized GM, not original-source lossless UI.
+GM + all four UI patches reaches 150 distinct native/decoded images in five
+modeled seconds at 720×480, with 175 strict / 178 eventual presentations out of
+180. Always-evaluate exact SR reduces base bytes 0.86–4.73% against matched GM
+controls but lowers full-UI cadence to 28.8 modeled IDs/s on the long scene.
+Prune-4 is explicitly lossy and drops to 21.6; full refresh every 30 IDs reaches
+26. The fixed sparse gate enables SR on none of 174 preparations and adds cost.
+Keep GM+UI+recent references as the first native port profile, exact SR optional.
+These are conditional Python outcomes, not native/live or hardware 30 fps.
 
-The finite reference experiment exposes all-pending promotion drains as a cadence
-cost despite smaller packets. A bank-specific variant continues key-bank P frames
-while promotion is pending and drains only users of the bank being replaced.
-Reference publication occurs only after charged work and exact ACK validation;
-late timeout/deadline regressions prevent future references from becoming usable.
-No frame-rate or memory result from those logical servers qualifies hardware.
+Next export bounded complete-packet/bank/UI/feedback golden and negative vectors,
+port native encoder/decoder against them, and drive a cycle/memory model from
+actual AR02 traces. Account for entropy, zero/DC bypass, inverse transforms,
+upsampling, UI mux, burst arbitration and display deadlines. Explore DSP mapping
+only with explicit cycle/resource budgets. Qualify refresh/loss recovery and
+broader held-out gameplay before selecting production policy. See the v15 report
+for ordered gates, evidence boundaries and exact reproduction commands. Installed
+JPEG/GM01/standard Moonlight peers do not understand AR02/AF02.
 
-The bank-specific profile now reaches 150 distinct decoded images in a five-second
-window: 30 modeled IDs/s at 720×480, with the same 179 eventual source IDs as the
-immutable initial-key control and only startup ID 1 dropped. Forward GF02/UDP/IP
-bytes fall 34.57% on that matched set. This is a short initial-key-only, base-video
-model result; periodic refresh, exact UI integration and native hardware remain
-separate qualification gates. SR01 is not yet combined with that reference path.
+Historical [iteration 14](custom-codec-prototype-v14-2026-11-03.md) introduced
+the separate recent-reference, sparse-residual and bank-specific overlap studies.
+Its gains are not added to the integrated v15 measurements. Old evidence remains
+frozen; source-pinned publication/expiry and lost-ACK safety are retained in v15.
 
-Next define a single versioned profile that dispatches GM/SR residual bodies,
-binds promotion tags to actual decoded output and overlays exact UI separately.
-Evaluate a whole-packet GM fallback so dense-only SR headers cannot regress rate,
-pay every coded candidate, and test pruning as an explicit quality option. The
-AR01 and SR01 studies are not yet one interoperable stream or installed modes.
+## Historical v13 and earlier rationale (superseded selection)
+
+The following results and work packages are retained as research history. Their
+references to “current”, “next” or “ready now” describe those earlier iterations.
+For the current profile, qualification order and handoff, use the v15 section
+above and the linked v15 report. In particular, the older below-30 UI result,
+GM01/HG01/GA01 selection and v9 verification instructions do not describe v15.
 
 The [iteration 13 results](custom-codec-prototype-v13-2026-11-03.md) implement
 the candidate/commit integration that v12 lacked. Exact full-source reuse now

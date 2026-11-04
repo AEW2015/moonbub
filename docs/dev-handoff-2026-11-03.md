@@ -16,15 +16,22 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Latest: [iteration 14](custom-codec-prototype-v14-2026-11-03.md), branch
-`handoff/gamebub-app-codec-v14-20261103`, adds AR01/AF01 tagged reconstructed-P
-references, SR01 actual residual modes and bounded pruning, plus finite ownership
-and bank-specific promotion experiments. These preserve 720×480. AR01 and SR01
-are separate research dialects; do not transmit them to installed GM01/JPEG or
-standard Moonlight peers. Start with the new protocol READMEs, full-byte results,
-quality limits and staged-publication/lost-ACK tests. No native decoder/firmware
-or FPGA fit is supplied. Use `python experiments/verify_prototype_v14.py` for
-retained evidence; old handoff branches remain frozen.
+Latest: [iteration 15](custom-codec-prototype-v15-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v15-20261103`, implements one AR02/GF02/AF02 stream:
+acknowledged recent YUV references, GM/SR residual dispatch and exact RGB565 UI.
+GM+four UI regions reaches 30 modeled IDs/s over five seconds (150 distinct
+inputs/decoded images), 178/180 eventual presentations. Optional exact SR saves
+matched base bytes but costs cadence; fixed sparse screening is a negative result.
+Run `python experiments/verify_prototype_v15.py`: 49 recorded tests, four retained
+runs and independent audit. Next export golden/negative vectors, port native code,
+model bounded cycles/memory and qualify refresh. No native mode, target fit or
+physical 30 fps is supplied; installed peers cannot consume AR02/AF02.
+
+Historical [iteration 14](custom-codec-prototype-v14-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v14-20261103`, contains separate acknowledged-reference,
+SR01 residual and bank-specific overlap studies. Its frozen measurements are not
+combined arithmetically with v15. Use `python experiments/verify_prototype_v14.py`
+on the original v14 branch for its snapshot inventory.
 
 Historical [iteration 13](custom-codec-prototype-v13-2026-11-03.md), branch
 `handoff/gamebub-app-codec-v13-20261103`, integrates candidate/commit-aware
