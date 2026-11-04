@@ -57,6 +57,12 @@ do not establish memory or scheduling cost for a future active receiver.
 
 ## FPGA: complete the decoder before measuring frame throughput
 
+[The source-review export](../fpga/ar03-components-20261104/README.md) binds the
+five experimental RTL components and two small control-path testbenches to their
+sealed local inputs. Its portable runner checks admission/cancellation and
+storage-cap controls only. It does not reproduce the full coefficient/KEY corpus
+or distribute a complete integrated design, bitstream or live backend.
+
 The isolated CP02 entropy component passed RAW/Rice coefficient validation,
 real-section replay and a KEY seam into the verified inverse/reconstruction
 component. Its frozen baseline corpus covers 259 cases, including 58 rejected
@@ -64,24 +70,64 @@ cases with no coefficient output, and 9,879,424 coefficient comparisons includin
 recovery. The joined seam checks 519,471 visible/recovery samples across six
 planes. This is functional simulation evidence, not a full decoder benchmark.
 
-Default capacity is 65,536 packet bytes and 8,192 blocks; the outer complete
-AR03 cap remains 49,152 bytes. RAM inference and resource/timing fit require
-synthesis evidence. A clocked-memory variant is being checked with the same
-public interface, capacities and coefficient oracle; changing parameters is not
-a substitute for demonstrating fit.
+The clocked-memory variant passed the same 259-case corpus and six-plane KEY
+seam, plus 521 RAW reset/abort offsets and 33,344 recovery coefficients. Its 38
+functional artifact hashes and all 102 baseline artifact hashes were rechecked.
+An independent source review found no concrete functional sequencing defect;
+that review did not rerun simulation.
 
-An independent outer AR03 envelope component is the next bounded integration
-step: validate complete bounds/CRC before exposing section descriptors or replay
-bytes, then connect actual GM01/map parsing and CP02. It must retain exact owner
-identity through stalls and cancellation. Inner patch semantics, temporal bank
-access, canonical tagging, HUD application, write drain and atomic presentation
-remain separate required work.
+Default capacity remains 65,536 packet bytes and 8,192 blocks; the outer complete
+AR03 cap remains 49,152 bytes. Exact-default OOC synthesis on xc7a100tcsg324-1
+mapped the clocked variant to 2,409 LUTs, 1,883 FFs, 20 RAMB36 and no DSP/LUT RAM.
+This establishes isolated mapping, not combined fit or timing closure. Clock-only
+100 MHz setup slack is **−2.641 ns**, with +0.260 ns hold slack. A separate ideal
+zero-IO-delay diagnostic exposes a **−56.694 ns** path through descriptor variable
+modulo; it is not a physical board constraint/result. No timing exception or
+parameter reduction is used to conceal either failure.
+
+The isolated **variant002** fixes those setup paths with registered arithmetic
+and a 14-step restoring remainder after descriptor bounds checks. It passed the
+259-case/9,879,424-coefficient corpus, 58 rejection cases, six-plane KEY seam,
+521 RAW cancellation offsets, and admission checks including 8,192 blocks,
+width256, held first byte, 16 reset/abort offsets and exact block-ID overflow
+boundaries. Synthesis uses 1,909 LUTs, 2,012 FFs and the same 20 RAMB36. Clock-only
+100 MHz setup/hold slack is **+1.606/+0.260 ns**, with no internal setup/hold
+failures. The ideal zero-delay interface diagnostic now has +1.606 ns setup but
+**−0.489 ns hold** across 451 endpoints. Routed/board/interface closure remains
+open. A bounded native XSim synthesized-netlist replay passed all22 valid/eight
+rejected admissions and16 cancellation offsets, including width256, high-bit
+rejection and exact block-ID overflow. This checks the exercised divisor behavior
+despite the source-order warning; it is not a full entropy netlist replay.
+
+A passive-observer rerun of each six-plane KEY stimulus measured actual posedges.
+For one complete 720×480 fixture, variant001's serialized window including plane
+setup is 2,970,202 cycles; variant002's is **3,042,828 cycles**, or 30.42828 ms only
+at the nominal simulated 10 ns period. Seeded stall sampling differs after
+arithmetic staging, so this is not a controlled stall-for-stall speed comparison.
+This tight component budget excludes parsers, real prediction memory, tags,
+patches, memory arbitration/write drain, scanout and network service. It does not
+establish physical 30 fps capacity or complex-scene bounds.
+The [actual-clock measurement record](measurements/ar03-key-seam-v002-20261104/result.json)
+retains all six plane events, stalls, source hashes and the explicitly excluded
+stages; [the CSV](measurements/ar03-key-seam-v002-20261104/metrics.csv) supplies
+the accepted-event cycle records.
+
+The independent outer AR03 envelope component passes 56 cases, including all20
+real mandatory-HUD packets:25 certificates,31 rejections,818,528 exact replay
+bytes and12 reset/abort cases. It checks complete outer bounds/CRC, reference
+profile, minimal inner identity and patch length framing before descriptors or
+replay become valid. Normal retirement waits for pending/held reads to drain.
+An explicit bad-inner-CRC/recomputed-outer-CRC case passes only this envelope
+scope and is rejected by the full oracle. Actual GM01/map/plane and inner CRC
+validation remain downstream work, as do patch semantics, temporal banks,
+canonical tags, write drain and atomic presentation. Its64-bit opaque owner must
+be preserved by an explicit wrapper around the entropy seam's32-bit identity;
+silent truncation is not an integration strategy.
 
 ## Next gates
 
-1. Finish synchronous-memory entropy corpus and inspect actual RAM utilization
-   and OOC timing. Preserve the existing exact baseline; report synthesis stalls
-   or failures explicitly.
+1. Retain the explicit interface hold/route limits and preserve all exact
+   baselines and failed-gate evidence when integrating the next stages.
 2. Validate the outer envelope and inner section/map parsing, then integrate
    reference banks, tag/patch work and real memory/scanout service. Only the
    complete pipeline can establish FPGA-only sustainable initiation interval.
