@@ -1,5 +1,25 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v24 comparison](custom-codec-prototype-v24-2026-11-04.md) measures HEVC/AV1
+against the exact v23 source windows with common YUV arithmetic and the same
+exact HUD sidecar. Selected HEVCq32/AV1q48 hybrids need2.335/2.254 Mb/s on2600
+and5.378/5.280 Mb/s on7200 versus custom4.600/10.287, while meeting or improving
+custom mean active MSE. These are sampled operating points, not matched-quality
+BD-rate or Gamebub decoder-fit proof. Bare codec savings are larger but do not
+preserve exact HUD words; do not substitute them for the complete hybrid budget.
+
+Owned/lazy analysis now preserves every CP23/JA23 byte while replacing203 source
+SHA guards with one private snapshot per source. In one host trial the complex
+build improves6.63% versus plain; no-retry work is near parity. Functional RS24
+reset agreement covers one-sided reboot/loss and fresh key/full-HUD restart,
+under explicit persistent-ledger and transport-drain assumptions.
+
+Next prioritize bounded block motion/skip and exact-HUD temporal prediction,
+fresh gameplay validation and integration with real frame/packet credits and
+target service. Current native standards decoders run on the host; neither a
+Gamebub HEVC/AV1 decoder nor physical30fps has been proved. Keep the v20 hardware
+handoff and all prior comparison branches frozen.
+
 The [v23 Python study](custom-codec-prototype-v23-2026-11-04.md) implements actual
 HC22/HD22 packets inside CP23/JA23 joint transactions. Its fixed-image sequences
 confirm the former v22 projections: complete bytes fall another 1.55–2.07% with

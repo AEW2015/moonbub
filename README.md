@@ -5,6 +5,14 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v24 study](docs/custom-codec-prototype-v24-2026-11-04.md) adds actual HEVC/AV1
+software comparisons on the same source frames. With the same exact HUD, selected
+native-codec hybrids use roughly half the body bytes at equal or better measured
+MSE; this does not prove a Gamebub standards decoder. Owned/lazy analysis retains
+identical custom packets while reducing repeated source guards. Functional reset
+agreement is also tested. Run `python experiments/verify_prototype_v24.py`.
+Native/RTL/transport timing and sustained physical30fps remain open.
+
 The [v23 Python study](docs/custom-codec-prototype-v23-2026-11-04.md) now sends and
 decodes actual integrated HD22 profile bytes, confirming1.55–2.07% complete-byte
 savings at unchanged images. Its shared-analysis host encoder removes repeated
