@@ -5,8 +5,10 @@ identity, audio FIFO online state, margin13/timing0 and overlap/32-slot queue
 are confirmed. Physical A/D-pad input and neutral releases reached the Windows
 observer in954independently sequenced MSI1 packets with no sequence gaps.
 Clean STOP and Wi-Fi power-save restoration are confirmed by receiver logs.
-See [input results](av-hardware-input-first-20261103.md). Audio playback and
-Windows virtual-gamepad injection remain pending; no audible-output claim.
+See [input results](av-hardware-input-first-20261103.md). The first audio-only
+tone admitted944blocks and consumed475721PCMframes; microphone capture confirms
+tone output, with13underruns. See [audio results](av-audio-first-20261103.md).
+Clean sustained playback, stereo routing and Windows gamepad injection remain pending.
 
 ## Windows interface
 
