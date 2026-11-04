@@ -5,20 +5,21 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
-The latest application-specific codec handoff is
-[`handoff/gamebub-app-codec-v19-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v19-20261103).
-Read the [iteration 19 results](docs/custom-codec-prototype-v19-2026-11-03.md),
-[current plan](docs/gamebub-application-specific-codec-plan.md) and
-[developer handoff](docs/dev-handoff-2026-11-03.md). The matching
-[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v19-20261103)
-provides host-development references. Earlier branches remain frozen.
-V19 adds receiver frame-slot grants before AR03 commit and separate FINISHED/drained
-RELEASE permissions. A separate decoder study proves exact sparse inverse and compact
-YUV8 vectors: 84.64% fewer new general-block products, 4.27% conditional service saving,
-then another 20.18% from compact storage. Memory/color/tag costs remain dominant;
-all native decoder schedules miss 33.33 ms. ESP32/RF/native resource and timing fit
-remain unproved. Installed firmware is MSV1 JPEG.
-Run `python experiments/verify_prototype_v19.py` for retained checks.
+The latest application-specific hardware-development handoff is
+[`handoff/gamebub-app-codec-v20-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v20-20261103).
+Start with the [hardware kit](hardware/gamebub-v20/README.md),
+[team prompts](hardware/gamebub-v20/TASKS.md), [acceptance gates](hardware/gamebub-v20/ACCEPTANCE.md),
+and [v20 results](docs/custom-codec-prototype-v20-2026-11-03.md). The matching
+[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v20-20261103/tools/gamebub/v20)
+carries identical wire/development contracts and host-port instructions.
+V20 supplies a portable C11 inverse oracle and golden packets/tiles for native/RTL
+work. All 96 mandatory-policy frames preserve all requested HUD words within cap;
+inline tags match reconstructed vectors and save modeled bank rereads. All 34
+tests pass. Background quality, bandwidth and timing remain explicit gates:
+complex-scene forward data projects to 11.376 Mb/s and native inline planning
+profiles miss 33.33 ms. No full decoder bitstream or physical 30 fps is supplied.
+Run `python experiments/verify_prototype_v20.py` for retained checks. Prior branches
+remain frozen and installed firmware remains MSV1 JPEG.
 V11 integrated temporal exact565 UI patches with actual GF02/GA01 software
 replay, tests bounded block prediction and512×288 at30/20fps, and adds a
 [HEVC/AV1 FPGA decoder investigation](docs/gamebub-hevc-av1-fpga-plan.md).

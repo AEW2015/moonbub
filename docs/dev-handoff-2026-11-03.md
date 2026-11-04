@@ -16,16 +16,21 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Latest: [iteration 19](custom-codec-prototype-v19-2026-11-03.md), branch
-`handoff/gamebub-app-codec-v19-20261103`, adds CRC-bound FG19 frame grants with
-separate FINISHED/RELEASE permissions, fixed-service causal comparisons, and exact
-sparse Q14 inverse/compact YUV8 experiments. All 97,308 coefficient blocks match
-frozen vectors. New sparse GENERAL products fall 84.64%; paid whole-model service
-saves 4.27%, then compact storage saves 20.18%. All native decoder schedules still
-miss 33.33 ms; no native or physical 30 fps or fitted FPGA proof is supplied.
-Run `python experiments/verify_prototype_v19.py`. Next fuse canonical tags and
-compact output, reduce/cache/arbitrate memory traffic, and port bounded exact
-kernels with actual ESP32/RF/resource/timing calibration. Current firmware is MSV1 JPEG.
+Latest: [v20 hardware-development kit](../hardware/gamebub-v20/README.md), branch
+`handoff/gamebub-app-codec-v20-20261103`. Read its TASKS.md/ACCEPTANCE.md, generated
+wire/development JSON, C11 scalar inverse and golden fixtures. The [v20 report](custom-codec-prototype-v20-2026-11-03.md)
+records 34 passing tests, mandatory full-HUD coverage on all 96 accepted frames,
+exact generated reconstruction tags, and 101,667 C conformance blocks with UBSan.
+Run `python experiments/verify_prototype_v20.py` before starting a native/RTL port.
+
+Development readiness is distinct from release qualification: all native inline
+service profiles still miss 33.33 ms, the complex scene projects to 11.376 Mb/s
+before controls/radio, and resource/timing/ESP calibration remain open. No new
+bitstream or installed native mode is supplied. Preserve the JPEG baseline.
+
+Historical [v19](custom-codec-prototype-v19-2026-11-03.md) is frozen at
+`handoff/gamebub-app-codec-v19-20261103`; its frame grants and sparse/compact
+component proofs underpin this development kit.
 
 Historical [iteration 18](custom-codec-prototype-v18-2026-11-03.md) is frozen at
 `handoff/gamebub-app-codec-v18-20261103`. Its actual AR03 packets, vectors and

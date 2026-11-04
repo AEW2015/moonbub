@@ -1,40 +1,39 @@
 # Game Bub application-specific codec: selected direction and gates
 
-The [iteration 19 results](custom-codec-prototype-v19-2026-11-03.md) add receiver
-frame-slot reservation before AR03 commit, independently acknowledged FINISH and
-RELEASE, exact sparse Q14 inverse arithmetic, and bit-exact compact YUV8 storage.
-The frame controller and conditional stripe scheduler are separate Python studies.
-No installed firmware/bitstream, calibrated ESP32/RF model or physical 30 fps is supplied.
+The [v20 hardware-development handoff](custom-codec-prototype-v20-2026-11-03.md)
+provides a portable C11 inverse oracle, complete packet and generated-tile golden
+vectors, byte-level contracts, team prompts and acceptance gates. Start at
+[hardware/gamebub-v20](../hardware/gamebub-v20/README.md). It is ready for offline
+hardware/software development; a full FPGA decoder, native endpoint, fitted
+resources/timing and sustained physical 30 fps remain open.
 
-Actual sparse GENERAL inverse work falls 84.64% beyond existing zero/DC bypass,
-but paid memory/color/tag/scans limit modeled service improvement to 4.27%.
-Compact YUV8 preserves canonical tags and saves another 20.18% in that schedule.
-All native decoder profiles still miss 33.33 ms; more DSP lanes alone do not solve
-this model. Its 100,112-byte local planning footprint includes 49,152 bytes of
-compressed cache but excludes control/parser state and external frame banks.
+The mandatory-HUD component now carries all four requested regions on all 96
+accepted frames while preserving 720×480 geometry and the 49,152-byte cap. The
+complex scene needs 23 paid retries and coarser background quality: expanded
+RGB565 channel MSE rises 27.03→34.09. Source/reference histories differ after
+adapted publications; this is a coverage/quality tradeoff, not free coding gain.
+Its forward data projects to 11.376 Mb/s at 30 fps before controls/radio overhead,
+so the former 8 Mb/s assumption is insufficient for that case.
 
-FG19 frame permission, PC18 packet consumption and AF03 reference publication are
-separate. The new FINISHED acknowledgment lets another request proceed while the
-receiver drains; only RELEASE frees the exact frame owner. Shared fixed-service
-profiles and a five-token-only control expose overhead rather than attributing
-remeasured Python scheduling to policy speedup. Unknown control outcomes stop
-with bounded retained ownership. Reset/negotiation and actual service calibration remain open.
+Actual reconstruction-fed inline tags match all 16 AR03 vectors and eliminate
+4,147,200 native compact-bank reread bytes. Conditional matched service improves
+67.6298→62.8622 ms (7.05%) with hash/padding/backpressure paid. All native profiles
+still miss 33.33 ms. The conservative local plan is 107,504 bytes, not fitted RAM.
+The native C11 oracle matches 101,667 blocks with UBSan; it is a component reference.
 
-The more complex scene sometimes omits one requested HUD patch to meet the 49,152-byte
-cap. Selected pixels are exact, but full requested HUD coverage remains unmet.
-Next reserve mandatory HUD bytes before adapting background quantization, retaining
-720×480 geometry and reporting quality loss. Also overlap/reserve capacity earlier
-without weakening identity, fuse ordered
-canonical tagging into reconstruction, test compact reconstruction/color output,
-model a smaller refill cache with shared-memory arbitration, and port exact kernels
-to bounded native/RTL implementations. Qualify resources, mapped memory and full
-panel deadlines on fresh long gameplay before selecting defaults. Preserve the
-working MSV1 JPEG baseline throughout; custom AR03 remains an experimental contract.
+Next port/simulate exact kernels and tag/bank logic, integrate mandatory candidate
+admission with FG19, implement profile/reset/recovery and calibrate real endpoint/
+memory/scanout service. Revisit explicit acknowledged display-cache reuse to cut
+static HUD bytes, and pre-granted capacity leases to hide per-frame request RTT;
+both need fresh identity/generation/loss proofs and are not v20 implementations.
+Keep JPEG selectable while the custom AR03 profile passes the acceptance gates.
+Validate on fresh long footage before selecting operating defaults.
 
-Historical [iteration 18](custom-codec-prototype-v18-2026-11-03.md) integrated
-actual candidate/admission/commit and packet-credit/AF03 state, exported AR03 vectors
-and found GF03 busy ingress contention. Frozen v18 and v17 remain reproducible on
-their original branches; their separate rates are not additive with v19 studies.
+Historical [v19](custom-codec-prototype-v19-2026-11-03.md) added frame-slot grants,
+FINISHED/RELEASE separation, exact sparse inverse and compact banks. Historical
+[v18](custom-codec-prototype-v18-2026-11-03.md) supplied actual packet/controller
+integration and AR03 traces. Their frozen branches remain reproducible; separate
+component rates are not additive end-to-end throughput proof.
 
 ## Historical v16 contracts and service budgets
 
