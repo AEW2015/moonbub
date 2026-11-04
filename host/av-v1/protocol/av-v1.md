@@ -105,13 +105,17 @@ sequences. Payload32bytes contains eight network-order u32 fields:
 |---:|---|
 |0|Complete12-bit GameBub button mask|
 |1|Accepted/committed audio blocks in this AV session|
-|2|Rejected audio blocks in this AV session|
+|2|Rejected or unconfirmed audio blocks in this AV session|
 |3|FPGA queued PCM frames, latest valid snapshot|
 |4|FPGA played PCM frames, lifetime modulo2^32|
 |5|FPGA underruns, lifetime modulo2^32|
 |6|State bits: ACTIVE=1, AUDIO_ENABLED=2, FPGA_SNAPSHOT_VALID=4|
 |7|FPGA build ID, e.g.0x4d424f50, or0 if unavailable|
 
+Field2 includes a received block whose admission could not be confirmed after
+an I/O fault, timeout or cancellation, counted once. It does not count a control
+failure without an audio block and does not prove that an ambiguous COMMIT was
+physically rejected. This clarification changes no bytes or packet layout.
 Audio counters describe block admission, not acoustic output; played is actual
 digital consumption, not guaranteed sound at the speakers. Snapshot reads may
 be at100ms cadence; MSI1 input uses a cached atomic button mask and never waits

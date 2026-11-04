@@ -126,7 +126,7 @@ def run(args):
                     if accepted:
                         counts["input_packets"] += 1
                         event("input", seq=lease.seq, buttons=lease.status[0], audio_accepted=lease.status[1],
-                              audio_rejected=lease.status[2], queued=lease.status[3], played=lease.status[4],
+                                  audio_rejected_or_unconfirmed=lease.status[2], queued=lease.status[3], played=lease.status[4],
                               underruns=lease.status[5], state=lease.status[6], build=lease.status[7])
                     else:
                         counts["stale_packets"] += 1
