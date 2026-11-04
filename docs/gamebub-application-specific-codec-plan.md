@@ -1,5 +1,31 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [iteration 17 results](custom-codec-prototype-v17-2026-11-03.md) implement
+AR03/AF03 bank-local refresh: only destination-bank users drain, the other
+confirmed bank remains usable, and prediction chooses the newest confirmed bank.
+On the same full-resolution regression source, periodic refresh improves from
+161 to 178 eventual presentations out of 180 with all four exact UI regions.
+Only startup IDs 1 and 2 drop, but maximum in-window gaps remain 66.667 ms. The
+151-ID rolling count over five seconds is phase/catch-up, not >30 capture fps.
+
+Prospective pacing now bounds producer backlog, packet credits and receiver
+mailbox use, paying credit framing and feedback queries. It deliberately drops
+whole source candidates when their budgets fail. These size traces are not a
+valid decoded-reference replay; dropping encoded publications can break future
+P frames. Consumed-packet credits must remain distinct from AF03 decoded-bank ACKs.
+The separate bounded burst/line scheduler checks complete epoch deadlines and
+buffer identity, not just average bandwidth or front-pointer change rate.
+
+Next split AR03 candidate construction from bank/identity commit, integrate
+transport admission with actual encoded/decoded packets, export AR03 vectors,
+and drive stripe/scanline service from the same packet/reference trace. Calibrate
+ESP32 CPU/CRC/DMA/heap, RF batching/RTT and actual FIFO credits, then qualify mapped
+SDRAM/arbiter/resource timing. The current firmware is still MSV1 JPEG. No joint
+native/ESP32/FPGA or physical 30 fps proof is supplied. Validate on fresh gameplay;
+the current clip is reused regression evidence.
+
+## Historical v16 contracts and service budgets
+
 The [iteration 16 results](custom-codec-prototype-v16-2026-11-03.md) move the
 AR02 application-specific codec toward an implementation contract. Portable
 complete packets, reconstructed YUV banks, display words and binding-negative
@@ -61,9 +87,9 @@ frozen; source-pinned publication/expiry and lost-ACK safety are retained in v15
 
 The following results and work packages are retained as research history. Their
 references to “current”, “next” or “ready now” describe those earlier iterations.
-For the current profile, qualification order and handoff, use the v16 section
-above and the linked v16 report. In particular, the older below-30 UI result,
-GM01/HG01/GA01 selection and v9 verification instructions do not describe v16.
+For the current profile, qualification order and handoff, use the v17 section
+above and the linked v17 report. In particular, the older below-30 UI result,
+GM01/HG01/GA01 selection and v9 verification instructions do not describe v17.
 
 The [iteration 13 results](custom-codec-prototype-v13-2026-11-03.md) implement
 the candidate/commit integration that v12 lacked. Exact full-source reuse now

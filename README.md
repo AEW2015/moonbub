@@ -6,24 +6,21 @@ The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
 The latest application-specific codec handoff is
-[`handoff/gamebub-app-codec-v16-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v16-20261103).
+[`handoff/gamebub-app-codec-v17-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v17-20261103).
 Start with the [current plan](docs/gamebub-application-specific-codec-plan.md),
-[iteration 16 results](docs/custom-codec-prototype-v16-2026-11-03.md), and
+[iteration 17 results](docs/custom-codec-prototype-v17-2026-11-03.md), and
 [developer handoff](docs/dev-handoff-2026-11-03.md). The matching
-[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v16-20261103)
+[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v17-20261103)
 contains host-laboratory references. Earlier branches remain frozen.
-V16 supplies portable AR02/GF02/AF02 golden and negative vectors, actual-packet
-cycle/memory planning and GM refresh experiments at full resolution. Coarser
-refresh keys shrink 16.07% on matched independent-key IDs, with explicit quality
-and future-reference costs; periodic refresh still falls short of 30 modeled fps.
-The decoder budget identifies memory/publication work alongside arithmetic.
-A separate ESP32 gateway budget distinguishes firmware constraints from assumed
-CPU/RF/DMA service. Current firmware is MSV1 JPEG, not an AR02 implementation;
-Python transport timing and raw QSPI clock do not establish ESP32 throughput.
-V15's GM+UI initial-only result reached 30 modeled IDs/s over five seconds; the new
-repeat reaches 29.8, showing limited Python timing margin. Native/physical 30 fps,
-production recovery and target memory service remain unproved. Run
-`python experiments/verify_prototype_v16.py` to check retained evidence.
+V17 implements AR03/AF03 bank-local refresh: the full-resolution native run
+improves from 161 to 178 eventual presentations out of 180, with all four exact UI
+regions intact. The rolling-window count briefly exceeds 30 IDs/s through phase;
+input remains 30 Hz and 66.667 ms presentation gaps remain. Prospective pacing uses
+bounded packet credits and complete candidate admission, trading drops for bounded
+backlog and occupancy. A separate burst/scanline scheduler distinguishes frame-pointer rate
+from clean full-panel epochs. These studies are not one joint native simulation;
+ESP32/FPGA clocks, RF, heap, resource fit and physical 30 fps remain unproved.
+Run `python experiments/verify_prototype_v17.py` for retained checks.
 V11 integrated temporal exact565 UI patches with actual GF02/GA01 software
 replay, tests bounded block prediction and512×288 at30/20fps, and adds a
 [HEVC/AV1 FPGA decoder investigation](docs/gamebub-hevc-av1-fpga-plan.md).

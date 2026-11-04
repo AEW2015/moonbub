@@ -16,16 +16,21 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Latest: [iteration 16](custom-codec-prototype-v16-2026-11-03.md), branch
-`handoff/gamebub-app-codec-v16-20261103`, supplies complete golden/negative
-AR02/GF02/AF02 vectors, actual-packet cycle/memory budgets and full-UI refresh
-experiments. Matched coarser keys save 16.07% with explicit quality/history cost;
-periodic refresh remains below 30 modeled fps. Start native/FPGA ports from the
-portable vector schema and exact bank/display/feedback outputs; do not infer
-hardware fit from average budgets. Next qualify bounded stripes, canonical tag
-ordering, memory/scanline service and bank-local refresh. Run
-`python experiments/verify_prototype_v16.py` for retained checks. No installed
-Sunshine/ESP32/FPGA mode, target timing or physical 30 fps is supplied.
+Latest: [iteration 17](custom-codec-prototype-v17-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v17-20261103`, implements bank-local independent refresh
+in AR03/AF03, prospective bounded host/ESP packet pacing, and conditional bounded
+burst/scanline scheduling. Local refresh delivers 178/180 versus 161/180 global, preserving
+all four exact UI regions and full resolution; 66.667 ms gaps still occur. Packet
+consumption credits are not reference-publication ACKs, and size-only admission
+is not decoder-valid. Next split codec candidate/commit, integrate actual packets
+and protected reference state, export AR03 vectors and calibrate target service.
+Run `python experiments/verify_prototype_v17.py`. No installed native mode,
+physical 30 fps, RF/heap or FPGA resource/timing fit is supplied.
+
+Historical [iteration 16](custom-codec-prototype-v16-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v16-20261103`, contains portable AR02 golden/negative
+vectors, actual-packet budgets, GM refresh controls, canonical stripe-tag proof
+and ESP32 gateway sensitivity. Use its frozen branch for the snapshot verifier.
 
 Historical [iteration 15](custom-codec-prototype-v15-2026-11-03.md), branch
 `handoff/gamebub-app-codec-v15-20261103`, unifies recent references, GM/SR and exact
