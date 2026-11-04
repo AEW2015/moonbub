@@ -1,5 +1,23 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v21 display-cache study](custom-codec-prototype-v21-2026-11-04.md) now tests
+acknowledged exact RGB565 HUD reuse without changing the v20 video base or YUV
+prediction history. On 96 reused native-source updates, HUD bytes fall 9.04–11.29%.
+Complete bytes including the new 57-byte binding container fall 4.67–5.42%; all
+96 projected pairs fit the cap, with only 130 bytes of worst-case headroom.
+Ten full-display goldens and all HUD words match exactly. Synthetic static/noise
+controls remain separate: static gains are larger, while noise adds wrapper cost.
+
+The next application-specific step is whole video+HUD candidate admission and
+private atomic publication, followed by negotiated capabilities/reset, explicit
+cache refresh and measured endpoint/memory service. The current cache model is
+bounded stop-and-wait with two banks plus staging (126,720 pixel bytes before
+scratch). It is not an ESP32 memory/ISA model or native endpoint implementation.
+The complex forward projection remains 10.876 Mb/s at 30 scheduled IDs/s,
+including two frame controls but excluding radio/retries/input/audio. V20's
+decoder timing gap remains open. See [v21 integration tasks](v21-display-cache-integration.md).
+Keep the following v20 hardware-development kit frozen while testing this extension.
+
 The [v20 hardware-development handoff](custom-codec-prototype-v20-2026-11-03.md)
 provides a portable C11 inverse oracle, complete packet and generated-tile golden
 vectors, byte-level contracts, team prompts and acceptance gates. Start at

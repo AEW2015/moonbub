@@ -5,6 +5,16 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v21 Python study](docs/custom-codec-prototype-v21-2026-11-04.md) adds acknowledged
+exact HUD COPY/XOR updates with the existing full-patch fallback. On two reused
+gameplay windows, complete bytes fall 4.67–5.42% including binding overhead, while
+all requested HUD words and ten full-display goldens remain exact. The complex
+30-ID/s forward projection still needs 10.876 Mb/s before radio/retry costs;
+this does not close the decoder/physical-30-fps gap. See
+[integration tasks](docs/v21-display-cache-integration.md) and run
+`python experiments/verify_prototype_v21.py`. This extension is a study; the
+frozen v20 branches below remain the hardware-development baseline.
+
 The latest application-specific hardware-development handoff is
 [`handoff/gamebub-app-codec-v20-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v20-20261103).
 Start with the [hardware kit](hardware/gamebub-v20/README.md),
