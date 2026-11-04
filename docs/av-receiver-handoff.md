@@ -1,8 +1,12 @@
 # Receiver AV handoff —2026-11-03
 
-The application and FPGA V4 are built and verified offline. They have **not
-been installed**; audio hardware acceptance is pending. The previous build49/calibration application remains the physical
-baseline until the recorded update procedure is completed.
+The verified application and FPGA build50/V4 are now installed. Core/APC1
+identity, audio FIFO online state, margin13/timing0 and overlap/32-slot queue
+are confirmed. Physical A/D-pad input and neutral releases reached the Windows
+observer in954independently sequenced MSI1 packets with no sequence gaps.
+Clean STOP and Wi-Fi power-save restoration are confirmed by receiver logs.
+See [input results](av-hardware-input-first-20261103.md). Audio playback and
+Windows virtual-gamepad injection remain pending; no audible-output claim.
 
 ## Windows interface
 
