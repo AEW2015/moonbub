@@ -1,8 +1,7 @@
 # Receiver AV handoff —2026-11-03
 
-The application is built and verified offline. It has **not been installed**.
-The FPGA reset-domain repair V4 is being routed; audio hardware acceptance is
-pending. The previous build49/calibration application remains the physical
+The application and FPGA V4 are built and verified offline. They have **not
+been installed**; audio hardware acceptance is pending. The previous build49/calibration application remains the physical
 baseline until the recorded update procedure is completed.
 
 ## Windows interface
@@ -40,6 +39,9 @@ not acoustic output. No measured A/V synchronization or drift servo is claimed.
 
 ## Receiver implementation and gates
 
+Receiver artifact paths below refer to the receiver computer's workspace;
+this published branch contains the host reference and wire/receiver handoff.
+
 New application: `firmware/experiments/v21-audio-controls`.
 UF2 SHA256:
 `d43b3137fde1d95358181b23c80d71d3ef908b074510c3d5ae0271d4b46e37d3`.
@@ -67,7 +69,13 @@ Digital gates pass: serialized sample/edge/CRC/slot tests, actualTOP/QSPI80check
 PLL-loss cases. The first routed V3 met timing but introduced two reset-domain
 CDC criticals; its image was archived as **not hardware-ready**. V4 registers a
 common reset from separately synchronized PLL locks in the reference domain.
-Final V4 routed timing/CDC/DRC/bitstream checks are still required before loading.
+V4 final checks pass: setup+0.029ns,hold+0.014ns,DRC0,criticalCDC0,20749/20749
+nets routed. All170manifest artifact hashes and51inventory inputs were
+independently verified, alongside539application bindings. DAC8ns requirements
+match TI SLAS666B section4.9; PCBskew/pad rise-fall/acoustic behavior remain
+unmeasured. SelectedBIT SHA256:
+`a1ca6ce6b2c333a7c2ad4d29b94a7adf683dc49669d7f87fe3f80e63ef9ef3f9`.
+The failed V3 image with the same buildID must not be substituted.
 
 ## First live run
 
