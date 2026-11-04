@@ -7,6 +7,12 @@ coexistence. Current complete custom-pipeline throughput and maximum physical
 presentation rate remain **unknown**. No installed firmware, FPGA image, SD
 configuration, serial session or running stream was changed for this work.
 
+For the earliest useful physical test, see
+[the hardware-window plan](HARDWARE-TEST-GATES-20261104.md). The prepared v22
+app-only JPEG/AV regression can run at a coordinated window with unchanged
+build50. Custom AR03 streaming still needs an integrated, routed image and live
+backend; no calendar readiness estimate is established by component results.
+
 ## Shared versions
 
 - Coordinated Sunshine plan: `c9c0bf4bcbe5c95f38b50bf6e190b84822886d53`;
@@ -54,6 +60,17 @@ of 12,309 app-only UF2 blocks. These include repeated harness executions; they
 are not 389 unique portable-core tests. Static SRAM is 121,772 bytes and BIN size
 3,150,944 bytes. The dormant module may be removed by the linker, so these sizes
 do not establish memory or scheduling cost for a future active receiver.
+
+[The owned-storage adapter](../host/experiments/ar03-owned-backend-20261104/README.md)
+now copies five bounded datagrams and implements the dormant core's backend
+trait against a private hardware-adapter interface. Twenty host tests and three
+expected compiler rejections pass, including stale/ambiguous completions,
+reservation/retirement failures, buffer reuse and bounded polling. Ownership is
+retained on exhaustion or ambiguity. The FIFO trait has no real implementation:
+this is software storage scaffolding, not SPI/DMA, a live receiver or target SRAM
+qualification. The finite poll-call budget does not establish worker wall-clock
+service. Existing production negotiation/recovery and GF03 nonce limitations
+remain open.
 
 ## FPGA: complete the decoder before measuring frame throughput
 
@@ -123,6 +140,21 @@ validation remain downstream work, as do patch semantics, temporal banks,
 canonical tags, write drain and atomic presentation. Its64-bit opaque owner must
 be preserved by an explicit wrapper around the entropy seam's32-bit identity;
 silent truncation is not an integration strategy.
+
+The separate GM01 section/map validator passes62 cases:28 certificates and34
+rejections, including20 retained real GM01 packets,178,469 queried block
+descriptors and12 cancellation phases. It checks inner CRC, exact header/map/
+section bounds, zero motion vectors required by AR03, map domain/padding and
+owner-bound scale queries. SR01 is explicitly unsupported. CP02 entropy/CRC is
+still downstream: a deliberate bad-CP02/repaired-inner-CRC case demonstrates
+that boundary. Independent read-only review verified22 artifact hashes and the
+pinned Python/native source bytes; it did not rerun RTL simulation.
+
+Integration work now joins envelope, GM01/map, CP02 and exact KEY reconstruction
+with generated quantizer tables and a checked64-to32-bit owner sidecar. Its
+private YUV output will precede HUD application and will not assert AF03 or
+presentation. A canonical SHA256 tagger is being developed separately; raster
+reordering, bank/patch work and actual memory/scanout remain required.
 
 ## Next gates
 
