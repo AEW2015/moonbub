@@ -1,5 +1,20 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v22 Python study](custom-codec-prototype-v22-2026-11-04.md) now executes joint
+video/HUD prepare/admit/commit, private decode, explicit write-drain/vblank gates
+and whole-pair ACKs. All 192 native-source decisions preserve requested HUD words
+within the complete cap. Its adaptive complex-scene policy improves mean error
+34.09→31.08 at 2.74% more bytes; this is a quality/rate tradeoff with changed later
+reference history. The fixed v20 profile trace is only an image/byte control.
+
+A separate exact HD22 span grammar saves another 3.27–4.07% of native HUD bytes
+at identical cache histories. Integrating those sizes projects 1.55–2.07% complete
+savings, but the current joint dispatcher still implements HD21. Next implement
+real HD22 joint dispatch, share prediction/forward analysis across paid map
+attempts, then negotiated reset/recovery and bounded pipelined bank ownership.
+No endpoint/RTL/DMA/ESP32 calibration or physical30fps proof follows from the
+synchronous Python transaction. Keep the v20 hardware kit and JPEG baseline.
+
 The [v21 display-cache study](custom-codec-prototype-v21-2026-11-04.md) now tests
 acknowledged exact RGB565 HUD reuse without changing the v20 video base or YUV
 prediction history. On 96 reused native-source updates, HUD bytes fall 9.04–11.29%.
