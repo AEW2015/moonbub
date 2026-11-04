@@ -1,5 +1,20 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v23 Python study](custom-codec-prototype-v23-2026-11-04.md) implements actual
+HC22/HD22 packets inside CP23/JA23 joint transactions. Its fixed-image sequences
+confirm the former v22 projections: complete bytes fall another 1.55–2.07% with
+identical decoded images. All288 joint decisions fit the cap and preserve all
+requested HUD words. The adaptive complex case now uses37 fine-background frames
+and 11 coarse, with mean error30.08 versus 31.08 in v22 at 0.72% fewer bytes.
+
+Shared prediction/forward analysis produces identical packets/ACKs/images on 96
+paired decisions. Complex source work falls59→48 analyses /177→144 plane forwards,
+but measured build time improves only3.90%, and the no-retry case slows3.23%.
+The eager host context retains 5,184,000 array bytes plus an extra referenced-reader
+descriptor and paid SHA guards. Next prototype immutable capture ownership/lazy
+reuse, negotiated reset/rekey and a real bounded transport/shared-resource model.
+No ESP32/RF/RTL/DMA or physical 30 fps claim follows from these Python results.
+
 The [v22 Python study](custom-codec-prototype-v22-2026-11-04.md) now executes joint
 video/HUD prepare/admit/commit, private decode, explicit write-drain/vblank gates
 and whole-pair ACKs. All 192 native-source decisions preserve requested HUD words
