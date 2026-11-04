@@ -1,5 +1,14 @@
 # Next hardware window and custom 30 fps gates
 
+Status update, 2026-11-04 after the demo: v22 is now installed with the retained
+build50 FPGA. The requested window ended and streaming/control sessions were
+stopped. One unexplained reboot remains open; the mixed-mode totals are not a
+15 fps acceptance result. See [current progress](COORDINATED-30FPS-PROGRESS-20261104.md).
+The plan below records the original prerequisites. The next offline application
+work adds reset/identity reporting and bounded diagnostic pages; a new hardware
+window will require its completed build/package evidence. Custom streaming is
+still unavailable.
+
 Date: 2026-11-04. This is a test plan, not a device-ready announcement. No device
 probe, flash, core reload, SD change or stream was performed to write it.
 
@@ -8,7 +17,8 @@ probe, flash, core reload, SD change or stream was performed to write it.
 The prepared **v22 app-only JPEG/AV regression can run at the next coordinated
 window** with the previously selected build50 FPGA unchanged. It does not need
 a new FPGA build. The package is built, target-checked and validated through the
-production UF2 parser, but has not been installed or physically qualified.
+production UF2 parser. It was subsequently installed during the demo described
+above; full physical qualification remains open.
 
 Exact app: `firmware/experiments/v22-stream-service-20261104/release/moonshine-rev4.uf2`,
 SHA-256 `329a47a13d01b3416e5c11ed7bbd8c4bf69f0641fe4635679c8f8df14ab14542`.

@@ -1,16 +1,18 @@
 # Coordinated 30 fps implementation progress
 
-Date: 2026-11-04, America/Denver. Hardware updates remain deferred.
+Date: 2026-11-04, America/Denver. The v22 demo window has ended; development
+has returned offline. See the dated results below.
 
 Goal: 720×480 at 30 unique physical presentations/s, then audio and controller
 coexistence. Current complete custom-pipeline throughput and maximum physical
-presentation rate remain **unknown**. No installed firmware, FPGA image, SD
-configuration, serial session or running stream was changed for this work.
+presentation rate remain **unknown**. The v22 application was installed during
+the requested demo; the FPGA image was retained. The receiver is now disconnected
+and its serial recorder stopped.
 
 For the earliest useful physical test, see
 [the hardware-window plan](HARDWARE-TEST-GATES-20261104.md). The prepared v22
-app-only JPEG/AV regression can run at a coordinated window with unchanged
-build50. Custom AR03 streaming still needs an integrated, routed image and live
+app-only JPEG/AV path was exercised with unchanged build50, with an unexplained
+reboot still open. Custom AR03 streaming still needs an integrated, routed image and live
 backend; no calendar readiness estimate is established by component results.
 
 ## Shared versions
@@ -151,18 +153,76 @@ still downstream: a deliberate bad-CP02/repaired-inner-CRC case demonstrates
 that boundary. Independent read-only review verified22 artifact hashes and the
 pinned Python/native source bytes; it did not rerun RTL simulation.
 
-Integration work now joins envelope, GM01/map, CP02 and exact KEY reconstruction
-with generated quantizer tables and a checked64-to32-bit owner sidecar. Its
-private YUV output will precede HUD application and will not assert AF03 or
-presentation. A canonical SHA256 tagger is being developed separately; raster
-reordering, bank/patch work and actual memory/scanout remain required.
+## Completed private KEY integration and controlled optimization
+
+The local joined KEY pipeline now validates envelope, GM01/map and CP02, then
+performs exact reconstruction with generated quantizers and a checked 64-to-32-bit
+owner sidecar. Its corpus passed 35 cases (14 positive, 21 rejected), including
+late failures that invalidate previously emitted private samples.
+
+The canonical SHA-256 tagger and double-stripe raster adapter are also joined.
+The final baseline checked 1,038,501 sample transfers across seven main cases,
+plus metadata, cancellation and downstream-error tests. Completion requires
+the entire private pre-HUD candidate and all 16 stored tag bytes to match.
+It does not authorize HUD acceptance, reference publication or AF03.
+
+A controlled inverse-only A/B used the same near-cap 48,203-byte 720x480 KEY
+packet, source gaps and observer behavior. Actual simulated clocks from start
+to private tagged result fell from **3,788,358 to 2,950,451**, saving 837,907
+clocks (22.1%). At a nominal 100 MHz that is 29.50 ms, before HUD, temporal
+banks, external-memory service and scanout. It is not physical 30 fps evidence.
+The [retained measurement](measurements/ar03-private-key-20261104/README.md)
+includes exact cycle records and source-bound result manifests.
+The faster inverse preserves the exact samples and tag. Its isolated internal
+setup/hold estimates are positive, but the ideal-IO hold diagnostic still fails;
+combined board routing and interface timing remain open.
+
+Board resource review adds a separate integration gate: the retained build50
+utilization report records **120.5/135 BRAM tiles (89.26%)**, while the isolated
+CP02 implementation alone uses 20 RAMB36. Adding both decoders, packet storage,
+stripes and a fixture ROM cannot be assumed to fit. The next diagnostic must
+measure combined resources and choose either a separate synthesis variant or
+an explicitly verified shared-storage design before routing. Existing JPEG/AV
+remains the recovery image.
+
+Local evidence anchors (not portable source exports):
+
+| Record | SHA-256 |
+| --- | --- |
+| `fpga/experiments/ar03-key-tagged-20261104/manifest.json` | `d4f879da5b19eee0cc75acf983219fc0ac44254bd5b95d15c73e7906f3fdbe61` |
+| `fpga/experiments/ar03-key-tagged-20261104/ab-manifest.json` | `cd9e308871449b1b24c92de50fd81832e027609d7b7bc383e4ae40f6a5881940` |
+| `fpga/experiments/ar03-inverse-pipeline-20261104/manifest.json` | `d503495d5f5a5567a9bb8e4d5670b556393c3c74a1143b208114abff941d618d` |
+
+## Physical v22 demo and next application change
+
+The app-only v22 UF2 was written and verified during the authorized hardware
+window. Its startup marker identified `v22-stream-service-20261104`; the core
+reported build50/V4 (`0x4D424F50`). The retained build50 BIT hash identifies the
+selected artifact, not a cryptographic readback of the running configuration.
+
+One spontaneous reboot occurred; its cause was not captured. The subsequent
+Legacy/default-four-slot interval and later restoration of 32 slots/overlap
+make the totals unsuitable for a clean 15 fps acceptance result. At the final
+20:00:18 UTC sample, the application reported 3,245 received, 3,240 decoded,
+3,240 presented and 1,518 dropped; queue packet drops were zero and high-water
+was 25/32. Core fault count was zero. These independently sampled counters do
+not establish atomic correspondence between pipeline stages.
+
+The demo is stopped, remote controls released, and v22 remains installed.
+The next isolated v24 application adds a read-only reset/uptime/image-identity
+query and bounded diagnostic pages to replace truncated large debug lines.
+It preserves the streaming contracts and current task/queue settings. Its
+build and packaging gates must finish before a future hardware window.
+Evidence is retained under
+`evidence/15fps-controller-demo-20261104T193749Z/`.
 
 ## Next gates
 
 1. Retain the explicit interface hold/route limits and preserve all exact
    baselines and failed-gate evidence when integrating the next stages.
-2. Validate the outer envelope and inner section/map parsing, then integrate
-   reference banks, tag/patch work and real memory/scanout service. Only the
+2. Preserve the completed private KEY/tag path and prepare an isolated FPGA-only
+   fixture diagnostic using the actual board wrapper and constraints. Integrate
+   reference banks, HUD patches and real memory/scanout service. Only the
    complete pipeline can establish FPGA-only sustainable initiation interval.
 3. Agree production transport/recovery semantics and implement the bounded ESP32
    backend against actual FIFO/read-drain evidence. Measure concurrent Wi-Fi,

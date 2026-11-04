@@ -2,6 +2,11 @@
 
 Date: 2026-11-04, America/Denver.
 
+Later status: the requested v22 hardware demo has now ended. v22 was installed
+with build50 retained; one unexplained reboot remains open. Streaming is stopped.
+See [current progress](COORDINATED-30FPS-PROGRESS-20261104.md) for results and
+the resumed offline plan. The following sections preserve the original handoff.
+
 ESP32 and FPGA development has progressed offline. **Hardware testing is deferred.**
 The new ESP32 application is built but unflashed. The FPGA work is a verified
 reconstruction component; it is not an integrated replacement bitstream.
