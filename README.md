@@ -6,21 +6,19 @@ The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
 The latest application-specific codec handoff is
-[`handoff/gamebub-app-codec-v17-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v17-20261103).
-Start with the [current plan](docs/gamebub-application-specific-codec-plan.md),
-[iteration 17 results](docs/custom-codec-prototype-v17-2026-11-03.md), and
+[`handoff/gamebub-app-codec-v18-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v18-20261103).
+Read the [iteration 18 results](docs/custom-codec-prototype-v18-2026-11-03.md),
+[current plan](docs/gamebub-application-specific-codec-plan.md) and
 [developer handoff](docs/dev-handoff-2026-11-03.md). The matching
-[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v17-20261103)
-contains host-laboratory references. Earlier branches remain frozen.
-V17 implements AR03/AF03 bank-local refresh: the full-resolution native run
-improves from 161 to 178 eventual presentations out of 180, with all four exact UI
-regions intact. The rolling-window count briefly exceeds 30 IDs/s through phase;
-input remains 30 Hz and 66.667 ms presentation gaps remain. Prospective pacing uses
-bounded packet credits and complete candidate admission, trading drops for bounded
-backlog and occupancy. A separate burst/scanline scheduler distinguishes frame-pointer rate
-from clean full-panel epochs. These studies are not one joint native simulation;
-ESP32/FPGA clocks, RF, heap, resource fit and physical 30 fps remain unproved.
-Run `python experiments/verify_prototype_v17.py` for retained checks.
+[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v18-20261103)
+provides host-development references. Earlier branches remain frozen.
+V18 integrates actual AR03 candidate admission/commit, GF03 packet credits,
+reassembly and AF03 decoded-reference publication. Portable vectors preserve exact
+selected UI words and expose nonuniform coefficient demand. All eight joint cases
+drain their bounded state, including fault cases. Full-resolution gameplay still
+misses sustained 30 fps; ESP32 service, RF and FIFO timing remain assumptions, and
+FPGA memory/scanline cycles are not integrated. Installed firmware remains MSV1 JPEG.
+Run `python experiments/verify_prototype_v18.py` for retained checks.
 V11 integrated temporal exact565 UI patches with actual GF02/GA01 software
 replay, tests bounded block prediction and512×288 at30/20fps, and adds a
 [HEVC/AV1 FPGA decoder investigation](docs/gamebub-hevc-av1-fpga-plan.md).

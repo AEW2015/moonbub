@@ -16,16 +16,20 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Latest: [iteration 17](custom-codec-prototype-v17-2026-11-03.md), branch
-`handoff/gamebub-app-codec-v17-20261103`, implements bank-local independent refresh
-in AR03/AF03, prospective bounded host/ESP packet pacing, and conditional bounded
-burst/scanline scheduling. Local refresh delivers 178/180 versus 161/180 global, preserving
-all four exact UI regions and full resolution; 66.667 ms gaps still occur. Packet
-consumption credits are not reference-publication ACKs, and size-only admission
-is not decoder-valid. Next split codec candidate/commit, integrate actual packets
-and protected reference state, export AR03 vectors and calibrate target service.
-Run `python experiments/verify_prototype_v17.py`. No installed native mode,
-physical 30 fps, RF/heap or FPGA resource/timing fit is supplied.
+Latest: [iteration 18](custom-codec-prototype-v18-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v18-20261103`, adds source-leased AR03 candidates,
+actual-byte precommit admission and GF03/PC18/QC18 gateway/reassembly/AF03 decode
+publication, plus AR03 vectors and causal refill traces. Candidate commits match
+frozen bytes/pixels; all decoded native UI words are exact. Eight joint cases
+cover 636 captures. Full-resolution gameplay still misses sustained 30 fps.
+Next reserve actual receiver capacity, drive stripe/memory service from these
+packets, port bounded integer kernels and calibrate ESP32/RF/FIFO budgets.
+Run `python experiments/verify_prototype_v18.py`. Current native firmware remains
+MSV1 JPEG; no bitstream, heap/resource fit or physical rate qualification is added.
+
+Historical [iteration 17](custom-codec-prototype-v17-2026-11-03.md) is frozen at
+`handoff/gamebub-app-codec-v17-20261103`. Its separate codec, size-only transport
+and repeated-template memory results are not joint v18 performance evidence.
 
 Historical [iteration 16](custom-codec-prototype-v16-2026-11-03.md), branch
 `handoff/gamebub-app-codec-v16-20261103`, contains portable AR02 golden/negative

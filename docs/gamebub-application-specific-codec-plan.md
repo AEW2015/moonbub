@@ -1,28 +1,31 @@
 # Game Bub application-specific codec: selected direction and gates
 
-The [iteration 17 results](custom-codec-prototype-v17-2026-11-03.md) implement
-AR03/AF03 bank-local refresh: only destination-bank users drain, the other
-confirmed bank remains usable, and prediction chooses the newest confirmed bank.
-On the same full-resolution regression source, periodic refresh improves from
-161 to 178 eventual presentations out of 180 with all four exact UI regions.
-Only startup IDs 1 and 2 drop, but maximum in-window gaps remain 66.667 ms. The
-151-ID rolling count over five seconds is phase/catch-up, not >30 capture fps.
+The [iteration 18 results](custom-codec-prototype-v18-2026-11-03.md) now integrate
+actual AR03 candidate build/admit/commit/discard, individual GF03/PC18/QC18 packet
+credits and decoded AF03 reference publication in one finite Python controller.
+Rejected candidates pay their build costs without consuming wire or publication
+identity. Native candidate controls match frozen bytes/pixels, and exported AR03
+vectors retain decoded references and exact UI. These are prospective protocol and
+Python correctness results; current ESP32 firmware remains MSV1 JPEG.
 
-Prospective pacing now bounds producer backlog, packet credits and receiver
-mailbox use, paying credit framing and feedback queries. It deliberately drops
-whole source candidates when their budgets fail. These size traces are not a
-valid decoded-reference replay; dropping encoded publications can break future
-P frames. Consumed-packet credits must remain distinct from AF03 decoded-bank ACKs.
-The separate bounded burst/line scheduler checks complete epoch deadlines and
-buffer identity, not just average bandwidth or front-pointer change rate.
+Full-resolution admission trades drops for bounded latency/backlog: the 150-ms,
+8-ms-batch case presents 70/90 and pays for 15 discarded builds, with zero receiver
+NACKs. The six native profiles give 19.5–29 short diagnostic IDs/s and do not prove
+sustained 30 fps. Independent timing measurements prevent treating profile ranking
+as a controlled policy speedup. All decoded native selected UI words are exact.
 
-Next split AR03 candidate construction from bank/identity commit, integrate
-transport admission with actual encoded/decoded packets, export AR03 vectors,
-and drive stripe/scanline service from the same packet/reference trace. Calibrate
-ESP32 CPU/CRC/DMA/heap, RF batching/RTT and actual FIFO credits, then qualify mapped
-SDRAM/arbiter/resource timing. The current firmware is still MSV1 JPEG. No joint
-native/ESP32/FPGA or physical 30 fps proof is supplied. Validate on fresh gameplay;
-the current clip is reused regression evidence.
+Next add receiver-capacity reservation and fixed-cost causal replay; then connect
+the actual AR03 coefficient/refill trace to bounded incremental decode, SDRAM and
+full-panel epoch deadlines. One native stripe needs 9.05× mean token bytes. Calibrate
+ESP32 CRC/copy/DMA/heap, RF aggregation/RTT and FIFO/QSPI contention before assigning
+native service budgets. Preserve full resolution and the JPEG baseline while new
+contracts pass portable byte/pixel, reset/loss, memory and timing gates. Validate
+policies on fresh long gameplay; this short source is reused regression evidence.
+
+Historical [iteration 17](custom-codec-prototype-v17-2026-11-03.md) introduced
+AR03 bank-local refresh (178/180 eventual versus 161/180 global in its separate
+codec model), size-only pacing and repeated-template memory service. Those rates
+are not additive with the joint v18 controller. Use its frozen branch for provenance.
 
 ## Historical v16 contracts and service budgets
 
