@@ -1,5 +1,40 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v25 results](custom-codec-prototype-v25-2026-11-04.md) reduce complete custom
+video/HUD bodies4.600→3.160Mb/s and10.287→6.865Mb/s, preserving720×480 coded /
+720×405 active resolution and21,120 exact HUD words/frame, with improved measured
+mean MSE on both48-frame windows. HD25 component/Rice/temporal coding and more
+frequent reconstructed base references supply most useful gains; SAD-selected
+block motion often loses against zero prediction plus residual RDO.
+
+The goal remains HEVC/AV1-like compression with a bounded Gamebub decoder.
+Reapplying the same new HUD to the native standards leaves a1.8–1.9× complete
+body gap at sampled quality thresholds. No real-time/native/RTL30fps result
+follows: the selected Python base encoder alone costs252/502ms per source.
+Do not trade away resolution, silently relax exact HUD, or compare against the
+standards' older HUD to declare the target reached. Keep49,152bytes as the
+complete cap, distinct from any sustained network-rate budget.
+
+Next gates, with actual bytes, reconstructed references and all losing work paid:
+
+1. Exact CP02 bit counting to remove Python probe serialization, then native
+   byte/image parity. Measure full service including HUD, pair and ACK handling.
+2. Causal actual-byte zero/block/global choice, bounded half-pixel prediction
+   and small intra modes. Compare each tool separately at fixed resolution.
+3. Position/context-aware coefficient codes and integer4×4/8×8 transforms;
+   bound map storage, DSP work, reference reads and external-memory arbitration.
+   Add any reconstruction filter to both encoder and decoder reference paths.
+4. In a separate experiment, specify a restricted standards decoder/tool set;
+   reject unsupported syntax rather than assuming encoder presets guarantee it.
+   Compare rate/quality and compiled resource/service costs against the custom
+   path. Keep JPEG working while these studies remain unqualified.
+5. Port the selected grammar and real credit/reset/ACK/fence rules, qualify
+   at least1,800 fresh distinct30fps captures and then10 minutes on hardware.
+   The new CP25 Python grammar is incompatible with frozen AR03/CP23 peers;
+   the v20 hardware handoff stays unchanged until a qualified replacement exists.
+
+The following v24 and older sections preserve their historical evidence.
+
 The [v24 comparison](custom-codec-prototype-v24-2026-11-04.md) measures HEVC/AV1
 against the exact v23 source windows with common YUV arithmetic and the same
 exact HUD sidecar. Selected HEVCq32/AV1q48 hybrids need2.335/2.254 Mb/s on2600

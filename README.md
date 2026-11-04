@@ -5,6 +5,14 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v25 study](docs/custom-codec-prototype-v25-2026-11-04.md) adds exact HD25 HUD
+coding, reconstructed-reference GM25 motion/SKIP and actual CP25/JA25 replay.
+One fixed policy reduces complete bytes31.3%/33.3% at better measured mean MSE,
+preserving all HUD words and resolution. HEVC/AV1 with the same improved HUD
+still use about1.8–1.9× fewer bytes; Python encoding and physical30fps remain
+open. Run `python experiments/verify_prototype_v25.py`. This is an offline study,
+not a new native Sunshine/ESP32 mode or FPGA bitstream.
+
 The [v24 study](docs/custom-codec-prototype-v24-2026-11-04.md) adds actual HEVC/AV1
 software comparisons on the same source frames. With the same exact HUD, selected
 native-codec hybrids use roughly half the body bytes at equal or better measured
