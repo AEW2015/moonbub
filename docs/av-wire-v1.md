@@ -70,6 +70,26 @@ standard WAV four-byte channel interleave, low nibble first. Invalid index or
 reserved fields reject the whole block. Codec identifier is implicit in v1;
 PCM, Opus, other sample rates, mono and multichannel are unsupported.
 
+The reconstruction rule is **product-based integer rounding**, matching the
+installed ESP32 decoder and the frozen FFmpeg PCM oracle:
+
+```text
+delta = (step * (2 * (code & 7) + 1)) >> 3
+predictor = clamp_i16(predictor + (-delta if code & 8 else delta))
+index = clamp(index + index_table[code], 0, 88)
+```
+
+Use the current step before updating the index; truncate only after the full
+positive product. Do not substitute separately truncated shift/add terms.
+For step7/code7 the delta is13, not11. In the frozen block the first two stereo
+frames are(0,0) and(13,-13). The required oracle is exactly2020 decoded PCM
+bytes, signed16 little-endian left/right interleaved, with SHA256
+`85459adb008cf8af659afb72f6f03823940f1393bbc92a39840b9adfd62a81cc`.
+Hash PCM only, without WAV or network headers. A host encoder's reconstructed
+predictor updates must use the same rule; its code-selection strategy need not
+produce identical compressed bytes for arbitrary input. This clarifies the
+existing v1 profile and changes neither packet layout nor the installed binary.
+
 Audio sequence starts at0 and increments per captured/encoded block, including
 blocks later discarded by a bounded sender queue. Receiver accepts only newer
 audio sequences for the active audio-enabled cookie/source, records gaps, and
