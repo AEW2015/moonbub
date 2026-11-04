@@ -6,17 +6,21 @@ The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
 The latest application-specific codec handoff is
-[`handoff/gamebub-app-codec-v13-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v13-20261103).
+[`handoff/gamebub-app-codec-v14-20261103`](https://github.com/AEW2015/moonbub/tree/handoff/gamebub-app-codec-v14-20261103).
 Start with the [application-specific plan](docs/gamebub-application-specific-codec-plan.md),
-[iteration 13 results](docs/custom-codec-prototype-v13-2026-11-03.md), and
+[iteration 14 results](docs/custom-codec-prototype-v14-2026-11-03.md), and
 [developer handoff](docs/dev-handoff-2026-11-03.md). The matching
-[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v13-20261103)
+[Sunshine handoff](https://github.com/AEW2015/Sunshine/tree/handoff/gamebub-app-codec-v14-20261103)
 contains host-laboratory references. Earlier handoffs remain frozen snapshots.
-V13 integrates exact-source reuse before admission/commit, reuses unchanged UI
-payloads despite a changing game background and screens costly motion search.
-It measures combined finite execution at 720×480 and separately examines the
-host credit limit. These are Python studies, not an installed native codec.
-Run `python experiments/verify_prototype_v13.py` to check retained evidence.
+V14 adds actual AR01 acknowledged-P references and SR01 zero/DC/full residual
+syntax. Recent references reduce native mean bytes 25–29%; bounded pruning
+saves about 13% with explicit quality and host-work costs. Finite feedback
+experiments test publication, loss and bank-specific promotion at full resolution.
+These are separate Python dialects, not installed Sunshine/ESP32/FPGA modes.
+Bank-specific reference overlap reaches 30 modeled IDs/s over a five-second
+held-out window while reducing forward wire bytes 34.57% on the same 179 frames.
+This is a conditional software result; sustained hardware 30 fps remains open.
+Run `python experiments/verify_prototype_v14.py` to check retained evidence.
 V11 integrated temporal exact565 UI patches with actual GF02/GA01 software
 replay, tests bounded block prediction and512×288 at30/20fps, and adds a
 [HEVC/AV1 FPGA decoder investigation](docs/gamebub-hevc-av1-fpga-plan.md).

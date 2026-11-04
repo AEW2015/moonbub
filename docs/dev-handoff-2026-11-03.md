@@ -16,7 +16,17 @@ streaming top's implemented interfaces.
 
 ## Baseline and evidence boundary
 
-Latest: [iteration 13](custom-codec-prototype-v13-2026-11-03.md), branch
+Latest: [iteration 14](custom-codec-prototype-v14-2026-11-03.md), branch
+`handoff/gamebub-app-codec-v14-20261103`, adds AR01/AF01 tagged reconstructed-P
+references, SR01 actual residual modes and bounded pruning, plus finite ownership
+and bank-specific promotion experiments. These preserve 720×480. AR01 and SR01
+are separate research dialects; do not transmit them to installed GM01/JPEG or
+standard Moonlight peers. Start with the new protocol READMEs, full-byte results,
+quality limits and staged-publication/lost-ACK tests. No native decoder/firmware
+or FPGA fit is supplied. Use `python experiments/verify_prototype_v14.py` for
+retained evidence; old handoff branches remain frozen.
+
+Historical [iteration 13](custom-codec-prototype-v13-2026-11-03.md), branch
 `handoff/gamebub-app-codec-v13-20261103`, integrates candidate/commit-aware
 source reuse, exact UI region reuse, causal motion screening, measured-stage
 finite execution and bounded host credit experiments at 720×480. Start with
