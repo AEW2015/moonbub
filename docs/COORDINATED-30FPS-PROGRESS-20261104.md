@@ -191,19 +191,55 @@ default private KEY/raster/tag path plus its fixture ROM: 15,428 LUTs,
 board design. At a 10 ns clock its internal setup slack is **-2.961 ns**;
 hold is +0.186 ns. The critical path crosses GM01 geometry/header validation.
 The raster adapter also uses 2,202 LUTs as memory and zero BRAM in this run.
-Separate registered-validation and raster-memory variants are being tested;
-the baseline and failed timing report remain retained. The diagnostic CSR
-controller is not yet connected to a board image or live receiver.
+This baseline led to the registered-validation and raster-memory variants below;
+the baseline and failed timing report remain retained. At that stage the diagnostic
+CSR controller was not yet connected to a board image or live receiver.
 Its sealed full fixture replay checked 518,400 samples, the stored tag and
 48,203 ingress bytes in 2,997,214 actual simulated clocks, with busy-command
 rejection and abort/recovery. The ROM feeder differs from the earlier controlled
 A/B, so these cycle counts are different experiments. Baseline diagnostic
 manifest: `4b1edb00c306ae8e71a003a2d6b67bff6e250c255465f5fb5f0ee400d7147a4b`.
 
-The existing ESP USB command set cannot start/read this proposed CSR window.
-A separate restricted command with core-identity checks, idle-session guards and
-bounded polling is therefore another pre-hardware gate. The current v24 runtime
+The installed v22 ESP USB command set cannot start/read this CSR window.
+The later v26 candidate below adds a restricted command with core-identity
+checks, idle-session guards and bounded polling. The v24 runtime
 query does not provide arbitrary register access.
+
+### Internal closure and board-wrapper milestone
+
+The final private compute source now passes synthesized internal100MHz timing:
+setup+0.456ns, hold+0.180ns, zero failing endpoints. Clock constraints are loaded
+before synthesis; the same RTL's earlier post-synthesis-clock failure is retained
+as a flow A/B. The source-bound qualifying report is selected explicitly by
+manifest`93b61cc6fb05f157554aefa7fa5770a34934e38ab28469d476a5214a858947f6`.
+Final fixture replay remains exact, at3000322 actual simulated clocks. See
+[timing closure and its scope](FPGA-TIMING-CLOSURE-20261104.md).
+The [compute source replay export](../fpga/ar03-compute-replay-20261104/README.md)
+distributes the exact RTL and a Python/Icarus runner. It requires explicitly
+supplied, hash-checked fixture data and does not assume either GameBub or
+Sunshine repositories already exist on the receiving computer.
+An independent full replay from the publication checkout passed all 518,400
+samples and 20 controller checks without reusing simulator output;
+[its executed record](measurements/ar03-compute-publication-replay-20261104/run.json)
+binds the validated inputs, source hashes, commands and temporary-directory cleanup.
+
+The decoder-exclusive AKD1 shell also passed its real-compute actual-top tests:
+153 QSPI checks,16 reset cases/96 checks,two complete natural LCD frames and the
+golden private job. Its native bars/overlay are an independent LCD background;
+they are not the decoded private frame. Source/test manifest:
+`a6e521238b6e6843940d0100bc85397aa21f91cd3da76856a04da1a3bff4f15d`.
+The separate board candidate has now completed routing. Strict structural gates
+pass after removing only obsolete LCD synchronization attributes, but setup
+fails at -2.184 ns across 13,629 endpoints. Hold is +0.007 ns and pulse width
++2.000 ns, with zero DRC errors. The critical path runs from the QSPI queue BRAM
+through command/cancel logic to decoder register enables. The next change targets
+that control boundary; no bitstream or physical result is established yet. Its
+unused SDRAM interface is explicitly inactive, not memory-qualified. The normal
+SD image remains preserved.
+
+The [AKD1 local contract](AKD1-COMPUTE-DIAGNOSTIC-20261104.md) reserves distinct
+AKD1 magic and MBK1 build identity with zero JPEG admission. This is a local CSR
+interface; there is still no networked custom endpoint or port.
 
 Local evidence anchors (not portable source exports):
 
@@ -249,6 +285,27 @@ Selected ELF frame sizes changed, including new nested formatting calls; no
 overflow cause or stack-safety proof follows from those figures. Follow
 [the diagnostic regression checklist](V24-DIAGNOSTIC-REGRESSION-20261104.md)
 at a future coordinated window. This candidate does not claim to fix the reboot.
+
+The later v26 restricted-access SDK candidate now passes host adapter tests and
+its target typecheck/build/application-only packaging. It guards actual FPGA
+programming, receiver/AV and maintenance admissions and provides the local AKD1
+commands. It preserves the existing connected/TestReady AV lifecycle; it does
+not decouple standalone network/AV sessions. Final worker-specific resource
+telemetry, ELF analysis and artifact sealing are complete. Independent verification
+checked 575 frozen inputs, 3,844 artifact bindings and the sealed v25/v24 parents.
+The selected UF2 is
+`80003d79887976d8a49889a0e0bcda2905cb58763ff21d720169c3a87432bc63`;
+its build manifest is
+`00b3d4a4bd6190646d72b817dc22d3802e6f70b87cfec35d9d5b2547cf8c4a66`.
+It passes 39 model tests, 66 SDK host tests, 24 expected compiler rejections,
+target build and production parsing of 12,419 UF2 blocks. Static SRAM is
+122,124 bytes. The new 4,096-byte KeyDiag worker allocation remains provisional:
+stack, logger framing, heap, SPI duration and teardown require physical evidence.
+The [published build records](measurements/v26-key-diag-access-20261104/README.md)
+identify this exact local candidate; they do not distribute its full SDK or images.
+See [the v26/AKD1 regression sequence](V26-AKD1-REGRESSION-20261104.md).
+It is uninstalled;
+the installed v22 and its unexplained reboot remain the physical comparand.
 Evidence is retained under
 `evidence/15fps-controller-demo-20261104T193749Z/`.
 

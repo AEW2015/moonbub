@@ -4,10 +4,13 @@ Status update, 2026-11-04 after the demo: v22 is now installed with the retained
 build50 FPGA. The requested window ended and streaming/control sessions were
 stopped. One unexplained reboot remains open; the mixed-mode totals are not a
 15 fps acceptance result. See [current progress](COORDINATED-30FPS-PROGRESS-20261104.md).
-The plan below records the original prerequisites. The next offline application
-work adds reset/identity reporting and bounded diagnostic pages; a new hardware
-window will require its completed build/package evidence. Custom streaming is
-still unavailable.
+The v26 app-only successor has now completed its offline build/package gates;
+it adds reset/identity reporting, bounded diagnostic pages and restricted AKD1
+access. Use [the v26 regression sequence](V26-AKD1-REGRESSION-20261104.md) for the
+next window. Its new worker stack and runtime behavior remain physically
+unqualified. The FPGA diagnostic is still in route/report review. Custom
+streaming is still unavailable. The v22 sequence below is retained as the
+historical comparison plan, not a direction to reinstall it by default.
 
 Date: 2026-11-04. This is a test plan, not a device-ready announcement. No device
 probe, flash, core reload, SD change or stream was performed to write it.
