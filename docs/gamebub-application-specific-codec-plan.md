@@ -1,5 +1,26 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v28 runtime prototypes](custom-codec-prototype-v28-2026-11-04.md) preserve
+GM27/CP27/JA27 while reducing work. Exact lazy planning avoids discarded CP02/
+SP01 construction and keeps every accepted exhaustive packet/pixel unchanged.
+Tap-aware interpolation is pixel-exact with2.46× faster predictor calls and
+50.22% fewer logical reference gathers on the retained causal P inputs.
+
+Mixed sample4coarse/sample2refine search is a new encoder operating point:
+base-policy CPU662/687→276/300ms, body2.706/6.175Mb/s and MSE14.21369/26.31895.
+It trades about3.3% more bytes and1.10%/0.55% more error for2.40×/2.29× less
+measured host work. Full resolution and every exact HUD word remain mandatory.
+All288 new transactions and564 candidate encodes are retained/replayed;25 tests
+pass. These costs exclude capture/HUD/transport waits and do not prove30fps.
+
+Next port the exact implementation improvements, prototype confidence-triggered
+search effort/fallback, and test EC26-aware residual RDO against actual sparse
+run/DC context. Keep causal histories, all losing work, complete-frame admission
+and source/ref identity checks. Qualify native source service and FPGA memory/
+publication timing, then fresh long captures and hardware. Preserve JPEG/v20.
+
+The following v27 and older sections retain their historical evidence.
+
 The [v27 unified profile](custom-codec-prototype-v27-2026-11-04.md) now emits
 actual GM27/CP27/JA27 with compact fractional vectors, counted RDO and EC26
 block-major coefficients. Fixed v26 histories preserve all pixels while cutting
