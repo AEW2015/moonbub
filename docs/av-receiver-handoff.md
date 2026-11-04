@@ -8,7 +8,10 @@ Clean STOP and Wi-Fi power-save restoration are confirmed by receiver logs.
 See [input results](av-hardware-input-first-20261103.md). The first audio-only
 tone admitted944blocks and consumed475721PCMframes; microphone capture confirms
 tone output, with13underruns. See [audio results](av-audio-first-20261103.md).
-Clean sustained playback, stereo routing and Windows gamepad injection remain pending.
+Two one-minute PC loopback runs also completed; the gain0.75 repeat has a
+61-second webcam-microphone recording and15new underruns. See
+[loopback results](av-loopback-20261103.md). Clean sustained playback, stereo
+routing and Windows gamepad injection remain pending.
 
 ## Windows interface
 
