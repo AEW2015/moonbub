@@ -2,8 +2,8 @@
 
 This companion implements a new UDP5534 contract, separate from the existing
 UDP5533 MSV1 video sender. **It requires the new AV receiver application and
-audio-capable FPGA build50. Build49 currently installed on the handheld cannot
-play this audio.** Simulation, routed build and hardware acceptance are tracked
+audio-capable FPGA build50 for audio. With the new application, input-only
+sessions can use build49; build49 cannot play this audio.** Simulation, routed build and hardware acceptance are tracked
 separately. Do not interpret ingress ACKs or software tests as audible playback.
 
 The wire contract is `protocol/av-v1.md`. Golden datagrams and an independent
