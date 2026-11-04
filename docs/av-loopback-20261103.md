@@ -58,5 +58,18 @@ Mono capture cannot establish left/right spatial separation.
 
 Next: compare the sender's encoded/queued/stale-drop/sequence/send-gap records
 with the receiver's admission and underrun progression. A localhost reference
-sender pacing benchmark is also running. Keep the receiver configuration fixed
-until those results identify the next controlled experiment.
+sender pacing benchmark has completed. Its instrumented 60-second localhost
+run encoded/published 5,720 blocks and sent 5,694, with 23 four-block queue
+overflow drops and 23 sequence gaps. The fake peer accepted all transmitted
+blocks. Send-call intervals were 15 ms median, 16 ms p95 and 47 ms maximum,
+with a 10.506 ms mean. Instrumentation adds Python overhead and no uninstrumented
+A/B was run; these are not measurements of the separate `.47` machine.
+
+This establishes a software-only pacing lead, not the cause of every physical
+underrun. Preserve build50 while inspecting `.47` timestamps and queue records.
+The FPGA's two-block prefill is about 21 ms, below that observed localhost
+maximum gap; its existing eight slots already provide about 84 ms capacity.
+If starvation remains after host timing is improved, a targeted follow-up FPGA
+image could make startup/rebuffer watermarks configurable and preserve more
+underrun timing/occupancy evidence. No physical board, LCD-clock, QSPI-clock or
+larger-buffer change is indicated by the current data.
