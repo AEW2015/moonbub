@@ -138,3 +138,43 @@ and abort semantics. Do not add inverse fetch latency to address a different con
 Selected [routed failure records](measurements/akd1-routed-failure-20261104/README.md)
 are retained under manifest
 `a36bcaa4d7e3cd1d7722b9ef7cf49bdc8b3d735c6cc467ce910a2cb81a0d84d1`.
+
+The additive `akd1-compute-cancel-boundary-20261104` successor changes exactly
+four controller expressions. Compute cancellation now follows the existing
+registered CANCEL state; raw STOP retains highest controller priority after
+reset, suppressing all counter/result publication on its acceptance edge.
+The final private compute beat is discarded, and CANCEL clears the compute
+path on the next edge. Ordered START/STOP/status CSR behavior remains unchanged.
+No inverse, ROM, platform RTL or constraint changes are included.
+
+Its seven functional gates pass: platform153, reset16/96, actual-QSPI ordering58,
+controller20, STOP-collision9/49, direct full-frame sample oracle and actual-top
+golden job. Both full jobs retain518400 samples,48203 bytes, the exact tag and
+3000322 simulated cycles. Natural LCD-frame coverage is inherited from unchanged
+LCD/platform RTL rather than claimed rerun. Functional-ready record SHA-256 is
+recorded with the new candidate's artifacts; source-selection SHA-256 is
+`6fdd9f1a4ec0d1870dfba11ad3cc30488a2af3c0714ad5c2bb687c1872840b47`.
+The successor's final routed setup improves to -0.025 ns (three failing endpoints),
+with +0.051 ns hold and +2.000 ns pulse width. All 29,750 nets are routed with
+zero routing errors and zero DRC errors. It still fails setup; no rounding or
+exception turns this into a pass. The remaining worst path is GM01 offset-query
+arithmetic to an envelope RAM enable, not the inverse operand mux.
+Manifest `ac3ea38161c6f6ca69a9ecba7917b3a4cbdf1d5d2b975558c64480d734df8e3b`
+binds 172 artifacts. The complete, uncapped REQP-1839 inventory contains 199
+warnings (audio4, bridge8, fixture ROM32, compute111, overlay44); zero DRC errors
+is not a waiver of these reset/BRAM warnings.
+
+Independent read-only inspection of the parent's routed checkpoint also confirms
+a distinct startup blocker shared by the unchanged ROM logic: the inferred
+fixture-ROM base-enable LUT is forced high by reset/abort, and bank enables are
+high with reset asserted before PLL lock. The synchronous `byte_data` reset
+was folded into ROM controls. Four reset-release edges alone do not prove the
+array disabled before lock. This is a netlist protection gap, not evidence of
+physical corruption; neither candidate has been loaded.
+
+A separate successor must read the ROM only under an explicitly guarded fetch,
+keep its data output unreset, and use the existing resettable valid flag to mask
+stale/uninitialized data. Verify every inferred ROM bank's enable is low through
+reset and that output-reset inference does not reintroduce the path. Repeat
+reset/cancel/stall/first-byte and full golden tests before implementation. Retain
+warm PLL-loss/ROM-retention limits explicitly; do not waive them as "read-only ROM".

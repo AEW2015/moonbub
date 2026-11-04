@@ -1,0 +1,132 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Wed Nov  4 16:41:41 2026
+# Process ID         : 21296
+# Current directory  : C:/Users/lavat/codex/moonbub/fpga/candidates/akd1-compute-rom-guard-20261104
+# Command line       : vivado.exe -mode batch -source validate_solver_parent.tcl -log evidence/solver-parent-counterexample.log -journal evidence/solver-parent-counterexample.jou
+# Log file           : C:/Users/lavat/codex/moonbub/fpga/candidates/akd1-compute-rom-guard-20261104/evidence/solver-parent-counterexample.log
+# Journal file       : C:/Users/lavat/codex/moonbub/fpga/candidates/akd1-compute-rom-guard-20261104\evidence/solver-parent-counterexample.jou
+# Running On         : DESKTOP-I75K8PP
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 19045
+# Processor Detail   : AMD Ryzen 7 3700X 8-Core Processor             
+# CPU Frequency      : 3593 MHz
+# CPU Physical cores : 8
+# CPU Logical cores  : 16
+# Host memory        : 34304 MB
+# Swap memory        : 42949 MB
+# Total Virtual      : 77254 MB
+# Available Virtual  : 29384 MB
+#-----------------------------------------------------------
+source validate_solver_parent.tcl
+# set root [file dirname [file normalize [info script]]]
+# set_param general.maxThreads 4
+# open_checkpoint [file join $root .. akd1-compute-cancel-boundary-20261104 build akd1-routed.dcp]
+Command: open_checkpoint C:/Users/lavat/codex/moonbub/fpga/candidates/akd1-compute-rom-guard-20261104/../akd1-compute-cancel-boundary-20261104/build/akd1-routed.dcp
+
+Starting open_checkpoint Task
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.061 . Memory (MB): peak = 399.664 ; gain = 5.820
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.311 . Memory (MB): peak = 863.277 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 2843 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2025.2
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Read ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.062 . Memory (MB): peak = 982.914 ; gain = 4.035
+INFO: [Timing 38-478] Restoring timing data from binary archive.
+INFO: [Timing 38-479] Binary timing data restore complete.
+INFO: [Project 1-856] Restoring constraints from binary archive.
+INFO: [Project 1-853] Binary constraint restore complete.
+INFO: [Designutils 20-5722] Start Reading Physical Databases.
+Reading placement.
+Read Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.050 . Memory (MB): peak = 1633.754 ; gain = 0.000
+Reading placer database...
+Read Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.011 . Memory (MB): peak = 1633.754 ; gain = 0.000
+Read PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1633.754 ; gain = 0.000
+Read placeStorage: Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 1644.320 ; gain = 10.566
+Read PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1644.320 ; gain = 0.000
+Reading routing.
+Read RouteStorage: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.320 . Memory (MB): peak = 1663.117 ; gain = 18.797
+Read Physdb Files: Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 1663.117 ; gain = 29.363
+Restored from archive | CPU: 2.000000 secs | Memory: 0.000000 MB |
+Finished XDEF File Restore: Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 1663.117 ; gain = 29.363
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.016 . Memory (MB): peak = 1688.938 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 12 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 4 instances
+  RAM16X1D => RAM32X1D (RAMD32(x2)): 3 instances
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 5 instances
+
+INFO: [Project 1-604] Checkpoint was created with Vivado v2025.2 (64-bit) build 6299465
+open_checkpoint: Time (s): cpu = 00:00:31 ; elapsed = 00:00:42 . Memory (MB): peak = 1696.988 ; gain = 1311.477
+# set inventory [open [file join $root evidence parent-all-BRAM-cells.txt] w]
+# foreach ref {RAMB36E1 RAMB18E1} {
+#  set cells [lsort [get_cells -quiet -hier -filter "REF_NAME == $ref"]]
+#  puts $inventory "$ref count=[llength $cells]"
+#  foreach c $cells {puts $inventory $c}
+# }
+# close $inventory
+# set ::rom_reset_define_only 1
+# source [file join $root rom_reset_gate.tcl]
+## namespace eval RomResetProof {variable memo;variable known}
+## proc rom_eval_pin {pin} {
+##  variable ::RomResetProof::memo
+##  variable ::RomResetProof::known
+##  set pin [lindex $pin 0]
+##  if {[dict exists $known $pin]} {return [dict get $known $pin]}
+##  if {[dict exists $memo $pin]} {return [dict get $memo $pin]}
+##  dict set memo $pin -1
+##  set nets [get_nets -quiet -segments -of_objects $pin]
+##  set drivers [get_pins -quiet -leaf -of_objects $nets -filter {DIRECTION == OUT}]
+##  set drivers [lsort -unique $drivers]
+##  if {[llength $drivers]!=1} {return -1}
+##  set output [lindex $drivers 0]
+##  if {[dict exists $known $output]} {set value [dict get $known $output];dict set memo $pin $value;return $value}
+##  set cell [get_cells -quiet -of_objects $output]
+##  if {[llength $cell]!=1} {return -1}
+##  set ref [get_property REF_NAME $cell]
+##  if {$ref eq "GND"} {dict set memo $pin 0;return 0}
+##  if {$ref eq "VCC"} {dict set memo $pin 1;return 1}
+##  if {![regexp {^LUT([1-6])$} $ref unused n]} {return -1}
+##  set init [get_property INIT $cell]
+##  if {![regexp {^[0-9]+'h([0-9a-fA-F]+)$} $init unused hex]} {error "Unrecognized actual LUT INIT: $cell $init"}
+##  set truth [expr "0x$hex"]
+##  set inputs {}
+##  for {set i 0} {$i<$n} {incr i} {
+##   set ip [get_pins -quiet -of_objects $cell -filter "REF_PIN_NAME == I$i"]
+##   if {[llength $ip]!=1} {error "Missing actual LUT input: $cell I$i"}
+##   lappend inputs [rom_eval_pin $ip]
+##  }
+##  set answer -1
+##  for {set assignment 0} {$assignment<(1<<$n)} {incr assignment} {
+##   set possible 1
+##   for {set i 0} {$i<$n} {incr i} {
+##    set v [lindex $inputs $i]
+##    if {$v!=-1 && (($assignment>>$i)&1)!=$v} {set possible 0;break}
+##   }
+##   if {!$possible} {continue}
+##   set bit [expr {($truth>>$assignment)&1}]
+##   if {$answer==-1} {set answer $bit} elseif {$answer!=$bit} {dict set memo $pin -1;return -1}
+##  }
+##  dict set memo $pin $answer
+##  return $answer
+## }
+## if {[info exists ::rom_reset_define_only] && $::rom_reset_define_only} {return}
+# unset ::rom_reset_define_only
+# set reset_q [get_pins -quiet {rst100_reg[3]/Q}]
+# set en [get_pins -quiet {diagnostic/byte_data_reg_1_0/ENARDEN}]
+# if {[llength $reset_q]!=1 || [llength $en]!=1} {error "Known-bad reference pins missing"}
+# set ::RomResetProof::memo [dict create]
+# set ::RomResetProof::known [dict create $reset_q 1]
+# set value [rom_eval_pin $en]
+# puts "KNOWN_BAD_PARENT_ROM_EN_RESET=$value"
+KNOWN_BAD_PARENT_ROM_EN_RESET=1
+# if {$value!=1} {error "Boolean proof solver did not reproduce known-bad parent EN=1"}
+# puts "SOLVER_KNOWN_BAD_PARENT_COUNTEREXAMPLE_PASS=1"
+SOLVER_KNOWN_BAD_PARENT_COUNTEREXAMPLE_PASS=1
+# close_design
+INFO: [Common 17-206] Exiting Vivado at Wed Nov  4 16:42:29 2026...

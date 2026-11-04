@@ -12,10 +12,12 @@ are independent of its private decoded samples.
 - ESP32: `firmware/experiments/v26-key-diag-access-20261104/release-key-resource/`.
   UF2 SHA-256 `80003d79887976d8a49889a0e0bcda2905cb58763ff21d720169c3a87432bc63`.
   Manifest `00b3d4a4bd6190646d72b817dc22d3802e6f70b87cfec35d9d5b2547cf8c4a66`.
-- FPGA: `fpga/candidates/akd1-compute-cancel-boundary-20261104` is the next
-  candidate. Its `akd1-compute-lcd-prune-20261104` parent failed routed setup;
-  the successor still needs full simulation and route/report gates. There is
-  no qualified bitstream hash in this checklist yet.
+- FPGA: a guarded-ROM successor is required. The `akd1-compute-cancel-boundary-20261104`
+  variant addresses its parent's setup path, but netlist inspection confirms
+  fixture-ROM enables are high during reset before PLL lock. It must not be
+  loaded. The new ROM enable/valid behavior needs functional and post-synthesis
+  verification, followed by complete route/report gates. There is no qualified
+  bitstream hash in this checklist yet.
 - Contract: [AKD1 local diagnostic](AKD1-COMPUTE-DIAGNOSTIC-20261104.md).
   Exact identity pair is AKD1/MBK1, schema 1, zero network capabilities.
 

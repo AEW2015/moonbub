@@ -25,9 +25,11 @@ backend; no calendar readiness estimate is established by component results.
 - Published contract/state review:
   `7fc6eb244ecb50aa5c52d385d8757a674b86a3d1`,
   [AR03-LAB-CONTRACT-REVIEW-20261104.md](AR03-LAB-CONTRACT-REVIEW-20261104.md).
-- New firmware experiment: `v23-ar03-gateway-20261104`, built and unflashed.
+- Dormant gateway experiment: `v23-ar03-gateway-20261104`, built and unflashed.
   Source inventory SHA-256:
   `d904373e006126480d3de5c9d2711e459a614b0ed04de1dcc2b83b602243f36d`.
+- Current diagnostic app candidate: `v26-key-diag-access-20261104`, built and
+  unflashed; exact package/build records appear below. Installed app remains v22.
 
 ## ESP32: executable source export
 
@@ -237,6 +239,13 @@ that control boundary; no bitstream or physical result is established yet. Its
 unused SDRAM interface is explicitly inactive, not memory-qualified. The normal
 SD image remains preserved.
 
+The [registered-CANCEL successor](measurements/akd1-cancel-route-20261104/README.md)
+then reduced routed setup failure to -0.025 ns/three endpoints, preserving all
+golden behavior. Hold is +0.051 ns and pulse width +2.000 ns. It still fails setup,
+and checkpoint inspection confirms a separate fixture-ROM enable-high-during-reset
+startup blocker. A guarded-ROM successor is in functional verification; neither
+failed image was generated as a bitstream or loaded on the handheld.
+
 The [AKD1 local contract](AKD1-COMPUTE-DIAGNOSTIC-20261104.md) reserves distinct
 AKD1 magic and MBK1 build identity with zero JPEG admission. This is a local CSR
 interface; there is still no networked custom endpoint or port.
@@ -310,6 +319,17 @@ Evidence is retained under
 `evidence/15fps-controller-demo-20261104T193749Z/`.
 
 ## Next gates
+
+The concrete next memory/presentation steps are expanded in
+[the implementation plan](AR03-MEMORY-PRESENTATION-PLAN-20261104.md). A first
+owned compact-YUV storage simulation now matches all 518,400 bytes and the exact
+tag through the retained SDRAM writer, but takes 4,865,759 clocks (48.65759 ms at
+nominal 100 MHz) under synthetic uniform competing reads. This misses the 30 fps
+budget before RGB/HUD rendering. It is not a matched A/B against the ROM-only
+diagnostic and does not qualify real LCD scheduling or hardware bandwidth. A
+bounded elastic-storage experiment will measure the line-stall buffering hypothesis
+against the same owned baseline and read schedule. Its production reset/rekey
+behavior remains unqualified; the simulation reset is power-on only.
 
 1. Retain the explicit interface hold/route limits and preserve all exact
    baselines and failed-gate evidence when integrating the next stages.
