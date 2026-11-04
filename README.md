@@ -5,6 +5,14 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v27 study](docs/custom-codec-prototype-v27-2026-11-04.md) combines fractional
+prediction and EC26 coefficients in actual GM27/CP27/JA27 transactions. The
+fixed-history control saves another7.0–9.8% with identical v26 pixels; the causal
+path uses2.620/5.978Mb/s with a small primary-MSE tradeoff. Syntax-only MV parsing
+and metadata-only binding remove receiver-side encoder search and duplicate
+entropy parsing. Run `python experiments/verify_prototype_v27.py`. The static
+profile descriptor supports handoff; native negotiation/FPGA30fps remain open.
+
 The [v26 study](docs/custom-codec-prototype-v26-2026-11-04.md) proves exact RDO
 bit counting with9.06× faster paired Python encode-prepared work and identical
 packets. New sparse-band coefficient coding cuts complete bytes another7.8–9.5%

@@ -1,5 +1,27 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v27 unified profile](custom-codec-prototype-v27-2026-11-04.md) now emits
+actual GM27/CP27/JA27 with compact fractional vectors, counted RDO and EC26
+block-major coefficients. Fixed v26 histories preserve all pixels while cutting
+complete bytes9.78%/7.01%. A real causal selector projects2.620/5.978Mb/s at30IDs/s,
+with mean MSE14.05861/26.17453; primary error rises0.13% versus v26 while complex
+error improves. All complete packets fit49,152bytes and carry exact HUD.
+
+The decoder now uses bounded MV syntax checks rather than searching for the
+encoder's optimal representation. Metadata checks defer coefficient semantics
+to full decode before publication, avoiding repeated work in binding and ACK
+checks. The new profile explicitly changes acceptance; old protocols stay frozen.
+
+Next port/qualify this single arithmetic and wire contract, measure real memory
+and native service, reduce host search, and integrate negotiated reset/credits/
+fences. Extend temporal quality control on fresh long footage. Do not treat the
+Python658/694ms source builds or34/52ms receiver measurements as physical30fps
+proof. The custom stream still uses about1.5–1.6× the native HEVC/AV1 complete
+bytes at sampled quality thresholds with the same HUD. Preserve JPEG and the
+v20 handoff.
+
+The following v26 and older sections retain their historical evidence.
+
 The [v26 application-specific prototypes](custom-codec-prototype-v26-2026-11-04.md)
 now supply three measured tools at720×480 coded /720×405 active:
 
