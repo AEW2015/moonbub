@@ -798,3 +798,7 @@ The v9 verifier reconciles stored evidence, source pins, test logs and window/by
 accounting. There is no installed custom Sunshine mode, ESP32 decoder support or
 new FPGA bitstream from these experiments. Existing JPEG policies can be tested
 independently on the other system's hardware. No board was programmed here.
+
+## V40 research checkpoint — 2026-11-05
+
+[457-frame qualification and fresh HEVC/AV1 grid](custom-codec-prototype-v40-2026-11-05.md) reports exact arithmetic savings of 10.2732%, all 2,742 alternatives and 5,484 fresh native access units. Native codecs remain smaller on sampled comparable-quality walkthrough points; combat peak-rate controls are a subsequent study. No physical frame-rate or FPGA fit claim.

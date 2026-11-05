@@ -307,3 +307,7 @@ Sunshine negotiation/pairing, an explicitly negotiated JPEG extension, audio,
 and stock dock support are subsequent work. Audio is absent from the standalone
 capture/protocol. Optional Windows keyboard injection is explicitly enabled
 by `--inject-keys`; automated tests mock it and do not inject desktop keys.
+
+## V40 research checkpoint — 2026-11-05
+
+[457-frame qualification and fresh HEVC/AV1 grid](docs/custom-codec-prototype-v40-2026-11-05.md) reports exact arithmetic savings of 10.2732%, all 2,742 alternatives and 5,484 fresh native access units. Native codecs remain smaller on sampled comparable-quality walkthrough points; combat peak-rate controls are a subsequent study. No physical frame-rate or FPGA fit claim.
