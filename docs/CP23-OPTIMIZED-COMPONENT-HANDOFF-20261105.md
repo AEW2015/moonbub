@@ -1,5 +1,7 @@
 # Restricted CP23 optimized component handoff
 
+Latest status: see [morning handoff](OVERNIGHT-MORNING-HANDOFF-20261105.md) for the final actual-board setup failure, newer address-strength component, current source packages and proposed next hardware gate. Earlier checkpoints below retain their original scope.
+
 Portable source folder `fpga/exports/cp23-registered-child-component-source-20261105-0508`, manifest `5949a2eb919aae0462b1df217e6336908afee60ee58e6aebbf3582e81ee56867`. The matching403,010B ZIP SHA256 is `a4059e2dc5c504e6963d79e34c6c389a85380fbd7dfa602a493a5945b39e51d5`. All43 consumed source/asset bindings and125 package artifacts verify. Python/Icarus are external prerequisites; no other GameBub checkout is assumed. The source includes licenses and compact source-bound test/OOC records, with no DCP/VVP/executable/BIT.
 
 This is the selected loop-free component with registered-child cancellation, **not the board image being implemented**. It combines the BRAM gather, eight-block transpose, canonical byte/word and HUD stages, and exact HC fixed-rectangle bounds. Parent manifest `a5f23f91e0400cce1adb063bf5dc7b0f186d7a9dea28d286f78892eeab87078d`; changed private-join leaf `50ac00737a793f3dac0333c4b729a2779794959bae144c1602d6476165b41100` is independently sealed and tested.

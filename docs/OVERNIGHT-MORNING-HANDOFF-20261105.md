@@ -42,7 +42,7 @@ Final mapped ROM reconstruction and actual RAMB primitive reads match all 17,412
 - `fpga/exports/cpl1-source-replay-v002-20261105`: exact actual-board source, constraints, five runtime assets, digital primitive/memory models, source verifier, smoke/full replay helper and independent snapshot checker. ZIP SHA-256 `5ba475b23aee08dbb2accbc40d9f2a11ae178270bab61d42fec3ae85b7041c7f`. It contains no BIT, DCP, executable or vendor libraries. Digital replay requires Icarus; board synthesis requires separately installed licensed Vivado/device support.
 - [Measured timing lineage](FPGA-TIMING-PROGRESS-20261105.md), [source/rate budget](30FPS-SOURCE-BUDGET-20261105.md), and [retained v30 correlation closeout](V30-SEQUENCE-CORRELATION-CLOSEOUT-20261105.md) separate source simulation, unplaced estimates, route results and physical evidence.
 
-The original source-bound full board replay passed, and the fresh extracted v002 smoke replay passed. A new extracted-package full-helper replay is being recorded separately; its final result must be checked before claiming that additional integration run passed.
+The original source-bound full board replay and fresh extracted v002 smoke replay passed. The new extracted-package `--full` helper replay also passed: full actual-board digital model, all 40 QSPI CSR reads/139 checks and the independent fixture checker. It compared 691,200 canvas pixels and two scans of one held image; it is neither physical playback nor unique-frame FPS. Fresh Git-object archive extraction independently verified both new portable source packages. See `docs/measurements/cpl1-fresh-package-full-20261105/` for the exact commands, source snapshot, model log, pages and checker result.
 
 ## Hardware sequence toward 30 fps
 

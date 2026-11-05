@@ -18,7 +18,7 @@ Reviewed the failed-route package at `evidence/overnight-coordinated-20261105/cp
 - Archive: `evidence/overnight-coordinated-20261105/cpl1-board-source-02/cpl1-source-replay-v002.zip`.
 - ZIP SHA-256: `5ba475b23aee08dbb2accbc40d9f2a11ae178270bab61d42fec3ae85b7041c7f`; 465,515 bytes.
 - Manifest SHA-256: `c3dc08c673c080cc80334375dd662e03ff87ee15163350231beab6a2d3ccb73e`.
-- The package includes standalone smoke and full Icarus replay. Fresh smoke passed; the new full replay is still running, so no full-replay result is claimed here. This is replay evidence only, not hardware-operation evidence.
+- The package includes standalone smoke and full Icarus replay. Fresh smoke and extracted-package full replay both passed, including the independent fixture checker; commands and results are published under `docs/measurements/cpl1-fresh-package-full-20261105/`. This is replay evidence only, not hardware-operation evidence.
 
 ## Proposed controlled legacy regression
 

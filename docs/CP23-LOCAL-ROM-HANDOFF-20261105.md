@@ -1,5 +1,7 @@
 # Restricted CP23 local-ROM simulation handoff
 
+Latest status: see [morning handoff](OVERNIGHT-MORNING-HANDOFF-20261105.md) for the final actual-board setup failure, newer address-strength component, current source packages and proposed next hardware gate. Earlier checkpoints below retain their original scope.
+
 The self-contained source package is `fpga/exports/cp23-rom-composite-source-20261105`, manifestSHA `574d42277b06e9fcf766fc6a82cb5f5fdf6211c70891d4e89bb136e83354234d`. Its92 included files/41 source bindings contain the actual RTL, fixed ROM, native golden assets, testbenches and compact executed records for eight modes. Python and Icarus are external prerequisites; no other GameBub checkout is assumed. The helper uses fresh external output paths and preserves all package bytes. A fresh copied held-LOAD cancellation replay passes with32 local compile inputs and all eight local runtime assets verified.
 
 This is a local fixed-fixture composition, not a board image, firmware hook, network receiver or complete advertised CP23 profile. It runs exactly the authenticated17,412-byte epoch1/frame0 CP23 packet, SHA `3255ef9bbdb71f8678547aaadd72a41bf92991b7b09ee7cd88ad2a073df08107`. The selected format remains CP23/HC22/HD22; implemented scope is independent KEY with HC22 mode0 and HR01 INDEX_RUNS2. Predictive/reference/HD22 history modes remain unsupported.
