@@ -1,0 +1,794 @@
+--- v30/handheld/src/diag_pages.rs
++++ v31/handheld/src/diag_pages.rs
+@@ -3,7 +3,7 @@
+ use crate::streaming::telemetry::FrameTrace;
+ pub const PAYLOAD_BYTES: usize = 192;
+ pub const LOG_FRAMING_RESERVE: usize = 64;
+-pub const VARIANT: &str = "v30-sequence-window-20261105";
++pub const VARIANT: &str = "v31-trace-lock-scope-20261105";
+ #[derive(Clone, Copy)]
+ pub struct Context {pub capture: u32,pub generation: u32,pub epoch: u32,pub frame: u32}
+ pub struct Line {bytes:[u8;PAYLOAD_BYTES],length:usize}
+--- v30/handheld/src/streaming/diagnostic_trace.rs
++++ v31/handheld/src/streaming/diagnostic_trace.rs
+@@ -27,12 +27,16 @@
+ //! are wall-clock observations, not CPU attribution. Snapshot coherence is
+ //! version checked once; a concurrent writer yields phase_valid=false.
+ //! Poisoned/contended mutexes fail open for the application and lose diagnostics.
++//! Per-Kind rejected-call counters distinguish salient event losses without
++//! retaining packet identities or claiming a particular missing completion.
+ //! SeqCst writer admission/disarm fences exclude late bookkeeping after a
+ //! successful manual seal; external quiescence remains mandatory for rearm.
+ use std::sync::{
+     atomic::{AtomicBool, AtomicU32, Ordering},
+     Mutex,
+ };
++#[cfg(test)]
++thread_local! {static MAXIMA_SNAPSHOTS: std::cell::Cell<usize> = const { std::cell::Cell::new(0) };}
+ pub const RING_CAPACITY: usize = 96;
+ pub const FAILURE_CAPACITY: usize = 32;
+ pub const POST_HISTORY: usize = 16;
+@@ -190,6 +194,14 @@
+     pub counters_valid: bool,
+     pub phase_max_us: [u64; PHASE_COUNT],
+     pub trigger: Option<Trigger>,
++}
++/// Separate additive diagnostics; existing Summary/USB page schema is unchanged.
++/// Counts identify rejected salient call kinds, not specific lost packets.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub struct LossCounts {
++    pub epoch: u32,
++    pub counts: [u64; 8], // Kind repr index; Phase is atomic-only and remains0
++    pub counters_valid: bool,
+ }
+ // Private packed storage; public exports widen durations and never truncate IDs.
+ #[derive(Clone, Copy)]
+@@ -404,16 +416,12 @@
+             maxima: [const { AtomicU32::new(0) }; PHASE_COUNT * 2],
+         }
+     }
+-    fn snapshot(&self) -> Option<(Phase, u64, Context, [u64; PHASE_COUNT])> {
++    fn context_snapshot(&self) -> Option<(Phase, u64, Context)> {
+         let before = self.version.load(Ordering::SeqCst);
+         if before & 1 != 0 {
+             return None;
+         }
+         let w: [u32; 10] = std::array::from_fn(|i| self.words[i].load(Ordering::SeqCst));
+-        let maxima = std::array::from_fn(|i| {
+-            self.maxima[2 * i].load(Ordering::SeqCst) as u64
+-                | ((self.maxima[2 * i + 1].load(Ordering::SeqCst) as u64) << 32)
+-        });
+         if self.version.load(Ordering::SeqCst) != before || w[9] == 0 {
+             return None;
+         }
+@@ -445,7 +453,25 @@
+             flags: w[8] as u16,
+         }
+         .unpack();
+-        Some((phase, w[1] as u64 | ((w[2] as u64) << 32), c, maxima))
++        Some((phase, w[1] as u64 | ((w[2] as u64) << 32), c))
++    }
++    // Summary/seal only: never collect all16 maxima on the packet record path.
++    // Separate version fence covers these full64 atomic pairs independently.
++    fn maxima_snapshot(&self) -> Option<[u64; PHASE_COUNT]> {
++        #[cfg(test)]
++        MAXIMA_SNAPSHOTS.with(|n| n.set(n.get() + 1));
++        let before = self.version.load(Ordering::SeqCst);
++        if before & 1 != 0 {
++            return None;
++        }
++        let maxima = std::array::from_fn(|i| {
++            self.maxima[2 * i].load(Ordering::SeqCst) as u64
++                | ((self.maxima[2 * i + 1].load(Ordering::SeqCst) as u64) << 32)
++        });
++        if self.version.load(Ordering::SeqCst) != before {
++            return None;
++        }
++        Some(maxima)
+     }
+     // Caller holds writer admission. CAS is one attempt, never a wait loop.
+     fn update(&self, phase: Phase, now: u64, context: Context, owner: &Trace) -> bool {
+@@ -528,6 +554,7 @@
+     trigger_lost: AtomicBool,
+     atomic_phase: AtomicPhase,
+     lost: AtomicU32,
++    lost_by_kind: [AtomicU32; 8],
+     lost_phase: AtomicU32,
+     lost_failure: AtomicU32,
+     overflows: AtomicU32,
+@@ -548,6 +575,7 @@
+             trigger_lost: AtomicBool::new(false),
+             atomic_phase: AtomicPhase::new(),
+             lost: AtomicU32::new(0),
++            lost_by_kind: [const { AtomicU32::new(0) }; 8],
+             lost_phase: AtomicU32::new(0),
+             lost_failure: AtomicU32::new(0),
+             overflows: AtomicU32::new(0),
+@@ -595,6 +623,9 @@
+         s.trigger = None;
+         self.atomic_phase.reset();
+         self.lost.store(0, Ordering::Relaxed);
++        for count in &self.lost_by_kind {
++            count.store(0, Ordering::Relaxed);
++        }
+         self.lost_phase.store(0, Ordering::Relaxed);
+         self.lost_failure.store(0, Ordering::Relaxed);
+         self.overflows.store(0, Ordering::Relaxed);
+@@ -644,6 +675,7 @@
+                 return false;
+             }
+             self.count(&self.lost);
++            self.count(&self.lost_by_kind[e.kind as usize]);
+             if e.kind == Kind::Failure {
+                 self.count(&self.lost_failure)
+             }
+@@ -661,11 +693,10 @@
+         s.sequence = s.sequence.saturating_add(1);
+         let seq = s.sequence;
+         let phase_valid =
+-            if let Some((phase, since, context, maxima)) = self.atomic_phase.snapshot() {
++            if let Some((phase, since, context)) = self.atomic_phase.context_snapshot() {
+                 s.phase = phase;
+                 s.phase_since = since;
+                 s.phase_context = context;
+-                s.phase_max = maxima;
+                 since <= e.time_us
+             } else {
+                 false
+@@ -817,10 +848,10 @@
+         if s.sealed {
+             return true;
+         }
+-        if let Some((phase, since, context, _)) = self.atomic_phase.snapshot() {
++        if let Some((phase, since, context)) = self.atomic_phase.context_snapshot() {
+             // Close final phase with no new interval start after successful seal.
+             self.atomic_phase.update(phase, now, context, self);
+-            if let Some((_, _, _, maxima)) = self.atomic_phase.snapshot() {
++            if let Some(maxima) = self.atomic_phase.maxima_snapshot() {
+                 s.phase_max = maxima;
+             }
+             let _ = since;
+@@ -872,12 +903,21 @@
+             failure_overflow: s.failure_overflow,
+             ambiguous_tails: s.ambiguous_tails,
+             counters_valid: !self.counter_wrapped.load(Ordering::SeqCst),
+-            phase_max_us: self
+-                .atomic_phase
+-                .snapshot()
+-                .map(|x| x.3)
+-                .unwrap_or(s.phase_max),
++            phase_max_us: self.atomic_phase.maxima_snapshot().unwrap_or(s.phase_max),
+             trigger: s.trigger,
++        })
++    }
++    /// STOP and successful manual freeze give stable totals. While armed,
++    /// this is a bounded observation and the independent counters can advance.
++    pub fn loss_counts(&self) -> Option<LossCounts> {
++        let s = self.state.try_lock().ok()?;
++        if !self.armed.load(Ordering::SeqCst) && self.writers.load(Ordering::SeqCst) != 0 {
++            return None;
++        }
++        Some(LossCounts {
++            epoch: s.epoch,
++            counts: std::array::from_fn(|i| self.lost_by_kind[i].load(Ordering::SeqCst) as u64),
++            counters_valid: !self.counter_wrapped.load(Ordering::SeqCst),
+         })
+     }
+     pub fn read(&self, index: usize) -> Option<Record> {
+@@ -932,6 +972,10 @@
+         })
+     }
+     #[cfg(test)]
++    pub fn test_maxima_snapshot_calls() -> usize {
++        MAXIMA_SNAPSHOTS.with(|n| n.get())
++    }
++    #[cfg(test)]
+     pub fn test_record_before_first_armed_lookup(&self, e: Event, boundary: impl FnOnce()) -> bool {
+         self.writers.fetch_add(1, Ordering::SeqCst);
+         let _writer = Writer(&self.writers);
+@@ -981,3 +1025,7 @@
+ pub fn read_failure(index: usize) -> Option<Failure> {
+     TRACE.read_failure(index)
+ }
++
++pub fn loss_counts() -> Option<LossCounts> {
++    TRACE.loss_counts()
++}
+--- v30/handheld/src/video_trace_usb.rs
++++ v31/handheld/src/video_trace_usb.rs
+@@ -3,7 +3,8 @@
+ use std::sync::atomic::{AtomicUsize, Ordering};
+ static SUMMARY_PAGE: AtomicUsize = AtomicUsize::new(0);
+ static EVENT_PAGE: AtomicUsize = AtomicUsize::new(0);
+-const SUMMARY_PAGES: usize = 5 + trace::PHASE_COUNT + 4;
++const BASE_SUMMARY_PAGES: usize = 5 + trace::PHASE_COUNT + 4;
++const SUMMARY_PAGES: usize = BASE_SUMMARY_PAGES + 8;
+ fn now() -> u64 { unsafe { esp_idf_svc::sys::esp_timer_get_time() as u64 } }
+ fn flags(p: trace::Position) -> u8 { u8::from(p.frame_valid) | (u8::from(p.offset_valid) << 1) }
+ 
+@@ -12,12 +13,12 @@
+     match key {
+         b'M' | b'F' => {
+             if !streaming::diagnostic_trace_idle() {
+-                log::info!("USB_TRACE rxdiag v=1 ctrl={} result=busy", key as char);
++                log::info!("USB_TRACE rxdiag v=2 ctrl={} result=busy", key as char);
+                 return;
+             }
+             let ok = if key == b'M' { trace::arm(now()) } else { trace::freeze(now()) };
+             if ok { SUMMARY_PAGE.store(0, Ordering::Relaxed); EVENT_PAGE.store(0, Ordering::Relaxed); }
+-            log::info!("USB_TRACE rxdiag v=1 ctrl={} ok={}", key as char, ok);
++            log::info!("USB_TRACE rxdiag v=2 ctrl={} ok={}", key as char, ok);
+         }
+         b'J' => summary_page(),
+         b'K' => event_page(),
+@@ -28,26 +29,33 @@
+ #[inline(never)]
+ fn summary_page() {
+     if !streaming::diagnostic_trace_idle() {
+-        log::info!("USB_TRACE rxdiag v=1 result=busy"); return;
++        log::info!("USB_TRACE rxdiag v=2 result=busy"); return;
+     }
+     let Some(s) = trace::summary() else {
+-        log::info!("USB_TRACE rxdiag v=1 result=busy"); return;
++        log::info!("USB_TRACE rxdiag v=2 result=busy"); return;
+     };
+     let page = SUMMARY_PAGE.load(Ordering::Relaxed) % SUMMARY_PAGES;
+     match page {
+-        0 => log::info!("USB_TRACE rxdiag v=1 s=0 epoch={} pages={} records={} failures={} armed={} frozen={} bytes={}",
++        0 => log::info!("USB_TRACE rxdiag v=2 s=0 epoch={} pages={} records={} failures={} armed={} frozen={} bytes={}",
+             s.epoch, SUMMARY_PAGES, s.len, s.failure_len, s.armed, s.frozen, trace::STORAGE_BYTES),
+-        1 => log::info!("USB_TRACE rxdiag v=1 s=1 epoch={} recorded={} overwritten={} lost_records={} lost_phase={}",
++        1 => log::info!("USB_TRACE rxdiag v=2 s=1 epoch={} recorded={} overwritten={} lost_records={} lost_phase={}",
+             s.epoch, s.recorded, s.overwritten, s.lost_records, s.lost_phase),
+-        2 => log::info!("USB_TRACE rxdiag v=1 s=2 epoch={} queue_overflows={} lost_failures={} failure_overflow={} counters_valid={} ambiguous_tails={}",
++        2 => log::info!("USB_TRACE rxdiag v=2 s=2 epoch={} queue_overflows={} lost_failures={} failure_overflow={} counters_valid={} ambiguous_tails={}",
+             s.epoch, s.queue_overflows, s.lost_failures, s.failure_overflow, s.counters_valid, s.ambiguous_tails),
+-        3 => log::info!("USB_TRACE rxdiag v=1 s=3 epoch={} first={} last={} post={} triggered={} trigger_lost={}",
++        3 => log::info!("USB_TRACE rxdiag v=2 s=3 epoch={} first={} last={} post={} triggered={} trigger_lost={}",
+             s.epoch, s.first_sequence.unwrap_or(0), s.last_sequence.unwrap_or(0), s.post_remaining, s.triggered, s.trigger_lost),
+-        4 => log::info!("USB_TRACE rxdiag v=1 s=4 epoch={} first_overflow_us={} time_valid={}",
++        4 => log::info!("USB_TRACE rxdiag v=2 s=4 epoch={} first_overflow_us={} time_valid={}",
+             s.epoch,s.first_overflow_us.unwrap_or(0),s.first_overflow_us.is_some()),
+-        p if p < 5 + trace::PHASE_COUNT => log::info!("USB_TRACE rxdiag v=1 s={} epoch={} phase={} max_us={}",
++        p if p < 5 + trace::PHASE_COUNT => log::info!("USB_TRACE rxdiag v=2 s={} epoch={} phase={} max_us={}",
+             p, s.epoch, p-5, s.phase_max_us[p-5]),
+-        p => trigger_page(p, &s),
++        p if p < BASE_SUMMARY_PAGES => trigger_page(p, &s),
++        p => {
++            let Some(loss)=trace::loss_counts() else {return;};
++            if loss.epoch!=s.epoch {return;}
++            let kind=p-BASE_SUMMARY_PAGES;
++            log::info!("USB_TRACE rxdiag v=2 s={} epoch={} kind={} lost={} loss_valid={}",
++                p,s.epoch,kind,loss.counts[kind],loss.counters_valid);
++        },
+     }
+     SUMMARY_PAGE.store((page + 1) % SUMMARY_PAGES, Ordering::Relaxed);
+ }
+@@ -55,17 +63,17 @@
+ #[inline(never)]
+ fn trigger_page(page: usize, s: &trace::Summary) {
+     let Some(t) = s.trigger else {
+-        log::info!("USB_TRACE rxdiag v=1 s={} epoch={} trigger_valid=false", page, s.epoch); return;
++        log::info!("USB_TRACE rxdiag v=2 s={} epoch={} trigger_valid=false", page, s.epoch); return;
+     };
+     match page - (5 + trace::PHASE_COUNT) {
+-        0 => log::info!("USB_TRACE rxdiag v=1 s={} epoch={} trigger_valid=true seq={} us={} rx={}",
++        0 => log::info!("USB_TRACE rxdiag v=2 s={} epoch={} trigger_valid=true seq={} us={} rx={}",
+             page,s.epoch,t.sequence,t.time_us,t.received_us),
+-        1 => log::info!("USB_TRACE rxdiag v=1 s={} epoch={} in_id={} in_off={} in_v={} queued={} qv={}",
++        1 => log::info!("USB_TRACE rxdiag v=2 s={} epoch={} in_id={} in_off={} in_v={} queued={} qv={}",
+             page,s.epoch,t.context.incoming.frame,t.context.incoming.offset,flags(t.context.incoming),t.context.queued,t.context.queue_valid),
+-        2 => log::info!("USB_TRACE rxdiag v=1 s={} epoch={} consumer_id={} off={} valid={} active_id={} expected={} active_v={}",
++        2 => log::info!("USB_TRACE rxdiag v=2 s={} epoch={} consumer_id={} off={} valid={} active_id={} expected={} active_v={}",
+             page,s.epoch,t.consumer_context.incoming.frame,t.consumer_context.incoming.offset,flags(t.consumer_context.incoming),
+             t.consumer_context.active.frame,t.consumer_context.active.offset,flags(t.consumer_context.active)),
+-        _ => log::info!("USB_TRACE rxdiag v=1 s={} epoch={} phase={} since={} phase_valid={}",
++        _ => log::info!("USB_TRACE rxdiag v=2 s={} epoch={} phase={} since={} phase_valid={}",
+             page,s.epoch,t.phase as u8,t.phase_since_us,t.phase_valid),
+     }
+ }
+@@ -73,12 +81,12 @@
+ #[inline(never)]
+ fn event_page() {
+     if !streaming::diagnostic_trace_idle() {
+-        log::info!("USB_TRACE rxdiag v=1 result=busy"); return;
++        log::info!("USB_TRACE rxdiag v=2 result=busy"); return;
+     }
+-    let Some(s) = trace::summary() else { log::info!("USB_TRACE rxdiag v=1 result=busy"); return; };
+-    if !s.frozen { log::info!("USB_TRACE rxdiag v=1 result=not_frozen"); return; }
++    let Some(s) = trace::summary() else { log::info!("USB_TRACE rxdiag v=2 result=busy"); return; };
++    if !s.frozen { log::info!("USB_TRACE rxdiag v=2 result=not_frozen"); return; }
+     let total = s.len as usize * 5 + s.failure_len as usize * 4;
+-    if total == 0 { log::info!("USB_TRACE rxdiag v=1 epoch={} result=empty", s.epoch); return; }
++    if total == 0 { log::info!("USB_TRACE rxdiag v=2 epoch={} result=empty", s.epoch); return; }
+     let cursor = EVENT_PAGE.load(Ordering::Relaxed) % total;
+     let ok = if cursor < s.len as usize * 5 {
+         let index = cursor / 5; let page = cursor % 5;
+@@ -88,21 +96,21 @@
+         if let Some(f) = trace::read_failure(index) { failure_page(index,page,&f); true } else { false }
+     };
+     if ok { EVENT_PAGE.store((cursor+1)%total, Ordering::Relaxed); }
+-    else { log::info!("USB_TRACE rxdiag v=1 result=busy"); }
++    else { log::info!("USB_TRACE rxdiag v=2 result=busy"); }
+ }
+ 
+ #[inline(never)]
+ fn record_page(index:usize,page:usize,r:&trace::Record) {
+     match page {
+-        0 => log::info!("USB_TRACE rxdiag v=1 e={} p=0 epoch={} seq={} us={} kind={} phase={}",
++        0 => log::info!("USB_TRACE rxdiag v=2 e={} p=0 epoch={} seq={} us={} kind={} phase={}",
+             index,r.epoch,r.sequence,r.time_us,r.kind as u8,r.phase as u8),
+-        1 => log::info!("USB_TRACE rxdiag v=1 e={} p=1 epoch={} seq={} in_id={} in_off={} in_v={} queued={} qv={}",
++        1 => log::info!("USB_TRACE rxdiag v=2 e={} p=1 epoch={} seq={} in_id={} in_off={} in_v={} queued={} qv={}",
+             index,r.epoch,r.sequence,r.context.incoming.frame,r.context.incoming.offset,flags(r.context.incoming),r.context.queued,r.context.queue_valid),
+-        2 => log::info!("USB_TRACE rxdiag v=1 e={} p=2 epoch={} seq={} active_id={} expected={} active_v={} since={} pv={}",
++        2 => log::info!("USB_TRACE rxdiag v=2 e={} p=2 epoch={} seq={} active_id={} expected={} active_v={} since={} pv={}",
+             index,r.epoch,r.sequence,r.context.active.frame,r.context.active.offset,flags(r.context.active),r.phase_since_us,r.phase_valid),
+-        3 => log::info!("USB_TRACE rxdiag v=1 e={} p=3 epoch={} seq={} rx={} lock={} qspi={} detail={} clipped={}",
++        3 => log::info!("USB_TRACE rxdiag v=2 e={} p=3 epoch={} seq={} rx={} lock={} qspi={} detail={} clipped={}",
+             index,r.epoch,r.sequence,r.received_us,r.lock_us,r.qspi_us,r.detail,r.duration_clipped),
+-        _ => log::info!("USB_TRACE rxdiag v=1 e={} p=4 epoch={} seq={} consumer={} valid={}",
++        _ => log::info!("USB_TRACE rxdiag v=2 e={} p=4 epoch={} seq={} consumer={} valid={}",
+             index,r.epoch,r.sequence,r.consumer_us,r.kind==trace::Kind::Complete),
+     }
+ }
+@@ -110,16 +118,16 @@
+ #[inline(never)]
+ fn failure_page(index:usize,page:usize,f:&trace::Failure) {
+     if page == 0 {
+-        log::info!("USB_TRACE rxdiag v=1 f={} p=0 epoch={} seq={} us={} in_id={} in_off={} in_v={}",
++        log::info!("USB_TRACE rxdiag v=2 f={} p=0 epoch={} seq={} us={} in_id={} in_off={} in_v={}",
+             index,f.epoch,f.sequence,f.time_us,f.context.incoming.frame,f.context.incoming.offset,flags(f.context.incoming));
+     } else if page == 1 {
+-        log::info!("USB_TRACE rxdiag v=1 f={} p=1 epoch={} seq={} active_id={} expected={} active_v={} queued={} qv={} detail={}",
++        log::info!("USB_TRACE rxdiag v=2 f={} p=1 epoch={} seq={} active_id={} expected={} active_v={} queued={} qv={} detail={}",
+             index,f.epoch,f.sequence,f.context.active.frame,f.context.active.offset,flags(f.context.active),f.context.queued,f.context.queue_valid,f.detail);
+     } else if page == 2 {
+-        log::info!("USB_TRACE rxdiag v=1 f={} p=2 epoch={} seq={} consumer={} valid={} clipped={}",
++        log::info!("USB_TRACE rxdiag v=2 f={} p=2 epoch={} seq={} consumer={} valid={} clipped={}",
+             index,f.epoch,f.sequence,f.consumer_us.unwrap_or(0),f.consumer_us.is_some(),f.duration_clipped);
+     } else {
+-        log::info!("USB_TRACE rxdiag v=1 f={} p=3 epoch={} seq={} rx={} tail_ambiguous={}",
++        log::info!("USB_TRACE rxdiag v=2 f={} p=3 epoch={} seq={} rx={} tail_ambiguous={}",
+             index,f.epoch,f.sequence,f.received_us,f.tail_ambiguous);
+     }
+ }
+--- v30/tests/test_collect_gamebub_trace.py
++++ v31/tests/test_collect_gamebub_trace.py
+@@ -0,0 +1,157 @@
++"""Focused validation of bounded v29 trace export records."""
++from pathlib import Path
++import sys
++import unittest
++
++sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'tools'))
++from collect_gamebub_trace import (  # noqa: E402
++    EVENT_FIELDS, FAILURE_FIELDS, PREFIX, parse_records, valid_entry, validate, valid_summary,
++)
++
++
++def summary_pages(records=1, failures=1, epoch='7', pages=25, frozen='true'):
++    first = {
++        's': '0', 'epoch': epoch, 'pages': str(pages), 'records': str(records),
++        'failures': str(failures), 'armed': 'false', 'frozen': frozen, 'bytes': '4000',
++    }
++    result={0:first}
++    result[1]={'s':'1','epoch':epoch,'recorded':'1','overwritten':'0','lost_records':'0','lost_phase':'0'}
++    result[2]={'s':'2','epoch':epoch,'queue_overflows':'0','lost_failures':'0','failure_overflow':'0','counters_valid':'true','ambiguous_tails':'0'}
++    result[3]={'s':'3','epoch':epoch,'first':'1','last':'1','post':'0','triggered':'false','trigger_lost':'false'}
++    result[4]={'s':'4','epoch':epoch,'first_overflow_us':'0','time_valid':'false'}
++    for i in range(5,pages-4):result[i]={'s':str(i),'epoch':epoch,'phase':str(i-5),'max_us':'0'}
++    for i in range(pages-4,pages):result[i]={'s':str(i),'epoch':epoch,'trigger_valid':'false'}
++    return result
++
++
++def event_page(index, page, epoch='7', seq='22'):
++    common = {'e': str(index), 'p': str(page), 'epoch': epoch, 'seq': seq}
++    if page == 0:
++        return common | {'us': '100', 'kind': '2', 'phase': '3'}
++    if page == 1:
++        return common | {'in_id': '4', 'in_off': '512', 'in_v': '3', 'queued': '2', 'qv': 'true'}
++    if page == 2:
++        return common | {'active_id': '4', 'expected': '768', 'active_v': '3', 'since': '90', 'pv': 'true'}
++    if page == 4:return common | {'consumer':'40','valid':'true'}
++    return common | {'rx': '30', 'lock': '5', 'qspi': '9', 'detail': '1', 'clipped': 'false'}
++
++
++def failure_page(index, page, epoch='7', seq='29'):
++    common = {'f': str(index), 'p': str(page), 'epoch': epoch, 'seq': seq}
++    if page == 0:
++        return common | {'us': '100', 'in_id': '4', 'in_off': '512', 'in_v': '3'}
++    if page == 3:return common | {'rx':'30','tail_ambiguous':'false'}
++    if page == 2:return common | {'consumer':'40','valid':'true','clipped':'false'}
++    return common | {'active_id': '4', 'expected': '768', 'active_v': '3',
++                      'queued': '2', 'qv': 'true', 'detail': '6'}
++
++
++class CollectGamebubTraceTests(unittest.TestCase):
++    def test_valid_frozen_export_with_event_and_failure_pages(self):
++        events = {0: {p: event_page(0, p) for p in range(5)}}
++        failures = {0: {p: failure_page(0, p) for p in range(4)}}
++        self.assertTrue(validate(summary_pages(), events, failures))
++
++    def test_missing_event_page_is_rejected(self):
++        events = {0: {p: event_page(0, p) for p in (0, 1, 3)}}
++        with self.assertRaisesRegex(AssertionError, 'entry page missing'):
++            validate(summary_pages(failures=0), events, {})
++
++    def test_torn_sequence_across_event_pages_is_rejected(self):
++        pages = {p: event_page(0, p) for p in range(5)}
++        pages[2]['seq'] = '23'
++        with self.assertRaisesRegex(AssertionError, 'torn entry sequence'):
++            validate(summary_pages(failures=0), {0: pages}, {})
++
++    def test_epoch_change_across_export_pages_is_rejected(self):
++        summaries = summary_pages(failures=0)
++        summaries[5] = {'s': '5', 'epoch': '8'}
++        with self.assertRaisesRegex(AssertionError, 'summary epoch changed'):
++            validate(summaries, {0: {p: event_page(0, p) for p in range(5)}}, {})
++
++    def test_epoch_change_across_event_pages_is_rejected(self):
++        events = {0: {p: event_page(0, p) for p in range(5)}}
++        events[0][3]['epoch'] = '8'
++        with self.assertRaisesRegex(AssertionError, 'entry epoch changed'):
++            validate(summary_pages(failures=0), events, {})
++
++    def test_truncated_boolean_and_non_numeric_values_are_rejected(self):
++        truncated = event_page(0, 1) | {'qv': 'tru'}
++        self.assertFalse(valid_entry(truncated, EVENT_FIELDS))
++        non_numeric = event_page(0, 0) | {'us': '12x'}
++        self.assertFalse(valid_entry(non_numeric, EVENT_FIELDS))
++        truncated_failure = failure_page(0, 1) | {'qv': 'truee'}
++        self.assertFalse(valid_entry(truncated_failure, FAILURE_FIELDS))
++
++    def test_empty_but_frozen_export_is_valid(self):
++        self.assertTrue(validate(summary_pages(records=0, failures=0), {}, {}))
++
++    def test_negative_counts_and_timestamps_are_rejected(self):
++        with self.assertRaisesRegex(AssertionError,'invalid summary page'):
++            validate(summary_pages(records=-1, failures=0), {}, {})
++        self.assertFalse(valid_entry(event_page(0,0) | {'us':'-1'}, EVENT_FIELDS))
++        self.assertFalse(valid_entry(event_page(0,0) | {'seq':str(2**64)}, EVENT_FIELDS))
++
++    def test_background_transfer_kind_is_valid_but_unknown_kind_is_rejected(self):
++        self.assertTrue(valid_entry(event_page(0,0) | {'kind':'7'}, EVENT_FIELDS))
++        self.assertFalse(valid_entry(event_page(0,0) | {'kind':'8'}, EVENT_FIELDS))
++
++    def test_auto_frozen_but_still_armed_is_not_a_sealed_export(self):
++        summaries=summary_pages(records=0,failures=0)
++        summaries[0]['armed']='true'
++        with self.assertRaisesRegex(AssertionError,'manually sealed'):
++            validate(summaries,{}, {})
++
++    def test_parser_handles_multiple_prefixes_on_one_line(self):
++        line = (PREFIX + 'e=0 p=0 epoch=7 seq=22 us=100 kind=2 phase=3 ' +
++                PREFIX + 'e=1 p=0 epoch=7 seq=23 us=101 kind=2 phase=3\n')
++        records = parse_records(line)
++        self.assertEqual(len(records), 2)
++        self.assertEqual([r['e'] for r in records], ['0', '1'])
++
++    def v2_summary(self):
++        pages=summary_pages(records=0,failures=0)
++        for r in pages.values():r['v']='2'
++        pages[0]['pages']='33'
++        for kind in range(8):
++            i=25+kind;pages[i]={'v':'2','s':str(i),'epoch':'7','kind':str(kind),'lost':'0','loss_valid':'true'}
++        return pages
++
++    def test_v2_loss_pages_and_totals_are_required(self):
++        pages=self.v2_summary();pages[25]['lost']='7';pages[30]['lost']='2';pages[1]['lost_records']='9'
++        self.assertTrue(validate(pages,{},{}))
++        pages[30]['lost']='3'
++        with self.assertRaisesRegex(AssertionError,'loss totals mismatch'):validate(pages,{},{})
++        del pages[32]
++        with self.assertRaisesRegex(AssertionError,'summary pages missing'):validate(pages,{},{})
++
++    def test_unknown_and_mixed_versions_are_rejected(self):
++        pages=self.v2_summary();pages[0]['v']='3'
++        with self.assertRaisesRegex(AssertionError,'unsupported schema'):validate(pages,{},{})
++        pages=self.v2_summary();pages[1]['v']='1'
++        with self.assertRaisesRegex(AssertionError,'mixed summary schema'):validate(pages,{},{})
++        self.assertFalse(valid_entry(event_page(0,0)|{'v':'3'},EVENT_FIELDS))
++
++    def test_v2_counter_kind_validity_and_limits_are_checked(self):
++        pages=self.v2_summary();pages[25]['kind']='7'
++        self.assertFalse(valid_summary(pages[25],33))
++        pages=self.v2_summary();pages[25]['loss_valid']='false'
++        with self.assertRaisesRegex(AssertionError,'validity mismatch'):validate(pages,{},{})
++        pages=self.v2_summary();pages[25]['lost']=str(2**32)
++        self.assertFalse(valid_summary(pages[25],33))
++
++    def test_v2_parser_retains_version_and_v1_compatibility(self):
++        records=parse_records(PREFIX+'s=0 epoch=7 pages=25\nUSB_TRACE rxdiag v=2 s=25 epoch=7 kind=0 lost=1 loss_valid=true\n')
++        self.assertEqual([x['v'] for x in records],['1','2'])
++
++    def test_v2_event_version_must_match_and_downgrade_is_rejected(self):
++        pages=self.v2_summary();pages[0]['records']='1'
++        events={0:{i:event_page(0,i)|{'v':'2'} for i in range(5)}}
++        self.assertTrue(validate(pages,events,{}))
++        events[0][2]['v']='1'
++        with self.assertRaisesRegex(AssertionError,'mixed entry schema'):validate(pages,events,{})
++
++
++if __name__ == '__main__':
++    unittest.main()
++
+--- v30/tests/trace_core.rs
++++ v31/tests/trace_core.rs
+@@ -595,3 +595,80 @@
+     assert_eq!(t.summary().unwrap().phase_max_us[Phase::Access as usize], 0);
+     assert_eq!(t.summary().unwrap().phase_max_us[Phase::Qspi as usize], 4);
+ }
++
++#[test]
++fn salient_record_and_phase_paths_never_collect_global_maxima() {
++    let t = Trace::new();
++    t.arm(0);
++    let before = Trace::test_maxima_snapshot_calls();
++    for i in 0..200 {
++        t.phase(Phase::Qspi, 10 * i, c(1));
++        t.phase(Phase::Access, 10 * i + 3, c(1));
++        t.record(e(Kind::Enqueue, 10 * i + 4, 1));
++        t.record(e(Kind::Complete, 10 * i + 5, 1));
++    }
++    assert_eq!(Trace::test_maxima_snapshot_calls(), before);
++    let s = t.summary().unwrap();
++    assert_eq!(s.phase_max_us[Phase::Qspi as usize], 3);
++    assert_eq!(Trace::test_maxima_snapshot_calls(), before + 1);
++    assert!(t.freeze(3000));
++    assert!(Trace::test_maxima_snapshot_calls() > before + 1);
++}
++
++#[test]
++fn loss_localization_counts_each_rejected_salient_kind_and_resets() {
++    let t = Trace::new();
++    t.arm(0);
++    let kinds = [
++        Kind::Enqueue,
++        Kind::Dequeue,
++        Kind::QueueOverflow,
++        Kind::Failure,
++        Kind::Recycle,
++        Kind::Complete,
++        Kind::Transfer,
++    ];
++    t.with_test_lock(|| {
++        for kind in kinds {
++            assert!(!t.record(e(kind, 10, 1)));
++        }
++        // Phase never contends for State and must not inflate rejected counts.
++        assert!(t.phase(Phase::Qspi, 11, c(1)));
++        assert!(t.loss_counts().is_none());
++    });
++    assert!(t.freeze(20));
++    let counts = t.loss_counts().unwrap();
++    assert_eq!(counts.counts, [1, 1, 0, 1, 1, 1, 1, 1]);
++    assert_eq!(
++        counts.counts.iter().sum::<u64>(),
++        t.summary().unwrap().lost_records
++    );
++    assert!(counts.counters_valid);
++    assert!(!t.record(e(Kind::Complete, 21, 1)));
++    assert_eq!(t.loss_counts().unwrap(), counts);
++    assert!(t.freeze(100));
++    assert_eq!(t.loss_counts().unwrap(), counts);
++    assert!(t.arm(101));
++    assert_eq!(t.loss_counts().unwrap().counts, [0; 8]);
++    assert_eq!(t.loss_counts().unwrap().epoch, counts.epoch + 1);
++}
++
++#[test]
++fn manual_seal_saves_coherent_maxima_for_unavailable_snapshot_fallback() {
++    let t = Trace::new();
++    t.arm(0);
++    t.phase(Phase::Qspi, 10, c(1));
++    t.phase(Phase::Access, 25, c(1));
++    assert!(t.freeze(40));
++    let before = t.summary().unwrap().phase_max_us;
++    assert_eq!(before[Phase::Qspi as usize], 15);
++    assert_eq!(before[Phase::Access as usize], 15);
++    t.with_test_phase_publication(|| {
++        // No coherent global atomic-max snapshot available: exported fallback
++        // must retain exactly the maxima saved by the successful manual seal.
++        assert_eq!(t.summary().unwrap().phase_max_us, before);
++        assert!(t.freeze(4000));
++        assert_eq!(t.summary().unwrap().phase_max_us, before);
++    });
++    assert_eq!(t.summary().unwrap().phase_max_us, before);
++}
+--- v30/tests/trace_usb.rs
++++ v31/tests/trace_usb.rs
+@@ -25,6 +25,18 @@
+  for (i,line) in lines.iter().enumerate(){assert!(line.len()+64<=320,"{} bytes: {}",line.len(),line);assert!(line.contains("epoch="));assert!(line.contains("seq="));if i<5{assert!(line.contains(&format!("e=0 p={}",i)));}else{assert!(line.contains(&format!("f=0 p={}",i-5)));}}
+  drop(lines);let before=summary().unwrap();usb::command(b'K');assert_eq!(summary().unwrap().first_sequence,before.first_sequence);assert_eq!(summary().unwrap().last_sequence,before.last_sequence);
+ }
+-#[test]fn summary_is_paged_without_ring_copy(){reset();usb::command(b'F');LINES.lock().unwrap().clear();for _ in 0..(9+trace_impl::PHASE_COUNT){usb::command(b'J');}let lines=LINES.lock().unwrap();assert_eq!(lines.len(),9+trace_impl::PHASE_COUNT);for(i,line)in lines.iter().enumerate(){assert!(line.contains(&format!("s={} ",i)));assert!(line.len()+64<=320);}}
++#[test]fn summary_is_paged_without_ring_copy(){reset();usb::command(b'F');LINES.lock().unwrap().clear();for _ in 0..(17+trace_impl::PHASE_COUNT){usb::command(b'J');}let lines=LINES.lock().unwrap();assert_eq!(lines.len(),17+trace_impl::PHASE_COUNT);for(i,line)in lines.iter().enumerate(){assert!(line.contains(&format!("s={} ",i)));assert!(line.len()+64<=320);}}
+ 
+ #[test]fn summary_requires_quiet_receiver(){reset();IDLE.store(false,Ordering::Relaxed);usb::command(b'J');assert!(LINES.lock().unwrap().last().unwrap().contains("result=busy"));}
++
++#[test]fn v2_exports_per_kind_counts_on_bounded_versioned_pages(){
++ reset();use trace_impl::*;
++ TRACE.with_test_lock(||assert!(!record(Event::new(Kind::Complete,50,Context::UNKNOWN))));
++ usb::command(b'F');LINES.lock().unwrap().clear();
++ for _ in 0..33{usb::command(b'J');}
++ let lines=LINES.lock().unwrap();assert_eq!(lines.len(),33);
++ assert!(lines.iter().all(|line|line.contains("rxdiag v=2")));
++ assert!(lines[0].contains("pages=33"));
++ assert!(lines[31].contains("kind=6 lost=1 loss_valid=true"));
++ for line in lines.iter(){assert!(line.len()+64<=320,"{}",line);}
++}
+--- v30/tools/collect_gamebub_trace.py
++++ v31/tools/collect_gamebub_trace.py
+@@ -0,0 +1,171 @@
++"""Export a frozen v29/v30 (v=1) or v31 (v=2) trace through the existing recorder, never direct serial.
++
++Run only after AV STOP and traffic quiescence. F freezes diagnostic RAM only.
++J/K are paginated reads. No arm, reconnect, firmware or FPGA command is sent.
++"""
++import argparse,json,re,time
++from pathlib import Path
++
++PREFIX='USB_TRACE rxdiag v=1 '
++PREFIX_PATTERN=re.compile(r'USB_TRACE rxdiag v=([0-9]+) ')
++def version(record):return int(record.get('v','1'))
++EVENT_FIELDS=[{'us','kind','phase'},{'in_id','in_off','in_v','queued','qv'},
++              {'active_id','expected','active_v','since','pv'},
++              {'rx','lock','qspi','detail','clipped'},{'consumer','valid'}]
++FAILURE_FIELDS=[{'us','in_id','in_off','in_v'},
++                {'active_id','expected','active_v','queued','qv','detail'},{'consumer','valid','clipped'},{'rx','tail_ambiguous'}]
++def valid_entry(record,fields):
++    try:
++        if version(record) not in (1,2):return False
++        page=int(record['p'])
++        if not 0<=page<len(fields):return False
++        if not (fields[page]|{'epoch','seq','p'})<=record.keys():return False
++        for key,value in record.items():
++            if key in {'qv','pv','clipped','valid','tail_ambiguous'}:
++                if value not in {'true','false'}:return False
++            elif not 0<=int(value)<=2**64-1:return False
++        if any(int(record[k])>3 for k in ('in_v','active_v') if k in record):return False
++        if 'kind' in record and int(record['kind'])>7:return False
++        if 'phase' in record and int(record['phase'])>=16:return False
++        return True
++    except (KeyError,ValueError):return False
++def valid_summary(record,pages):
++    try:
++        schema=version(record)
++        if schema not in (1,2):return False
++        page=int(record['s']);phase_count=pages-(9 if schema==1 else 17)
++        base=5+phase_count+4
++        if not 1<=phase_count<=32 or not 0<=page<pages:return False
++        fields=[{'pages','records','failures','armed','frozen','bytes'},
++                {'recorded','overwritten','lost_records','lost_phase'},
++                {'queue_overflows','lost_failures','failure_overflow','counters_valid','ambiguous_tails'},
++                {'first','last','post','triggered','trigger_lost'},{'first_overflow_us','time_valid'}]
++        if page<5:required=fields[page]
++        elif page<5+phase_count:required={'phase','max_us'}
++        elif schema==2 and page>=base:
++            required={'kind','lost','loss_valid'}
++            if int(record.get('kind','-1'))!=page-base:return False
++            if int(record.get('lost','-1'))>2**32-1:return False
++        elif record.get('trigger_valid')=='false':required={'trigger_valid'}
++        else:required=[{'trigger_valid','seq','us','rx'},
++                       {'in_id','in_off','in_v','queued','qv'},
++                       {'consumer_id','off','valid','active_id','expected','active_v'},
++                       {'phase','since','phase_valid'}][page-5-phase_count]
++        if not (required|{'s','epoch'})<=record.keys():return False
++        bools={'armed','frozen','counters_valid','triggered','trigger_lost','qv','trigger_valid','phase_valid','time_valid','loss_valid'}
++        for key,value in record.items():
++            if key in bools:
++                if value not in {'true','false'}:return False
++            elif not 0<=int(value)<=2**64-1:return False
++        if page==0 and (int(record['records'])>96 or int(record['failures'])>32):return False
++        return True
++    except (KeyError,ValueError,IndexError):return False
++def parse_records(text):
++    records=[]
++    matches=list(PREFIX_PATTERN.finditer(text))
++    for i,match in enumerate(matches):
++        end=matches[i+1].start() if i+1<len(matches) else len(text)
++        part=text[match.end():end].split('\n',1)[0].split(' I (',1)[0]
++        values=dict(re.findall(r'\b([a-z_]+)=([A-Za-z0-9_-]+)',part))
++        if values:records.append(values|{'v':match.group(1)})
++    return records
++
++def validate(summaries,events,failures):
++    first=summaries[0];epoch=first['epoch'];schema=version(first)
++    assert schema in (1,2),'unsupported schema version'
++    assert all(version(x)==schema for x in summaries.values()),'mixed summary schema' 
++    assert first['frozen']=='true','trace must be frozen'
++    assert first['armed']=='false','trace must be manually sealed'
++    assert set(summaries)==set(range(int(first['pages']))),'summary pages missing'
++    assert all(x['epoch']==epoch for x in summaries.values()),'summary epoch changed'
++    assert all(valid_summary(x,int(first['pages'])) for x in summaries.values()),'invalid summary page'
++    if schema==2:
++        base=int(first['pages'])-8
++        losses=[summaries[i] for i in range(base,base+8)]
++        valid=summaries[2]['counters_valid']
++        assert all(x['loss_valid']==valid for x in losses),'loss counter validity mismatch'
++        assert losses[2]['lost']=='0','Phase is not a salient rejected record'
++        if valid=='true':assert sum(int(x['lost']) for x in losses)==int(summaries[1]['lost_records']),'loss totals mismatch'
++    for entries,count,pages in [(events,int(first['records']),5),(failures,int(first['failures']),4)]:
++        assert set(entries)==set(range(count)),'entry missing'
++        for entry in entries.values():
++            assert set(entry)==set(range(pages)),'entry page missing'
++            assert {x['epoch'] for x in entry.values()}=={epoch},'entry epoch changed'
++            assert all(version(x)==schema for x in entry.values()),'mixed entry schema'
++            assert len({x['seq'] for x in entry.values()})==1,'torn entry sequence'
++            entry_fields=EVENT_FIELDS if pages==5 else FAILURE_FIELDS
++            assert all(valid_entry(x,entry_fields) for x in entry.values()),'invalid entry page'
++    return True
++
++def main():
++    ap=argparse.ArgumentParser(description=__doc__)
++    ap.add_argument('--capture',type=Path,required=True)
++    ap.add_argument('--output',type=Path,required=True)
++    ap.add_argument('--seconds',type=float,default=600)
++    args=ap.parse_args()
++    if args.output.exists() or not 0<args.seconds<=1200:ap.error('fresh output and <=1200 seconds required')
++    capture=json.loads(args.capture.read_text(encoding='utf-8-sig'))
++    log=Path(capture['output']);query=Path(capture['query'])
++    args.output.mkdir(parents=True)
++    offset=log.stat().st_size;deadline=time.monotonic()+args.seconds;pending=''
++    summaries={};events={};failures={};observed=[]
++    def issue(command):
++        while query.exists():
++            if time.monotonic()>=deadline:raise TimeoutError('recorder query slot remained occupied')
++            time.sleep(.05)
++        temporary=query.with_name(query.name+'.export-pending')
++        with temporary.open('x',encoding='ascii') as f:f.write(command)
++        temporary.rename(query)  # atomic publication; never an empty live query
++    def receive(seconds=1.0):
++        nonlocal offset,pending
++        end=min(deadline,time.monotonic()+seconds);received=[]
++        while time.monotonic()<end:
++            with log.open('rb') as f:
++                f.seek(offset);data=f.read(65536);offset+=len(data)
++            if data:
++                text=data.decode('utf-8','replace');observed.append(text);pending+=text
++                lines=pending.split('\n');pending=lines.pop()
++                received+=parse_records('\n'.join(lines)+'\n')
++                if received:break
++            time.sleep(.04)
++        for r in received:
++            if 's' in r and 'epoch' in r:
++                page_count=int(r.get('pages',summaries.get(0,{}).get('pages','0')))
++                if valid_summary(r,page_count):summaries[int(r['s'])]=r
++            elif 'e' in r and valid_entry(r,EVENT_FIELDS):events.setdefault(int(r['e']),{})[int(r['p'])]=r
++            elif 'f' in r and valid_entry(r,FAILURE_FIELDS):failures.setdefault(int(r['f']),{})[int(r['p'])]=r
++        return received
++    try:
++        sealed=False
++        for _ in range(3):
++            issue('F');reply=receive(3)
++            if any(r.get('result')=='busy' for r in reply):
++                raise RuntimeError('receiver is not quiescent; wait for AV STOP')
++            if any(r.get('ctrl')=='F' and r.get('ok')=='true' for r in reply):sealed=True;break
++        if not sealed:
++            raise RuntimeError('freeze not acknowledged; require AV STOP/idle and v29 identity')
++        attempts=0
++        while time.monotonic()<deadline:
++            attempts+=1
++            if attempts>160:raise RuntimeError('bounded summary retries exhausted')
++            issue('J');receive()
++            if 0 in summaries and len(summaries)==int(summaries[0]['pages']):break
++        assert 0 in summaries and summaries[0].get('frozen')=='true','no frozen summary'
++        assert summaries[0].get('armed')=='false','trace is not manually sealed'
++        pages=5*int(summaries[0]['records'])+4*int(summaries[0]['failures'])
++        for _ in range(max(1,pages*4)):
++            if time.monotonic()>=deadline:raise TimeoutError('bounded export deadline')
++            got=sum(len(x) for x in events.values())+sum(len(x) for x in failures.values())
++            if got==pages:break
++            issue('K');receive()
++        validate(summaries,events,failures)
++        result=dict(status='COMPLETE_EXPORT',summaries=summaries,events=events,failures=failures,
++                    limitation='Export completeness does not erase trace contention, overwrite, clipping or failure-buffer losses; inspect all counters and validity fields.')
++    except Exception as exc:
++        result=dict(status='INCOMPLETE_EXPORT',error=str(exc),summaries=summaries,events=events,failures=failures)
++        raise
++    finally:
++        (args.output/'export.json').write_text(json.dumps(result,indent=2)+'\n')
++        (args.output/'receiver-export.log').write_text(''.join(observed))
++        print(result['status'],str(args.output),flush=True)
++if __name__=='__main__':main()
