@@ -339,3 +339,7 @@ by `--inject-keys`; automated tests mock it and do not inject desktop keys.
 ## V68 research checkpoint — 2026-11-05
 
 [V68 report](docs/custom-codec-prototype-v68-2026-11-05.md) tests an exact zero-motion prediction shortcut across 457 causal frames. It borrows readonly reference planes for 437 P frames and uses a two-byte-backed broadcast key prediction for 20 keys, preserving exact predictions and reconstructed outputs. The paired measurements cover prediction stage only; receiver speedup, physical 30 fps and hardware fit are not established.
+
+### V69 native and RTL handoff
+
+[V69 handoff](docs/cu66-v69/hardware-handoff.md) adds a complete native C++ CU66 reference and tested entropy, inverse, packet, hash, bank-control and layout components. Matched complete-presentation host calls average 7.61 ms native versus 97.33 ms Python. The connected base-layer RTL and its memory-contention regressions are indexed in the [component matrix](docs/cu66-v69/component-matrix.md). Packet/HUD/bank/physical memory integration and exact-target route remain explicit gates; this does not replace the deployed JPEG firmware or establish physical 30 fps.

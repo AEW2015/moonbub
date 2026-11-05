@@ -830,3 +830,7 @@ independently on the other system's hardware. No board was programmed here.
 ## V68 research checkpoint — 2026-11-05
 
 [V68 findings](custom-codec-prototype-v68-2026-11-05.md) measure a zero-motion prediction-stage shortcut with unchanged packet format, receiver decisions and exact output. The optimization borrows validated readonly references for zero-vector P frames and uses compact immutable backing for key predictions. Stage timing is not whole-receiver timing, physical frame rate, or hardware memory fit.
+
+## V69 native reference and connected base-layer RTL
+
+[V69 handoff](cu66-v69/hardware-handoff.md) implements the next pre-hardware milestone: fixed-profile native C++ decoding, actual AB38/dequant/inverse/reconstruction/canonical-hash RTL, packet preflight, bank control and portrait-layout proofs. The paired native host campaign includes HUD and RGB565 composition and measures 7.60878 ms versus 97.33174 ms Python across 457 retained frames; no encoding/quality change is introduced. Keep [component scope and result gates](cu66-v69/component-matrix.md) separate from target implementation and hardware. Next, wire the qualified packet/qmap and HUD endpoints into real shared-memory/bank control and rotated scanout, then obtain exact-device timing/fit and physical ESP32/SDRAM/presentation measurements. General RTL simulation needs no DAP/JTAG access.

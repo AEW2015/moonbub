@@ -1,0 +1,113 @@
+{
+  "schema": "cu66-math-v69-regression",
+  "source_sha256": {
+    "fpga/experiments/cu66-v69/inverse/cu66_dequant.sv": "1ce06c26460a63b69ca9d742edb04ee9654827f883212c4bfe71293e0ed71084",
+    "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh": "e0d5ae446155c1e295e0add487a30fec9c765cbafc0fabb15d248285ed22dca7",
+    "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv": "3eb9fbc02732f06b05f68499a5c03d48c00f24f7621db6cb318fc13f07c40d64",
+    "fpga/experiments/cu66-v69/inverse/tb_math.sv": "ed83706c40193939b96d4333b79f9251c4e9d8fb98105fe66c87c43611d1375c",
+    "fpga/experiments/cu66-v69/inverse/export_math.py": "62691436b200ed4d1f4ffd341313ce50927890f7aff6da6c505efca663a405b2",
+    "fpga/experiments/cu66-v69/inverse/math-fixtures.json": "69e9fa25decb4765190e0e278ee2ac931124970ca4854e3adee32dfe6fadfd8b",
+    "fpga/experiments/cu66-v69/inverse/dequant.hex": "c92934394acaab59b36b93bcd4dcc16256d0be4d525a238caa57687957db2935",
+    "fpga/experiments/cu66-v69/inverse/reconstruct.hex": "9acb84c22c89e3d5b63c761c97ede8ebfd27e195232c1919b29c7b568e507c90"
+  },
+  "runs": [
+    {
+      "name": "verilator-compile",
+      "command": [
+        "docker",
+        "exec",
+        "-w",
+        "/build",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "120s",
+        "verilator",
+        "--binary",
+        "--timing",
+        "--assert",
+        "--Wall",
+        "--top-module",
+        "tb_math",
+        "--Mdir",
+        "/build/math",
+        "-j",
+        "2",
+        "+incdir+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v69/inverse",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v69/inverse/cu66_dequant.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v69/inverse/tb_math.sv"
+      ],
+      "returncode": 0,
+      "terminal_PASS_required": false,
+      "log_sha256": "c075c33fbb4c2cae5a98cb6f09ded9eec4de35cd16c51db85fb46d8994ec416a"
+    },
+    {
+      "name": "verilator-run",
+      "command": [
+        "docker",
+        "exec",
+        "-w",
+        "/build",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "90s",
+        "/build/math/Vtb_math",
+        "+FIXTURES=/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v69/inverse"
+      ],
+      "returncode": 0,
+      "terminal_PASS_required": true,
+      "log_sha256": "6d02315fbba769551f2d577188b6a67de54a3cbcac86bef6e44b09d6f3eaef3d"
+    },
+    {
+      "name": "icarus-compile",
+      "command": [
+        "docker",
+        "exec",
+        "-w",
+        "/build",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "120s",
+        "iverilog",
+        "-g2012",
+        "-I",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v69/inverse",
+        "-s",
+        "tb_math",
+        "-o",
+        "/build/math-icarus",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v69/inverse/cu66_dequant.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v69/inverse/tb_math.sv"
+      ],
+      "returncode": 0,
+      "terminal_PASS_required": false,
+      "log_sha256": "e27dbba50635b789ddeaf515d97603b7fbbdb679123467b038739b0171e91274"
+    },
+    {
+      "name": "icarus-run",
+      "command": [
+        "docker",
+        "exec",
+        "-w",
+        "/build",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "90s",
+        "vvp",
+        "/build/math-icarus",
+        "+FIXTURES=/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v69/inverse"
+      ],
+      "returncode": 0,
+      "terminal_PASS_required": true,
+      "log_sha256": "a6e79424c6157b5dad1713090700969d478c3c8667fc0cc15950e032ab879328"
+    }
+  ],
+  "dequant_cases_per_backend": 1536,
+  "reconstruct_cases_per_backend": 1536,
+  "scope": [
+    "Signed dequantization and clipped key/zero-motion/hidden reconstruction; input/output stalls and reference latency.",
+    "No integration with entropy/DDR/physical scanout in this component regression.",
+    "Icarus constant-select sensitivity notices retained. Verilator Wall clean. No FPGA timing/fit/FPS result."
+  ]
+}

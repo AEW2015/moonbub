@@ -1,0 +1,131 @@
+{
+  "schema": "cu66-v69-HUD-software-RTL-contract",
+  "version": 1,
+  "software_endpoint": "qualified native C++ Linux-host HudGate; no ESP32 implementation",
+  "opcodes": [
+    {
+      "value": 1,
+      "name": "PREPARE"
+    },
+    {
+      "value": 2,
+      "name": "STATUS"
+    },
+    {
+      "value": 3,
+      "name": "READ_CANDIDATE"
+    },
+    {
+      "value": 4,
+      "name": "ACK_EXTERNAL_WRITE_DRAIN"
+    },
+    {
+      "value": 5,
+      "name": "COMMIT"
+    },
+    {
+      "value": 6,
+      "name": "ABORT"
+    },
+    {
+      "value": 7,
+      "name": "RESET"
+    }
+  ],
+  "wire_or_MMIO_encoding_implemented": false,
+  "identity": {
+    "generation_bits": 64,
+    "frame_id_bits": 32,
+    "reference_id_bits": 32,
+    "generation_rule": "nonzero strictly increasing for admitted PREPARE/RESET; Busy does not consume a generation",
+    "reset": "fresh generation plus external quiescence; old messages cannot cross reset",
+    "tags": "128-bit SHA256 prefix; canonical HUD geometry/rectangles/u16 words; not authentication"
+  },
+  "software_ready": {
+    "fields": [
+      "generation",
+      "frame_id",
+      "reference_id",
+      "reconstructed_HUD_tag",
+      "word_count=21120",
+      "decoded_verified=true",
+      "phase=Ready or Transferred; candidate_ready() is true"
+    ],
+    "means": "all original HUD CRC/framing/reference/prediction/Huffman/Rice/range/output-tag checks passed; owned immutable candidate exists; historical Committed status is not a new ready token",
+    "does_not_mean": [
+      "external HUD bank is written",
+      "YUV base is correct",
+      "whole frame can publish"
+    ]
+  },
+  "external_transfer_ack": {
+    "fields": [
+      "generation",
+      "frame_id",
+      "word_count",
+      "readback_HUD_tag",
+      "external_writes_drained"
+    ],
+    "authority": "trusted root memory writer/adapter; native test uses an actual copied sink and readback tag",
+    "not_proven": "physical DMA, cache coherency, QSPI transport, SDRAM write fence"
+  },
+  "root_commit_required": [
+    "matching active generation/frame/reference IDs",
+    "packet and entropy success",
+    "canonical base output tag verified",
+    "hidden coefficient checks passed",
+    "all base writes drained",
+    "matching software HUD decoded_verified and output tag",
+    "all exact HUD words transferred to the candidate HUD bank",
+    "HUD external writes drained/bank matches candidate",
+    "no abort or error"
+  ],
+  "accepted_cache_update": "only matching root COMMIT after transfer ACK; identical commit retries idempotent",
+  "failure_contract": [
+    "PREPARE failure emits no candidate-ready and preserves accepted cache",
+    "stale tokens do not replace candidate or accepted cache",
+    "ABORT discards candidate, including after provisional external transfer",
+    "previous HUD words remain immutable across failure/abort/new commit",
+    "COMMIT is root authority, not independently derived by software HUD decoder"
+  ],
+  "root_signals_to_implement": {
+    "software_semantic_ready": [
+      "valid",
+      "generation[63:0]",
+      "frame_id[31:0]",
+      "reference_id[31:0]",
+      "output_tag[127:0]",
+      "words[15:0]",
+      "success"
+    ],
+    "external_HUD_write_drain": [
+      "valid",
+      "generation[63:0]",
+      "frame_id[31:0]",
+      "HUD_bank_id",
+      "bank_matches_candidate",
+      "writes_drained"
+    ],
+    "root_commit": [
+      "valid",
+      "generation[63:0]",
+      "frame_id[31:0]"
+    ],
+    "software_commit_ack": [
+      "valid",
+      "generation[63:0]",
+      "frame_id[31:0]",
+      "committed"
+    ]
+  },
+  "missing_integration": [
+    "mailbox/transport command encoding and endpoint driver",
+    "actual processor placement and timing/SRAM qualification",
+    "native candidate word DMA into the FPGA HUD bank",
+    "physical write/readback/coherency fence",
+    "generation-qualified RTL join/abort and software commit ACK path",
+    "atomic YUV+HUD descriptor publication and panel vblank switch"
+  ],
+  "full_CU66_FPGA_decoder": false,
+  "current_JPEG_firmware_backend_changed": false
+}
