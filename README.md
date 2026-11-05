@@ -5,6 +5,15 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v31 RTL acceleration experiment](docs/v31-rtl-acceleration-2026-11-04.md)
+adds an exact Q14 inverse/prediction-add/clip kernel with eight shared MAC lanes.
+Verilator checks 33,054 blocks per case; generic Series-7 mapping uses 8 DSP48E1s
+and no block RAM for the isolated kernel. Zero/DC shortcuts reduce measured
+component cycles; 12.06–16.44 ms projections assume a future 100 MHz clock, not
+routed timing or physical 30 fps. Run `python experiments/verify_prototype_v31.py`.
+[ESP32 compact transport notes](docs/esp32-compact-transport-plan.md) are now saved;
+that firmware change remains proposed and has not been flashed.
+
 The [v30 study](docs/custom-codec-prototype-v30-2026-11-04.md) adds actual
 block/band residual candidates with unchanged GM27 wire. Strict causal selection
 saves 0.08–0.28% complete bytes with slightly lower measured MSE; a small-error

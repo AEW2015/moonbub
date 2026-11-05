@@ -1,5 +1,21 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v31 isolated RTL kernel](v31-rtl-acceleration-2026-11-04.md) now exercises
+actual fixed-point FPGA arithmetic: exact Q14 inverse, prediction add and clipping,
+eight shared DSP-oriented MAC lanes, and zero/DC shortcuts. Three full behavioral
+cases check 33,054 blocks each; directed four-state and mapped functional tests
+check reset/backpressure and output goldens. Generic Series-7 mapping uses 8 DSPs
+and no block RAM for this kernel. Clock-scaled component times are projections;
+whole-decoder fit, routed timing and physical 30 fps remain open.
+
+Next build the bounded EC26 coefficient reader and dequantizer, then fractional
+prediction and reference-memory arbitration, color/HUD composition and bank fences.
+Compare any HLS variant against the same integer/handshake goldens. Preserve JPEG.
+The [ESP32 compact transport notes](esp32-compact-transport-plan.md) record the
+versioned header/DMA/credit proposal and validation gates; firmware is not changed.
+
+The following v30 and older sections retain their historical evidence.
+
 The [v30 block/band prototypes](custom-codec-prototype-v30-2026-11-04.md)
 keep full resolution, GM27 wire and the exact HUD. Strict source-aware AC edits
 save 0.083% / 0.278% complete causal bytes with slightly lower measured MSE.
