@@ -1,0 +1,3 @@
+# Retained v30 correlation evidence
+
+Offline publications of the already-completed epochs2/3. See ../../V30-SEQUENCE-CORRELATION-CLOSEOUT-20261105.md for current reconciliation. Original reports are preserved byte-exact; epoch3/RECEIVER-RESULT.md was written before host reconciliation, so its pending-host wording is historical and superseded by packet-audit-e732dbd7/CORRELATION.md. Raw camera, full UART byte capture and host pcap are not included; no camera-image filename here implies a bundled artifact. Camera evidence remains local, and pcap observations are host-reported. Complete export is not lossless capture. No numeric receiver capture timestamp exists for an independent three-field join. No new hardware action or fix selection was performed.
