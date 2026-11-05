@@ -1,6 +1,11 @@
 # Coordinated MoonBub / Sunshine 30 fps plan
 
 Date: 2026-11-04, America/Denver.
+Latest execution order and measured bottlenecks:
+[ESP32 / FPGA update checkpoint](30FPS-UPDATE-CHECKPOINT-20261104.md).
+Older pending-work descriptions below are historical where that checkpoint
+records a completed gate; the acceptance objective remains unchanged.
+
 Windows plan/prompt pin: Sunshine `c9c0bf4bcbe5c95f38b50bf6e190b84822886d53`,
 branch `gamebub/windows-jpeg-retry-20261103`.
 

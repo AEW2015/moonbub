@@ -15,7 +15,7 @@ current device address, readiness and counters have not been probed.
 | Native RGB565 arithmetic | 1,471,588 oracle pixels match; separate 160-bit ownership-tag regression passes | Arithmetic/component simulation |
 | Direct YUV scanout, original write-load stress | 718 missed lines under uniform writes; 444 under batch writes | Preserved counterexamples; throughput alone did not protect deadlines |
 | Bounded read-reservation successor | Zero missed lines, underruns or pixel mismatches in matched static, uniform and batch tests | Two refreshes of one immutable image per profile; not 30 fps video |
-| Bank-separated memory service | Mixed useful writes/reads each improve from about 34.308 to 51.349 MB/s | Completed synthetic mixed comparison; KEY/P results pending |
+| Bank-separated memory service | Mixed useful writes/reads each improve from about 34.308 to 51.349 MB/s; KEY backlog is periodic, P backlog grows | Sealed finite service simulation, not frame-deadline or hardware acceptance |
 
 The reservation successor checks 691,200 native canvas pixels and 76,800 margin
 pixels per profile, with 1,440 good line latches. Both write-load profiles verify
@@ -27,8 +27,14 @@ not routed electrical timing slack.
 
 ## Next implementation order
 
-1. **Finish memory-service comparison.** Complete bank-separated KEY/P windows,
-   actual accepted-work drains and upper-address/masked-write checks. Compare
+1. **Seal memory-service comparison and address P service.** Bank-separated
+   KEY/P windows and accepted-work drains have completed. KEY write backlog at
+   matched panel boundaries is 6, 12, 10 and 9 words with zero read backlog.
+   P write backlog grows from 75,766 to 288,233 words, with per-flow pending
+   reads also growing. All checked data and LCD deadlines pass; this is a
+   capacity failure for the offered P profile, not permission to drop work.
+   Upper-address/masked-write checks also pass, including one accepted final-word
+   BL8 burst, all eight physical beats and preserved sentinels. Compare
    offered, admitted, physical and delivered work at identical phases. Keep the
    bank map experimental until the actual board capacity and active SDRAM path
    are qualified. Do not tune clocks to hide an arbitration or row-conflict issue.
@@ -79,10 +85,19 @@ stack and heap; it cannot qualify network video or 30 fps presentation.
 - Selected elastic-store manifest: `40815ab116f82708eaa064a24b8091eeee70a850fd31e843f91faa1bbd38a051`.
 - Reservation successor manifest: `4a1b5465c629affe7b6489a480603bdd8fcbc98931af53104b985bf893b10c87`
   (199 artifact hashes independently checked).
+- Bank-locality manifest: `83ebcc2c1355736954917bcf97fee1b217486c7a595dc3f095c1060445aba312`
+  (112 artifact hashes and all 111 unchanged baseline artifacts verified).
 - Portable AKD1 FPGA source package: `fpga/exports/akd1-compute-source-20261104`,
   manifest `380c9860655e0d67a72b2d69d7426621da139221c41650dddcdfb24fa07b545a`.
   Its original supplied BIT is distinct from the separately executed clean
   source synthesis/route; no byte-identical rebuild claim is made.
+- Portable v26 ESP32 source package: `firmware/exports/v26-key-diag-source-20261104`,
+  manifest `8b40f9a06d5f9634a3686d503455a7cb736c61b2e99951722cd9fdf213beba6b`.
+  All 575 selected source/harness inputs are unchanged; 656 included artifacts
+  are hash-bound. It includes assets and locks, with explicit esp193/IDF5.4.3
+  tool/cache requirements. An existing GameBub checkout is not required.
+  Release UF2/BIN/ELF are identified but omitted, and packaging did not rebuild
+  the target or establish byte-identical image reproduction.
 
 Full experiment sources and raw evidence remain in the local
 `fpga/experiments/` directories. Simulation, clean implementation reports and
