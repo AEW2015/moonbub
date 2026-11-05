@@ -1,5 +1,24 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v32 Python qualification](custom-codec-prototype-v32-2026-11-04.md) keeps
+full resolution and exact HUD. Bounded Huffman HUD components save 0.089% / 9.83%
+HUD bytes; the same savings must be credited to HEVC/AV1. Those sampled standards
+still use roughly 37–40% fewer complete bytes at better MSE. New residual shrink
+adds work and is dominated by earlier policies. Sparse wide-motion exceptions
+save only 0.33% / 0.58% prospective complete bytes in a noncausal probe.
+
+Prioritize shared exact rate/distortion work, causal game-motion/SKIP/copy modes,
+longer unseen gameplay and temporal error checks. Implement two-bank overlap of
+the existing inverse kernel before adding DSP lanes: the dependency model gives
+6.20 / 7.39 ms average component service at assumed 100 MHz, but independent ports,
+external stalls, fitted memory and routed timing still need RTL qualification.
+Then integrate bounded entropy/dequantization and negotiated HUD syntax with
+atomic reference/commit checks. Seek a measured quality/latency/resource advantage;
+compression superiority and native 30 fps remain goals, not established results.
+Preserve JPEG and v20. The detailed report records gates and all negative results.
+
+The following v31 and older sections retain their historical evidence.
+
 The [v31 isolated RTL kernel](v31-rtl-acceleration-2026-11-04.md) now exercises
 actual fixed-point FPGA arithmetic: exact Q14 inverse, prediction add and clipping,
 eight shared DSP-oriented MAC lanes, and zero/DC shortcuts. Three full behavioral

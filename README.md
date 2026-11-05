@@ -5,6 +5,15 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v32 specialization study](docs/custom-codec-prototype-v32-2026-11-04.md)
+adds actual lossless HUD packets: 9.83% fewer HUD bytes on the harder window,
+preserving every pixel. New coefficient shrink is rejected as a default; compact
+wide-motion escapes save only 0.33–0.58% in a separate prospective probe. A
+two-bank stage model projects 6.20/7.39 ms inverse service at an unclosed 100 MHz,
+requiring actual RTL implementation. HEVC/AV1 with the same new HUD still use
+about 37–40% fewer complete bytes at better sampled MSE. Run
+`python experiments/verify_prototype_v32.py`; no physical 30 fps claim follows.
+
 The [v31 RTL acceleration experiment](docs/v31-rtl-acceleration-2026-11-04.md)
 adds an exact Q14 inverse/prediction-add/clip kernel with eight shared MAC lanes.
 Verilator checks 33,054 blocks per case; generic Series-7 mapping uses 8 DSP48E1s
