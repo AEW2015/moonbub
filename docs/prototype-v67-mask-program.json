@@ -1,0 +1,72 @@
+{
+  "derived_row_mask": {
+    "allocation": "one owned row at a time; readonly while queried",
+    "bytes": 720,
+    "dtype": "bool/u8 logical byte per x",
+    "width": 720
+  },
+  "logical_rectangle_payload_bytes": 32,
+  "packed_rectangles_little_endian_hex": "18003800980010001800580098001000a800680140011800a8008801f0001000",
+  "profile": {
+    "coded_height": 480,
+    "coded_width": 720,
+    "coordinate_origin": "top-left",
+    "epoch": 25,
+    "rectangle_edges": "inclusive-left/top, exclusive-right/bottom"
+  },
+  "rectangles_xywh_u16": [
+    [
+      24,
+      56,
+      152,
+      16
+    ],
+    [
+      24,
+      88,
+      152,
+      16
+    ],
+    [
+      168,
+      360,
+      320,
+      24
+    ],
+    [
+      168,
+      392,
+      240,
+      16
+    ]
+  ],
+  "schema": "gamebub-v67-fixed-display-exclusion-mask",
+  "scope": [
+    "Fixed four-rectangle geometry is specific to the epoch25 720x480 HUD/exclusion profile.",
+    "The program/query derives one owned 720-byte row at a time; only the frozen validation oracle materializes a full 345600-byte boolean mask.",
+    "This validates the compact descriptor, not actual process allocation, stack/heap, or total hardware memory bounds.",
+    "Four uint16 xywh rectangles use 32 logical payload bytes; object/layout overhead and hardware address logic are excluded.",
+    "Pixel and horizontal/vertical four-tap footprint results are checked against the frozen full excluded-mask oracle.",
+    "A changed HUD or coded geometry must regenerate and reverify this program.",
+    "No FPGA cycles, synthesis, BRAM fit, ESP32 work or physical throughput are measured."
+  ],
+  "source_sha256": {
+    "experiments/derive_filter_mask_v67.py": "1e5c3db849d3e8938a47b6a33fdb419c5a98adc8ef594da6a1a508b2cefbdf73",
+    "experiments/python-game-display-filter-v60-study/model.py": "1454d05dd78f84d77b8e056920b3be225f321adae5de5224951b11683086014c",
+    "experiments/python-game-filter-qual-v67-study/helpers.py": "bf23a053b1694d00d582654dca0f91a33ee53820f1361c11bc34736468546ffe",
+    "experiments/python-game-filtered-scanout-v64-study/model.py": "db8178a4369e7957108e9df5d2d945a781467f733e830762d6d2a56a13586600"
+  },
+  "verification": {
+    "frozen_mask_pixels": 16384,
+    "frozen_reference": "qual67.excluded() from frozen normalized HUD profile",
+    "horizontal_blocked_footprints": 2120,
+    "horizontal_blocked_sha256": "6705aa7cccc9b64b20b54437ffddf7f048e48c9fde64cabb26f6bd5afd593f9e",
+    "horizontal_four_tap_footprints_checked": 42720,
+    "pixels_checked": 345600,
+    "predicate_matches_all_pixels": true,
+    "row_major_mask_sha256": "ea2604c74bfa1453f85c7f9b9d4284882ead59f6421ff3cfa892447857d8512c",
+    "vertical_blocked_footprints": 2912,
+    "vertical_blocked_sha256": "afa37c4f22fec3e44d379783c65b98e261d02282f15f9575e046b6f8ee1c395e",
+    "vertical_four_tap_footprints_checked": 42480
+  }
+}

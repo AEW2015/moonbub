@@ -822,3 +822,7 @@ independently on the other system's hardware. No board was programmed here.
 ## V58 research checkpoint — 2026-11-05
 
 [V58 evidence](custom-codec-prototype-v58-2026-11-05.md) records bounded transport, scanout, motion, and error-diagnostic studies. The latest cell16 zeroing probe changes no visible post-RDO coefficients and produces no packet savings; V53 motion savings carry higher cumulative source error. Device throughput and resource fit remain unmeasured.
+
+## V67 research checkpoint — 2026-11-05
+
+[V67 findings](custom-codec-prototype-v67-2026-11-05.md) and the [hardware handoff](gamebub-v67-hardware-research-handoff.md) summarize fixed-filter qualification, 69 sampled native points, forwarding constraints, exact tile-to-row hash delivery and independently verified cached canonical-tag profiles. Prioritize the bounded decoder/filter/hash architecture; do not deploy the tested mixed-motion quality trade as a quality-preserving default. Native HEVC/AV1 remain smaller at the measured quality gates. The current transport/backend is JPEG-only; physical throughput and FPGA/ESP32 fit remain unmeasured.

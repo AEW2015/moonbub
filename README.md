@@ -331,3 +331,7 @@ by `--inject-keys`; automated tests mock it and do not inject desktop keys.
 ## V58 research checkpoint — 2026-11-05
 
 [V58 evidence](docs/custom-codec-prototype-v58-2026-11-05.md) combines the V51–V58 bounded studies. The 16×16-cell probe finds 110 visible eligible cells but unchanged coefficient arrays and equal fine bits, so it keeps the exact zero-motion outputs with no byte gain. V53's small byte savings trade against higher cumulative source error; reused native prefix points remain much smaller at matched mean-error gates. YUV scanout traffic is conditional model arithmetic, not measured hardware bandwidth. No physical 30-fps or hardware-fit result is established.
+
+## V67 research checkpoint — 2026-11-05
+
+[V67 report](docs/custom-codec-prototype-v67-2026-11-05.md) and [hardware handoff](docs/gamebub-v67-hardware-research-handoff.md) consolidate fixed-filter qualification, the sampled 69-point native comparison, source-audited ESP32 budgets and exact tile-to-row canonical hashing. The independently verified V66 profiles reduce repeated full-frame hash passes while preserving decoded content. Display filtering changes neither coded bytes nor canonical references. HEVC/AV1 still use fewer bytes at the tested quality gates. The current firmware path remains JPEG-only; no physical 30-fps or target-fit result is claimed.
