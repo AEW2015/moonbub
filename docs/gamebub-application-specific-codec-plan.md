@@ -1,5 +1,30 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v37 study](custom-codec-prototype-v37-2026-11-04.md) removes redundant CN36
+proof encoding with exact wire parity, then integrates a zero-map predictor into
+host analysis. Actual paired sender means reach 46.13 / 57.75 ms on this Python
+host, still above 33.33 ms before receiver/transport/display. Original global
+plane RDO/reversion decisions remain paid and preserved. These measured fixed-
+policy improvements must not be multiplied with earlier component ratios.
+
+Separate CS37 implicit hidden-block syntax saves another 1.51% / 0.28% complete
+bytes with exact causal output, totaling 5.55% / 4.45% against matched fixed
+legacy. The current grammar proof transcodes already encoded CN36 and is not
+integrated into those sender clocks. Its explicit fixed profile needs a new
+receiver; FPGA inverse bypass and native ESP32 support are still proposals.
+
+Next integrate direct coefficient-to-CS37 emission and measure full sender
+service. Use the profile to target native entropy/cost loops while retaining
+exact global decisions. For larger compression gains, prioritize bounded causal
+inter/SKIP/copy and spatial prediction with actual residual packets, then real
+searched-motion integration and held-out long clips. After removing identical
+HUD/bindings, the remaining custom bytes are about 4–12× the sampled native
+remainder at worse MSE. Header-only work cannot close that gap. Compare quality,
+latency and hardware resources under the [v37 deployment gates](v37-next-deployment-gates.md).
+Preserve JPEG/v20; no firmware, bitstream or hardware was modified in v37.
+
+The following v36 and older sections retain their historical evidence.
+
 The [v36 results](custom-codec-prototype-v36-2026-11-04.md) implement the
 canonical-reference hypothesis in new CN36 framing. Full/skip normalize hidden
 reconstructed samples identically before committing them. Actual skip saves

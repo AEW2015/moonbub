@@ -5,6 +5,16 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v37 study](docs/custom-codec-prototype-v37-2026-11-04.md) emits byte-identical
+CN36 directly, removing redundant proof work. An integrated exact analyzer then
+measures 46.13 / 57.75 ms per fixed-policy send in its own paired campaign,
+preserving all tested packets. Separate CS37 implicit hidden-block syntax saves
+another 1.51% / 0.28% bytes at identical output, totaling 5.55% / 4.45% against
+the matched fixed-policy legacy baseline. Those grammar changes are not combined
+with the sender timing. Retained native anchors remain ahead; the byte breakdown
+points to prediction/residual coding as the larger gap. Run
+`python experiments/verify_prototype_v37.py`. Physical 30 fps remains unproved.
+
 The [v36 study](docs/custom-codec-prototype-v36-2026-11-04.md) implements CN36
 canonical hidden references. Actual skip packets save 4.10% / 4.19% complete
 bytes against a matched fixed-policy baseline with identical displayed frames
