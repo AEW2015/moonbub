@@ -323,3 +323,7 @@ by `--inject-keys`; automated tests mock it and do not inject desktop keys.
 ## V46 research checkpoint — 2026-11-05
 
 [Direct receive, coefficient delivery and rate work](docs/custom-codec-prototype-v46-2026-11-05.md) summarizes V43–V46. Direct receive removes proof-adapter work on 577 retained frames (38.76% lower host receive time); V44/V45 establish exact component behavior and logical work bounds; V46 saves 902 complete-frame bytes (0.2281%) over 24 prefixes after tie-preserving actual-packet selection. None establishes hardware fit, physical 30 fps or codec superiority.
+
+## V50 research checkpoint — 2026-11-05
+
+[Strict whole-frame motion guard](docs/custom-codec-prototype-v50-2026-11-05.md) preserves the fixed-zero controls on all 96 tested frames: none of 192 same-reference grid proposals passed the joint complete-byte/RGB565-SSE guard. V47’s fixed global grid had increased both bytes and error in every cohort. V48/V49 remain host component studies; V49 schedule figures are assumption-based demand, not RTL cycles or end-to-end FPS. No physical 30-fps or hardware-fit claim is established.

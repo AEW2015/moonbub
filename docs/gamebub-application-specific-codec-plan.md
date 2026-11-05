@@ -814,3 +814,7 @@ independently on the other system's hardware. No board was programmed here.
 ## V46 research checkpoint — 2026-11-05
 
 [Direct receive, coefficient delivery and rate work](custom-codec-prototype-v46-2026-11-05.md) reports a 38.76% host receive-time reduction versus the old proof adapter on 577 retained frames, exact one-block coefficient delivery and a symmetry-based logical multiply reduction. V46 measures 902 fewer complete packet bytes (0.2281%) on 24 prefixes. Hardware mapping, full-pipeline timing and physical frame rate remain unproved.
+
+## V50 research checkpoint — 2026-11-05
+
+[Strict whole-frame motion guard](custom-codec-prototype-v50-2026-11-05.md) rejects all 192 tested same-reference grid proposals and preserves the fixed-zero outputs on 96 frames. The V48 integrated receiver remains slower in Python despite reduced coefficient staging. V49's tile-bank schedules are assumption-based component demand, not RTL cycles or a 30-fps result. Hardware fit and physical throughput remain open.
