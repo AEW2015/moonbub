@@ -8,8 +8,11 @@ qualification below remains valid within its stated model assumptions.
 
 Follow-up: [SDRAM capture simulation investigation](SDRAM-CAPTURE-ALIGNMENT-20261105.md)
 reproduces the read shift independently of writes and records a 135-degree,
-rising-retime candidate. It is simulation-only, without a BIT or routed timing
-qualification; the original physical failure and network gate remain unchanged.
+rising-retime candidate. Both complete board models now pass, but its routed
+build fails setup and constraint coverage: [validation results](CPL1-CAPTURE135-VALIDATION-20261105.md).
+No BIT exists for that candidate. A corrected-constraint source and a separate
+274.5-degree candidate are retained; the latter is undergoing fresh model and
+implementation checks. Hardware and the network gate remain unchanged.
 
 Next design work: [timing-margin improvement plan](FPGA-TIMING-MARGIN-PLAN-20261105.md),
 covering source-level FF replication, complete pipeline stages, bounded widths,

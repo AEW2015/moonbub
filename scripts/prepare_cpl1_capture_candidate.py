@@ -1,9 +1,10 @@
 """Prepare a fresh isolated capture-alignment candidate; never program hardware."""
 from pathlib import Path
-import hashlib,json,shutil
+import argparse,hashlib,json,shutil
 root=Path(__file__).resolve().parents[1]
 package=root/'fpga/exports/cpl1-timing-fsmcopy-source-20261105-v002'
-dest=root/'fpga/candidates/cp23-sdram-capture135-20261105-v001'
+parser=argparse.ArgumentParser();parser.add_argument('--output');args=parser.parse_args()
+dest=Path(args.output).resolve() if args.output else root/'fpga/candidates/cp23-sdram-capture135-20261105-v002'
 dest.mkdir(exist_ok=False)
 shutil.copytree(package/'inputs',dest/'inputs')
 for name in ['key.cp23.hex','quantizers.hex']:
@@ -29,7 +30,7 @@ s=s[:start]+''' // Candidate only: sample at 135 degrees (3.75 ns), then retime 
 '''+s[end:];p.write_text(s,newline='\n')
 changes['core/parents/moonshine_sdram_burst.sv']['candidate_sha256']=hashlib.sha256(p.read_bytes()).hexdigest()
 p=dest/'inputs/constraints/timing-cpl1-reviewed.tcl'
-s=p.read_text();start=s.index('# The receive architecture captures');end=s.index('# Gray',start)
+s=p.read_text();start=s.index('# The receive architecture captures');end=s.index('# Preserve only asynchronous first-stage captures',start)
 old=s[start:end]
 assert 'set_multicycle_path 2 -setup' in old
 new='''# Capture-alignment candidate: 100 MHz, 135 degrees. The intended

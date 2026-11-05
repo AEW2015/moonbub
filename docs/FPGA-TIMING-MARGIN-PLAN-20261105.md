@@ -14,6 +14,11 @@ copy. This is a valid measured pass with small margin. Keep its sealed source,
 checkpoint, BIT and reports unchanged as the comparison and rollback artifacts.
 Installed v30/build50 stays unchanged during offline development.
 
+Subsequent physical state: v32 observer is installed and build50 was restored
+after the failed CPL1 fixture. See the [hardware report](CPL1-LOCAL-HARDWARE-20261105.md)
+and [capture-alignment investigation](SDRAM-CAPTURE-ALIGNMENT-20261105.md).
+The earlier unchanged-device statement describes the original offline window.
+
 Proposed next-candidate promotion target: **at least +0.250 ns routed setup
 slack**, positive hold/pulse/bus-skew slack, zero violations and zero routing
 errors, at the same clocks and external budgets. Report the minimum result from
@@ -31,6 +36,73 @@ one partial-input-delay coverage gaps visible; review those interfaces separatel
 against board/device timing evidence.
 
 ## Prioritized design work
+
+### Hardware-led priority zero: SDRAM correctness and the capture window
+
+Before promoting another image, resolve the physical rendered-CRC mismatch.
+The original CPL1 image met declared timing but failed the physical oracle.
+The isolated 135-degree/rising-retime candidate improves the tested functional
+model alignment, but its synthesized SDRAM input setup path fails by **4.269 ns**.
+The routing run also reports a large negative `raw_read100` path; use its final
+reports for the final routed number. These are separate correctness and timing
+gates. A passing burst model does not authorize loading a timing-failing image.
+
+The audited path is `sdram_dq[3]` to `dq_capture_reg[3]/D`: its synthesized
+requirement is 8.750 ns, external input delay 7.000 ns, input data path 2.304 ns,
+and clock skew -3.536 ns. The forwarded-clock output path and input-pad/capture
+path therefore matter. The zero-delay primitive model does not include these
+paths; changing only an ideal model's read phase cannot qualify the physical
+window. These are source-bound synthesized measurements, not physical delay
+measurements or final routed timing.
+
+The completed v001 implementation reports **-3.605 ns** on this SDRAM input
+path and is rejected. Its constraint-coverage check also caught an overly
+broad preparation edit that dropped common synchronizer/QSPI bounds. Fresh
+v002 restores them, with no implementation claim. Both full HDL fixture runs
+passed `4c5725e5`; see the [complete validation report](CPL1-CAPTURE135-VALIDATION-20261105.md).
+The unchanged pin file already has FAST slew / DRIVE12 on SDRAM_CLK. Any I/O
+setting experiment must state its actual starting setting, supported values
+and source binding; do not claim an existing setting as a new improvement.
+
+A subsequent checkpoint-only screen restored the common bounds and found
+positive SDRAM input setup/hold at a 270-degree previous-beat capture, while
+the old unconstrained QSPI placement failed its reinstated CS-to-DQ bound.
+This is hypothesis evidence, not a qualified image. A fresh 274.5-degree
+source candidate now retains the original common bounds, FAST/DRIVE12 pin
+settings and numerical budgets; full model and implementation checks are
+running. This experiment intentionally changes the read phase for correctness
+and must satisfy its own edge/indexing tests. No full-PHY integration has been
+selected or implemented as a consequence of this screen.
+
+Do this next, without changing the installed hardware or numerical budgets:
+
+1. **Audit actual read-beat timing.** Check CAS command-to-first-data semantics,
+   byte masks, first/last beat, data hold/release, forwarded clock, pad-to-pad
+   return delay and capture/retime stages. Preserve the physical wrong-CRC and
+   the intentionally failing model/timing cases as negative controls. Add
+   bounded raw write/readback observations before attributing the physical
+   failure to one stage.
+2. **Qualify an explicit capture window and beat index.** Use implementation
+   input setup/hold reports and native primitive behavior alongside functional
+   models. Keep the 100 MHz rate and existing input/output budgets. If a new
+   phase or receive architecture is chosen for correctness, treat it as a
+   separately qualified design with newly reviewed edge relationships; it is
+   not a margin-only reproduction of the old phase. Do not add a multicycle
+   solely to suppress the deficit or silently reduce the input delay.
+3. **Evaluate SERDES4 only as an isolated PHY candidate.** The supplied GameBub
+   reference includes per-lane input delay, explicit capture delay/slot,
+   complete burst assembly and bounded response FIFO. Port reset/park ownership,
+   byte masks, response identity and backpressure with it. Its historical
+   standalone timing or frequency results do not qualify a MoonBub integration.
+   A full SERDES replacement is not yet established as necessary.
+4. **Then apply internal timing improvements below.** FF replication and
+   transaction pipelines can shorten internal paths, but cannot repair an
+   external SDRAM input setup requirement. Require both golden rendered CRC
+   and declared routed timing before local hardware promotion.
+
+The source-level replication, pipeline and width work remains useful in
+parallel with this analysis, in separate candidates. Do not combine it into
+the capture experiment before each change has its own regression evidence.
 
 | Priority | Improvement | Implementation notes and evidence required |
 |---|---|---|

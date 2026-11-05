@@ -1,6 +1,7 @@
 """Candidate top/PLL/bootstrap smoke; deliberately not a rendered-CRC test."""
 from pathlib import Path
 import hashlib,json,os,shutil,subprocess
+from cpl1_sdram_models import strict_hold_text
 root=Path(__file__).resolve().parents[1]
 p=root/'fpga/exports/cpl1-timing-fsmcopy-source-20261105-v002'
 c=root/'fpga/candidates/cp23-sdram-capture135-20261105-v001'
@@ -11,7 +12,7 @@ for name in selection['assets'].values():shutil.copyfile(p/'sim-assets'/name,out
 for name in ['rtl/moonshine_top_cpl1.sv','core/parents/moonshine_sdram_burst.sv']:
     shutil.copyfile(c/'inputs'/name,out/'inputs'/name)
 model=out/'inputs/core/parents/sdram_model_bounded.sv'
-shutil.copyfile(root/'evidence/cpl1-sdram-alignment-20261105-v002/model.sv',model)
+model.write_text(strict_hold_text(model.read_text()))
 tb=out/'inputs/sim/tb_platform.sv'
 s=tb.read_text().replace('7.749','3.749').replace('7.751','3.751')
 s=s.replace('read_phase279=1','read_phase135=1')

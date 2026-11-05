@@ -1,5 +1,12 @@
 # SDRAM capture alignment investigation — 2026-11-05
 
+Validation update: the complete candidate board model passes at early and late
+assumptions with the unchanged `4c5725e5` CRC. **The v001 implementation is
+rejected:** routed setup is -3.605 ns, and its initial constraint edit omitted
+existing synchronizer/QSPI bounds. Fresh v002 restores those bounds but has
+not been implemented. No BIT was generated and hardware remains unchanged.
+See [validation results](CPL1-CAPTURE135-VALIDATION-20261105.md).
+
 The isolated native-pad simulations reproduce a read-beat shift independently
 of writes. A focused capture/retiming candidate now passes the tested strict
 model envelope. **No candidate BIT exists, no new hardware was programmed, and
@@ -64,7 +71,7 @@ This gives the capture register more time to reach the retime stage than an
 earlier phase combined with the old falling-edge retime. It still needs routed
 setup/hold evidence.
 
-The constraint candidate removes the **old** phase-specific input multicycle
+The corrected v002 constraint candidate removes the **old** phase-specific input multicycle
 and guards the new 3.75 ns phase. At that phase, the preceding forwarded clock
 rise is already the default setup launch edge (−5 ns → 3.75 ns). Ordinary
 single-cycle setup/hold applies. No new false path or input delay relaxation

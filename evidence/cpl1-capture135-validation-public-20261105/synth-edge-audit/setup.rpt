@@ -1,0 +1,727 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Thu Nov  5 14:03:02 2026
+| Host         : DESKTOP-I75K8PP running 64-bit major release  (build 9200)
+| Command      : report_timing -delay_type max -max_paths 10 -file C:/Users/lavat/codex/moonbub/fpga/candidates/cp23-sdram-capture135-20261105-v001/evidence/constraint-audit01/setup.rpt
+| Design       : moonshine_top_cpl1
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Synthesized
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -4.269ns  (required time - arrival time)
+  Source:                 sdram_dq[3]
+                            (input port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Destination:            diagnostic/core/memory/controller/dq_capture_reg[3]/D
+                            (rising edge-triggered cell FDRE clocked by raw_read100  {rise@3.750ns fall@8.750ns period=10.000ns})
+  Path Group:             raw_read100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.750ns  (raw_read100 rise@13.750ns - sdram_forwarded rise@5.000ns)
+  Data Path Delay:        2.304ns  (logic 1.489ns (64.631%)  route 0.815ns (35.369%))
+  Logic Levels:           1  (IBUF=1)
+  Input Delay:            7.000ns
+  Clock Path Skew:        -3.536ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    3.034ns = ( 16.784 - 13.750 ) 
+    Source Clock Delay      (SCD):    6.640ns = ( 11.640 - 5.000 ) 
+    Clock Pessimism Removal (CPR):    0.071ns
+  Clock Uncertainty:      0.167ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     6.488 r  input_buffer/O
+                         net (fo=1, unplaced)         0.803     7.291    inclk
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  base_clock/O
+                         net (fo=7, unplaced)         0.584     7.971    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -1.483     6.488 r  service_pll/CLKOUT1
+                         net (fo=1, unplaced)         0.803     7.291    raw100
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  memory_clock/O
+                         net (fo=24337, unplaced)     0.803     8.190    diagnostic/core/memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.472     8.662 r  diagnostic/core/memory/controller/forward_clock/Q
+                         net (fo=1, estimated)        0.000     8.662    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.979    11.640 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    11.640    sdram_clk
+  -------------------------------------------------------------------    -------------------
+                         input delay                  7.000    18.640    
+    N2                                                0.000    18.640 r  sdram_dq[3] (INOUT)
+                         net (fo=1, unset)            0.000    18.640    diagnostic/core/memory/controller/dq_io[3].pad/IO
+    N2                   IBUF (Prop_ibuf_I_O)         1.489    20.129 r  diagnostic/core/memory/controller/dq_io[3].pad/IBUF/O
+                         net (fo=1, estimated)        0.815    20.944    diagnostic/core/memory/controller/dq_input[3]
+    ILOGIC_X1Y94         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[3]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw_read100 rise edge)
+                                                     13.750    13.750 r  
+    P17                                               0.000    13.750 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    13.750    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    15.167 r  input_buffer/O
+                         net (fo=1, unplaced)         0.763    15.930    inclk
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  base_clock/O
+                         net (fo=7, unplaced)         0.439    16.460    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT2)
+                                                     -1.293    15.167 r  service_pll/CLKOUT2
+                         net (fo=1, unplaced)         0.763    15.930    raw_read100
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  read_clock/O
+                         net (fo=16, unplaced)        0.763    16.784    diagnostic/core/memory/controller/CLK
+    ILOGIC_X1Y94         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[3]/C
+                         clock pessimism              0.071    16.854    
+                         clock uncertainty           -0.167    16.687    
+    ILOGIC_X1Y94         FDRE (Setup_fdre_C_D)       -0.011    16.676    diagnostic/core/memory/controller/dq_capture_reg[3]
+  -------------------------------------------------------------------
+                         required time                         16.676    
+                         arrival time                         -20.944    
+  -------------------------------------------------------------------
+                         slack                                 -4.269    
+
+Slack (VIOLATED) :        -4.258ns  (required time - arrival time)
+  Source:                 sdram_dq[2]
+                            (input port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Destination:            diagnostic/core/memory/controller/dq_capture_reg[2]/D
+                            (rising edge-triggered cell FDRE clocked by raw_read100  {rise@3.750ns fall@8.750ns period=10.000ns})
+  Path Group:             raw_read100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.750ns  (raw_read100 rise@13.750ns - sdram_forwarded rise@5.000ns)
+  Data Path Delay:        2.293ns  (logic 1.478ns (64.461%)  route 0.815ns (35.539%))
+  Logic Levels:           1  (IBUF=1)
+  Input Delay:            7.000ns
+  Clock Path Skew:        -3.536ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    3.034ns = ( 16.784 - 13.750 ) 
+    Source Clock Delay      (SCD):    6.640ns = ( 11.640 - 5.000 ) 
+    Clock Pessimism Removal (CPR):    0.071ns
+  Clock Uncertainty:      0.167ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     6.488 r  input_buffer/O
+                         net (fo=1, unplaced)         0.803     7.291    inclk
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  base_clock/O
+                         net (fo=7, unplaced)         0.584     7.971    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -1.483     6.488 r  service_pll/CLKOUT1
+                         net (fo=1, unplaced)         0.803     7.291    raw100
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  memory_clock/O
+                         net (fo=24337, unplaced)     0.803     8.190    diagnostic/core/memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.472     8.662 r  diagnostic/core/memory/controller/forward_clock/Q
+                         net (fo=1, estimated)        0.000     8.662    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.979    11.640 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    11.640    sdram_clk
+  -------------------------------------------------------------------    -------------------
+                         input delay                  7.000    18.640    
+    P2                                                0.000    18.640 r  sdram_dq[2] (INOUT)
+                         net (fo=1, unset)            0.000    18.640    diagnostic/core/memory/controller/dq_io[2].pad/IO
+    P2                   IBUF (Prop_ibuf_I_O)         1.478    20.118 r  diagnostic/core/memory/controller/dq_io[2].pad/IBUF/O
+                         net (fo=1, estimated)        0.815    20.933    diagnostic/core/memory/controller/dq_input[2]
+    ILOGIC_X1Y70         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[2]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw_read100 rise edge)
+                                                     13.750    13.750 r  
+    P17                                               0.000    13.750 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    13.750    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    15.167 r  input_buffer/O
+                         net (fo=1, unplaced)         0.763    15.930    inclk
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  base_clock/O
+                         net (fo=7, unplaced)         0.439    16.460    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT2)
+                                                     -1.293    15.167 r  service_pll/CLKOUT2
+                         net (fo=1, unplaced)         0.763    15.930    raw_read100
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  read_clock/O
+                         net (fo=16, unplaced)        0.763    16.784    diagnostic/core/memory/controller/CLK
+    ILOGIC_X1Y70         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[2]/C
+                         clock pessimism              0.071    16.854    
+                         clock uncertainty           -0.167    16.687    
+    ILOGIC_X1Y70         FDRE (Setup_fdre_C_D)       -0.011    16.676    diagnostic/core/memory/controller/dq_capture_reg[2]
+  -------------------------------------------------------------------
+                         required time                         16.676    
+                         arrival time                         -20.933    
+  -------------------------------------------------------------------
+                         slack                                 -4.258    
+
+Slack (VIOLATED) :        -4.258ns  (required time - arrival time)
+  Source:                 sdram_dq[4]
+                            (input port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Destination:            diagnostic/core/memory/controller/dq_capture_reg[4]/D
+                            (rising edge-triggered cell FDRE clocked by raw_read100  {rise@3.750ns fall@8.750ns period=10.000ns})
+  Path Group:             raw_read100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.750ns  (raw_read100 rise@13.750ns - sdram_forwarded rise@5.000ns)
+  Data Path Delay:        2.293ns  (logic 1.478ns (64.461%)  route 0.815ns (35.539%))
+  Logic Levels:           1  (IBUF=1)
+  Input Delay:            7.000ns
+  Clock Path Skew:        -3.536ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    3.034ns = ( 16.784 - 13.750 ) 
+    Source Clock Delay      (SCD):    6.640ns = ( 11.640 - 5.000 ) 
+    Clock Pessimism Removal (CPR):    0.071ns
+  Clock Uncertainty:      0.167ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     6.488 r  input_buffer/O
+                         net (fo=1, unplaced)         0.803     7.291    inclk
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  base_clock/O
+                         net (fo=7, unplaced)         0.584     7.971    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -1.483     6.488 r  service_pll/CLKOUT1
+                         net (fo=1, unplaced)         0.803     7.291    raw100
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  memory_clock/O
+                         net (fo=24337, unplaced)     0.803     8.190    diagnostic/core/memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.472     8.662 r  diagnostic/core/memory/controller/forward_clock/Q
+                         net (fo=1, estimated)        0.000     8.662    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.979    11.640 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    11.640    sdram_clk
+  -------------------------------------------------------------------    -------------------
+                         input delay                  7.000    18.640    
+    N1                                                0.000    18.640 r  sdram_dq[4] (INOUT)
+                         net (fo=1, unset)            0.000    18.640    diagnostic/core/memory/controller/dq_io[4].pad/IO
+    N1                   IBUF (Prop_ibuf_I_O)         1.478    20.118 r  diagnostic/core/memory/controller/dq_io[4].pad/IBUF/O
+                         net (fo=1, estimated)        0.815    20.933    diagnostic/core/memory/controller/dq_input[4]
+    ILOGIC_X1Y93         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[4]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw_read100 rise edge)
+                                                     13.750    13.750 r  
+    P17                                               0.000    13.750 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    13.750    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    15.167 r  input_buffer/O
+                         net (fo=1, unplaced)         0.763    15.930    inclk
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  base_clock/O
+                         net (fo=7, unplaced)         0.439    16.460    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT2)
+                                                     -1.293    15.167 r  service_pll/CLKOUT2
+                         net (fo=1, unplaced)         0.763    15.930    raw_read100
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  read_clock/O
+                         net (fo=16, unplaced)        0.763    16.784    diagnostic/core/memory/controller/CLK
+    ILOGIC_X1Y93         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[4]/C
+                         clock pessimism              0.071    16.854    
+                         clock uncertainty           -0.167    16.687    
+    ILOGIC_X1Y93         FDRE (Setup_fdre_C_D)       -0.011    16.676    diagnostic/core/memory/controller/dq_capture_reg[4]
+  -------------------------------------------------------------------
+                         required time                         16.676    
+                         arrival time                         -20.933    
+  -------------------------------------------------------------------
+                         slack                                 -4.258    
+
+Slack (VIOLATED) :        -4.257ns  (required time - arrival time)
+  Source:                 sdram_dq[6]
+                            (input port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Destination:            diagnostic/core/memory/controller/dq_capture_reg[6]/D
+                            (rising edge-triggered cell FDRE clocked by raw_read100  {rise@3.750ns fall@8.750ns period=10.000ns})
+  Path Group:             raw_read100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.750ns  (raw_read100 rise@13.750ns - sdram_forwarded rise@5.000ns)
+  Data Path Delay:        2.292ns  (logic 1.477ns (64.448%)  route 0.815ns (35.552%))
+  Logic Levels:           1  (IBUF=1)
+  Input Delay:            7.000ns
+  Clock Path Skew:        -3.536ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    3.034ns = ( 16.784 - 13.750 ) 
+    Source Clock Delay      (SCD):    6.640ns = ( 11.640 - 5.000 ) 
+    Clock Pessimism Removal (CPR):    0.071ns
+  Clock Uncertainty:      0.167ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     6.488 r  input_buffer/O
+                         net (fo=1, unplaced)         0.803     7.291    inclk
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  base_clock/O
+                         net (fo=7, unplaced)         0.584     7.971    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -1.483     6.488 r  service_pll/CLKOUT1
+                         net (fo=1, unplaced)         0.803     7.291    raw100
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  memory_clock/O
+                         net (fo=24337, unplaced)     0.803     8.190    diagnostic/core/memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.472     8.662 r  diagnostic/core/memory/controller/forward_clock/Q
+                         net (fo=1, estimated)        0.000     8.662    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.979    11.640 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    11.640    sdram_clk
+  -------------------------------------------------------------------    -------------------
+                         input delay                  7.000    18.640    
+    M1                                                0.000    18.640 r  sdram_dq[6] (INOUT)
+                         net (fo=1, unset)            0.000    18.640    diagnostic/core/memory/controller/dq_io[6].pad/IO
+    M1                   IBUF (Prop_ibuf_I_O)         1.477    20.118 r  diagnostic/core/memory/controller/dq_io[6].pad/IBUF/O
+                         net (fo=1, estimated)        0.815    20.933    diagnostic/core/memory/controller/dq_input[6]
+    ILOGIC_X1Y97         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[6]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw_read100 rise edge)
+                                                     13.750    13.750 r  
+    P17                                               0.000    13.750 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    13.750    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    15.167 r  input_buffer/O
+                         net (fo=1, unplaced)         0.763    15.930    inclk
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  base_clock/O
+                         net (fo=7, unplaced)         0.439    16.460    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT2)
+                                                     -1.293    15.167 r  service_pll/CLKOUT2
+                         net (fo=1, unplaced)         0.763    15.930    raw_read100
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  read_clock/O
+                         net (fo=16, unplaced)        0.763    16.784    diagnostic/core/memory/controller/CLK
+    ILOGIC_X1Y97         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[6]/C
+                         clock pessimism              0.071    16.854    
+                         clock uncertainty           -0.167    16.687    
+    ILOGIC_X1Y97         FDRE (Setup_fdre_C_D)       -0.011    16.676    diagnostic/core/memory/controller/dq_capture_reg[6]
+  -------------------------------------------------------------------
+                         required time                         16.676    
+                         arrival time                         -20.933    
+  -------------------------------------------------------------------
+                         slack                                 -4.257    
+
+Slack (VIOLATED) :        -4.256ns  (required time - arrival time)
+  Source:                 sdram_dq[5]
+                            (input port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Destination:            diagnostic/core/memory/controller/dq_capture_reg[5]/D
+                            (rising edge-triggered cell FDRE clocked by raw_read100  {rise@3.750ns fall@8.750ns period=10.000ns})
+  Path Group:             raw_read100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.750ns  (raw_read100 rise@13.750ns - sdram_forwarded rise@5.000ns)
+  Data Path Delay:        2.292ns  (logic 1.477ns (64.439%)  route 0.815ns (35.561%))
+  Logic Levels:           1  (IBUF=1)
+  Input Delay:            7.000ns
+  Clock Path Skew:        -3.536ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    3.034ns = ( 16.784 - 13.750 ) 
+    Source Clock Delay      (SCD):    6.640ns = ( 11.640 - 5.000 ) 
+    Clock Pessimism Removal (CPR):    0.071ns
+  Clock Uncertainty:      0.167ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     6.488 r  input_buffer/O
+                         net (fo=1, unplaced)         0.803     7.291    inclk
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  base_clock/O
+                         net (fo=7, unplaced)         0.584     7.971    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -1.483     6.488 r  service_pll/CLKOUT1
+                         net (fo=1, unplaced)         0.803     7.291    raw100
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  memory_clock/O
+                         net (fo=24337, unplaced)     0.803     8.190    diagnostic/core/memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.472     8.662 r  diagnostic/core/memory/controller/forward_clock/Q
+                         net (fo=1, estimated)        0.000     8.662    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.979    11.640 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    11.640    sdram_clk
+  -------------------------------------------------------------------    -------------------
+                         input delay                  7.000    18.640    
+    M2                                                0.000    18.640 r  sdram_dq[5] (INOUT)
+                         net (fo=1, unset)            0.000    18.640    diagnostic/core/memory/controller/dq_io[5].pad/IO
+    M2                   IBUF (Prop_ibuf_I_O)         1.477    20.117 r  diagnostic/core/memory/controller/dq_io[5].pad/IBUF/O
+                         net (fo=1, estimated)        0.815    20.932    diagnostic/core/memory/controller/dq_input[5]
+    ILOGIC_X1Y91         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[5]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw_read100 rise edge)
+                                                     13.750    13.750 r  
+    P17                                               0.000    13.750 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    13.750    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    15.167 r  input_buffer/O
+                         net (fo=1, unplaced)         0.763    15.930    inclk
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  base_clock/O
+                         net (fo=7, unplaced)         0.439    16.460    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT2)
+                                                     -1.293    15.167 r  service_pll/CLKOUT2
+                         net (fo=1, unplaced)         0.763    15.930    raw_read100
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  read_clock/O
+                         net (fo=16, unplaced)        0.763    16.784    diagnostic/core/memory/controller/CLK
+    ILOGIC_X1Y91         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[5]/C
+                         clock pessimism              0.071    16.854    
+                         clock uncertainty           -0.167    16.687    
+    ILOGIC_X1Y91         FDRE (Setup_fdre_C_D)       -0.011    16.676    diagnostic/core/memory/controller/dq_capture_reg[5]
+  -------------------------------------------------------------------
+                         required time                         16.676    
+                         arrival time                         -20.932    
+  -------------------------------------------------------------------
+                         slack                                 -4.256    
+
+Slack (VIOLATED) :        -4.255ns  (required time - arrival time)
+  Source:                 sdram_dq[1]
+                            (input port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Destination:            diagnostic/core/memory/controller/dq_capture_reg[1]/D
+                            (rising edge-triggered cell FDRE clocked by raw_read100  {rise@3.750ns fall@8.750ns period=10.000ns})
+  Path Group:             raw_read100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.750ns  (raw_read100 rise@13.750ns - sdram_forwarded rise@5.000ns)
+  Data Path Delay:        2.291ns  (logic 1.476ns (64.423%)  route 0.815ns (35.577%))
+  Logic Levels:           1  (IBUF=1)
+  Input Delay:            7.000ns
+  Clock Path Skew:        -3.536ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    3.034ns = ( 16.784 - 13.750 ) 
+    Source Clock Delay      (SCD):    6.640ns = ( 11.640 - 5.000 ) 
+    Clock Pessimism Removal (CPR):    0.071ns
+  Clock Uncertainty:      0.167ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     6.488 r  input_buffer/O
+                         net (fo=1, unplaced)         0.803     7.291    inclk
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  base_clock/O
+                         net (fo=7, unplaced)         0.584     7.971    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -1.483     6.488 r  service_pll/CLKOUT1
+                         net (fo=1, unplaced)         0.803     7.291    raw100
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  memory_clock/O
+                         net (fo=24337, unplaced)     0.803     8.190    diagnostic/core/memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.472     8.662 r  diagnostic/core/memory/controller/forward_clock/Q
+                         net (fo=1, estimated)        0.000     8.662    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.979    11.640 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    11.640    sdram_clk
+  -------------------------------------------------------------------    -------------------
+                         input delay                  7.000    18.640    
+    R1                                                0.000    18.640 r  sdram_dq[1] (INOUT)
+                         net (fo=1, unset)            0.000    18.640    diagnostic/core/memory/controller/dq_io[1].pad/IO
+    R1                   IBUF (Prop_ibuf_I_O)         1.476    20.116 r  diagnostic/core/memory/controller/dq_io[1].pad/IBUF/O
+                         net (fo=1, estimated)        0.815    20.931    diagnostic/core/memory/controller/dq_input[1]
+    ILOGIC_X1Y66         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw_read100 rise edge)
+                                                     13.750    13.750 r  
+    P17                                               0.000    13.750 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    13.750    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    15.167 r  input_buffer/O
+                         net (fo=1, unplaced)         0.763    15.930    inclk
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  base_clock/O
+                         net (fo=7, unplaced)         0.439    16.460    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT2)
+                                                     -1.293    15.167 r  service_pll/CLKOUT2
+                         net (fo=1, unplaced)         0.763    15.930    raw_read100
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  read_clock/O
+                         net (fo=16, unplaced)        0.763    16.784    diagnostic/core/memory/controller/CLK
+    ILOGIC_X1Y66         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[1]/C
+                         clock pessimism              0.071    16.854    
+                         clock uncertainty           -0.167    16.687    
+    ILOGIC_X1Y66         FDRE (Setup_fdre_C_D)       -0.011    16.676    diagnostic/core/memory/controller/dq_capture_reg[1]
+  -------------------------------------------------------------------
+                         required time                         16.676    
+                         arrival time                         -20.931    
+  -------------------------------------------------------------------
+                         slack                                 -4.255    
+
+Slack (VIOLATED) :        -4.254ns  (required time - arrival time)
+  Source:                 sdram_dq[0]
+                            (input port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Destination:            diagnostic/core/memory/controller/dq_capture_reg[0]/D
+                            (rising edge-triggered cell FDRE clocked by raw_read100  {rise@3.750ns fall@8.750ns period=10.000ns})
+  Path Group:             raw_read100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.750ns  (raw_read100 rise@13.750ns - sdram_forwarded rise@5.000ns)
+  Data Path Delay:        2.290ns  (logic 1.475ns (64.411%)  route 0.815ns (35.589%))
+  Logic Levels:           1  (IBUF=1)
+  Input Delay:            7.000ns
+  Clock Path Skew:        -3.536ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    3.034ns = ( 16.784 - 13.750 ) 
+    Source Clock Delay      (SCD):    6.640ns = ( 11.640 - 5.000 ) 
+    Clock Pessimism Removal (CPR):    0.071ns
+  Clock Uncertainty:      0.167ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     6.488 r  input_buffer/O
+                         net (fo=1, unplaced)         0.803     7.291    inclk
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  base_clock/O
+                         net (fo=7, unplaced)         0.584     7.971    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -1.483     6.488 r  service_pll/CLKOUT1
+                         net (fo=1, unplaced)         0.803     7.291    raw100
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  memory_clock/O
+                         net (fo=24337, unplaced)     0.803     8.190    diagnostic/core/memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.472     8.662 r  diagnostic/core/memory/controller/forward_clock/Q
+                         net (fo=1, estimated)        0.000     8.662    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.979    11.640 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    11.640    sdram_clk
+  -------------------------------------------------------------------    -------------------
+                         input delay                  7.000    18.640    
+    R2                                                0.000    18.640 r  sdram_dq[0] (INOUT)
+                         net (fo=1, unset)            0.000    18.640    diagnostic/core/memory/controller/dq_io[0].pad/IO
+    R2                   IBUF (Prop_ibuf_I_O)         1.475    20.115 r  diagnostic/core/memory/controller/dq_io[0].pad/IBUF/O
+                         net (fo=1, estimated)        0.815    20.930    diagnostic/core/memory/controller/dq_input[0]
+    ILOGIC_X1Y69         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw_read100 rise edge)
+                                                     13.750    13.750 r  
+    P17                                               0.000    13.750 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    13.750    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    15.167 r  input_buffer/O
+                         net (fo=1, unplaced)         0.763    15.930    inclk
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  base_clock/O
+                         net (fo=7, unplaced)         0.439    16.460    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT2)
+                                                     -1.293    15.167 r  service_pll/CLKOUT2
+                         net (fo=1, unplaced)         0.763    15.930    raw_read100
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  read_clock/O
+                         net (fo=16, unplaced)        0.763    16.784    diagnostic/core/memory/controller/CLK
+    ILOGIC_X1Y69         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[0]/C
+                         clock pessimism              0.071    16.854    
+                         clock uncertainty           -0.167    16.687    
+    ILOGIC_X1Y69         FDRE (Setup_fdre_C_D)       -0.011    16.676    diagnostic/core/memory/controller/dq_capture_reg[0]
+  -------------------------------------------------------------------
+                         required time                         16.676    
+                         arrival time                         -20.930    
+  -------------------------------------------------------------------
+                         slack                                 -4.254    
+
+Slack (VIOLATED) :        -4.253ns  (required time - arrival time)
+  Source:                 sdram_dq[15]
+                            (input port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Destination:            diagnostic/core/memory/controller/dq_capture_reg[15]/D
+                            (rising edge-triggered cell FDRE clocked by raw_read100  {rise@3.750ns fall@8.750ns period=10.000ns})
+  Path Group:             raw_read100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.750ns  (raw_read100 rise@13.750ns - sdram_forwarded rise@5.000ns)
+  Data Path Delay:        2.289ns  (logic 1.474ns (64.389%)  route 0.815ns (35.611%))
+  Logic Levels:           1  (IBUF=1)
+  Input Delay:            7.000ns
+  Clock Path Skew:        -3.536ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    3.034ns = ( 16.784 - 13.750 ) 
+    Source Clock Delay      (SCD):    6.640ns = ( 11.640 - 5.000 ) 
+    Clock Pessimism Removal (CPR):    0.071ns
+  Clock Uncertainty:      0.167ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     6.488 r  input_buffer/O
+                         net (fo=1, unplaced)         0.803     7.291    inclk
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  base_clock/O
+                         net (fo=7, unplaced)         0.584     7.971    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -1.483     6.488 r  service_pll/CLKOUT1
+                         net (fo=1, unplaced)         0.803     7.291    raw100
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  memory_clock/O
+                         net (fo=24337, unplaced)     0.803     8.190    diagnostic/core/memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.472     8.662 r  diagnostic/core/memory/controller/forward_clock/Q
+                         net (fo=1, estimated)        0.000     8.662    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.979    11.640 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    11.640    sdram_clk
+  -------------------------------------------------------------------    -------------------
+                         input delay                  7.000    18.640    
+    P4                                                0.000    18.640 r  sdram_dq[15] (INOUT)
+                         net (fo=1, unset)            0.000    18.640    diagnostic/core/memory/controller/dq_io[15].pad/IO
+    P4                   IBUF (Prop_ibuf_I_O)         1.474    20.114 r  diagnostic/core/memory/controller/dq_io[15].pad/IBUF/O
+                         net (fo=1, estimated)        0.815    20.929    diagnostic/core/memory/controller/dq_input[15]
+    ILOGIC_X1Y72         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[15]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw_read100 rise edge)
+                                                     13.750    13.750 r  
+    P17                                               0.000    13.750 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    13.750    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    15.167 r  input_buffer/O
+                         net (fo=1, unplaced)         0.763    15.930    inclk
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  base_clock/O
+                         net (fo=7, unplaced)         0.439    16.460    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT2)
+                                                     -1.293    15.167 r  service_pll/CLKOUT2
+                         net (fo=1, unplaced)         0.763    15.930    raw_read100
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  read_clock/O
+                         net (fo=16, unplaced)        0.763    16.784    diagnostic/core/memory/controller/CLK
+    ILOGIC_X1Y72         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[15]/C
+                         clock pessimism              0.071    16.854    
+                         clock uncertainty           -0.167    16.687    
+    ILOGIC_X1Y72         FDRE (Setup_fdre_C_D)       -0.011    16.676    diagnostic/core/memory/controller/dq_capture_reg[15]
+  -------------------------------------------------------------------
+                         required time                         16.676    
+                         arrival time                         -20.929    
+  -------------------------------------------------------------------
+                         slack                                 -4.253    
+
+Slack (VIOLATED) :        -4.252ns  (required time - arrival time)
+  Source:                 sdram_dq[11]
+                            (input port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Destination:            diagnostic/core/memory/controller/dq_capture_reg[11]/D
+                            (rising edge-triggered cell FDRE clocked by raw_read100  {rise@3.750ns fall@8.750ns period=10.000ns})
+  Path Group:             raw_read100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.750ns  (raw_read100 rise@13.750ns - sdram_forwarded rise@5.000ns)
+  Data Path Delay:        2.287ns  (logic 1.472ns (64.367%)  route 0.815ns (35.633%))
+  Logic Levels:           1  (IBUF=1)
+  Input Delay:            7.000ns
+  Clock Path Skew:        -3.536ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    3.034ns = ( 16.784 - 13.750 ) 
+    Source Clock Delay      (SCD):    6.640ns = ( 11.640 - 5.000 ) 
+    Clock Pessimism Removal (CPR):    0.071ns
+  Clock Uncertainty:      0.167ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     6.488 r  input_buffer/O
+                         net (fo=1, unplaced)         0.803     7.291    inclk
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  base_clock/O
+                         net (fo=7, unplaced)         0.584     7.971    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -1.483     6.488 r  service_pll/CLKOUT1
+                         net (fo=1, unplaced)         0.803     7.291    raw100
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  memory_clock/O
+                         net (fo=24337, unplaced)     0.803     8.190    diagnostic/core/memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.472     8.662 r  diagnostic/core/memory/controller/forward_clock/Q
+                         net (fo=1, estimated)        0.000     8.662    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.979    11.640 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    11.640    sdram_clk
+  -------------------------------------------------------------------    -------------------
+                         input delay                  7.000    18.640    
+    M3                                                0.000    18.640 r  sdram_dq[11] (INOUT)
+                         net (fo=1, unset)            0.000    18.640    diagnostic/core/memory/controller/dq_io[11].pad/IO
+    M3                   IBUF (Prop_ibuf_I_O)         1.472    20.112 r  diagnostic/core/memory/controller/dq_io[11].pad/IBUF/O
+                         net (fo=1, estimated)        0.815    20.927    diagnostic/core/memory/controller/dq_input[11]
+    ILOGIC_X1Y92         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[11]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw_read100 rise edge)
+                                                     13.750    13.750 r  
+    P17                                               0.000    13.750 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    13.750    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    15.167 r  input_buffer/O
+                         net (fo=1, unplaced)         0.763    15.930    inclk
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  base_clock/O
+                         net (fo=7, unplaced)         0.439    16.460    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT2)
+                                                     -1.293    15.167 r  service_pll/CLKOUT2
+                         net (fo=1, unplaced)         0.763    15.930    raw_read100
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  read_clock/O
+                         net (fo=16, unplaced)        0.763    16.784    diagnostic/core/memory/controller/CLK
+    ILOGIC_X1Y92         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[11]/C
+                         clock pessimism              0.071    16.854    
+                         clock uncertainty           -0.167    16.687    
+    ILOGIC_X1Y92         FDRE (Setup_fdre_C_D)       -0.011    16.676    diagnostic/core/memory/controller/dq_capture_reg[11]
+  -------------------------------------------------------------------
+                         required time                         16.676    
+                         arrival time                         -20.927    
+  -------------------------------------------------------------------
+                         slack                                 -4.252    
+
+Slack (VIOLATED) :        -4.251ns  (required time - arrival time)
+  Source:                 sdram_dq[14]
+                            (input port clocked by sdram_forwarded  {rise@5.000ns fall@10.000ns period=10.000ns})
+  Destination:            diagnostic/core/memory/controller/dq_capture_reg[14]/D
+                            (rising edge-triggered cell FDRE clocked by raw_read100  {rise@3.750ns fall@8.750ns period=10.000ns})
+  Path Group:             raw_read100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.750ns  (raw_read100 rise@13.750ns - sdram_forwarded rise@5.000ns)
+  Data Path Delay:        2.287ns  (logic 1.472ns (64.360%)  route 0.815ns (35.640%))
+  Logic Levels:           1  (IBUF=1)
+  Input Delay:            7.000ns
+  Clock Path Skew:        -3.536ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    3.034ns = ( 16.784 - 13.750 ) 
+    Source Clock Delay      (SCD):    6.640ns = ( 11.640 - 5.000 ) 
+    Clock Pessimism Removal (CPR):    0.071ns
+  Clock Uncertainty:      0.167ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.120ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sdram_forwarded rise edge)
+                                                      5.000     5.000 r  
+    P17                                               0.000     5.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     5.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     6.488 r  input_buffer/O
+                         net (fo=1, unplaced)         0.803     7.291    inclk
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  base_clock/O
+                         net (fo=7, unplaced)         0.584     7.971    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -1.483     6.488 r  service_pll/CLKOUT1
+                         net (fo=1, unplaced)         0.803     7.291    raw100
+                         BUFG (Prop_bufg_I_O)         0.096     7.387 r  memory_clock/O
+                         net (fo=24337, unplaced)     0.803     8.190    diagnostic/core/memory/controller/clk100
+    OLOGIC_X1Y100        ODDR (Prop_oddr_C_Q)         0.472     8.662 r  diagnostic/core/memory/controller/forward_clock/Q
+                         net (fo=1, estimated)        0.000     8.662    sdram_clk_OBUF
+    J5                   OBUF (Prop_obuf_I_O)         2.979    11.640 r  sdram_clk_OBUF_inst/O
+                         net (fo=0)                   0.000    11.640    sdram_clk
+  -------------------------------------------------------------------    -------------------
+                         input delay                  7.000    18.640    
+    P3                                                0.000    18.640 r  sdram_dq[14] (INOUT)
+                         net (fo=1, unset)            0.000    18.640    diagnostic/core/memory/controller/dq_io[14].pad/IO
+    P3                   IBUF (Prop_ibuf_I_O)         1.472    20.112 r  diagnostic/core/memory/controller/dq_io[14].pad/IBUF/O
+                         net (fo=1, estimated)        0.815    20.927    diagnostic/core/memory/controller/dq_input[14]
+    ILOGIC_X1Y71         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[14]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw_read100 rise edge)
+                                                     13.750    13.750 r  
+    P17                                               0.000    13.750 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    13.750    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    15.167 r  input_buffer/O
+                         net (fo=1, unplaced)         0.763    15.930    inclk
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  base_clock/O
+                         net (fo=7, unplaced)         0.439    16.460    clk50
+                         PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT2)
+                                                     -1.293    15.167 r  service_pll/CLKOUT2
+                         net (fo=1, unplaced)         0.763    15.930    raw_read100
+                         BUFG (Prop_bufg_I_O)         0.091    16.021 r  read_clock/O
+                         net (fo=16, unplaced)        0.763    16.784    diagnostic/core/memory/controller/CLK
+    ILOGIC_X1Y71         FDRE                                         r  diagnostic/core/memory/controller/dq_capture_reg[14]/C
+                         clock pessimism              0.071    16.854    
+                         clock uncertainty           -0.167    16.687    
+    ILOGIC_X1Y71         FDRE (Setup_fdre_C_D)       -0.011    16.676    diagnostic/core/memory/controller/dq_capture_reg[14]
+  -------------------------------------------------------------------
+                         required time                         16.676    
+                         arrival time                         -20.927    
+  -------------------------------------------------------------------
+                         slack                                 -4.251    
+
+
+
+
