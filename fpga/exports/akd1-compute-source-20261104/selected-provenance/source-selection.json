@@ -1,0 +1,17 @@
+{
+  "status": "pass",
+  "verified_parent_artifacts": 172,
+  "parent_manifest_sha256": "ac3ea38161c6f6ca69a9ecba7917b3a4cbdf1d5d2b975558c64480d734df8e3b",
+  "controller_before_sha256": "48ff6c233b74a142fff1632c49a97199c938becb8941b81bea0b3dfcb94c6763",
+  "controller_after_sha256": "dc870d5d9d8ff11a81bcbf57d7596099758d6cd33e01a04a3f46b1068d275119",
+  "old_feeder": " always @(posedge clk)begin\n  if(reset||cancel)begin byte_valid<=0;byte_data<=0;end\n  else if(state==RUN)begin\n   if(!byte_valid&&bytes_sent<FIXTURE_BYTES)begin\n    byte_data<=rom[bytes_sent];byte_valid<=1;\n   end else if(byte_valid&&ki)byte_valid<=0;\n  end else byte_valid<=0;\n end",
+  "new_feeder": " wire fixture_fetch_enable=!reset&&!cancel&&state==RUN&&!byte_valid&&bytes_sent<FIXTURE_BYTES;\n // Never reset the ROM data output: reset/cancel invalidate ownership only.\n // All inferred ROM ports must remain disabled before the reset fence opens.\n always @(posedge clk)if(fixture_fetch_enable)byte_data<=rom[bytes_sent];\n always @(posedge clk)begin\n  if(reset||cancel)byte_valid<=0;\n  else if(state==RUN)begin\n   if(!byte_valid&&bytes_sent<FIXTURE_BYTES)byte_valid<=1;\n   else if(byte_valid&&ki)byte_valid<=0;\n  end else byte_valid<=0;\n end",
+  "every_other_RTL_ROM_constraint_byte_identical": true,
+  "no_reset_on_ROM_data_output": true,
+  "byte_valid_reset_mask_retained": true,
+  "fetch_explicit_reset_cancel_guards": true,
+  "test_only_parent_controller": {
+    "path": "sim/parent_fixture_diagnostic.sv",
+    "sha256": "a1f7c60d53ce239b6f807c1148df5508f0343771cee55f7dd061bbd8acf4b8e6"
+  }
+}

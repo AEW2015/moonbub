@@ -12,14 +12,24 @@ are independent of its private decoded samples.
 - ESP32: `firmware/experiments/v26-key-diag-access-20261104/release-key-resource/`.
   UF2 SHA-256 `80003d79887976d8a49889a0e0bcda2905cb58763ff21d720169c3a87432bc63`.
   Manifest `00b3d4a4bd6190646d72b817dc22d3802e6f70b87cfec35d9d5b2547cf8c4a66`.
-- FPGA: a guarded-ROM successor is required. The `akd1-compute-cancel-boundary-20261104`
-  variant addresses its parent's setup path, but netlist inspection confirms
-  fixture-ROM enables are high during reset before PLL lock. It must not be
-  loaded. The new ROM enable/valid behavior needs functional and post-synthesis
-  verification, followed by complete route/report gates. There is no qualified
-  bitstream hash in this checklist yet.
+- FPGA: guarded-ROM successor
+  `fpga/candidates/akd1-compute-rom-guard-20261104/bitgen/akd1-compute-rev4.1.bit`.
+  BIT SHA-256 `b1ca685e457446838b9d6c78b86f02c4b793dad42eccb3b5c50075d17e20e260`.
+  Manifest `bfbd37e4b2899d68c815f45b07efcfc69d6a782ed08dbe791275c607b5d2cafb`
+  binds 257 artifacts, independently reverified. This is an unprogrammed,
+  controlled fresh-configuration diagnostic candidate, not a full I/O or
+  streaming qualification. Its failed parents must not be substituted.
 - Contract: [AKD1 local diagnostic](AKD1-COMPUTE-DIAGNOSTIC-20261104.md).
   Exact identity pair is AKD1/MBK1, schema 1, zero network capabilities.
+
+Routed setup is +0.001 ns, hold +0.039 ns, pulse +2.000 ns, with zero failing
+endpoints and all 29,761 nets routed. Setup margin is extremely small. All eight
+functional suites pass, as do final-checkpoint proofs of reset-low enables for
+all 16 fixture-ROM blocks and 44 overlay blocks. The 183 remaining RAM warnings
+are classified by role and scoped to this test; no blanket waiver is implied.
+Use QSPI at no more than 16 MHz, audio off and no reset during an owned job.
+External hold/max-rate, warm PLL-loss retention and SDRAM remain unqualified.
+See [the current prepared window](AKD1-LAB-WINDOW-20261104.md).
 
 ## Before a physical window
 

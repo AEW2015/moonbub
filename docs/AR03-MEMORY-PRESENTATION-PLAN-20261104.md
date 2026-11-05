@@ -14,10 +14,12 @@ The source-bound architecture review is retained locally under
 
 ## 1. Finish the isolated hardware diagnostic
 
-Complete the CANCEL-boundary candidate's routed setup/hold/pulse and warning
-review. Resolve the BRAM/reset inventory and state the conservative 16 MHz QSPI
-lab assumptions explicitly. QSPI max-delay routing bounds are not external
-hold or maximum-bandwidth qualification. Keep the normal SD build50 recovery.
+The guarded-ROM successor has completed routed setup/hold/pulse and scoped RAM
+warning review. Its source export and exact test sequence are recorded in
+[the current checkpoint](30FPS-UPDATE-CHECKPOINT-20261104.md) and
+[the prepared hardware window](AKD1-LAB-WINDOW-20261104.md). Keep its conservative
+16 MHz QSPI limit: max-delay routing bounds are not external hold or
+maximum-bandwidth qualification. Keep the normal SD build50 recovery.
 
 Test the uninstalled v26 app against unchanged build50 first. Then measure a
 fresh volatile AKD1 configuration with no external reset during its owned job.
@@ -56,8 +58,10 @@ frame. A testbench scoreboard read is not a substitute for a real read client.
 Current [owned baseline result](measurements/ar03-yuv-store-20261104/README.md):
 all bytes/tag/drain checks pass, but the modeled path takes 48.65759 ms under
 uniform competing reads. The separate elastic-FIFO successor measures 512- and
-1,024-byte capacities against the same stimulus; it does not replace scanout
-deadline testing or agree production reset/rekey semantics.
+1,024-byte capacities against the same stimulus at 31.23946 ms. The selected
+512-byte variant also blocks simultaneous START/abort/fault admission. This
+does not replace scanout deadline testing or agree production reset/rekey
+semantics.
 
 ## 3. Render one validated KEY through real scanout
 
@@ -82,6 +86,15 @@ pixel against the independent native oracle, old-frame preservation on failure,
 line-request epochs, no tearing and starvation/underflow under moving frames.
 Reintroducing SDRAM also requires live read-clock, I/O and CDC constraints;
 AKD1's inactive-memory assertions are not memory qualification.
+
+The elastic storage experiment now measures 31.23946 ms on this fixture. A
+strictly sequential RGB565 write alone needs at least 345,600 memory data cycles,
+or 3.456 ms at 100 MHz, making at least 34.69546 ms before read, HUD and drain
+overhead. Thus a first sequential renderer is a functional milestone, not a
+30 fps implementation. Sustainable throughput needs measured stage/frame overlap
+or further service improvement. Rendering provisional late stripes or an older
+private frame is possible only with separate held regions, explicit response
+ownership and final integrity/drain gates before publication.
 
 ## 4. Add temporal references and the real ESP32 backend
 

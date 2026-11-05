@@ -1,5 +1,11 @@
 # Coordinated 30 fps implementation progress
 
+Latest execution checkpoint: [ESP32 / FPGA update](30FPS-UPDATE-CHECKPOINT-20261104.md).
+It supersedes the pending elastic-store experiment and hardware-package status
+in older entries below. The selected stored-KEY replay now takes 31.23946 ms;
+the bounded direct-YUV reservation passes the matched write-load deadline tests.
+Neither is installed hardware or end-to-end 30 fps evidence.
+
 Date: 2026-11-04, America/Denver. The v22 demo window has ended; development
 has returned offline. See the dated results below.
 
