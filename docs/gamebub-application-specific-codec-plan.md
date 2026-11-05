@@ -1,5 +1,29 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v33 results](custom-codec-prototype-v33-2026-11-04.md) establish two useful
+building blocks: actual lossless HUD run coding saves 35.77% / 17.75% versus v32,
+and exact shared candidate evaluation reduces measured pair work 32.97%. Neither
+is a whole-sender throughput result. Give the same HUD benefit to HEVC/AV1;
+their sampled complete budgets remain lower at better MSE.
+
+Sparse camera/grid search trades more bytes/error for lower work. Grid lowers
+selected decoder prediction reads 8.47% / 28.79%, without changing the wire.
+Guarded uniform 32→16 refinement saves 0.356% in 24 fixed-reference probes, but
+raw motion metadata consumes its residual savings. **Next prototype actual
+parent32 + sparse child16 syntax**, preserving vectors and decoded pixels and
+paying every mask/escape/header/CRC byte. Follow with causal qualification and
+confidence-triggered search. Do not add independent study gains.
+
+Integrate shared encoder work and reproduce full-selector winners. Constrain a
+new HUD profile to an explicit geometry/word budget before using small external
+banks; its generic fallback grammar has a much larger memory domain. Then build
+bounded entropy/run decoding, the prior two-bank inverse schedule and integer
+prediction fast path with actual resource/cycle/memory-arbitration measurements.
+Long unseen gameplay, native ESP32 transport and physical 30 fps remain gates.
+Preserve JPEG and v20. Compression superiority over HEVC/AV1 is still unproved.
+
+The following v32 and older sections retain their historical evidence.
+
 The [v32 Python qualification](custom-codec-prototype-v32-2026-11-04.md) keeps
 full resolution and exact HUD. Bounded Huffman HUD components save 0.089% / 9.83%
 HUD bytes; the same savings must be credited to HEVC/AV1. Those sampled standards

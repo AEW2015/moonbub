@@ -5,6 +5,15 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v33 Python study](docs/custom-codec-prototype-v33-2026-11-04.md) adds exact
+run-coded HUD packets with 35.77% / 17.75% fewer HUD bytes than v32. Shared
+incumbent/band evaluation retains all tested packets with 32.97% less pair work.
+Integer-grid motion reduces decoder prediction reads but trades bytes/quality;
+guarded 32→16 refinement saves only 0.356% in a separate fixed-reference probe.
+Its motion metadata consumes most residual savings. HEVC/AV1 receive the same
+new HUD benefit and remain ahead in compression. Run
+`python experiments/verify_prototype_v33.py`; native/physical 30 fps is unproved.
+
 The [v32 specialization study](docs/custom-codec-prototype-v32-2026-11-04.md)
 adds actual lossless HUD packets: 9.83% fewer HUD bytes on the harder window,
 preserving every pixel. New coefficient shrink is rejected as a default; compact
