@@ -1,5 +1,22 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v39 checkpoint](custom-codec-prototype-v39-2026-11-05.md) extends exact
+adaptive coefficient coding to both 48-frame causal histories: complete bytes
+fall 11.98% / 10.07% versus CS37, with no pixel/reference change. Rank coding
+among decoder-derived distinct predictors cuts spatial signaling about 81% / 75%
+while preserving old modes and coefficient payloads. The finer bit/rank proxy
+has a small complex-scene Pareto point but still regresses flat fixtures.
+
+Next test spatial alternatives only when the entire reconstructed block equals
+mode0 exactly, then accept only a smaller actual complete packet. This preserves
+future reference semantics and rejects local-cost failures. Qualify fixed choices
+on timestamp-defined additional scenes using the [source notes](v39-source-qualification-notes.md).
+The arithmetic result still leaves a sampled 3.43–8.97× video-component gap to
+native anchors at worse MSE; no hardware 30 fps or standards superiority follows.
+The six-hour run is active, and JPEG/v20 remain unchanged.
+
+The following v38 and older sections retain their historical evidence.
+
 The [v38 checkpoint](custom-codec-prototype-v38-2026-11-05.md) implements direct
 CS37 emission with exact 102-frame parity. Separate adaptive binary coefficient
 coding reduces complete bytes 11.00% / 10.41% on two retained 12-frame prefixes
