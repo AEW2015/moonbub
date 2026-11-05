@@ -26,4 +26,10 @@ The raw CP23 experiment directories under `fpga/experiments/` are workspace-loca
 
 Global CDC, board I/O constraints, routed whole-board timing, and hardware gates remain open. The selected resource reports preserve the baseline pre-synthesis clock constraints and add no false or multicycle exceptions. Synthetic simulation refresh counts and cycles are not unique LCD frames and do not establish displayed FPS.
 
-Root update: the registered-child-cancel row now uses its sealed424-artifact manifest and six completed whole functional gates. Its exact changed leaf is50ac0073..., independently sealed under6fc96b4d... after full control/negative/targeted cancellation tests. The subsequent registered-result-fault hypothesis is still separate unfinished work and is not included. An actual optimized CPL1 board implementation is running on the qualified constant-bound parent, not on this later cancellation successor.
+## Morning closeout
+
+The address-strength successor uses 25,634 LUT / 22,054 FF / 99 RAMB36 + 4 RAMB18 / 37 DSP, removing ten DSPs. Global unplaced setup still FAILS at -2.277 ns (343 failing endpoints), hold +0.164 ns. Matched local unplaced gather-address slack improves -1.968 to +0.856 ns and HUD-address slack +0.014 to +3.897 ns. All arithmetic/native/full/abort checks passed. Exact source, experiment manifest and export bindings are in the JSON morning_address_successor record. This successor is NOT board-adopted or routed.
+
+The actual optimized CPL1 board completed routing on the earlier constant-bound parent: setup FAIL -1.618 ns, TNS -7795.573 ns, 13,015 failing endpoints; hold +0.015 ns; 50,673/50,673 nets routed with zero route errors. Resources are 27,274 LUT / 24,558 FF / 108 RAMB36 + 4 RAMB18 / 47 DSP. No BIT was generated. This board result is separate from every unplaced component result above.
+
+The registered-result-fault experiment completed functional checks but regressed unplaced setup to -2.649 ns; it is not selected. The remaining measured control families require staging and a new fixed-clock actual-board implementation. See [morning handoff](OVERNIGHT-MORNING-HANDOFF-20261105.md) for source packages, failed gates and next tests.
