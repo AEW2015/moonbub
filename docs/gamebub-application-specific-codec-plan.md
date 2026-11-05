@@ -1,5 +1,30 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v35 results](custom-codec-prototype-v35-2026-11-04.md) establish an exact
+HM34 host optimization: validated reuse of already-paid parent/child maps and
+winner-only serialization preserves all 184 components / 368 frames while
+reducing paired component time 44.10→3.34 ms. Port and measure this exact path;
+retain initial map-generation, HUD and full-sender costs rather than extrapolating.
+
+Transform-aligned source masking reduces error substantially relative to v34.
+Guarded causal core8 saves 4.33% / 3.09% complete bytes, but independent-control
+MSE still rises 0.047% / 0.172%. All local guards pass. The expensive original
+shadows on the changed histories are not the standalone control baseline.
+Fresh HEVC/AV1 runs consume the exact accepted source trace and remain smaller
+at better sampled MSE. Quality-neutral streaming has not been established.
+
+Next test a **codec-domain occlusion/canonical-reference hypothesis** in a new
+explicit profile: normalize fully hidden support-safe reference tiles identically
+for both control and skip variants, then omit hidden residual work and prove
+complete normalized-reference and visible-output equality across the entire
+causal chain. Compare that new canonical baseline separately against the old
+profile; do not assume global old-profile parity or a large compression gain.
+The feature is not implemented in v35. Add held-out long gameplay and temporal/
+boundary error before selecting a default. Preserve JPEG/v20 and qualify native
+sender, FPGA memory/compute and ESP32 transport before physical 30 fps claims.
+
+The following v34 and older sections retain their historical evidence.
+
 The [v34 study](custom-codec-prototype-v34-2026-11-04.md) implements actual HM34
 parent/child motion components, GM34 frames and CP34/HX33/JA34 atomic host
 composition. Shared encoder work is integrated with 96 exact legacy base-packet

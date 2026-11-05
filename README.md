@@ -5,6 +5,15 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v35 study](docs/custom-codec-prototype-v35-2026-11-04.md) preserves all
+184 tested HM34 components and 368 frame bytes while reducing paired component
+encoding time 44.10→3.34 ms through validated reuse. Transform-core masking
+improves the previous error trade-off; guarded causal streams save 4.33% / 3.09%
+but still slightly increase aggregate MSE against independent controls. Local
+guards do not fix hidden-reference drift. Fresh native codecs receive the exact
+selected source trace and remain ahead. Run `python experiments/verify_prototype_v35.py`.
+No complete-sender speedup, hardware fit, physical 30 fps or standards parity follows.
+
 The [v34 integration study](docs/custom-codec-prototype-v34-2026-11-04.md) adds
 actual hierarchical GM34 frames and a CP34/HX33 atomic host receiver, including
 an explicit fixed-HUD memory bound. Full hierarchy saves 0.40% / 0.95% causal
