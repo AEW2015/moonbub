@@ -5,6 +5,15 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v34 integration study](docs/custom-codec-prototype-v34-2026-11-04.md) adds
+actual hierarchical GM34 frames and a CP34/HX33 atomic host receiver, including
+an explicit fixed-HUD memory bound. Full hierarchy saves 0.40% / 0.95% causal
+bytes at substantial host cost; complex mean error rises slightly. Safe opaque
+HUD masking saves 3.36% / 2.97% with about 1% higher error. Fresh same-processed
+HEVC/AV1 runs remain ahead. A full chroma mask fails visible equivalence and is
+retained as a negative result. Run `python experiments/verify_prototype_v34.py`.
+No native endpoint, fitted FPGA, or physical 30 fps result is claimed.
+
 The [v33 Python study](docs/custom-codec-prototype-v33-2026-11-04.md) adds exact
 run-coded HUD packets with 35.77% / 17.75% fewer HUD bytes than v32. Shared
 incumbent/band evaluation retains all tested packets with 32.97% less pair work.

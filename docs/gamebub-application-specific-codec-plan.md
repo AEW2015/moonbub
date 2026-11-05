@@ -1,5 +1,29 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v34 study](custom-codec-prototype-v34-2026-11-04.md) implements actual HM34
+parent/child motion components, GM34 frames and CP34/HX33/JA34 atomic host
+composition. Shared encoder work is integrated with 96 exact legacy base-packet
+matches. Fixed 21,120-word HUD and inner geometry checks precede allocating decode.
+The causal full-hierarchy policy saves 0.40% / 0.95% bytes, but costs much more
+host work and slightly worsens complex mean error. No default promotion follows.
+
+Prioritize **visible-error-aware source formation** next. Neutralizing hidden
+detail under exact HUD saves 3.36% / 2.97% complete bytes at ~1% higher mean error.
+A full chroma mask corrupts visible source pixels; preserving boundary chroma
+restores precodec RGB equality. Next align masks to transform/interpolation
+support and apply actual visible/temporal quality guards. Rerun HEVC/AV1 on the
+same processed input and HUD; fresh v34 comparisons still favor the standards.
+
+Keep sparse hierarchy and selective refinement as measured experiments. Reduce
+exact HM34 planning work before adding search, and qualify longer unseen gameplay.
+Then port the bounded profile and independent decoder goldens to native code,
+implement negotiation/reset/retry/drain fences, and measure actual inverse,
+entropy, prediction, HUD, memory and ESP32 transport service. The two-bank model
+remains conditional on an unclosed clock; physical 30 fps and compression parity
+remain open. Preserve JPEG and the v20 hardware handoff.
+
+The following v33 and older sections retain their historical evidence.
+
 The [v33 results](custom-codec-prototype-v33-2026-11-04.md) establish two useful
 building blocks: actual lossless HUD run coding saves 35.77% / 17.75% versus v32,
 and exact shared candidate evaluation reduces measured pair work 32.97%. Neither
