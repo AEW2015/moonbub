@@ -5,6 +5,16 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v36 study](docs/custom-codec-prototype-v36-2026-11-04.md) implements CN36
+canonical hidden references. Actual skip packets save 4.10% / 4.19% complete
+bytes against a matched fixed-policy baseline with identical displayed frames
+on both retained clips. Full/skip normalized references also match in a directed
+fractional-motion probe. Separately, precompiled fixed-geometry masking is exact
+and reduces paired component time 4.29→0.111 ms after setup. Retained original-input
+HEVC/AV1 anchors are replayed with equal binding budgets and remain smaller at
+lower MSE. Run `python experiments/verify_prototype_v36.py`. CN36 is a new research
+profile; optimized sender, native endpoints and physical 30 fps remain unproved.
+
 The [v35 study](docs/custom-codec-prototype-v35-2026-11-04.md) preserves all
 184 tested HM34 components and 368 frame bytes while reducing paired component
 encoding time 44.10→3.34 ms through validated reuse. Transform-core masking

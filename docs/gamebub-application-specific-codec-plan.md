@@ -1,5 +1,28 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v36 results](custom-codec-prototype-v36-2026-11-04.md) implement the
+canonical-reference hypothesis in new CN36 framing. Full/skip normalize hidden
+reconstructed samples identically before committing them. Actual skip saves
+4.10% / 4.19% complete bytes versus a matched fixed-policy legacy baseline,
+with identical displayed frames on the two retained zero-motion-policy clips.
+A directed fractional-motion probe separately preserves entire normalized
+reference equality during hidden-to-visible prediction. This is stronger than
+v35's local source guards, but does not prove unchanged old-profile motion quality.
+
+Next integrate early hidden-coefficient suppression and precompiled support plans
+into the real sender; the current proof pays full encoding plus extra skip work.
+The separate exact mask component falls 4.29→0.111 ms after one-time setup, not
+a measured whole-sender improvement. Then test an implicit hidden-block grammar,
+searched-motion integration and long held-out scenes. Compare old-profile quality
+separately from exactness within CN36. Retained original-input HEVC/AV1 points,
+freshly redecoded with equal 80-byte binding budgets, remain smaller at better MSE.
+Seek a measured latency/quality/resource advantage without assuming a bitrate win.
+Use the [v36 acceptance checklist](v36-application-codec-acceptance-checklist.md);
+preserve JPEG/v20 and require native sender, FPGA and ESP32 service measurements
+before claiming physical 30 fps. No firmware or bitstream has changed in v36.
+
+The following v35 and older sections retain their historical evidence.
+
 The [v35 results](custom-codec-prototype-v35-2026-11-04.md) establish an exact
 HM34 host optimization: validated reuse of already-paid parent/child maps and
 winner-only serialization preserves all 184 components / 368 frames while
