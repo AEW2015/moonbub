@@ -1,5 +1,26 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v38 checkpoint](custom-codec-prototype-v38-2026-11-05.md) implements direct
+CS37 emission with exact 102-frame parity. Separate adaptive binary coefficient
+coding reduces complete bytes 11.00% / 10.41% on two retained 12-frame prefixes
+without changing coefficients, references or images. It needs a new CS38/AB38
+profile and currently uses a Python proof adapter; logical arithmetic state is
+not FPGA resource or throughput evidence. Native anchors remain ahead.
+
+The spatial-edge pilot improves source MSE but regresses bytes by 15.63% / 7.15%.
+Prioritize lossless coding of ranks among decoder-derived distinct predictors,
+then signaling/context-aware selection. Tile top-left has no choice when all
+predictors are equal. Keep the matched no-RDO spatial control distinct from
+CS37's old RDO controller. Retain this negative result and its actual mode costs.
+
+During the active six-hour run, extend arithmetic coding to longer and held-out
+content, build a direct receiver/sender and quantify work distributions before
+selecting it. Use the [prediction inventory](v38-prediction-inventory.md) to avoid
+repeating old methods. Neither local byte improvements nor Python timings prove
+physical 30 fps or superiority over HEVC/AV1. JPEG/v20 remain unchanged.
+
+The following v37 and older sections retain their historical evidence.
+
 The [v37 study](custom-codec-prototype-v37-2026-11-04.md) removes redundant CN36
 proof encoding with exact wire parity, then integrates a zero-map predictor into
 host analysis. Actual paired sender means reach 46.13 / 57.75 ms on this Python

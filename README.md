@@ -5,6 +5,15 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v38 checkpoint](docs/custom-codec-prototype-v38-2026-11-05.md) integrates
+direct CS37 emission with exact v37 wire parity. Separate adaptive binary
+coefficient coding saves 11.00% / 10.41% complete bytes on matching 12-frame
+prefixes at identical output. A bounded spatial pilot improves MSE but increases
+bytes because mode signaling dominates. Fresh native prefix replay remains
+smaller at lower MSE. Run `python experiments/verify_prototype_v38.py`.
+This is an intermediate checkpoint in the active six-hour research run;
+native endpoint support and physical 30 fps remain unproved.
+
 The [v37 study](docs/custom-codec-prototype-v37-2026-11-04.md) emits byte-identical
 CN36 directly, removing redundant proof work. An integrated exact analyzer then
 measures 46.13 / 57.75 ms per fixed-policy send in its own paired campaign,
