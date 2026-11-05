@@ -1,0 +1,1 @@
+Unselected comparison candidate; no image or hardware load. See the main timing-cleanup status document. The full 35-file input hashes, measured route/model records and differing compute modules are retained here for review; this directory is not the selected standalone build.
