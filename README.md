@@ -335,3 +335,7 @@ by `--inject-keys`; automated tests mock it and do not inject desktop keys.
 ## V67 research checkpoint — 2026-11-05
 
 [V67 report](docs/custom-codec-prototype-v67-2026-11-05.md) and [hardware handoff](docs/gamebub-v67-hardware-research-handoff.md) consolidate fixed-filter qualification, the sampled 69-point native comparison, source-audited ESP32 budgets and exact tile-to-row canonical hashing. The independently verified V66 profiles reduce repeated full-frame hash passes while preserving decoded content. Display filtering changes neither coded bytes nor canonical references. HEVC/AV1 still use fewer bytes at the tested quality gates. The current firmware path remains JPEG-only; no physical 30-fps or target-fit result is claimed.
+
+## V68 research checkpoint — 2026-11-05
+
+[V68 report](docs/custom-codec-prototype-v68-2026-11-05.md) tests an exact zero-motion prediction shortcut across 457 causal frames. It borrows readonly reference planes for 437 P frames and uses a two-byte-backed broadcast key prediction for 20 keys, preserving exact predictions and reconstructed outputs. The paired measurements cover prediction stage only; receiver speedup, physical 30 fps and hardware fit are not established.

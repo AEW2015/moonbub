@@ -826,3 +826,7 @@ independently on the other system's hardware. No board was programmed here.
 ## V67 research checkpoint — 2026-11-05
 
 [V67 findings](custom-codec-prototype-v67-2026-11-05.md) and the [hardware handoff](gamebub-v67-hardware-research-handoff.md) summarize fixed-filter qualification, 69 sampled native points, forwarding constraints, exact tile-to-row hash delivery and independently verified cached canonical-tag profiles. Prioritize the bounded decoder/filter/hash architecture; do not deploy the tested mixed-motion quality trade as a quality-preserving default. Native HEVC/AV1 remain smaller at the measured quality gates. The current transport/backend is JPEG-only; physical throughput and FPGA/ESP32 fit remain unmeasured.
+
+## V68 research checkpoint — 2026-11-05
+
+[V68 findings](custom-codec-prototype-v68-2026-11-05.md) measure a zero-motion prediction-stage shortcut with unchanged packet format, receiver decisions and exact output. The optimization borrows validated readonly references for zero-vector P frames and uses compact immutable backing for key predictions. Stage timing is not whole-receiver timing, physical frame rate, or hardware memory fit.
