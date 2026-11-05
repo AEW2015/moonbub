@@ -1,6 +1,6 @@
 # V70 — integrated CU66 receiver and hardware-test readiness
 
-Status: proposed implementation iteration; no v70 RTL or hardware PASS yet.
+Status: v70 prototype implemented and qualified at the scopes in [hardware-handoff.md](hardware-handoff.md). Functional reconstruction passes; clean native scanout cadence fails, and target implementation/physical gates remain open.
 Baseline: v69 commit `1e10566ec6df50577919c8782941b404e37e00e0`.
 Reviewed source hashes are in [baseline.json](baseline.json).
 
@@ -226,3 +226,7 @@ preserve unrelated work. Suggested allocation when implementation starts:
 Agree memory and descriptor interfaces before parallel edits. Each result must
 include commands, seeds, source/fixture hashes and genuine simulator PASS
 markers. Integrate in the order above; a leaf PASS does not close a system gate.
+
+## V70 completion record
+
+See [the handoff and measurements](hardware-handoff.md), [reproduction](reproduction.md) and [verification matrix](verification-matrix.md). Implemented work includes full-packet owner/qmap/base/reference feedback, actual controller/tile adapters/checked32MiB map, exact portrait/HUD and optional8-row strip painters, LCD descriptor ownership, native encoded HUD endpoint, first-fault/timestamps/event-ring controls and bounded bank checks. The complete command-model system passes full framebuffer/readback checks but exposes a failed display/30fps budget. Live transport/ESP32 qualification, autonomous board self-test firmware, odd-byte/masked-write support, fixed-arrival1800-distinct-frame campaign and exact-device implementation/physical tests remain open. The next performance work is streaming LCD/burst access and bounded reader caching or direct transposed-YUV scanout, not another compression format.

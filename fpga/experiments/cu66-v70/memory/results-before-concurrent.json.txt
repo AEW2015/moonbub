@@ -1,0 +1,254 @@
+{
+  "schema": "cu70-memory-component-results-v1",
+  "status": "PASS",
+  "scope": "actualconservativeSDRAMcontroller+checked32MiBfunctionalcommandmodel+packed-u8tile+scalarauxcache; noelectrical/timing/fit/wholepipelineclaim",
+  "source_sha256": {
+    "tb_memory.sv": "df5076bc96578d16cd4d42d01625ffe4e9cca0882a683499162162284b31808d",
+    "cu70_tile_memory.sv": "cf6e7f02a218096a0f0f3a6d974e484ef8c4b83979b0fb2174f213b1c2cabd34",
+    "cu70_word_bridge.sv": "950957c48453b8e4490ddce42514727fbaf8314c69d72e1970f05744fd5576ab",
+    "cu70_memory_system.sv": "b17d94e9fd18294ebf75fe0e72505cc95fb2aa46c76278b5d9f0afa330b3db41",
+    "cu70_sdram_controller.sv": "b5ab27d1026cf60cd253de383be3f07002e331b9286e889396a2252cd3f4f3d2",
+    "cu70_sdram_model.sv": "7d560a80b86ff89641af1a5f7a257c128773e8f6138a9e89db8147104aa755b1",
+    "cu70_memory_sim.sv": "54738ca167a9c4806293ea8229b7eb2c67ae9bfe25b6f6d6f71c8eda45a040b9",
+    "cu70_memory_map.svh": "35f773502ee3be6069af8ee31e24c1dd6865a1d740bc504297b77ee284bc08b1",
+    "memory_map.hpp": "95696cdcb82f93681aca73016f547bf7786aa90969e4610054f9ff8792459d71",
+    "memory-map.json": "50ee670e907141f8ee6ba3825321c71993f418c48ad323f3b15049fa0a9f0fb8",
+    "generate_map.py": "99f63719077923f75dcd96d489eb2f52d4dd5cbb6f30b44b1fcd935e185fc234",
+    "run_regression.py": "a7ad7ba0a631f65f32509cd1e8d35143e61b39b5ec9460ddce5fa352e025587f"
+  },
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--binary",
+        "--timing",
+        "--Wall",
+        "-Wno-BLKSEQ",
+        "--top-module",
+        "tb_memory",
+        "-DSIMULATION",
+        "--Mdir",
+        "/build/v70-memory",
+        "-j",
+        "2",
+        "-I/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/tb_memory.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/cu70_tile_memory.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/cu70_word_bridge.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/cu70_memory_system.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/cu70_sdram_controller.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/cu70_sdram_model.sv"
+      ],
+      "log": "build.log",
+      "exit_code": 0,
+      "sha256": "deba2379f88cb89d4f3617f5c24a5f6a9a53cb0aa908de92a66bfb4c138bb546"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "iverilog",
+        "-g2012",
+        "-DSIMULATION",
+        "-I/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory",
+        "-s",
+        "tb_memory",
+        "-o",
+        "/build/v70-memory-iverilog.vvp",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/tb_memory.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/cu70_tile_memory.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/cu70_word_bridge.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/cu70_memory_system.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/cu70_sdram_controller.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory/cu70_sdram_model.sv"
+      ],
+      "log": "iverilog-build.log",
+      "exit_code": 0,
+      "sha256": "67222cbd7f357b163995a9889736cec29bcf67a9adefc7e580c17185a22e7900"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v70-memory/Vtb_memory",
+        "+SEED=7001"
+      ],
+      "log": "verilator-7001.log",
+      "exit_code": 0,
+      "sha256": "a8420809dc72680dee5b531cb2efec49c4c053745b2f48deaae59a4c60c6b07b"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "vvp",
+        "/build/v70-memory-iverilog.vvp",
+        "+SEED=7001"
+      ],
+      "log": "iverilog-7001.log",
+      "exit_code": 0,
+      "sha256": "d7c23d7825439dbacf489c8429c640312e112db46509072daf326f92523574d7"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v70-memory/Vtb_memory",
+        "+SEED=7002"
+      ],
+      "log": "verilator-7002.log",
+      "exit_code": 0,
+      "sha256": "31363499818498581e7e4bfa0cd520815053d441727a32e3b853d69c2dd7112e"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "vvp",
+        "/build/v70-memory-iverilog.vvp",
+        "+SEED=7002"
+      ],
+      "log": "iverilog-7002.log",
+      "exit_code": 0,
+      "sha256": "cd58d6219791d9cefc764fbaf11779cf412a4c332f0f731a71f24174f74d0e62"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v70-memory/Vtb_memory",
+        "+SEED=7003"
+      ],
+      "log": "verilator-7003.log",
+      "exit_code": 0,
+      "sha256": "7deefe1ec7f98deb613bd23323bcdab1913caf865ba51133198321743627e9a8"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "vvp",
+        "/build/v70-memory-iverilog.vvp",
+        "+SEED=7003"
+      ],
+      "log": "iverilog-7003.log",
+      "exit_code": 0,
+      "sha256": "73f8f2dbf756df059a1aeff54899a701e599c135f31cf08d8547767115c9ae27"
+    }
+  ],
+  "runs": [
+    {
+      "backend": "verilator",
+      "seed": 7001,
+      "checks": 3764,
+      "tiles": 225,
+      "aux": 3503,
+      "aborts": 38,
+      "cycles": 104317,
+      "writes": 3659,
+      "reads": 1754,
+      "ACT": 1495,
+      "PRE": 1489,
+      "REF": 138,
+      "cache_hits": 5246,
+      "cache_misses": 1754
+    },
+    {
+      "backend": "iverilog",
+      "seed": 7001,
+      "checks": 3764,
+      "tiles": 225,
+      "aux": 3503,
+      "aborts": 38,
+      "cycles": 104317,
+      "writes": 3659,
+      "reads": 1754,
+      "ACT": 1495,
+      "PRE": 1489,
+      "REF": 138,
+      "cache_hits": 5246,
+      "cache_misses": 1754
+    },
+    {
+      "backend": "verilator",
+      "seed": 7002,
+      "checks": 3764,
+      "tiles": 225,
+      "aux": 3503,
+      "aborts": 38,
+      "cycles": 104327,
+      "writes": 3659,
+      "reads": 1754,
+      "ACT": 1494,
+      "PRE": 1488,
+      "REF": 138,
+      "cache_hits": 5246,
+      "cache_misses": 1754
+    },
+    {
+      "backend": "iverilog",
+      "seed": 7002,
+      "checks": 3764,
+      "tiles": 225,
+      "aux": 3503,
+      "aborts": 38,
+      "cycles": 104327,
+      "writes": 3659,
+      "reads": 1754,
+      "ACT": 1494,
+      "PRE": 1488,
+      "REF": 138,
+      "cache_hits": 5246,
+      "cache_misses": 1754
+    },
+    {
+      "backend": "verilator",
+      "seed": 7003,
+      "checks": 3764,
+      "tiles": 225,
+      "aux": 3503,
+      "aborts": 38,
+      "cycles": 104361,
+      "writes": 3659,
+      "reads": 1754,
+      "ACT": 1500,
+      "PRE": 1494,
+      "REF": 138,
+      "cache_hits": 5246,
+      "cache_misses": 1754
+    },
+    {
+      "backend": "iverilog",
+      "seed": 7003,
+      "checks": 3764,
+      "tiles": 225,
+      "aux": 3503,
+      "aborts": 38,
+      "cycles": 104361,
+      "writes": 3659,
+      "reads": 1754,
+      "ACT": 1500,
+      "PRE": 1494,
+      "REF": 138,
+      "cache_hits": 5246,
+      "cache_misses": 1754
+    }
+  ],
+  "limitations": [
+    "boundedfunctionalmodel,notvendortimingsignoff",
+    "SIMULATIONpadbranch,notODDR/IOBUFtiming",
+    "100MHzclockisbenchconfiguration,notroutedFmax",
+    "partialcanonicalabortsuppressessuccessanddrainsacceptedword;upstreammustcoordinatecancel",
+    "maincomponentcasesarenotfull457frameorcontinuousLCDqualification"
+  ]
+}

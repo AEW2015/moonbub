@@ -1,0 +1,46 @@
+{
+  "status": "ACCOUNTING_ONLY_NOT_IMPLEMENTED_PROPOSAL",
+  "source_sha256": {
+    "fpga/experiments/cu66-v70/display/cu70_lcd_lines.sv": "d2356e040a333fdb7167e668afb1ed8257d71fa8a2299140ff493a9746ab1a11",
+    "fpga/experiments/cu66-v70/system/full-direct/results.json": "322c5f440a431fdbd8a29b6025922ff69b4ef4d0fc86a1bd733aefbeebdfba1a",
+    "scripts/cu66-v70/traffic_budget.py": "6651cd511554b8cb20243cae9a07fec2c7eb64d9186de7138a2a875a2147147c"
+  },
+  "coded_game_fps": 30,
+  "modeled_native_panel_refresh_hz": 65.0755044149483,
+  "current_per_P_frame_useful_bytes": {
+    "canonical_write": 518400,
+    "visible_P_reference_read": 499584,
+    "HUD_processor_write": 42240,
+    "HUD_processor_readback": 42240,
+    "painter_YUV_read": 518400,
+    "painter_HUD_read": 42240,
+    "portrait_RGB_write": 768000
+  },
+  "current_bytes_per_second": 122911107.39068028,
+  "current_fraction_of_raw_x16_bus": 0.6145555369534014,
+  "proposed_direct_YUV_scanout_bytes_per_second": 69557850.79519662,
+  "proposed_fraction_of_raw_x16_bus": 0.3477892539759831,
+  "proposal": "transposed canonical YUV references with canonical-order hash before storage; bounded line caches and exact DSP color/HUD output at scanout, avoiding full RGB framebuffer conversion/copy",
+  "assumptions": [
+    "fullusefulplane/HUDreadonceperpanelrefresh",
+    "onchipgeneratedblackborders",
+    "onefullcandidatewrite+onevisiblezero-motionreference readpergameframe",
+    "currentprocessorHUDwrite+readbackkept",
+    "pixel/memoryclocksdeclaredmodelonly"
+  ],
+  "not_included": [
+    "BL8overfetch/packing",
+    "command/row/turnaroundoverhead",
+    "refresh",
+    "cachemisses/redundantfetches",
+    "compressedstaging/ingress",
+    "softwareCPUtime",
+    "control/diagnostictraffic"
+  ],
+  "not_proven": [
+    "proposalRTLexists",
+    "sustainedbandwidth",
+    "FPGAfit/clock",
+    "30fps"
+  ]
+}

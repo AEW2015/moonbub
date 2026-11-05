@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+"""Actual receiver/controller/painter/LCD simulation; report deadline failures."""
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+
+ROOT=Path(__file__).resolve().parents[2]
+AREA=ROOT/'fpga/experiments/cu66-v70/system'
+NATIVE=ROOT/'experiments/cu66-native-v69'
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def main():
+ p=argparse.ArgumentParser();p.add_argument('--frames',type=int,default=2);p.add_argument('--strip',action='store_true');a=p.parse_args()
+ spec=json.loads((AREA/'sources.json').read_text());suffix='strip'if a.strip else'direct';out=AREA/('full-'+suffix);out.mkdir(exist_ok=True)
+ paths=[ROOT/x for x in spec['rtl_sources']]+[AREA/'tb_system.cpp',AREA/'sources.json',Path(__file__).resolve(),NATIVE/'index.tsv',
+  ROOT/'fpga/experiments/cu66-v69/hud-partition/hud_gate.hpp',
+  ROOT/'fpga/experiments/cu66-v69/packet/cu66_profile.svh',ROOT/'fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh',
+  ROOT/'fpga/experiments/cu66-v70/memory/cu70_memory_map.svh',ROOT/'fpga/experiments/cu66-v70/memory/memory_map.hpp',
+  *NATIVE.glob('*.hpp')]
+ for line in (NATIVE/'index.tsv').read_text().splitlines()[:a.frames]:paths.append(NATIVE/line.split('\t')[2])
+ def pins():return {str(p.relative_to(ROOT)):sha(p)for p in sorted(set(paths))}
+ before=pins();commands=[];container=os.environ.get('TASK_CONTAINER','gamebub-cu66-v69-build')
+ def run(argv,name,timeout):
+  with(out/name).open('w')as f:r=subprocess.run(argv,cwd=ROOT,stdout=f,stderr=subprocess.STDOUT,timeout=timeout)
+  commands.append(dict(argv=argv,log=str((out/name).relative_to(ROOT)),exit_code=r.returncode,sha256=sha(out/name)))
+  if r.returncode:raise RuntimeError(f'{name}: exit{r.returncode}; inspect retained log')
+  return(out/name).read_text()
+ args=['docker','exec',container,'verilator','--cc','--exe','--build','-j','2',*spec['verilator_options'],
+  '-DSIMULATION','--top-module','cu70_system_sim',f'-GUSE_STRIP={int(a.strip)}','--Mdir','/build/v70-system-'+suffix,
+  '-CFLAGS','-O2 -std=c++17',*['-I'+str(ROOT/x)for x in spec['include_dirs']],
+  *[str(ROOT/x)for x in spec['rtl_sources']],str(AREA/'tb_system.cpp')]
+ run(args,'build.log',1200)
+ log=run(['docker','exec',container,'/build/v70-system-'+suffix+'/Vcu70_system_sim',str(NATIVE/'index.tsv'),str(a.frames)],'run.log',7200)
+ m=re.search(r'^SYSTEM_PASS (.+)$',log,re.M);assert m and 'FAIL'not in log
+ summary={k:int(v)for k,v in re.findall(r'(\w+)=(\d+)',m[1])};assert summary['complete_frames']==a.frames and summary['canonical_bytes_per_frame']==518400 and summary['RGB_words_per_frame']==384000 and summary['HUD_functional_readback_words_per_frame']==21120
+ rows=[{k:int(v)for k,v in re.findall(r'(\w+)=(\d+)',line)}for line in log.splitlines()if line.startswith('SYSTEM_FRAME_PASS')]
+ assert len(rows)==a.frames and (a.frames<2 or rows[1]['processor_commit_calls']>=2)
+ assert before==pins(),'systeminputs changed'
+ result=dict(status='PASS_FUNCTIONAL_MEMORY_AND_FRAMEBUFFERS',
+  cadence_status='FAIL_UNDERRUNS'if summary['total_underruns']else'NOT_QUALIFIED',
+  scope='actualRTLpacket/qmap/base/storedreferences/HUDfunctionalauxtransfer/portraitpainter/LCDdescriptorwithrealcontrollercommandsandcheckedmodel',
+  strip=a.strip,source_sha256=before,commands=commands,frames=rows,summary=summary,
+  clocks=dict(memory_period_ps=10000,read_sample_phase_degrees=279,pixel_half_period_ps=17029),
+  limitations=['nativeHUDsoftwareexecutiontime not simulated','externalpacketBRAM not liveQSPI','simplifiedcommandmodel not vendor/electricalsignoff','no targetFmax/fit/CDCsignoff','underruns remain failures of clean presentation; descriptorchanges are not complete presentedframes','no physical30fps'])
+ (out/'results.json').write_text(json.dumps(result,indent=2)+'\n')
+ print('SYSTEM_EVIDENCE_PASS frames='+str(a.frames)+' strip='+str(a.strip)+' cadence='+result['cadence_status'])
+if __name__=='__main__':main()

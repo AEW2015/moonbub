@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "source_sha256": {
+    "fpga/experiments/cu66-v70/display/cu70_painter_strip.sv": "db7905f584df1b7b6663600872609cb74caa2a466ac6651dfec59d74ebe38757",
+    "fpga/experiments/cu66-v70/display/tb_painter_strip_control.sv": "ab08dd63afdea9d738f24bd321a4c794fc16f1bdb97b489375cc976b20116b97",
+    "fpga/experiments/cu66-v70/display/run_strip_control.py": "60fc0db6f174f84ba55027ce172cd39f492fd60d0932f7d436ac026f5d4fbf51"
+  },
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_painter_strip_control",
+        "-o",
+        "/build/v70-display-strip-control-final.vvp",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/display/cu70_painter_strip.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/display/tb_painter_strip_control.sv"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v70/display/strip-control-final-iverilog-build.log",
+      "sha256": "936428c660d856bc9c89a61501c26c02c03c13972462977461bd81dccf890414"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "vvp",
+        "/build/v70-display-strip-control-final.vvp"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v70/display/strip-control-final-iverilog.log",
+      "sha256": "ea4f567e70a6ffc1d3b60a94e8714f6893c0edf4f3c30aeb93cf66e977033b02"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--binary",
+        "--timing",
+        "--build",
+        "-j",
+        "2",
+        "--Wall",
+        "-Wno-BLKSEQ",
+        "--top-module",
+        "tb_painter_strip_control",
+        "--Mdir",
+        "/build/v70-display-strip-control-final",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/display/cu70_painter_strip.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/display/tb_painter_strip_control.sv"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v70/display/strip-control-final-verilator-build.log",
+      "sha256": "7beea46c8ab4b388ecc97febd55150a1d1a6a04d7c5ca779f705a585762bcd9b"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v70-display-strip-control-final/Vtb_painter_strip_control"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v70/display/strip-control-final-verilator.log",
+      "sha256": "06135f59f884fbea7336f4eaf16ac6714e647ca248de72bd2ab6615de967cbab"
+    }
+  ],
+  "contract": "discard123dirtyRGBstripwordswithoutcanvaswrites; newframewithdifferentYbiasoverwritesoldstrip; first8portraitwordscontiguous+exact; acceptedmemorydrainedafterabort",
+  "testbench_style_waiver": "BLKSEQonlyforproceduralclock/oracletemporaries; nofunctionalassertionssuppressed"
+}
