@@ -2,9 +2,12 @@
 
 Continue toward 720x480 at 30 unique physical presentations/s. This checkpoint
 updates the execution order in the coordinated plan; it does not change the
-published MSV1 or AV v1 wire formats. Hardware remains unchanged in this offline
-increment. The last observed installation was the v22 app and build50 FPGA;
-current device address, readiness and counters have not been probed.
+published MSV1 or AV v1 wire formats. A subsequent controlled hardware window
+installed v26, measured the private AKD1 fixture and restored normal operation;
+see [the physical results](V26-AKD1-HARDWARE-RESULT-20261104.md). The complete
+fixture target is now explicitly [CP23/HC22/HD22](CP23-FIRST-HARDWARE-FIXTURE-20261104.md),
+with no complete-profile image or loader implemented yet. A current network
+address/readiness is not inferred from earlier sessions.
 
 ## Completed and measured
 
@@ -68,8 +71,9 @@ measured development candidate, not an accepted production architecture yet.
 
 ## Separate controlled hardware window
 
-The v26 ESP32 diagnostic app and guarded-ROM AKD1 BIT are prepared for a short
-private-compute experiment. Follow [the exact hardware procedure](AKD1-LAB-WINDOW-20261104.md):
+The v26 ESP32 diagnostic app and guarded-ROM AKD1 BIT passed the limited physical
+private-compute experiment documented above. The repeat procedure is
+[the exact hardware sequence](AKD1-LAB-WINDOW-20261104.md):
 app-only regression against build50 first, then a fresh volatile AKD1 load,
 audio off and QSPI at most 16 MHz, followed by recovery to build50.
 
@@ -98,6 +102,8 @@ stack and heap; it cannot qualify network video or 30 fps presentation.
   tool/cache requirements. An existing GameBub checkout is not required.
   Release UF2/BIN/ELF are identified but omitted, and packaging did not rebuild
   the target or establish byte-identical image reproduction.
+  Follow [the fresh-copy verification instructions](V26-SOURCE-EXPORT-USAGE-20261104.md)
+  so regenerated test logs do not replace the package's sealed evidence.
 
 Full experiment sources and raw evidence remain in the local
 `fpga/experiments/` directories. Simulation, clean implementation reports and

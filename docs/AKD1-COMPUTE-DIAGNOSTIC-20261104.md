@@ -2,9 +2,10 @@
 
 Date:2026-11-04. This is a **local compute-only laboratory interface**, not a
 network transport, advertised codec profile or live GM01 streaming endpoint.
-There is no corresponding board image or installed ESP32 accessor yet. Current
-offline work performs no programming; the user's existing hardware authorization
-is retained for a later coordinated physical window.
+The guarded-ROM image and installed v26 accessor have now passed a limited
+[physical diagnostic window](V26-AKD1-HARDWARE-RESULT-20261104.md). The original
+controller and future-shell descriptions below record the interface's earlier
+development state; they do not describe a complete CP23/CP25 receiver.
 
 The reference controller is
 `fpga/experiments/ar03-board-diagnostic-20261104/ar03_fixture_diagnostic.sv`,

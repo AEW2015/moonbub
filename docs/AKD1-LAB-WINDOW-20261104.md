@@ -1,9 +1,9 @@
 # Prepared v26 / AKD1 hardware window
 
-Status: packages prepared and independently verified; no new hardware action.
-The last observed installed app was v22 with retained build50. Device identity,
-addresses and readiness have not been freshly probed. The user has been asked
-for the physical USB update-mode step and JTAG connection status.
+Status: the first limited hardware window is complete; see
+[the measured results](V26-AKD1-HARDWARE-RESULT-20261104.md). The installed app
+is now v26. Build50 was restored/tested and the handheld returned to its normal
+menu. This is the repeat procedure; establish fresh readiness for another run.
 
 | Purpose | Exact artifact / identity |
 | --- | --- |

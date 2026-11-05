@@ -1,7 +1,10 @@
 # v26 and AKD1 physical regression sequence
 
-Status: prepared offline, not executed. Installed v22/build50 remains the recovery
-comparand. No current address, connection or hardware readiness is inferred.
+Status: the first limited physical window is complete; see
+[its results and remaining checks](V26-AKD1-HARDWARE-RESULT-20261104.md).
+v26 is installed and the normal menu was restored. Network video/live AV and
+mid-compute abort coverage remain open. This document is the repeat procedure;
+no current address, connection or streaming readiness is inferred.
 
 The target is a useful private compute measurement before a custom network
 receiver exists. This does not qualify 30 fps playback. AKD1's native LCD bars

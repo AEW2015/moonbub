@@ -45,7 +45,7 @@ def main():
                 try:
                     if a.query_file.exists():
                         command=a.query_file.read_text(encoding='ascii').strip()
-                        if len(command)!=1 or command not in 'stho8cxv[]?daby':
+                        if len(command)!=1 or command not in 'stho8cxv[]?dabyie':
                             raise ValueError('Only one known status/setup command is allowed')
                         a.query_file.unlink()
                         if port.write(command.encode('ascii'))!=1:raise OSError('Short command write; do not retry automatically')

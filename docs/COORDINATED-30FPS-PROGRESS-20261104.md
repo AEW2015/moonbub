@@ -1,6 +1,10 @@
 # Coordinated 30 fps implementation progress
 
 Latest execution checkpoint: [ESP32 / FPGA update](30FPS-UPDATE-CHECKPOINT-20261104.md).
+The later [controlled hardware window](V26-AKD1-HARDWARE-RESULT-20261104.md)
+installed v26, measured two exact private KEY completions and restored the normal
+menu. This supersedes older installed-v22 statements below. It does not qualify
+CP23/CP25 or 30 fps playback.
 It supersedes the pending elastic-store experiment and hardware-package status
 in older entries below. The selected stored-KEY replay now takes 31.23946 ms;
 the bounded direct-YUV reservation passes the matched write-load deadline tests.

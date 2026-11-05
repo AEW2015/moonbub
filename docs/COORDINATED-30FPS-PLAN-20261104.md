@@ -5,6 +5,10 @@ Latest execution order and measured bottlenecks:
 [ESP32 / FPGA update checkpoint](30FPS-UPDATE-CHECKPOINT-20261104.md).
 Older pending-work descriptions below are historical where that checkpoint
 records a completed gate; the acceptance objective remains unchanged.
+The first complete-fixture target is now explicitly
+[CP23/HC22/HD22](CP23-FIRST-HARDWARE-FIXTURE-20261104.md). Neither complete-profile
+decoder image nor local payload loader exists yet. Earlier private AR03/GM01/CP02
+component work below remains separate from that target.
 
 Windows plan/prompt pin: Sunshine `c9c0bf4bcbe5c95f38b50bf6e190b84822886d53`,
 branch `gamebub/windows-jpeg-retry-20261103`.
