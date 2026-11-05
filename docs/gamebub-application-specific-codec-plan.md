@@ -806,3 +806,7 @@ independently on the other system's hardware. No board was programmed here.
 ## V41 research checkpoint — 2026-11-05
 
 [Global raster, host profiling and native peak-rate controls](custom-codec-prototype-v41-2026-11-05.md) retains the 13.31% flat-fixture win and zero gameplay spatial wins. HEVC VBV closes the coarse combat gap: 21.32% fewer bytes with no worse error on every frame. Direct bounded reception and shared host work are next; physical FPS and FPGA fit remain open.
+
+## V42 research checkpoint — 2026-11-05
+
+[Exact HUD planning and packed construction](custom-codec-prototype-v42-2026-11-05.md) preserves all 24 qualified HX32/HX33 outputs and measures a 4.006× host speedup in the paired HUD stage. HU25 generation is outside that timing; the optimization is shared by native/custom hybrid paths. Whole-chain profiling remains diagnostic, with an unresolved pstats aggregation mismatch. No compression gain or physical frame-rate result is claimed.

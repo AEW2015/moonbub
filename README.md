@@ -315,3 +315,7 @@ by `--inject-keys`; automated tests mock it and do not inject desktop keys.
 ## V41 research checkpoint — 2026-11-05
 
 [Global raster, host profiling and native peak-rate controls](docs/custom-codec-prototype-v41-2026-11-05.md) retains the 13.31% flat-fixture win and zero gameplay spatial wins. HEVC VBV closes the coarse combat gap: 21.32% fewer bytes with no worse error on every frame. Direct bounded reception and shared host work are next; physical FPS and FPGA fit remain open.
+
+## V42 research checkpoint — 2026-11-05
+
+[Exact HUD planning and packed construction](docs/custom-codec-prototype-v42-2026-11-05.md) preserves all qualified HX32/HX33 bytes while reducing the measured paired HUD stage from 137.60 to 34.35 ms (4.006×) across 24 inputs. HU25 generation is excluded, and the shared HUD work benefits both native and custom hybrid paths. The separate whole-chain cProfile has an aggregation mismatch and is diagnostic only; no compression gain or physical 30-fps result is established.
