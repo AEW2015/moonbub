@@ -1,6 +1,14 @@
 # Coordinated MoonBub / Sunshine 30 fps plan
 
 Date: 2026-11-04, America/Denver.
+Update 2026-11-05: the restricted fixed-ROM CPL1 diagnostic now has a source-bound
+BIT with declared routed timing closed; it is not installed and does not implement
+the complete negotiated/network profile. Follow the new
+[FPGA timing-margin improvement plan](FPGA-TIMING-MARGIN-PLAN-20261105.md) for
+pipelining, FF replication, fanout reduction and repeatable implementation gates.
+The older capability inventory below is historical where superseded by the
+[timing cleanup status](FPGA-TIMING-CLEANUP-STATUS-20261105.md).
+
 Latest execution order and measured bottlenecks:
 [ESP32 / FPGA update checkpoint](30FPS-UPDATE-CHECKPOINT-20261104.md).
 Older pending-work descriptions below are historical where that checkpoint
