@@ -159,6 +159,23 @@ This is not an autonomous self-test ROM/firmware command installed on a board.
 
 ## Handoff boundary and next work
 
+The next two milestones are **verified 30 fps**, followed by **validated decoding
+under 10 ms**, with distinct acceptance criteria. Thirty fps measures sustained
+complete presentations with bounded age/backlog and no unexpected normal-load
+underruns. Under 10 ms measures complete-packet availability through verified
+YUV/HUD storage and write drain, including post-staging queues, processor
+service and transfer. RGB composition, vblank waiting and scanning remain
+separately reported system costs, alongside capture-to-visible latency.
+
+Use the observed campaign maximum for the under 10 ms gate and retain
+p50/p95/p99/max, failed attempts and recovery costs. A pipeline can meet 30 fps
+without meeting the latency target. The current 230 ms modeled transaction is
+not decode-only latency; the earlier 7.61 ms desktop native measurement is not
+target FPGA/ESP32 evidence. Neither target milestone is currently verified.
+The authoritative [milestone definitions and instrumentation requirements](plan.md#sequential-milestones-verified-30-fps-then-validated-decoding-under-10-ms)
+also address panel-quantized presentation spacing and the missing complete
+packet/validated-ready/end-to-end timestamp chain.
+
 Use the new sources as a correctness-first prototype and failure diagnostic.
 They are not ready for claiming clean native-panel game streaming at 30 fps.
 The next implementation should prioritize:

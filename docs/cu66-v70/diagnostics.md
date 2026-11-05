@@ -68,6 +68,25 @@ timestamps and counters retain their own accounting. Captured context is the
 last observed byte request or plane/tile tag; it is not always the physical
 address that caused a late integrity failure.
 
+## Instrumentation for the next milestones
+
+The current arrival timestamp at 0x060/0x064 is **start-handshake admission**,
+not the time the packet's final byte reached staging. Existing phase timestamps
+alone cannot establish the complete-packet-to-validated-ready interval.
+
+Add explicit packet-complete, admission/queue, all-candidate-writes-drained and
+validated-ready events, together with processor HUD service/transfer timing.
+Validated-ready must follow all required packet/base/HUD integrity and memory
+fences, before presentation work. Add RGB-ready and first/last correct visible
+pixel events to keep composition, panel waiting and scanout separate. Carry
+generation/frame IDs through every event and qualify clock-domain/device-time
+conversion; a raw subtraction across unrelated clocks is not latency evidence.
+
+Use these records for sustained 30 fps with bounded frame age first, then a
+strict observed maximum validated-decoding latency below 10 ms. Preserve the
+end-to-end capture-to-visible distribution, percentile/tail measurements and
+failed-attempt/recovery accounting. See [the fixed milestone scope](plan.md#sequential-milestones-verified-30-fps-then-validated-decoding-under-10-ms).
+
 ## Error and recovery interpretation
 
 Owner reasons include 0x01 invalid start generation/length, 0x70 HUD semantics,

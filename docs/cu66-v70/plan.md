@@ -24,6 +24,83 @@ frame period. This is a planning constraint, not a measured FPGA latency or
 clock result: packet scanning, HUD processing/transfer, actual memory service
 and display work still need accounting and overlap analysis.
 
+## Sequential milestones: verified 30 fps, then validated decoding under 10 ms
+
+These are separate gates. **30 fps is sustained throughput; under 10 ms is
+per-frame latency.** A pipeline can deliver 30 fps while each frame spends more
+than 33.333 ms inside it. Conversely, a fast decoder does not establish 30 fps if
+memory, processor control or scanout stalls. Track both throughout development,
+but qualify them in this order without changing resolution or decoded quality.
+
+| Milestone | Acceptance | Work that advances it |
+|---|---|---|
+| 1. Verified 30 fps | Sustain 30 new, complete game-frame presentations per second over the declared campaign, with bounded frame age/backlog, no unexplained drops and no unexpected normal-load LCD underruns | Streaming BL8 LCD prefetch with bounded arbitration delay, independent reader caches, burst-capable writes and safe pipeline overlap |
+| 2. Validated decoding under 10 ms | After retaining milestone 1, the observed maximum validated-decoding latency is strictly below 10 ms for every supported valid frame in the predefined campaign; report p50/p95/p99/max | Profile actual entropy, reconstruction, hashing, HUD software/transfer and memory completion, then optimize the measured critical path |
+
+For milestone 1, keep the existing 1,800-distinct-source-frame campaign and the
+ten-minute physical 30 fps run. Preserve all source/attempted/accepted/committed/
+presented IDs and fixed warm-up, observation and drain windows. Repeated panel
+refreshes or buffer flips are not new game frames. A repeated-content stress
+run must remain labeled separately from distinct source captures. Include
+processor service, live transport, refresh, concurrent memory clients and the
+achieved device clock in hardware qualification.
+
+The 33.333 ms period is the input cadence and sustainable work budget, not a
+promise that every panel presentation gap equals 33.333 ms. V70's declared
+native panel model runs at approximately 65.0755 Hz. Presentation spacing is
+quantized to that panel clock; retain actual spacing, frame age and missed
+deadlines rather than hiding gaps behind an average FPS. Define the allowed
+age/backlog and panel-quantized deadline policy before each run.
+
+### Fixed definition of validated decoding
+
+Measure from **the complete packet being available in immutable staging** to
+**integrity-checked canonical YUV and exact HUD being stored, with their writes
+drained and the frame eligible for the presentation stage**. The endpoint must
+include framing/profile/reference/CRC checks, entropy/inverse/reconstruction,
+canonical SHA, HUD semantic/tag checks, actual processor service and transfer,
+and required reference/candidate memory completion.
+
+Here, eligible for presentation means validated YUV/HUD inputs are ready for
+that stage. RGB composition, waiting for vblank and panel scanning are measured
+separately. A direct-YUV design may perform color conversion during scanout;
+that does not make its work disappear from system latency or bandwidth.
+
+Include post-staging admission/queue waits in the headline decoding interval;
+also report them separately. Do not start timing after a costly queue or stop
+at entropy completion, pixel production, queue acceptance or an unchecked HUD.
+Network/capture time before packet completion is outside this decoding metric
+but remains in the end-to-end metric. Freeze this scope before optimizing and
+keep it identical between comparisons.
+
+The under-10-ms gate uses the observed campaign maximum, not only its mean or
+p99. It is not a universal worst-case execution-time proof. Record all late,
+rejected, dropped and fault/recovery attempts separately, charge their resource
+work, and never discard expensive attempts to improve the accepted-frame
+distribution. Preserve milestone 1 and all exact-output/recovery checks while
+pursuing the latency target.
+
+### Required timestamps and current evidence limits
+
+Retain source-capture, packet-complete, admission, packet-validated, base-tag,
+HUD-semantic/transfer, all-writes-drained, validated-ready, RGB-ready, commit,
+and first/last correct visible-pixel timestamps. Bind them to generation/frame
+IDs; synchronize clock domains or state cross-device clock uncertainty. Report
+queue wait, validated decoding, composition, presentation wait and end-to-end
+capture-to-visible latency without combining incompatible clock scopes.
+
+V70's owner records admission and several phase timestamps, but it does not
+yet provide the complete packet-complete/validated-ready/source-to-visible
+measurement chain. Add those events before claiming the new latency gate.
+The headline 230 ms strip result includes rendering and real-controller
+contention; it is not decode-only latency. V69's 7.61 ms native result measured
+desktop complete-presentation CPU work, not target FPGA/ESP32 decoding, and
+therefore satisfies neither milestone for the target system.
+
+The development sequence is: remove starvation, establish sustainable 30 fps,
+profile the fixed validated-decoding interval, and close its under 10 ms tail
+budget while retaining image correctness, safe publication and recovery.
+
 ## Gaps found in the source review
 
 | Current boundary | V70 change |

@@ -20,6 +20,7 @@ retained separately and are not current-source PASS evidence.
 | Reset and CDC | Joint reset/flush contract; asynchronous pixel/memory schedules; staged OOC CDC report commands | Simulation evidence only; formal CDC/reset-domain and physical timing signoff NOT_RUN |
 | Bank formal safety | `formal/results.json`:16 assertions at8/16/24 solver-state bounds,5 reachability witnesses | PASS_BOUNDED only; no induction/liveness/full-receiver/CDC proof |
 | Long fixed-arrival cadence | Current runs are decoder-driven finite chronological pairs; black-line loss and transaction tails retained | Failed current throughput gate;1800 distinct sources/jitter/loss and10-minute physical30fps NOT_RUN |
+| Validated decoding under 10 ms, after verified 30 fps | Complete packet available → verified canonical YUV/HUD stored and writes drained; include admission queues, processor service and transfer; predefined campaign max < 10 ms plus p50/p95/p99/max and all failed attempts | NOT_RUN: complete boundary instrumentation and target service measurements missing; retain 30 fps and exact-output/recovery gates |
 | Built-in bring-up sequence | Replay scripts exercise memory, bars/edge patterns, real key/P and abort/recovery | Simulation/native test sequence available; autonomous board ROM/firmware BIST unimplemented |
 | Exact target implementation | `build/preflight.log`, `build/status.json`, staged hardware-only OOC script | UNAVAILABLE:xc7a100tcsg324-1 not installed; no device Fmax/fit/route claim |
 
