@@ -6,6 +6,11 @@ snapshots. Build50 was subsequently restored through volatile JTAG; v32 observer
 firmware remains installed. Custom network testing is blocked. The offline
 qualification below remains valid within its stated model assumptions.
 
+Follow-up: [SDRAM capture simulation investigation](SDRAM-CAPTURE-ALIGNMENT-20261105.md)
+reproduces the read shift independently of writes and records a 135-degree,
+rising-retime candidate. It is simulation-only, without a BIT or routed timing
+qualification; the original physical failure and network gate remain unchanged.
+
 Next design work: [timing-margin improvement plan](FPGA-TIMING-MARGIN-PLAN-20261105.md),
 covering source-level FF replication, complete pipeline stages, bounded widths,
 fanout/reset review and a proposed +0.250 ns repeatable setup-margin target.
