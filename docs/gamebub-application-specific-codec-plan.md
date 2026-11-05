@@ -1,5 +1,28 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v30 block/band prototypes](custom-codec-prototype-v30-2026-11-04.md)
+keep full resolution, GM27 wire and the exact HUD. Strict source-aware AC edits
+save 0.083% / 0.278% complete causal bytes with slightly lower measured MSE.
+The budgeted variant saves 0.242% / 0.628%, with complex MSE rising 0.547%.
+These gains are small and Python trial work roughly doubles; retain as design
+experiments, not a product default. All 288 accepted pairs and 940 attempted
+encodes are retained, including same-history incumbent shadows and all losses.
+
+A separate fixed-Rice local sparse-run deletion oracle is exact and 21–25×
+faster than equivalent full recounts after setup. It does not include parameter
+reselection or prove accepted-stream savings. The isolated CP02 proxy disagrees
+with actual EC26 marginal bytes in 132/172 sampled edits; neighboring edits also
+have nonadditive costs. Avoid summing independent savings or reusing stale context.
+
+Next combine cheap context screening, actual source-distortion checks and final
+optimized costing; add bounded AC shrink/dead-zone candidates, and share the
+incumbent's immutable work. Extend fresh long gameplay and temporal-error tests
+before choosing a native host/FPGA implementation. Native service, ESP32 transport
+contention, FPGA memory/publication timing and physical 30 fps remain unproved.
+Preserve JPEG and the frozen v20 hardware handoff.
+
+The following v29 and older sections retain their historical evidence.
+
 The [v29 prototypes](custom-codec-prototype-v29-2026-11-04.md) keep GM27 wire,
 720×480 coded / 720×405 active video and the exact HUD. Quiet-block search gating
 reduces causal host base-policy work **277→149 ms / 301→211 ms**. Primary bytes

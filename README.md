@@ -5,6 +5,15 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v30 study](docs/custom-codec-prototype-v30-2026-11-04.md) adds actual
+block/band residual candidates with unchanged GM27 wire. Strict causal selection
+saves 0.08–0.28% complete bytes with slightly lower measured MSE; a small-error
+budget saves up to 0.63%. Full Python trial work roughly doubles, so these are
+compression prototypes rather than deployment defaults. A separate exact
+fixed-parameter local entropy oracle speeds equivalent recounts 21–25× after
+setup. Run `python experiments/verify_prototype_v30.py`. Hardware 30 fps remains
+unproved; the local oracle is not yet integrated into the full controller.
+
 The [v29 study](docs/custom-codec-prototype-v29-2026-11-04.md) adds causal
 quiet-block motion-search gating at unchanged resolution and exact HUD. Host
 base-policy work falls 277→149 ms and 301→211 ms, with measured byte/error
