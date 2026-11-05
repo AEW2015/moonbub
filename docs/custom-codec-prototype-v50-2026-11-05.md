@@ -22,7 +22,7 @@ zero. Each proposal receives on a fork; only the selected state may publish.
 
 Across 96 source frames, 23 grid proposals are smaller, one other proposal has
 lower SSE, and the four key-frame proposals tie on both. None jointly improves
-both objectives. All 192 proposals fit the final cap and all 96 prefixes
+both objectives. All 192 proposals fit the final cap and all four 24-frame prefixes
 complete. The selected total is 1,382,134 bytes with active MSE 20.79180365 and
 2,027,520 exact HUD words. Selected bytes, SSE and histories match the separate
 fixed-zero controls exactly. This is a negative result for the tested search and
