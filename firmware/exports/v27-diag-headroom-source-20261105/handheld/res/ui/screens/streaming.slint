@@ -1,0 +1,30 @@
+import { Global, ScreenId, Backend } from "../common.slint";
+import { ScreenBase } from "../components/screen.slint";
+import { Button } from "../components/button.slint";
+export component StreamingScreen inherits ScreenBase {
+    title: "Moonshine Streaming";
+    forward-focus: connect;
+    VerticalLayout {
+        spacing: 3px;
+        Text { text: "Experimental TEST sender / MJPEG / video only"; }
+        Text { text: "Sunshine pairing and app discovery unavailable"; }
+        host := Button {
+            text: Backend.stream-host == "" ? "Host: from SD config (A to edit)" : "Host " + Backend.stream-host + " [octet " + (Backend.stream-host-octet+1) + "]";
+            on-pressed => { Backend.stream-host-next(); }
+            on-left => { Backend.stream-host-adjust(-1); accept }
+            on-right => { Backend.stream-host-adjust(1); accept }
+            on-down => { connect.focus(); accept }
+        }
+        Text { text: "Host editor: A next octet; Left/Right adjust"; }
+        Text { text: "Wi-Fi: /sdcard/moonshine.cfg; host blank uses file"; }
+        Text { text: Backend.stream-status; wrap: word-wrap; }
+        Text { text: Backend.stream-diagnostics; }
+        HorizontalLayout {
+            spacing: 3px;
+            connect := Button { text: "Connect"; on-up => { host.focus(); accept } on-right => { disconnect.focus(); accept } on-pressed => { Backend.stream-connect(); } on-down => { view.focus(); accept } }
+            disconnect := Button { text: "Disconnect"; on-left => { connect.focus(); accept } on-right => { back.focus(); accept } on-down => { view.focus(); accept } on-pressed => { Backend.stream-disconnect(); } }
+            back := Button { text: "Back"; on-left => { disconnect.focus(); accept } on-pressed => { Backend.stream-back(); } }
+        }
+        view := Button { text: "View video (Home for game menu)"; on-up => { connect.focus(); accept } on-pressed => { Global.set-screen(ScreenId.Game); } }
+    }
+}

@@ -1,5 +1,9 @@
 # ESP32 / FPGA update checkpoint
 
+Latest: [November 5 development and hardware gates](30FPS-STATUS-20261105.md).
+The newer record covers installed v27, the 100-frame hardware result, double-bank
+storage and restricted HUD decoding; it supersedes older pending-work status here.
+
 Continue toward 720x480 at 30 unique physical presentations/s. This checkpoint
 updates the execution order in the coordinated plan; it does not change the
 published MSV1 or AV v1 wire formats. A subsequent controlled hardware window

@@ -1,0 +1,53 @@
+--- v26/handheld/src/diag_pages.rs
++++ v27/handheld/src/diag_pages.rs
+@@ -3,7 +3,7 @@
+ use crate::streaming::telemetry::FrameTrace;
+ pub const PAYLOAD_BYTES: usize = 192;
+ pub const LOG_FRAMING_RESERVE: usize = 64;
+-pub const VARIANT: &str = "v26-key-diag-access-20261104";
++pub const VARIANT: &str = "v27-diag-headroom-20261105";
+ #[derive(Clone, Copy)]
+ pub struct Context {pub capture: u32,pub generation: u32,pub epoch: u32,pub frame: u32}
+ pub struct Line {bytes:[u8;PAYLOAD_BYTES],length:usize}
+--- v26/handheld/src/key_diag_usb.rs
++++ v27/handheld/src/key_diag_usb.rs
+@@ -9,7 +9,7 @@
+ use crate::key_diag_core::*;
+ use std::sync::mpsc;
+ static REQUESTS: crate::diag_dispatch::Requests = crate::diag_dispatch::Requests::new();
+-pub const WORKER_STACK_BYTES: usize = 4096;
++pub const WORKER_STACK_BYTES: usize = 6144;
+ fn now() -> u64 {
+     unsafe { esp_idf_svc::sys::esp_timer_get_time() as u64 }
+ }
+--- v26/handheld/src/usb_test.rs
++++ v27/handheld/src/usb_test.rs
+@@ -3,7 +3,7 @@
+ use std::time::Duration;
+ 
+ pub fn start() {
+-    std::thread::Builder::new().name("UsbTest".into()).stack_size(4096)
++    std::thread::Builder::new().name("UsbTest".into()).stack_size(6144)
+         .spawn(|| { let mut margin = crate::margin_usb::Driver::new(); loop { margin.tick();
+             let mut byte = [0u8; 1];
+             let mut count = 0usize;
+--- v26/tests/sdk-host/src/lib.rs
++++ v27/tests/sdk-host/src/lib.rs
+@@ -645,7 +645,7 @@
+         for (index, line) in pages {
+             assert!(index > 0);
+             assert!(logs[index - 1].starts_with("USB_D24 v=2 p=key"));
+-            assert!(line.contains("worker=KeyDiag stack_low_bytes=4294967295 declared_bytes=4096"));
++            assert!(line.contains("worker=KeyDiag stack_low_bytes=4294967295 declared_bytes=6144"));
+             assert!(line.contains("free_internal=18446744073709551615"));
+             assert!(line.contains("sampled=true"));
+         }
+@@ -717,7 +717,7 @@
+         println!("HOST_LAYOUT core={} permit={} operation={} coordinator={} line={} requests={} worker_declared={}",size_of::<key_diag_core::DiagnosticCore>(),size_of::<DiagnosticPermit>(),size_of::<key_diag_core::Operation>(),size_of::<Coordinator>(),size_of::<diag_pages::Line>(),size_of::<Requests>(),key_diag_usb::WORKER_STACK_BYTES);
+         assert!(size_of::<key_diag_core::DiagnosticCore>() < 1024);
+         assert!(size_of::<DiagnosticPermit>() <= 16);
+-        assert_eq!(key_diag_usb::WORKER_STACK_BYTES, 4096);
++        assert_eq!(key_diag_usb::WORKER_STACK_BYTES, 6144);
+     }
+     #[test]
+     fn failed_diagnostic_release_keeps_returned_context_and_quarantines() {
