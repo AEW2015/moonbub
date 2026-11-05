@@ -810,3 +810,7 @@ independently on the other system's hardware. No board was programmed here.
 ## V42 research checkpoint — 2026-11-05
 
 [Exact HUD planning and packed construction](custom-codec-prototype-v42-2026-11-05.md) preserves all 24 qualified HX32/HX33 outputs and measures a 4.006× host speedup in the paired HUD stage. HU25 generation is outside that timing; the optimization is shared by native/custom hybrid paths. Whole-chain profiling remains diagnostic, with an unresolved pstats aggregation mismatch. No compression gain or physical frame-rate result is claimed.
+
+## V46 research checkpoint — 2026-11-05
+
+[Direct receive, coefficient delivery and rate work](custom-codec-prototype-v46-2026-11-05.md) reports a 38.76% host receive-time reduction versus the old proof adapter on 577 retained frames, exact one-block coefficient delivery and a symmetry-based logical multiply reduction. V46 measures 902 fewer complete packet bytes (0.2281%) on 24 prefixes. Hardware mapping, full-pipeline timing and physical frame rate remain unproved.

@@ -319,3 +319,7 @@ by `--inject-keys`; automated tests mock it and do not inject desktop keys.
 ## V42 research checkpoint — 2026-11-05
 
 [Exact HUD planning and packed construction](docs/custom-codec-prototype-v42-2026-11-05.md) preserves all qualified HX32/HX33 bytes while reducing the measured paired HUD stage from 137.60 to 34.35 ms (4.006×) across 24 inputs. HU25 generation is excluded, and the shared HUD work benefits both native and custom hybrid paths. The separate whole-chain cProfile has an aggregation mismatch and is diagnostic only; no compression gain or physical 30-fps result is established.
+
+## V46 research checkpoint — 2026-11-05
+
+[Direct receive, coefficient delivery and rate work](docs/custom-codec-prototype-v46-2026-11-05.md) summarizes V43–V46. Direct receive removes proof-adapter work on 577 retained frames (38.76% lower host receive time); V44/V45 establish exact component behavior and logical work bounds; V46 saves 902 complete-frame bytes (0.2281%) over 24 prefixes after tie-preserving actual-packet selection. None establishes hardware fit, physical 30 fps or codec superiority.
