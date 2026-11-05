@@ -1,0 +1,132 @@
+{
+  "status": "PASS",
+  "scope": "Synthetic snapshot serialized by actual exported v32 formatter; offline host interoperability only",
+  "parser_tests": 16,
+  "selected_firmware_manifest_sha256": "71040d17f504604791155bac688d12540558cd3583e5247c75c0fae9b8043120",
+  "actual_formatter_source_bindings": {
+    "cpl1.rs": "082c37ef9915da0891c593b98d354976c6eaa9575430ae2d02a54331e495e21b",
+    "diag_pages.rs": "a6f7f8d0dd6dbe6eec21dc19fe1fc3a375ab38fd28d087fb21454b86cabb5cee",
+    "streaming/telemetry.rs": "ab239916008c40903c2d72ecaba0a9ab6f9b5afc4a91ad153ddb1d7e34a20727"
+  },
+  "host_source_bindings": {
+    "cpl1_snapshot.py": "2b4b361248a948a8ce638af2eb15c2e7f499a4f3603fe0b4d215761aa6ca9362",
+    "frame0-expectation.json": "6cecc90f0be1eb2eb51a5c4caf431d4b29670ca6b38368f4781efab7bbd3b43d",
+    "README.md": "179a08255de989512b16793829fffe6c23ece0846d0c405311da23750289e214",
+    "run_checks.py": "cc9b7c408e28da815ac87b257fe7d7a26f9321dbf5ca41b67bc0f40867748353",
+    "test_cpl1_snapshot.py": "a3107ee154f703030c2932c78325cf720ad0dcec0ae0c035d16787cc65ebd5fe"
+  },
+  "fixture_expectation_sha256": "6cecc90f0be1eb2eb51a5c4caf431d4b29670ca6b38368f4781efab7bbd3b43d",
+  "valid_snapshot_match": true,
+  "bad_actual_crc_preserved_and_rejected": true,
+  "steps": [
+    {
+      "name": "firmware-before",
+      "command": [
+        "C:\\Users\\lavat\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\exports\\v32-cpl1-observe-source-20261105\\verify_source.py"
+      ],
+      "returncode": 0,
+      "log_sha256": "2516b8f46d40c2ae506d7e154f7e59199647936514ba94413bbdf6f472fb2b6e"
+    },
+    {
+      "name": "parser-unit",
+      "command": [
+        "C:\\Users\\lavat\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "C:\\Users\\lavat\\codex\\moonbub\\host\\cpl1-observer-20261105",
+        "-v"
+      ],
+      "returncode": 0,
+      "log_sha256": "306b9672e18e0891cdc23058fa4857d98ecd038129ebac879a772a0267722c81"
+    },
+    {
+      "name": "rust-version",
+      "command": [
+        "C:\\Users\\lavat\\.cargo\\bin\\rustc.exe",
+        "+stable",
+        "-Vv"
+      ],
+      "returncode": 0,
+      "log_sha256": "67d86fbf74071a3c2fbf23eb9e4e28e3ecc0f81b6fce3d35f5bbc88b7de1ecfb"
+    },
+    {
+      "name": "formatter-compile",
+      "command": [
+        "C:\\Users\\lavat\\.cargo\\bin\\rustc.exe",
+        "+stable",
+        "--edition=2021",
+        "C:\\Users\\lavat\\codex\\moonbub\\evidence\\overnight-coordinated-20261105\\cpl1-host-check01\\actual_formatter.rs",
+        "-o",
+        "C:\\Users\\lavat\\codex\\moonbub\\evidence\\overnight-coordinated-20261105\\cpl1-host-check01\\actual_formatter.exe"
+      ],
+      "returncode": 0,
+      "log_sha256": "f9c52fdbe5dbcded77290ae9ac28087fdb2ca12606bdac73b6d37336ec5841ee"
+    },
+    {
+      "name": "valid-formatter",
+      "command": [
+        "C:\\Users\\lavat\\codex\\moonbub\\evidence\\overnight-coordinated-20261105\\cpl1-host-check01\\actual_formatter.exe"
+      ],
+      "returncode": 0,
+      "log_sha256": "22a58982a23036215cf5d25f00b1913f820c1e0171441e68ea2b7df01dd7c53e"
+    },
+    {
+      "name": "valid-parser",
+      "command": [
+        "C:\\Users\\lavat\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\Users\\lavat\\codex\\moonbub\\host\\cpl1-observer-20261105\\cpl1_snapshot.py",
+        "--log",
+        "C:\\Users\\lavat\\codex\\moonbub\\evidence\\overnight-coordinated-20261105\\cpl1-host-check01\\valid-pages.log",
+        "--expectation",
+        "C:\\Users\\lavat\\codex\\moonbub\\host\\cpl1-observer-20261105\\frame0-expectation.json",
+        "--require-fixture",
+        "--output",
+        "C:\\Users\\lavat\\codex\\moonbub\\evidence\\overnight-coordinated-20261105\\cpl1-host-check01\\valid-result.json"
+      ],
+      "returncode": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "bad-crc-formatter",
+      "command": [
+        "C:\\Users\\lavat\\codex\\moonbub\\evidence\\overnight-coordinated-20261105\\cpl1-host-check01\\actual_formatter.exe",
+        "bad-crc"
+      ],
+      "returncode": 0,
+      "log_sha256": "29952a3f40d720e1451685be292283eea40f0ac4d41b86729611df8db4f588c6"
+    },
+    {
+      "name": "bad-crc-parser",
+      "command": [
+        "C:\\Users\\lavat\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\Users\\lavat\\codex\\moonbub\\host\\cpl1-observer-20261105\\cpl1_snapshot.py",
+        "--log",
+        "C:\\Users\\lavat\\codex\\moonbub\\evidence\\overnight-coordinated-20261105\\cpl1-host-check01\\bad-crc-pages.log",
+        "--expectation",
+        "C:\\Users\\lavat\\codex\\moonbub\\host\\cpl1-observer-20261105\\frame0-expectation.json",
+        "--require-fixture",
+        "--output",
+        "C:\\Users\\lavat\\codex\\moonbub\\evidence\\overnight-coordinated-20261105\\cpl1-host-check01\\bad-crc-result.json"
+      ],
+      "returncode": 2,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "firmware-after",
+      "command": [
+        "C:\\Users\\lavat\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\exports\\v32-cpl1-observe-source-20261105\\verify_source.py"
+      ],
+      "returncode": 0,
+      "log_sha256": "2516b8f46d40c2ae506d7e154f7e59199647936514ba94413bbdf6f472fb2b6e"
+    }
+  ],
+  "source_unchanged": true,
+  "hardware": "NONE",
+  "target_build": "NOT_RUN",
+  "physical_values": "NOT_MEASURED"
+}
