@@ -5,6 +5,14 @@ Current product priority: **720×480 coded video at 30 fps**, with 720×405 acti
 The [current plan](docs/gamebub-application-specific-codec-plan.md) prioritizes
 compression, decoder service and refresh scheduling while retaining resolution.
 
+The [v29 study](docs/custom-codec-prototype-v29-2026-11-04.md) adds causal
+quiet-block motion-search gating at unchanged resolution and exact HUD. Host
+base-policy work falls 277→149 ms and 301→211 ms, with measured byte/error
+trade-offs. An exact EC26 size counter is validated; its first guarded whole-plane
+selector gives no gain and remains a negative control. All 384 accepted pairs
+and 752 candidate encodes are retained. Run `python experiments/verify_prototype_v29.py`.
+These are Python measurements; native/FPGA 30 fps remains unproved.
+
 The [v28 study](docs/custom-codec-prototype-v28-2026-11-04.md) keeps GM27 wire
 semantics and qualifies exact lazy entropy selection plus tap-aware prediction.
 The exhaustive optimized controller reproduces all v27 packets/ACKs/pixels.

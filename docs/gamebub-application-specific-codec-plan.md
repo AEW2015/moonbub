@@ -1,5 +1,27 @@
 # Game Bub application-specific codec: selected direction and gates
 
+The [v29 prototypes](custom-codec-prototype-v29-2026-11-04.md) keep GM27 wire,
+720×480 coded / 720×405 active video and the exact HUD. Quiet-block search gating
+reduces causal host base-policy work **277→149 ms / 301→211 ms**. Primary bytes
+rise 2.19% and MSE 1.28%; complex bytes fall 0.15% with MSE rising 0.078%.
+All 384 accepted CP27/JA27 pairs and 752 candidate encodes are retained.
+
+Exact EC26 size counting now matches actual sparse runs, row-reset DC, Rice
+escapes, padding and raw fallback. The first whole-plane guarded selector wins
+no alternatives and adds work: retain the counter, reject that policy as a
+default. A fixed-reference probe is insufficient; full causal histories revealed
+a different rate/quality trade-off for quiet search.
+
+Next generate bounded **block/band residual candidates** using actual EC26
+costs and decoded-source RGB error, protect UI/HUD, and add confidence-triggered
+dense search fallback. Validate fresh longer gameplay and temporal error tails,
+then port the selected host encoder and FPGA reconstruction using the retained
+goldens. ESP32 credit/reset and RF/QSPI contention, FPGA memory/publication
+fences, and native source service still require qualification. Python service
+remains above 33.33 ms; preserve JPEG and the v20 handoff.
+
+The following v28 and older sections retain their historical evidence.
+
 The [v28 runtime prototypes](custom-codec-prototype-v28-2026-11-04.md) preserve
 GM27/CP27/JA27 while reducing work. Exact lazy planning avoids discarded CP02/
 SP01 construction and keeps every accepted exhaustive packet/pixel unchanged.
