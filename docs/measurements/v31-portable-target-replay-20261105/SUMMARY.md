@@ -1,0 +1,13 @@
+# Clean relocated v31 source-export build
+
+PASS: one release build using the unchanged sealed export helper, from a new source copy and previously nonexistent C:/vs31a. It completed in7m22s without a preceding target check or retry. The original/copy packages remain unchanged: manifest5aac54272fcfd15f7d440dc58c669620626d37243da46d2d2b6d162960ce0607,602 included files, all568 selected source paths including zero-byte/nested manifests.
+
+Exact executed command: `cargo +esp193 build --offline --locked --release --features rev4`, via source-copy/build_rev4.ps1. Invocation records bind the relocated source, owned target, exact rustc2b43689c5/LLVM20.1.1, IDF5.4.3 and selected Git fallbackaa281c073693bd92850720a2e43998f1d8faf569. External pinned toolchain/IDF/Cargo/component caches were used; no other GameBub checkout was required. Local path/metadata checks covered four manifests and125 embedded asset/import references. The actual application compiler dependency record contains no old candidate/export checkout references; this is dependency-record evidence, not an OS-wide file-access trace.
+
+Generated SDK configuration SHA2565757b29925aaf47053d8c57992849e448944548ee7f43db09a1619b0b8250cfe and ABI bindingsc721d4d5940dcd68b8e54cdc266224773fc221af2b3c3624862b24afa33de991 match the selected candidate byte-for-byte. StackType_t is u8; PSRAM is off. Actual ELF static shared SRAM130436B and Trace object8272B match the selected candidate.
+
+Rebuilt ELF SHA256a34c9f343641fa0cdf1c7c87bb10a427f83a62ded029b8a7e01d18dd7caa0235,7173844B. This is a distinct unselected/unprogrammed output. The original supplied UF2 SHA380bf1c894744cc38e3b7988c8d1aaa4c10faefd499cca937eb27548a639024b remains unchanged. The clean helper performs build only, so no BIN/UF2 conversion/parser run was implied for this new ELF. Original UF2 parser evidence remains the original candidate's executed12538-block check.
+
+All outputs are outside both original export and source-copy. The sealed export README's NOT_RUN statement describes its earlier seal; this additive external record closes that relocated-build gap without rewriting the sealed package. Full ELF/generated config/bindings/symbols remain local under outputs and are hash-bound in result.json. review-manifest.json binds only its explicitly included compact review files; it does not require omitted large local outputs to exist in a publication copy.
+
+No flash, device command, USB/COM/JTAG/SD access or Git mutation occurred. Installed v30/build50 remain unchanged. This closes source/build portability only; physical v31 stack/heap, trace loss, timing overhead, frame delivery and RF attribution are still NOT_RUN/unproven.
