@@ -2,7 +2,7 @@
 
 V32 is an **uninstalled ESP32 application candidate** for a separate local-ROM FPGA diagnostic. It preserves v31 trace changes and normal video/AV behavior. V31 remains the proposed first legacy streaming comparison; installing v32 and a new FPGA together would be a different experiment. Installed v30/build50, SD contents and handheld settings remain unchanged.
 
-Portable source: `firmware/exports/v32-cpl1-observe-source-v002-20261105`, manifest `a989886756ded74eddbefc6cc8a2a1491b7a96ff28b0baca13b787d2568e94d6`. It includes595 files/all572 selected inputs, assets, fonts, locks and licenses; no other GameBub checkout is assumed. External pinned Rust/IDF/compiler/component caches are documented. Candidate binaries remain local and are not bundled in this source export.
+Portable source: `firmware/exports/v32-cpl1-observe-source-v002-20261105`, manifest `c8ac02fa841e5745450219ecd2894179fdc83504cce80b09e7246318676054cc`. It includes598 files/all572 selected inputs, assets, fonts, locks and licenses; no other GameBub checkout is assumed. External pinned Rust/IDF/compiler/component caches are documented. Candidate binaries remain local and are not bundled in this source export.
 
 | Evidence | Result |
 |---|---|
