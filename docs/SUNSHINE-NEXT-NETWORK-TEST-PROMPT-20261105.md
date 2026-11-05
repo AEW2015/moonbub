@@ -3,12 +3,17 @@
 Prepare offline for the next coordinated MoonBub network test. Do not transmit
 to the handheld until the MoonBub agent explicitly announces network readiness.
 
-MoonBub is currently performing a **local fixed-ROM CP23 fixture test**. The
+The local test is complete: **FAIL_RENDERED_CRC; custom network gate blocked**.
+Two fresh snapshots reported `dec6d87d` rather than the frozen `4c5725e5`, despite
+matching decode tags/counts. Build50 has been restored; v32 remains installed.
+See `docs/CPL1-LOCAL-HARDWARE-20261105.md`. Prepare offline only; do not transmit.
+
+MoonBub performed a **local fixed-ROM CP23 fixture test**. The
 selected CPL1 image has BIT SHA-256
 `e11a193a8cfe51b90053c852bdbb3d9308225bc1d115564418a64e016d6df789`.
 Its offline routed setup/hold are +0.017/+0.032 ns, and its native digital model
-passes. Physical testing is in progress; do not assume that programming, display
-or readback has passed until a fresh report says so.
+passes. Programming and observer readback worked, but complete physical fixture
+acceptance failed. A timing-clean digital model is not physical acceptance.
 
 Read the current MoonBub handoff on `feature/fpga-timing-cleanup-20261105`:
 

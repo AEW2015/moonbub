@@ -1,10 +1,16 @@
 # FPGA timing cleanup, 2026-11-05
 
+Physical update: [local CPL1 hardware report](CPL1-LOCAL-HARDWARE-20261105.md).
+The fixture failed rendered CRC (`dec6d87d` versus `4c5725e5`) in two fresh
+snapshots. Build50 was subsequently restored through volatile JTAG; v32 observer
+firmware remains installed. Custom network testing is blocked. The offline
+qualification below remains valid within its stated model assumptions.
+
 Next design work: [timing-margin improvement plan](FPGA-TIMING-MARGIN-PLAN-20261105.md),
 covering source-level FF replication, complete pipeline stages, bounded widths,
 fanout/reset review and a proposed +0.250 ns repeatable setup-margin target.
 
-Declared routed timing now passes. The selected offline image uses `cp23-timing-raster-reservation-20261105`, result `route-qspi06`: setup **+0.017 ns**, hold **+0.032 ns**, pulse **+2.000 ns**, zero violations; all four bus-skew constraints meet (minimum +3.450 ns). All 49,960 nets route without errors. Margins are small and reported exactly. Installed v30/build50 and the handheld remain unchanged.
+Declared routed timing now passes. The selected offline image uses `cp23-timing-raster-reservation-20261105`, result `route-qspi06`: setup **+0.017 ns**, hold **+0.032 ns**, pulse **+2.000 ns**, zero violations; all four bus-skew constraints meet (minimum +3.450 ns). All 49,960 nets route without errors. Margins are small and reported exactly. At offline qualification, installed v30/build50 was unchanged; the subsequent physical window is reported above.
 
 The [sealed source/image bundle](../fpga/exports/cpl1-timing-fsmcopy-source-20261105-v002/QUALIFICATION.md) includes the exact source, constraints, assets, physical recipe, generated BIT, reports, licenses and executed model/fault evidence. [Local handoff](../fpga/exports/cpl1-timing-cleanup-local-handoff-20261105.json) binds the retained routed checkpoint as well. Native DRC has zero errors and 472 retained warnings; no severity waivers were added.
 
