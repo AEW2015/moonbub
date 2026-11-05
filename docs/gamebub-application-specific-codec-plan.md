@@ -818,3 +818,7 @@ independently on the other system's hardware. No board was programmed here.
 ## V50 research checkpoint — 2026-11-05
 
 [Strict whole-frame motion guard](custom-codec-prototype-v50-2026-11-05.md) rejects all 192 tested same-reference grid proposals and preserves the fixed-zero outputs on 96 frames. The V48 integrated receiver remains slower in Python despite reduced coefficient staging. V49's tile-bank schedules are assumption-based component demand, not RTL cycles or a 30-fps result. Hardware fit and physical throughput remain open.
+
+## V58 research checkpoint — 2026-11-05
+
+[V58 evidence](custom-codec-prototype-v58-2026-11-05.md) records bounded transport, scanout, motion, and error-diagnostic studies. The latest cell16 zeroing probe changes no visible post-RDO coefficients and produces no packet savings; V53 motion savings carry higher cumulative source error. Device throughput and resource fit remain unmeasured.
