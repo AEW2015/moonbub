@@ -1,0 +1,253 @@
+{
+  "status": "PASS",
+  "backend": "Verilator 5.020",
+  "clock_period_ps": {
+    "memory": 10000,
+    "pixel": 34058
+  },
+  "native_panel_H_total": 541,
+  "native_panel_V_total": 834,
+  "native_panel_refresh_Hz": 65.0755044149483,
+  "source_sha256": {
+    "fpga/experiments/cu66-v71/display/cu71_scanout.sv": "4eca088f8002a5ea075cc8861d0f95cd77012f82a524e006d3d606d94cf7bb64",
+    "fpga/experiments/cu66-v71/display/tb_scanout.cpp": "c7ba305899536d688134959159b5f54c4e904646fe840febd85b7066350048fe",
+    "fpga/experiments/cu66-v70/display/cu70_lcd_lines.sv": "d2356e040a333fdb7167e668afb1ed8257d71fa8a2299140ff493a9746ab1a11",
+    "scripts/cu66-v71/run_display.py": "bb9a00214cf8b2a4c7b59b2701d81cc5f66330d3a95b04585da0df766cf97382",
+    "fpga/experiments/cu66-v71/display/tb_scanout_control.sv": "97a2d67b87768a567176478864b01b88f6080459b2e0319c8c4ecc2ca3006bc7"
+  },
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--version"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v71/display/tool-version.log",
+      "sha256": "26daf9ad1ba36ee1c20cab9a869d0a1fbb8117230c80c78ec2d8cf597f64c4a5"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--cc",
+        "--exe",
+        "--build",
+        "-j",
+        "1",
+        "--Wall",
+        "--top-module",
+        "cu71_scanout",
+        "--Mdir",
+        "/build/v71-display",
+        "-CFLAGS",
+        "-O2 -std=c++17",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v71/display/cu71_scanout.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/display/cu70_lcd_lines.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v71/display/tb_scanout.cpp"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v71/display/build-final.log",
+      "sha256": "82317d65b9ca956a7f628f696eee4b4de5484a58e254551f6031d45094f509ef"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v71-display/Vcu71_scanout",
+        "0"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v71/display/scanout-seed0.log",
+      "sha256": "bb903f795609e1c5138171495ae1ab8d93af5989ecfe6dc54acd35a2649ed4c9"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v71-display/Vcu71_scanout",
+        "7101"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v71/display/scanout-seed7101.log",
+      "sha256": "550e44a02f3aab96bd9b75245f75505b418a1a7860e1de5b96a501b3fcf7143d"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v71-display/Vcu71_scanout",
+        "7102"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v71/display/scanout-seed7102.log",
+      "sha256": "645ae049e213d8d867d000942b1329d3d5c06e5c93f4b5444db77ee74ca82b0f"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v71-display/Vcu71_scanout",
+        "7101",
+        "--starve"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v71/display/scanout-seed7101--starve.log",
+      "sha256": "d12ca282405965dc79b491f29690830f5d4f9e41aa30faa777d25e7bfae7618e"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v71-display/Vcu71_scanout",
+        "7103",
+        "--faults"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v71/display/scanout-seed7103--faults.log",
+      "sha256": "85206c3c2c559e360712c35df866efc1711ff93cdfa2562545c4ab04b56cc813"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "iverilog",
+        "-g2012",
+        "-s",
+        "tb_scanout_control",
+        "-o",
+        "/build/v71-display-control.vvp",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v71/display/cu71_scanout.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/display/cu70_lcd_lines.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v71/display/tb_scanout_control.sv"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v71/display/control-iverilog-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "vvp",
+        "/build/v71-display-control.vvp"
+      ],
+      "exit_code": 0,
+      "log": "fpga/experiments/cu66-v71/display/control-iverilog.log",
+      "sha256": "c0a997055851d269ab36a297385fdcd11f4063a4c6fd7d7acd1df61364056d5d"
+    }
+  ],
+  "runs": [
+    {
+      "seed": 0,
+      "mode": "normal",
+      "pixel_clocks": 896933,
+      "memory_clocks": 3054773,
+      "compared_pixels": 768000,
+      "complete_frames": 2,
+      "descriptors_presented": 2,
+      "stale_rejections": 1,
+      "diagnostic_pulses": 1,
+      "memory_errors": 0,
+      "black_lines": 0,
+      "underruns": 0,
+      "burst_requests": 86400,
+      "reply_beats": 691200,
+      "held_request_cycles": 0,
+      "delayed_reply_cycles": 0
+    },
+    {
+      "seed": 7101,
+      "mode": "normal",
+      "pixel_clocks": 896933,
+      "memory_clocks": 3054773,
+      "compared_pixels": 768000,
+      "complete_frames": 2,
+      "descriptors_presented": 2,
+      "stale_rejections": 1,
+      "diagnostic_pulses": 1,
+      "memory_errors": 0,
+      "black_lines": 0,
+      "underruns": 0,
+      "burst_requests": 86400,
+      "reply_beats": 691200,
+      "held_request_cycles": 21491,
+      "delayed_reply_cycles": 672344
+    },
+    {
+      "seed": 7102,
+      "mode": "normal",
+      "pixel_clocks": 896933,
+      "memory_clocks": 3054773,
+      "compared_pixels": 768000,
+      "complete_frames": 2,
+      "descriptors_presented": 2,
+      "stale_rejections": 1,
+      "diagnostic_pulses": 1,
+      "memory_errors": 0,
+      "black_lines": 0,
+      "underruns": 0,
+      "burst_requests": 86400,
+      "reply_beats": 691200,
+      "held_request_cycles": 21486,
+      "delayed_reply_cycles": 673063
+    },
+    {
+      "seed": 7101,
+      "mode": "--starve",
+      "pixel_clocks": 896933,
+      "memory_clocks": 3054773,
+      "compared_pixels": 768000,
+      "complete_frames": 2,
+      "descriptors_presented": 2,
+      "stale_rejections": 1,
+      "diagnostic_pulses": 1,
+      "memory_errors": 0,
+      "black_lines": 1440,
+      "underruns": 1440,
+      "burst_requests": 37200,
+      "reply_beats": 297600,
+      "held_request_cycles": 9449,
+      "delayed_reply_cycles": 2319159
+    },
+    {
+      "seed": 7103,
+      "mode": "--faults",
+      "pixel_clocks": 896933,
+      "memory_clocks": 3054773,
+      "compared_pixels": 768000,
+      "complete_frames": 2,
+      "descriptors_presented": 2,
+      "stale_rejections": 1,
+      "diagnostic_pulses": 3,
+      "memory_errors": 2,
+      "black_lines": 0,
+      "underruns": 0,
+      "burst_requests": 86400,
+      "reply_beats": 691200,
+      "held_request_cycles": 21817,
+      "delayed_reply_cycles": 674563
+    }
+  ],
+  "total_complete_rasters": 10,
+  "total_compared_pixels": 3840000,
+  "not_proven": [
+    "actual SDRAM service or shared arbitration",
+    "physical FPGA timing/resource/CDC signoff",
+    "30 fps decoder or end-to-end stream performance"
+  ],
+  "independent_control_backend": "Icarus Verilog 12",
+  "control_checks": 31,
+  "scope": "Exact asynchronous LCD pixels, bounded bursts, descriptors, and explicit failure behavior"
+}
