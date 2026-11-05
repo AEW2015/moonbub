@@ -311,3 +311,7 @@ by `--inject-keys`; automated tests mock it and do not inject desktop keys.
 ## V40 research checkpoint — 2026-11-05
 
 [457-frame qualification and fresh HEVC/AV1 grid](docs/custom-codec-prototype-v40-2026-11-05.md) reports exact arithmetic savings of 10.2732%, all 2,742 alternatives and 5,484 fresh native access units. Native codecs remain smaller on sampled comparable-quality walkthrough points; combat peak-rate controls are a subsequent study. No physical frame-rate or FPGA fit claim.
+
+## V41 research checkpoint — 2026-11-05
+
+[Global raster, host profiling and native peak-rate controls](docs/custom-codec-prototype-v41-2026-11-05.md) retains the 13.31% flat-fixture win and zero gameplay spatial wins. HEVC VBV closes the coarse combat gap: 21.32% fewer bytes with no worse error on every frame. Direct bounded reception and shared host work are next; physical FPS and FPGA fit remain open.
