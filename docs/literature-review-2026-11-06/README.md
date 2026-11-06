@@ -314,7 +314,12 @@ adopting their complete format.
 recommendation: exact full-corpus coefficients and fewer cycles in a clocked
 real-stream RTL component, with negative Python/native CPU speed results.
 These are project experiments, not new published literature or physical
-frame-rate evidence. Packet/context integration remains next.
+frame-rate evidence. The [V91b follow-up](../cu66-v91b/README.md) adds
+metadata-derived context requests, run/scatter validation and finite output
+credit; its real-context word path uses 26.92% fewer cycles than its matched
+serial control. Full packet/CRC/raw ingress, coefficient memory and downstream
+decoder integration remain next. This is implementation evidence following the
+review, not another published-literature result or new source-count increase.
 
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:

@@ -23,6 +23,13 @@ Its 32-bit all-ready real-stream comparison reduces cycles by 29.24%; CPU
 candidates are slower. Full packet/context integration, complete decoder timing
 and physical qualification remain pending; the V100–V110 phase stays reserved.
 
+[V91b](cu66-v91b/README.md) now derives DC/AC requests and emits validated sparse
+addresses through one output slot. The full-corpus Python transaction matches
+all coefficients; the clocked real-context comparison is 685,304 word versus
+937,735 serial cycles. Packet CRC/raw ingress, four-context arbitration,
+zero-default scratch and whole-frame consumers still require integration. This
+substep matures E1 without renumbering V92's finer entropy-choice experiment.
+
 [V90](cu66-v90/README.md) evaluates 3,656 actual packet candidates from 457
 retained sources. Its selected packets average 18,203.64 B and reach 48,744 B,
 within the 49,152 B experimental admission cap. The four-source exhaustive

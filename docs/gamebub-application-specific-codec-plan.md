@@ -6,8 +6,15 @@
 over all 457 sources and an elastic RTL symbol component. On 48 real streams,
 32-bit all-ready parsing takes 605,514 versus 855,682 serial-control cycles
 (29.24% fewer); native CPU parsing is slower and is not promoted. Component
-gains do not close full-frame timing or physical 30 fps. Next integrate
-packet/context/scatter credits and advance the V92 entropy-choice experiment.
+gains do not close full-frame timing or physical 30 fps.
+
+[V91b integration](cu66-v91b/README.md) adds metadata-derived DC/AC requests,
+run/scatter validation and one held sparse output credit. Its Python model
+matches all 86,444,480 coefficients; the RTL's actual-context 32-bit ready
+comparison is 685,304 versus 937,735 cycles (26.92% fewer). Packet CRC/raw ingress,
+four-context arbitration, zero-default coefficient memory and full-frame
+consumers remain next; then advance the V92 entropy-choice experiment. These
+context cycles do not replace the complete validated-decode timing fence.
 
 Follow the [V91–V110 development plan](gamebub-v91-v110-development-plan.md).
 V91–V99 turn the [literature-review findings](literature-review-2026-11-06/README.md)
