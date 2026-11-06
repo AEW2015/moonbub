@@ -1,0 +1,223 @@
+"""Counter reconciliation and analysis of clocked V91g2 receipts."""
+import gzip
+import hashlib
+import json
+from pathlib import Path
+import statistics
+
+ROOT = Path(__file__).resolve().parents[2]
+AREA = ROOT / 'experiments/python-gamebub-v91g2'
+CONTRACT_PATH = AREA / 'telemetry-contract.json'
+LEGACY_FIELDS = ('cycles', 'input_bytes', 'dense_coefficients', 'read_requests', 'write_requests',
+                 'output_stalls', 'metadata_wait', 'memory_pending_edges', 'used_bytes')
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def read(path):
+    return json.loads(path.read_text())
+
+
+def cases():
+    return [json.loads(line) for line in gzip.open(ROOT / 'experiments/python-gamebub-v91e/vectors/coefficients.jsonl.gz', 'rt')]
+
+
+def config_key(row):
+    return row['id'], row['memory_profile'], row['tile_overlap']
+
+
+def expected_service(case, profile, seed):
+    """Fixture-derived diagnostic service signatures; exact bytes remain the oracle."""
+    mask = (1 << 64) - 1
+    offset, prime = 1469598103934665603, 1099511628211
+    def mix(value, word):
+        for byte in int(word).to_bytes(8, 'little'):
+            value = ((value ^ byte) * prime) & mask
+        return value
+    packed = bytes.fromhex(case['packed_hex'])
+    writes = list(range(32, len(packed), 16)) + [0, 16]
+    total, ordered_write = 0, offset
+    for direction, addresses in ((1, writes), (0, range(0, len(packed), 16))):
+        for address in addresses:
+            latency = ((16 if direction else 18) + (((address >> 4) ^ seed) & 3)) if profile else 1
+            words = [direction, address, latency]
+            if direction:
+                words += [int.from_bytes(packed[address+j:address+j+4], 'little') for j in range(0,16,4)]
+            request = offset
+            for word in words:
+                request = mix(request, word)
+                if direction:
+                    ordered_write = mix(ordered_write, word)
+            total = (total + request) & mask
+    return str(total), str(ordered_write)
+
+
+def validate_rows(rows, vector_rows):
+    contract = read(CONTRACT_PATH)
+    seed = next(row['seed'] for row in rows if row['type'] == 'verdict')
+    service_expected = {(case['id'], profile): expected_service(case, profile, seed) for case in vector_rows for profile in (0, 1)}
+    records = [row for row in rows if row['type'] == 'case']
+    by_id = {row['id']: row for row in vector_rows}
+    assert len(records) == len(by_id) * 4
+    assert {config_key(row) for row in records} == {(identity, profile, clear) for identity in by_id for profile in (0, 1) for clear in (0, 1)}
+    for row in records:
+        golden = by_id[row['id']]
+        multiset, writes = service_expected[(row['id'], row['memory_profile'])]
+        assert row['request_service_multiset_hash'] == multiset
+        assert row['ordered_write_service_hash'] == writes
+        o = row['observability']
+        p, s = o['packet_state_cycles'], o['scratch_state_cycles']
+        e, ts = o['overlapping_edges'], o['timestamps']
+        assert len(p) == 16 and len(s) == 32
+        assert sum(p) == sum(s) == row['cycles']
+        assert len(o['emitter_state_cycles']) == 4 and sum(o['emitter_state_cycles']) == row['cycles']
+        t = o['tile_overlap_counters']
+        assert t['output_valid_edges'] == row['dense_coefficients'] + e['dense_stall']
+        count = golden['blocks'] if row['tile_overlap'] and not golden['raw'] else 0
+        assert t['prepare_starts'] == t['publishes'] == t['releases'] == count
+        assert t['bank_wait_edges'] == s[28] and t['prep_done_wait_edges'] == s[29]
+        assert t['both_ready_wait_edges'] <= t['bank_wait_edges']
+        assert t['prepare_output_overlap'] <= row['dense_coefficients']
+        assert t['prepare_output_hold'] <= e['dense_stall']
+        assert t['read_output_overlap'] <= row['dense_coefficients']
+        assert t['publish_release_same_edge'] <= count
+        assert e['memory_pending'] == row['memory_pending_edges']
+        if not row['tile_overlap'] or golden['raw']:
+            assert s[20] + s[22] == row['dense_coefficients'] + e['dense_stall']
+        assert e['dense_stall'] == row['output_stalls'] and e['metadata_wait'] == row['metadata_wait']
+        assert p[1] == row['input_bytes'] + e['input_starved']
+        assert ts['integrated_done'] == row['cycles'] == ts['last_dense'] + 1
+        ordered = [ts[key] for key in ('first_input', 'last_input', 'metadata_accept', 'last_sparse_coef',
+                   'packet_done_observed', 'seal_accepted', 'scratch_sealed_observed', 'first_dense', 'last_dense', 'integrated_done')]
+        assert ordered[0] >= 1 and ordered == sorted(ordered)
+        expected = [golden['blocks'] * 64, 0, 0, 0] if golden['raw'] else [golden['blocks'], *golden['counts']]
+        assert o['coefficient_handshakes_by_band'] == expected
+        assert o['band_end_handshakes_by_band'] == ([1, 0, 0, 0] if golden['raw'] else [1, 1, 1, 1])
+        for band, count in enumerate(expected):
+            first, last, end = o['first_coefficient_by_band'][band], o['last_coefficient_by_band'][band], o['band_end_by_band'][band]
+            assert bool(first) == bool(last) == bool(count)
+            if count:
+                assert ts['metadata_accept'] < first <= last < end <= ts['packet_done_observed']
+            elif not golden['raw']:
+                assert end > 0
+        for field, bound in contract['highwater_bounds'].items():
+            assert 0 <= o['highwaters'][field] <= bound
+        assert row['write_overlap'] == 1 and row['read_prefetch'] == 1 and row['serial_clear'] == 0
+        assert row['dense_coefficients'] == golden['blocks'] * 64
+        assert row['read_requests'] == row['write_requests'] == golden['used_bytes'] // 16
+        assert row['input_bytes'] == len(bytes.fromhex(golden['packet_hex']))
+        assert row['memory_line_coverage'] == {'read_once_lines':golden['used_bytes']//16, 'write_once_lines':golden['used_bytes']//16}
+        assert sum(s[index] for index in (24, 25, 30, 31)) == 0
+    keyed = {config_key(row): row for row in records}
+    for identity in by_id:
+        for profile in (0, 1):
+            a, b = keyed[(identity, profile, 0)], keyed[(identity, profile, 1)]
+            assert a['request_service_multiset_hash'] == b['request_service_multiset_hash']
+            assert a['memory_pending_edges'] == b['memory_pending_edges']
+        for profile in (0, 1):
+            on = keyed[(identity, profile, 1)]
+            assert on['serial_clear'] == 0
+            counters = on['observability']['write_overlap_counters']
+            assert counters['physical_accepts'] == counters['physical_acks'] == on['write_requests'] - 2
+            assert counters['enqueues'] == on['write_requests'] - 2
+        for profile in (0, 1):
+            for enabled in (0, 1):
+                row = keyed[(identity, profile, enabled)]
+                counts = row['observability']['read_prefetch_counters']
+                assert counts['offers'] == counts['physical_accepts'] == counts['physical_acks'] == counts['uses']
+                assert counts['physical_accepts'] <= row['read_requests'] - 2
+                assert counts['drain_wait_edges'] == row['observability']['scratch_state_cycles'][27]
+                if enabled and not by_id[identity]['raw']:
+                    assert all(value == 0 for value in counts.values())
+    return records
+
+
+def compare_v91g(records, seed):
+    audit_path = ROOT / 'experiments/python-gamebub-v91g/audit.json'
+    audit = read(audit_path)
+    control = next(item for item in audit['integrated_rtl']['audited_attempts'] if item['seed'] == seed)
+    path = ROOT / 'fpga/experiments/cu66-v91g/pipeline-attempts' / control['attempt'] / 'results.json'
+    assert sha(path) == control['result_sha256']
+    old = [json.loads(line) for line in path.with_name('simulation.jsonl').read_text().splitlines()]
+    old_rows = {(r['id'], r['memory_profile']): r for r in old if r['type'] == 'case' and r['serial_clear'] == 0 and r['write_overlap'] == 1 and r['read_prefetch'] == 1}
+    new_rows = {(r['id'], r['memory_profile']): r for r in records if r['tile_overlap'] == 0}
+    assert len(old_rows) == 40 and old_rows.keys() == new_rows.keys()
+    raw_by_id = {case['id']:case['raw'] for case in cases()}
+    for key, before in old_rows.items():
+        assert all(before[field] == new_rows[key][field] for field in LEGACY_FIELDS), key
+        assert before['request_service_hash'] == new_rows[key]['request_service_hash'], key
+        if raw_by_id[key[0]]:
+            candidate = next(r for r in records if r['id']==key[0] and r['memory_profile']==key[1] and r['tile_overlap']==1)
+            assert all(before[field]==candidate[field] for field in LEGACY_FIELDS), ('RAW',key)
+            assert before['request_service_hash']==candidate['request_service_hash'], ('RAW',key)
+    return dict(status='PASS_EXACT_FROZEN_V91G_PREFETCH_METRICS', baseline_report=str(path.relative_to(ROOT)),
+                baseline_result_sha256=sha(path), baseline_audit_sha256=sha(audit_path),
+                compared_rows=len(old_rows), metrics=list(LEGACY_FIELDS), metric_values_compared=len(old_rows) * len(LEGACY_FIELDS))
+
+
+def validate_tiles(path, records, vector_rows):
+    keyed = {config_key(row): row for row in records}
+    blocks = {row['id']: row['blocks'] for row in vector_rows}
+    raw_mode = {row['id']: row['raw'] for row in vector_rows}
+    groups = {}
+    with gzip.open(path, 'rt') as source:
+        for line in source:
+            event = json.loads(line)
+            key = config_key(event)
+            group = groups.setdefault(key, [])
+            assert key in keyed and event['block'] == len(group)
+            assert event['first_dense'] <= event['last_dense']
+            assert event['last_dense'] - event['first_dense'] >= 63
+            # Coded tiles emit64 consecutive scalars when always ready. RAW
+            # fetches/extracts each scalar separately, including cache misses.
+            if event['memory_profile'] == 0 and not raw_mode[event['id']]:
+                assert event['last_dense'] - event['first_dense'] == 63
+            if group:
+                assert event['first_dense'] > group[-1]['last_dense']
+            group.append(event)
+    assert groups.keys() == keyed.keys()
+    result = []
+    for key, events in groups.items():
+        row = keyed[key]
+        assert len(events) == blocks[row['id']]
+        assert events[0]['first_dense'] == row['observability']['timestamps']['first_dense']
+        assert events[-1]['last_dense'] == row['observability']['timestamps']['last_dense']
+        gaps = [b['first_dense'] - a['last_dense'] - 1 for a, b in zip(events, events[1:])]
+        spans = [event['last_dense'] - event['first_dense'] + 1 for event in events]
+        result.append(dict(id=key[0], memory_profile=key[1], tile_overlap=key[2], tiles=len(events),
+                           delivery_span_min=min(spans), delivery_span_max=max(spans),
+                           intertile_gap_min=min(gaps) if gaps else None,
+                           intertile_gap_median=statistics.median(gaps) if gaps else None,
+                           intertile_gap_max=max(gaps) if gaps else None))
+    return result
+
+
+def aggregate(records):
+    contract = read(CONTRACT_PATH)
+    results = []
+    for population in ('legacy_actual', 'appended_actual', 'all_actual', 'other'):
+        def included(row):
+            actual = row['id'].startswith('actual:')
+            appended = row['id'].startswith('actual:c3:f28:')
+            return {'legacy_actual': actual and not appended, 'appended_actual': appended,
+                    'all_actual': actual, 'other': not actual}[population]
+        for profile in (0, 1):
+            for clear in (0, 1):
+                subset = [row for row in records if included(row) and row['memory_profile'] == profile and row['tile_overlap'] == clear]
+                if not subset:
+                    continue
+                hist = [sum(row['observability']['scratch_state_cycles'][index] for row in subset) for index in range(32)]
+                groups = {name: sum(hist[index] for index in indexes) for name, indexes in contract['exclusive_scratch_groups'].items()}
+                total = sum(row['cycles'] for row in subset)
+                assert sum(groups.values()) == total
+                results.append(dict(population=population, memory_profile=profile, tile_overlap=clear, packets=len(subset),
+                    cycles=total, dense_coefficients=sum(row['dense_coefficients'] for row in subset),
+                    groups=groups, group_percent={name: 100 * cycles / total for name, cycles in groups.items()},
+                    overlapping_edges={name: sum(row['observability']['overlapping_edges'][name] for row in subset)
+                                       for name in subset[0]['observability']['overlapping_edges']},
+                    post_last_input_coefficient_done_cycles=sum(row['cycles'] - row['observability']['timestamps']['last_input'] for row in subset),
+                    highwaters={name: max(row['observability']['highwaters'][name] for row in subset)
+                                for name in subset[0]['observability']['highwaters']}))
+    return results

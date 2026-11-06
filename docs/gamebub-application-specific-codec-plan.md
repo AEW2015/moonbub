@@ -2,6 +2,19 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+[V91g2](cu66-v91g2/README.md) completes the bounded coded tile-preparation/
+delivery overlap part of V91g. Two tile banks reduce actual-packet coefficient
+service cycles **16.08% FAST and 16.30–16.31% SLOW** relative to V91g prefetch.
+Both seeds preserve exact output, all 720 disabled-control metric values and RAW
+scheduling in both modes. Each seed passes 47 integrated recovery checks plus
+nine standalone checks; independent Python bank ownership and RTL audits are
+retained. The slowest tested three-plane SLOW coefficient sum is now 990,205
+cycles. That is not validated 10-ms decoding: achieved clock and the complete
+pixel/reference/HUD/hash/publication path remain unqualified. **Next is V91h
+explicit synchronous packet-staging RAM ports**, followed by V91i–m full-frame
+integration. Hardware 30 fps and complete validated decoding under 10 ms remain
+open.
+
 [V91g](cu66-v91g/README.md) qualifies the **bounded needed-line read-prefetch
 part** of its checkpoint: actual-packet coefficient service uses **0.94% fewer
 cycles FAST and 5.18% fewer SLOW** than V91f. Both seeds preserve packed bytes,
@@ -9,10 +22,10 @@ dense output and all 720 disabled-control metric values; 36 integrated checks
 per seed include eight read-prefetch recovery/hold tests. An independent Python
 ownership reference covers bounded cache/ACK/output-hold events. Prefetch reuses
 the four existing cache payloads and retains one accepted physical request.
-**Full next-tile merge overlap is still open within V91g**; implement and measure
-that next, followed by V91h synchronous staging ports and V91i–m complete-frame
-integration. These are coefficient-processing results, not hardware 30 fps or
-complete validated decode latency.
+V91g2 above qualifies the remaining next-tile merge overlap; the next step is
+synchronous staging ports before complete-frame integration. These are
+coefficient-processing results, not hardware 30 fps or complete validated decode
+latency.
 
 [V91f](cu66-v91f/README.md) now qualifies bounded physical-write overlap for
 the coefficient endpoint: **6.79–6.80% fewer actual-packet service cycles** in
@@ -23,25 +36,25 @@ checks per run cover ACK, cancellation and semantic-error races. The independent
 Python ownership reference checks bounded event sequences. Only one physical
 request can be accepted at a time and two line owners are allowed. This is
 scheduling progress with unchanged wire/quality, not hardware throughput proof.
-V91g above qualifies needed-line prefetch; its full next-tile merge remains
-next before synchronous ports and complete-frame consumers/publication.
+V91g and V91g2 above qualify needed-line reads and next-tile merge overlap;
+synchronous ports and complete-frame consumers/publication follow.
 
 [V91e](cu66-v91e/README.md) now reconciles all active cycles and event fences
 without changing V91d behavior. Both seeds exactly match all nine legacy metrics
 on the original 17 cases, with three C3/f28 stress packets added. In the expanded
 SLOW scenario, dense delivery/consumer hold occupies 46.67%, write ACK wait
-9.76% and read ACK wait 10.88%. V91f above measures bounded write overlap;
-read/tile overlap remains next. Full-frame publication timestamps remain unset; current
-coefficient completion cannot be reported as validated decode latency.
+9.76% and read ACK wait 10.88%. V91f/g/g2 above measure the subsequent
+write/read/tile scheduling changes. Full-frame publication timestamps remain
+unset; coefficient completion cannot be reported as validated decode latency.
 
 [V91d](cu66-v91d/README.md) connects validated packet metadata to packed scratch
 RTL, acknowledged external memory and dense coefficient output. A validity mask
 removes 63 clear cycles per coded block: actual-packet cycles fall 34.43%/27.10%
 in FAST/SLOW memory scenarios. Both final seeds pass exact images/output and a
-repaired replacement/error race. Next overlap bounded service and integrate real
-reconstruction/reference/HUD/hash consumers. Two SLOW source sums already exceed
-the 1,000,000-cycle reference budget before those stages; hardware 30 fps and
-complete <10-ms decoding remain open.
+repaired replacement/error race. At that checkpoint, two SLOW source sums
+exceeded the 1,000,000-cycle reference budget before frame consumers. V91g2
+reduces the coefficient sum below that reference; reconstruction/reference/HUD/
+hash integration, hardware 30 fps and complete <10-ms decoding remain open.
 
 [V91c](cu66-v91c/README.md) established complete BR88 chunk bytes/CRC and
 autonomously runs DC/AC/raw in RTL. A separate Python packed-scratch prototype

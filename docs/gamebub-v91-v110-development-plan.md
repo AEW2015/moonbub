@@ -18,10 +18,11 @@ can be compared against a stable function and workload.
 ## Lettered execution path from V91d
 
 This section is the concrete next-work sequence. **V91e observability and V91f
-bounded write overlap pass for the coefficient endpoint. V91g needed-line
-read prefetch also passes, while its full next-tile merge remains open; V91h
-onward is planned.** V91g prefetch is the latest scheduling/architecture change.
-The original unlettered V91 and published V91b/V91c/V91d retain their names. No historical V91a release is implied.
+bounded write overlap pass for the coefficient endpoint. V91g read prefetch and
+its V91g2 two-bank preparation/delivery follow-up also pass; V91h onward is
+planned.** V91g2 is the latest scheduling/architecture change.
+The original unlettered V91 and published V91b/V91c/V91d retain their names.
+No historical V91a release is implied.
 
 Letters identify separately reviewable deliverables within a numbered work
 phase. Use only the letters needed; the next unused letters through `z` remain
@@ -57,7 +58,7 @@ list the selected features and deferred experiments.
 |---|---|---|
 | **V91e** | **Passed for current coefficient endpoint:** stage/stall/queue counters, source/frame/chunk identities, timestamp definitions and expanded worst-case goldens. | All cycles/transactions reconcile and legacy metrics are unchanged. Current coefficient fences are measured; future full-frame first-byte/publication and packet-complete/validated-publication fences are defined but unset. |
 | **V91f** | **Passed for current coefficient endpoint:** two bounded line owners overlap packing with real physical write ACK service, retaining one accepted outstanding request and exact runtime-off control. | [Two-seed evidence](cu66-v91f/README.md): 6.79–6.80% fewer SLOW actual-packet cycles; FAST effectively neutral; exact images/output, 720 control metric matches, 28 integrated + nine direct-interface checks per run. No bank reuse before old ACK drain, including semantic-error/same-edge acceptance. |
-| **V91g** | **Partial:** bounded needed-line prefetch into existing caches passes; full next-tile merge concurrent with delivery remains planned. | [Two-seed prefetch evidence](cu66-v91g/README.md): 0.94%/5.18% fewer FAST/SLOW actual-packet cycles than V91f, exact bytes/output, 720 control metric matches, 36 integrated + nine direct write-hazard checks per seed. Four cache payloads and one accepted request; no mapped-fit claim. Finish and qualify bounded next-tile merge before closing this checkpoint. |
+| **V91g / V91g2** | **Passed for the coefficient endpoint:** bounded read prefetch, then two-bank coded preparation concurrent with delivery; RAW retains its qualified path. | [V91g2 evidence](cu66-v91g2/README.md): another 16.08%/16.30–16.31% fewer FAST/SLOW actual-packet cycles than V91g, exact bytes/output, 720 control metric matches and exact RAW parity. Each seed passes 47 integrated + nine standalone checks; at most two tile owners and one accepted request. Physical fit remains unqualified. |
 | **V91h** | Replace combinational multi-address packet staging assumptions with explicit synchronous memory ports and read latency. | Header, unaligned fields, replay, RAW and rejection parity under real port limits. This establishes functional RAM semantics; 7-series mapping/physical optimization remains V100–V110. |
 | **V91i** | Integrate outer frame descriptors, modes, quantizers, profile negotiation, chunk placement and admission. | Sender/receiver agree on every supported mode and fallback; unsupported modes reject. A chunk packet or scratch seal cannot masquerade as complete-frame acceptance. |
 | **V91j** | Connect bit-true dequantization and IDCT with bounded tile/epoch streams. | Exact signed widths, Q14 rounding/saturation order and native golden parity, including backpressure and abort. No zero-time transform substitute in the measured RTL endpoint. |
@@ -68,11 +69,12 @@ list the selected features and deferred experiments.
 V91f is promoted for functional scheduling under its bounded ownership contract;
 physical resource fit is still unqualified. V91g is promoted only if measured
 integrated service improves while its ownership and resource contracts remain
-valid. The qualified V91g prefetch subset retains one accepted request; next-tile
-merge is still unqualified. Preserve the V91d control and
-its retained failure reproduction. The current slower-memory source service
-sums already exceed the one-million-cycle reference budget before transforms
-and validation, so parser-only speedups cannot close the remaining work.
+valid. V91g2 qualifies that coded preparation/delivery overlap with two banks
+and one accepted request. Preserve all frozen controls and retained failures.
+The worst tested slower-memory three-plane coefficient sum is now 990,205 cycles,
+below the old one-million-cycle reference budget for this component. This is
+not full-frame latency or an achieved-clock result; transforms, reconstruction
+and validated publication still need integration and measurement.
 
 Freeze the V91e timing definitions before optimizing further. Keep ingress and
 end-to-end service timing even when work overlaps arrival: a short final-byte

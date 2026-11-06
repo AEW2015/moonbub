@@ -358,8 +358,17 @@ versus V91f, preserving bytes and exact output. Two seeds pass matched controls,
 canonical reordered-service accounting and read-specific recovery/hold tests;
 a bounded Python ownership reference is retained separately. This qualifies a
 prefetch implementation, not full next-tile merging, compression superiority,
-physical timing or hardware frame rate. Next-tile merge remains within V91g;
-synchronous ports and complete-frame validation follow.
+physical timing or hardware frame rate. The V91g2 follow-up below addresses
+next-tile merge; synchronous ports and complete-frame validation follow.
+
+[V91g2](../cu66-v91g2/README.md) completes the next-tile scheduling follow-up:
+two bounded banks overlap actual DC/AC preparation with delivery, preserving
+RAW controls, all bytes and intended coefficients. Actual-packet service uses
+16.08% fewer FAST cycles and 16.30–16.31% fewer SLOW cycles than V91g prefetch.
+Two final seeds, bank-owner/recovery tests and an independent abstract Python
+model pass. This is implementation evidence, not a new literature finding,
+compression-quality win or hardware frame-rate result. Next make staging ports
+synchronous, then integrate the full reconstruction/validation path.
 
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
