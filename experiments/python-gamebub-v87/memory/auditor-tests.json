@@ -1,0 +1,137 @@
+{
+  "schema": "cu66-v87-auditor-mutation-checks-v1",
+  "status": "PASS",
+  "witness": "experiments/python-gamebub-v87/coupled/attempts/20261106T142657331125Z-b0439fe3/witness-c0-f1-low_lanes2.json.gz",
+  "witness_sha256": "390a8ae7e13e8f9eb7e03766a2e9ebb2598683ba7e8405753df119ffd289202b",
+  "auditor_sha256": "d225126f44a389c754b2ad3dee64d603210f67f65f3c2c32d801c27411cdca4d",
+  "test_sha256": "e1c7692730f59ebc327b654d03876225532fd053da8298cc151f931c942ccda3",
+  "positive_audit": {
+    "status": "PASS_INDEPENDENT_COUPLED_TIMELINE_AUDIT",
+    "jobs": 151859,
+    "tile_count": 8100,
+    "timeline_sha256": "fb7f87d30d2ee1af98ec2cac24be24bb7e91513356181d3383e0cc0645f43e3f",
+    "finish_cycles": 1210858,
+    "resource_work_cycles": {
+      "arithmetic": 422669,
+      "dequant": 259456,
+      "emit": 8100,
+      "fetch": 78206,
+      "hash": 518848,
+      "inverse": 259456,
+      "map_r": 8100,
+      "map_w": 16200,
+      "memory": 1170192,
+      "reconstruct": 259456,
+      "tree_r": 22336,
+      "tree_w": 15160
+    },
+    "resource_peaks": {
+      "tree_r": 1,
+      "tree_w": 1,
+      "map_r": 1,
+      "memory": 1,
+      "map_w": 1,
+      "inverse": 1,
+      "reconstruct": 1,
+      "hash": 1,
+      "fetch": 1,
+      "arithmetic": 2,
+      "emit": 1,
+      "dequant": 1
+    },
+    "stages": {
+      "reference": {
+        "reservations": 7806,
+        "capacity": 8,
+        "peak": 2
+      },
+      "inverse": {
+        "reservations": 4054,
+        "capacity": 8,
+        "peak": 8
+      },
+      "coefficients": {
+        "reservations": 8100,
+        "capacity": 8,
+        "peak": 8
+      }
+    },
+    "group_peak": 4,
+    "complete_fence_covers_all_jobs": true,
+    "context_order_and_consumer_release": true,
+    "dequant_staging": {
+      "reservations": 4054,
+      "peak_slots": 8,
+      "assumed_bytes_per_materialized_result": 256,
+      "ownership": "Dequant producer start through inverse consumer finish; subset of coefficient-credit lifetime."
+    },
+    "logical_stage_reservation_bytes": {
+      "reference": 512,
+      "inverse": 1536,
+      "coefficients": 1024,
+      "output_groups": 4096,
+      "materialized_dequant_results": 2048
+    },
+    "total_logical_stage_reservation_bytes": 9216,
+    "storage_scope": "Logical staging only; original coefficients and materialized signed32 dequant results coexist conservatively. Tree/maps, engine working registers, ports, transport and physical RAM rounding are extra."
+  },
+  "rejected_mutations": [
+    {
+      "name": "consumer_release_edge_removed",
+      "status": "PASS_REJECT",
+      "exception": "AssertionError",
+      "detail": "coefficient release must be consumer, not emitter"
+    },
+    {
+      "name": "coefficient_released_on_emitter",
+      "status": "PASS_REJECT",
+      "exception": "AssertionError",
+      "detail": "coefficient release must be consumer, not emitter"
+    },
+    {
+      "name": "declared_consumer_replaced_by_emit",
+      "status": "PASS_REJECT",
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "name": "declared_producer_delayed_until_emit",
+      "status": "PASS_REJECT",
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "name": "probability_context_order_removed",
+      "status": "PASS_REJECT",
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "name": "group_admission_edge_removed",
+      "status": "PASS_REJECT",
+      "exception": "AssertionError",
+      "detail": ""
+    },
+    {
+      "name": "publication_omits_operation",
+      "status": "PASS_REJECT",
+      "exception": "AssertionError",
+      "detail": "unfenced operation"
+    },
+    {
+      "name": "arithmetic_resource_oversubscribed",
+      "status": "PASS_REJECT",
+      "exception": "AssertionError",
+      "detail": "('capacity', 2, 1)"
+    },
+    {
+      "name": "memory_reserved_window_overlap",
+      "status": "PASS_REJECT",
+      "exception": "AssertionError",
+      "detail": "('reserved memory window', 2049)"
+    }
+  ],
+  "checks": 9,
+  "repeat_positive": "PASS",
+  "scope": "Nine targeted graph/resource/credit mutations on one native-source witness, not a decoder or hardware fault campaign."
+}
