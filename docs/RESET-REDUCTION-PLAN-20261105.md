@@ -156,3 +156,15 @@ Build completion is achieved. Physical raw-memory readback and CPL1 CRC remain
 the next gates. No new image has been programmed; no ESP32, SD or persistent
 FPGA flash changes were made. The full fixture remains fixed-ROM CAPS0 and
 does not establish Sunshine readiness or 30 unique displayed fps.
+
+
+## Subsequent physical evidence
+
+The SDR1 hardware test failed burst response alignment: all expected words
+were present in the raw samples, but the selected response omitted word zero.
+See [retained readback](SDR1-HARDWARE-READBACK-20261105.md). The separate
+[reference BL8 window characterization](SDRAM-WINDOW-MEASUREMENTS-20261105.md)
+passed full-memory interior controls and identified a marginal phase boundary.
+These later measurements do not change the archived build/simulation gates;
+the full CPL1 candidate remains gated on physical readback and CRC. Build50
+was restored after testing.

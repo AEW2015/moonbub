@@ -56,3 +56,15 @@ A model pass or a green status raster cannot establish physical memory
 correctness. Save raw readback even on failure; restore build50 after the
 diagnostic as appropriate. Full CPL1 CRC and network-streaming qualification
 remain separate.
+
+
+## Subsequent physical evidence
+
+The SDR1 hardware test failed burst response alignment: all expected words
+were present in the raw samples, but the selected response omitted word zero.
+See [retained readback](SDR1-HARDWARE-READBACK-20261105.md). The separate
+[reference BL8 window characterization](SDRAM-WINDOW-MEASUREMENTS-20261105.md)
+passed full-memory interior controls and identified a marginal phase boundary.
+These later measurements do not change the archived build/simulation gates;
+the full CPL1 candidate remains gated on physical readback and CRC. Build50
+was restored after testing.

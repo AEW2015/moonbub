@@ -71,3 +71,15 @@ port. Do not announce Sunshine/MSV1 readiness from this build. Restore the
 compatible JPEG/AV image before those tests, or separately qualify a versioned
 custom loader. Audio/controller coexistence and 30 unique displayed fps remain
 separate physical acceptance gates.
+
+
+## Subsequent physical evidence
+
+The SDR1 hardware test failed burst response alignment: all expected words
+were present in the raw samples, but the selected response omitted word zero.
+See [retained readback](SDR1-HARDWARE-READBACK-20261105.md). The separate
+[reference BL8 window characterization](SDRAM-WINDOW-MEASUREMENTS-20261105.md)
+passed full-memory interior controls and identified a marginal phase boundary.
+These later measurements do not change the archived build/simulation gates;
+the full CPL1 candidate remains gated on physical readback and CRC. Build50
+was restored after testing.
