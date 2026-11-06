@@ -2,13 +2,21 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
-[V91c](cu66-v91c/README.md) now validates complete BR88 chunk bytes/CRC and
+[V91d](cu66-v91d/README.md) connects validated packet metadata to packed scratch
+RTL, acknowledged external memory and dense coefficient output. A validity mask
+removes 63 clear cycles per coded block: actual-packet cycles fall 34.43%/27.10%
+in FAST/SLOW memory scenarios. Both final seeds pass exact images/output and a
+repaired replacement/error race. Next overlap bounded service and integrate real
+reconstruction/reference/HUD/hash consumers. Two SLOW source sums already exceed
+the 1,000,000-cycle reference budget before those stages; hardware 30 fps and
+complete <10-ms decoding remain open.
+
+[V91c](cu66-v91c/README.md) established complete BR88 chunk bytes/CRC and
 autonomously runs DC/AC/raw in RTL. A separate Python packed-scratch prototype
 matches every coefficient and reduces corpus peak storage from 658,432 B to
-134,352 B. Next connect metadata/credits to RTL memory ports and the tile merge;
-the packet staging array's combinational read assumptions also need physical
-port scheduling. Full-frame consumers, achieved clock and hardware gates remain
-open. V92 selection and the V100–V110 physical phase retain their planned scope.
+134,352 B. V91d above implements that store and metadata/credit handshakes. The
+packet staging array's combinational reads still need physical port scheduling.
+V92 selection and the V100–V110 physical phase retain their planned scope.
 
 The preceding controls remain frozen. [V91](cu66-v91/README.md) qualifies the
 unchanged-byte word Rice reader; its real-stream symbol comparison is 605,514

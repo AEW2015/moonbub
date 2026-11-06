@@ -17,6 +17,14 @@ can be compared against a stable function and workload.
 
 ## Evidence entering this roadmap
 
+[V91d](cu66-v91d/README.md) joins validated packet metadata/end credits, packed
+scratch RTL, finite acknowledged memory and dense coefficient delivery. Mask
+clearing reduces actual selected-packet cycles 34.43%/27.10% in FAST/SLOW
+scenarios, with exact bytes and recovery checks. Remaining work includes bounded
+service overlap, reconstruction/reference/HUD/hash consumers and whole-top
+physical qualification. Two SLOW source sums already miss the 1,000,000-cycle
+reference budget before remaining stages.
+
 [V91](cu66-v91/README.md) now supplies full-corpus coefficient parity,
 directed/native/sanitizer checks and clocked RTL symbol-component evidence.
 Its 32-bit all-ready real-stream comparison reduces cycles by 29.24%; CPU
@@ -31,8 +39,8 @@ while V92 retains its finer entropy-choice experiment.
 
 [V91c](cu66-v91c/README.md) adds complete residual-chunk packet/CRC/raw control
 in RTL and a separate packed temporary-coefficient store model. All 457 sources
-match; packed corpus peak is 134,352 B versus 658,432 B dense. The store still
-needs RTL metadata/allocator and finite memory ports. The packet staging model
+match; packed corpus peak is 134,352 B versus 658,432 B dense. V91d adds the
+RTL metadata/allocator and finite memory ports. The packet staging model
 uses combinational multi-address reads; V100–V105 must bank/register/schedule
 actual RAM ports and remeasure cycles, resources and routed clock. Neither
 component changes full-frame or hardware qualification status.

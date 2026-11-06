@@ -329,6 +329,13 @@ trades value-record bytes for capacity and sequential access; a dense/bitmap
 control retains a useful-byte advantage under ideal memory service. Physical
 RAM ports/controller, frame consumers and routed performance remain unqualified.
 
+[V91d](../cu66-v91d/README.md) connects that packed layout to packet validation
+in RTL over an acknowledged finite-latency memory interface. A local validity
+mask removes 63 serial clear cycles per coded tile, reducing actual-packet
+coefficient-endpoint cycles 34.43%/27.10% in two explicit memory scenarios.
+This is application-specific implementation evidence; external-memory overlap,
+the pixel/reference/HUD/hash path and physical timing remain open.
+
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
 
