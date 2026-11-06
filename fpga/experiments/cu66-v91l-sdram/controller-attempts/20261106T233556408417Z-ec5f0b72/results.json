@@ -1,0 +1,120 @@
+{
+  "schema": "cu66-v91l-real-sdram-bridge-v1",
+  "status": "FAIL",
+  "seed": 912301,
+  "source_revision": "67744b3340e92ab2b188143fe3727107a7647d69",
+  "source_sha256": {
+    "fpga/experiments/cu66-v91l-sdram/controller/moonshine_sdram.sv": "9ecadf0e42bd0c35267e09d4c3b6df632d663d2096f93a80805b78528d2c6d4f",
+    "fpga/experiments/cu66-v91l-sdram/row_to_sdram.sv": "f5d887dae1937e057999c9280a66674a7debbce86d191dd9f398949a2f24186c",
+    "fpga/experiments/cu66-v91l-sdram/sdram_pin_model.sv": "0bb096806aebeefaa75a4275a5c0b6846f4705805ed10d8caaa6ae019ad02bae",
+    "fpga/experiments/cu66-v91l-sdram/tb_controller.sv": "e0bb7fd26f6ba576bfea9513a882094a6d13bd29ee97fb96a39708b083203d26",
+    "fpga/experiments/cu66-v91l-sdram/generate_controller.py": "989d348a2e78b0add4b01e1309ed3943e313c5f5aa572588cf24229a150d7827",
+    "fpga/experiments/cu66-v91l-sdram/controller-derivation.json": "f9745cf8146ad8b178013fef7395f0da139ef00b5ae20585d48ee1132bc719ae",
+    "fpga/rtl/moonshine_sdram.sv": "f1c3bfd6e41b0f2cae0a68e4bf37155a5914d2993dc27d22b9a052d3e9b0f26f",
+    "scripts/cu66-v91l-sdram/run_controller.py": "0ee306bb4b4b8badd701e41998143f938ca60b63b2ed43915910ef9e2d931a52"
+  },
+  "inputs_sha256": {},
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--version"
+      ],
+      "log": "tool-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "g++",
+        "--version"
+      ],
+      "log": "compiler-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--binary",
+        "--timing",
+        "--assert",
+        "-Wall",
+        "-DSIMULATION",
+        "-j",
+        "2",
+        "--top-module",
+        "tb_controller",
+        "-GT_AC_NS=2.0",
+        "--Mdir",
+        "/build/v91l-sdram-20261106T233556408417Z-ec5f0b72-tac2",
+        "-CFLAGS",
+        "-std=c++20 -O2 -Wall -Wextra -Werror",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233556408417Z-ec5f0b72/sources/fpga/experiments/cu66-v91l-sdram/controller/moonshine_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233556408417Z-ec5f0b72/sources/fpga/experiments/cu66-v91l-sdram/row_to_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233556408417Z-ec5f0b72/sources/fpga/experiments/cu66-v91l-sdram/sdram_pin_model.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233556408417Z-ec5f0b72/sources/fpga/experiments/cu66-v91l-sdram/tb_controller.sv"
+      ],
+      "log": "compile-tac2.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-sdram-20261106T233556408417Z-ec5f0b72-tac2/Vtb_controller",
+        "+SEED=912301"
+      ],
+      "log": "simulation-tac2.jsonl",
+      "exit_code": 134
+    }
+  ],
+  "modes": [
+    {
+      "name": "tac2",
+      "t_ac_ns": 2,
+      "status": "FAIL",
+      "native_rows": 0
+    }
+  ],
+  "native_replay": false,
+  "byte_rmw_supported": false,
+  "physical_hardware_tested": false,
+  "full_live_codec_join": false,
+  "hardware_distinct_30fps_proven": false,
+  "full_frame_decode_under10ms_proven": false,
+  "scope": "Actual single-word SDRAM controller strict-width derivative, row-to-four-word bridge, 4ns forwarded-clock flight and tAC2/7ns functional pin model. Optional native candidate request replay; not live decoder integration, physical timing signoff or shared traffic qualification.",
+  "error_class": "RuntimeError",
+  "error": "command exit 134: /home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233556408417Z-ec5f0b72/simulation-tac2.jsonl",
+  "compressed_artifacts": {
+    "simulation-tac2.jsonl": {
+      "path": "simulation-tac2.jsonl.gz",
+      "gzip_sha256": "11896742a33bf9ee1481b7ddcb87ecc691184087843b99bdb1f4a244d1f8db10",
+      "raw_sha256": "8c5bcda6f422456498fd30cab3c75a2e8a53de17be01ac8a708ecadfc150e5c7",
+      "rows": 35
+    }
+  },
+  "wall_seconds": 8.827982465969399,
+  "artifacts_sha256": {
+    "compile-tac2.log": "ccecbffeede401539d7c87952eecb03d2b8d7e49fb037ff5e7942cc2e3b7624d",
+    "compiler-version.log": "59d1cbef41d4ae78d5063d525b7aa13d18dc0493ea00537efc19b2ee398cb5a8",
+    "simulation-tac2.jsonl.gz": "11896742a33bf9ee1481b7ddcb87ecc691184087843b99bdb1f4a244d1f8db10",
+    "sources/fpga/experiments/cu66-v91l-sdram/controller/moonshine_sdram.sv": "9ecadf0e42bd0c35267e09d4c3b6df632d663d2096f93a80805b78528d2c6d4f",
+    "sources/fpga/experiments/cu66-v91l-sdram/controller-derivation.json": "f9745cf8146ad8b178013fef7395f0da139ef00b5ae20585d48ee1132bc719ae",
+    "sources/fpga/experiments/cu66-v91l-sdram/generate_controller.py": "989d348a2e78b0add4b01e1309ed3943e313c5f5aa572588cf24229a150d7827",
+    "sources/fpga/experiments/cu66-v91l-sdram/row_to_sdram.sv": "f5d887dae1937e057999c9280a66674a7debbce86d191dd9f398949a2f24186c",
+    "sources/fpga/experiments/cu66-v91l-sdram/sdram_pin_model.sv": "0bb096806aebeefaa75a4275a5c0b6846f4705805ed10d8caaa6ae019ad02bae",
+    "sources/fpga/experiments/cu66-v91l-sdram/tb_controller.sv": "e0bb7fd26f6ba576bfea9513a882094a6d13bd29ee97fb96a39708b083203d26",
+    "sources/fpga/rtl/moonshine_sdram.sv": "f1c3bfd6e41b0f2cae0a68e4bf37155a5914d2993dc27d22b9a052d3e9b0f26f",
+    "sources/scripts/cu66-v91l-sdram/run_controller.py": "0ee306bb4b4b8badd701e41998143f938ca60b63b2ed43915910ef9e2d931a52",
+    "tool-version.log": "26daf9ad1ba36ee1c20cab9a869d0a1fbb8117230c80c78ec2d8cf597f64c4a5"
+  }
+}

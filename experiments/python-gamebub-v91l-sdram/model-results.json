@@ -1,0 +1,402 @@
+{
+  "byte_control_policy": {
+    "probe": {
+      "after_hex": "0001020304a5060708090a0b0c0d0e0f",
+      "before_hex": "000102030405060708090a0b0c0d0e0f",
+      "neighbor_byte_preserved": true,
+      "preserved_offsets": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "read_words": 8,
+      "target_word_index": 2,
+      "write_words": 1
+    },
+    "rule": "read 8 x16 words, replace selected byte in its x16 word, write exactly that one x16 word",
+    "status": "abstract policy only; not the row-only bridge implementation"
+  },
+  "fsm_probe": {
+    "commands": [
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "ACTIVATE",
+        "cycle": 1,
+        "row": 0
+      },
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "WRITE",
+        "cycle": 5,
+        "row": 0
+      },
+      {
+        "bank": 0,
+        "column": 1,
+        "command": "WRITE",
+        "cycle": 11,
+        "row": 0
+      },
+      {
+        "bank": 0,
+        "column": 2,
+        "command": "WRITE",
+        "cycle": 17,
+        "row": 0
+      },
+      {
+        "bank": 0,
+        "column": 3,
+        "command": "WRITE",
+        "cycle": 23,
+        "row": 0
+      }
+    ],
+    "note": "Cycle schedule follows the source state/wait transitions; refresh may preempt requests at IDLE.",
+    "open_row_word_write_acceptance_cycles": [
+      0,
+      10,
+      16,
+      22
+    ]
+  },
+  "limitations": [
+    "Model does not prove RTL behavior or reset safety.",
+    "Read response data and memory contents are abstract; no pin-level timing is modeled.",
+    "The byte RMW policy is modeled separately and is not claimed implemented by the row-only bridge.",
+    "No measured parallel service or concurrency gain is claimed for the bank-spaced mapping."
+  ],
+  "mapping": {
+    "aperture": "8 MiB word-address aperture per controller bank; only byte offsets 0..560639 populated; candidate bank 3 reserved",
+    "controller_address_fields": {
+      "bank": "[23:22]",
+      "column": "[8:0]",
+      "row": "[21:9]"
+    },
+    "formula": "controller_word=(candidate_bank << 22) | (byte_addr >> 1) | word_index; word_index=0..3",
+    "rejected_alternative": "(logical_bank*560640 + byte_addr)/2 packed ranges into controller bank 0; retained in planning notes only",
+    "rows": [
+      {
+        "controller_word_addresses": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "decoded": [
+          {
+            "bank": 0,
+            "column": 0,
+            "row": 0
+          },
+          {
+            "bank": 0,
+            "column": 1,
+            "row": 0
+          },
+          {
+            "bank": 0,
+            "column": 2,
+            "row": 0
+          },
+          {
+            "bank": 0,
+            "column": 3,
+            "row": 0
+          }
+        ],
+        "logical_bank": 0,
+        "logical_byte_addr": 0
+      },
+      {
+        "controller_word_addresses": [
+          4194304,
+          4194305,
+          4194306,
+          4194307
+        ],
+        "decoded": [
+          {
+            "bank": 1,
+            "column": 0,
+            "row": 0
+          },
+          {
+            "bank": 1,
+            "column": 1,
+            "row": 0
+          },
+          {
+            "bank": 1,
+            "column": 2,
+            "row": 0
+          },
+          {
+            "bank": 1,
+            "column": 3,
+            "row": 0
+          }
+        ],
+        "logical_bank": 1,
+        "logical_byte_addr": 0
+      },
+      {
+        "controller_word_addresses": [
+          8388608,
+          8388609,
+          8388610,
+          8388611
+        ],
+        "decoded": [
+          {
+            "bank": 2,
+            "column": 0,
+            "row": 0
+          },
+          {
+            "bank": 2,
+            "column": 1,
+            "row": 0
+          },
+          {
+            "bank": 2,
+            "column": 2,
+            "row": 0
+          },
+          {
+            "bank": 2,
+            "column": 3,
+            "row": 0
+          }
+        ],
+        "logical_bank": 2,
+        "logical_byte_addr": 0
+      }
+    ]
+  },
+  "ownership_contract": [
+    "One logical request owns the controller until each accepted physical word request returns to IDLE.",
+    "A warm cancel retains epoch/token and logical 8-byte lease until the accepted physical word drains.",
+    "After warm cancel, stop issuing remaining words and hold the cancellation completion until caller acceptance.",
+    "Cold power reset requires external quiescence; resetting with an accepted physical owner is illegal.",
+    "Do not change accepted data or front metadata while physical ownership is outstanding.",
+    "Controller has no physical write ACK/error; wrapper completion and cancellation error are abstract protocol signals."
+  ],
+  "read_bl8_probe": {
+    "commands": [
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "ACTIVATE",
+        "cycle": 1,
+        "row": 0
+      },
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "READ",
+        "cycle": 5,
+        "row": 0
+      }
+    ],
+    "response_count": 8,
+    "response_cycles": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ]
+  },
+  "refresh_probe": {
+    "commands": [
+      {
+        "command": "PRECHARGE_ALL",
+        "cycle": 1
+      },
+      {
+        "command": "AUTO_REFRESH",
+        "cycle": 5
+      },
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "ACTIVATE",
+        "cycle": 16,
+        "row": 0
+      },
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "WRITE",
+        "cycle": 20,
+        "row": 0
+      }
+    ],
+    "physical_drain_cycle": 25,
+    "request_accept_cycle": 15,
+    "starting_refresh_count": 750
+  },
+  "row_miss_probe": {
+    "commands": [
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "ACTIVATE",
+        "cycle": 1,
+        "row": 0
+      },
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "WRITE",
+        "cycle": 5,
+        "row": 0
+      },
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "PRECHARGE",
+        "cycle": 11,
+        "row": 1
+      },
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "ACTIVATE",
+        "cycle": 15,
+        "row": 1
+      },
+      {
+        "bank": 0,
+        "column": 0,
+        "command": "WRITE",
+        "cycle": 19,
+        "row": 1
+      }
+    ]
+  },
+  "row_write_probe": {
+    "accepted_words": [
+      {
+        "cycle": 0,
+        "word_address": 8668920,
+        "word_index": 0
+      },
+      {
+        "cycle": 10,
+        "word_address": 8668921,
+        "word_index": 1
+      },
+      {
+        "cycle": 16,
+        "word_address": 8668922,
+        "word_index": 2
+      },
+      {
+        "cycle": 22,
+        "word_address": 8668923,
+        "word_index": 3
+      }
+    ],
+    "cancel_requested_cycle": null,
+    "cancelled": false,
+    "completion_error": false,
+    "completion_waits_for_caller_accept": false,
+    "drained_words": [
+      {
+        "cycle": 10,
+        "word_index": 0
+      },
+      {
+        "cycle": 16,
+        "word_index": 1
+      },
+      {
+        "cycle": 22,
+        "word_index": 2
+      },
+      {
+        "cycle": 28,
+        "word_index": 3
+      }
+    ],
+    "epoch": 17,
+    "epoch_token_candidate_bank_lease_held_until_drain": false,
+    "lease_release_cycle": null,
+    "logical_bank": 2,
+    "logical_byte_addr": 560624,
+    "owner_released_after_word_drain": true,
+    "physical_words": [
+      8668920,
+      8668921,
+      8668922,
+      8668923
+    ],
+    "remaining_words_issued_after_cancel": 0,
+    "token": 3405643777
+  },
+  "schema": "cu66-v91l-sdram-model-v1",
+  "scope": "Bounded abstract protocol and source-FSM model only; no RTL proof, implementation, pin-level, throughput, or performance claim.",
+  "source": {
+    "interface": "24-bit x16 word address, 16-bit data",
+    "path": "fpga/rtl/moonshine_sdram.sv",
+    "read": "BL8, CAS3 mode 13'h233, delay 5 then eight response beats",
+    "refresh_cycles": 750,
+    "request_ready": "IDLE and refresh_count < REFRESH_CYCLES",
+    "response": "read response_valid only; no write ACK, error, or byte mask",
+    "sha256": "f1c3bfd6e41b0f2cae0a68e4bf37155a5914d2993dc27d22b9a052d3e9b0f26f",
+    "write": "single-word WRITE; wait_cycles(3,IDLE)"
+  },
+  "status": "PASS",
+  "warm_cancel_probe": {
+    "accepted_words": [
+      {
+        "cycle": 0,
+        "word_address": 4194308,
+        "word_index": 0
+      }
+    ],
+    "cancel_requested_cycle": 0,
+    "cancelled": true,
+    "completion_error": true,
+    "completion_waits_for_caller_accept": true,
+    "drained_words": [
+      {
+        "cycle": 10,
+        "word_index": 0
+      }
+    ],
+    "epoch": 17,
+    "epoch_token_candidate_bank_lease_held_until_drain": true,
+    "lease_release_cycle": 10,
+    "logical_bank": 1,
+    "logical_byte_addr": 8,
+    "owner_released_after_word_drain": true,
+    "physical_words": [
+      4194308,
+      4194309,
+      4194310,
+      4194311
+    ],
+    "remaining_words_issued_after_cancel": 0,
+    "token": 3405643777
+  }
+}

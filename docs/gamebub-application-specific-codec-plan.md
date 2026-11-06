@@ -2,6 +2,26 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+The [real SDRAM-controller row gate](cu66-v91l-sdram/README.md) now qualifies
+four actual x16 word writes per row, controller waits/refresh, BL8 read timing,
+cancellation drain and held completions under timed pin simulation. Two seeds
+replay 280,320 native requests total and independently check 1,121,280 native
+pin writes and four complete bank images. The write-only first-request → last-
+response fences are about **25.62 ms/frame at the modeled 100 MHz**. This is
+standalone replay of previously decoded bytes, not a current live-codec,
+cryptographic publication, shared-memory or hardware-throughput result.
+
+The gate makes the next bottleneck concrete: per-word waits and raster row
+changes. A separate byte-exact write-locality study counts 82,478 ideal ACTs for
+raster placement versus 1,096 for 8×8 tile-major or 1,104 for 16×8 microtiles over
+two frames; refresh and command time are excluded. The microtile proposal adds
+3,840 padding bytes/bank. Neither changes current RTL. Compare their real
+reference/conversion/display reads and qualify faster legal word-command or
+burst scheduling before promotion. Keep the qualified controller/bridge as the
+control, then connect all clients and the live decoder to one finite service.
+Byte RMW, HUD decode/overlay, ESP32 costs and the physical 30-fps/<10-ms goals
+remain open.
+
 The [bounded eight-byte tile-row writer](cu66-v91l-rows/README.md) is the next
 controlled implementation comparison. Its static row mode preserves the live
 key/delta canonical/HUD bytes, accepted-bank references, captured quantizer cache,
@@ -14,9 +34,9 @@ candidate service, FAST uses 36.64–38.56% fewer cycles and SLOW 55.65–57.51%
 See its independent audit/summary for exact source and bounds; prior FAST numbers
 use a different response rule and are not its performance control.
 
-**Next physical-memory gate:** join each row to four actual x16 word-write
-commands, including waits, row misses and refresh, and define byte-control
-masking/RMW. The current controller uses write-single mode and has no byte-enable
+**The standalone row-to-word gate is now qualified above.** Next connect its
+actual controller schedule to the live path and shared clients, and implement
+byte-control masking/RMW. The current controller uses write-single mode and has no byte-enable
 request port. The comparison prices candidate responses only: frozen scratch
 and 64-byte reference actors still have separate logical service. Price all
 scratch/reference/candidate/RGB/scanout traffic on one finite x16 schedule before

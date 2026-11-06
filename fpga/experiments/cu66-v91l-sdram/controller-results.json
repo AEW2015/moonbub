@@ -1,0 +1,265 @@
+{
+  "schema": "cu66-v91l-real-sdram-bridge-v1",
+  "status": "PASS_REAL_CONTROLLER_ROW_WRITES_AND_READ_PROBES",
+  "seed": 912302,
+  "source_revision": "67744b3340e92ab2b188143fe3727107a7647d69",
+  "source_sha256": {
+    "fpga/experiments/cu66-v91l-sdram/controller/moonshine_sdram.sv": "9ecadf0e42bd0c35267e09d4c3b6df632d663d2096f93a80805b78528d2c6d4f",
+    "fpga/experiments/cu66-v91l-sdram/row_to_sdram.sv": "f5d887dae1937e057999c9280a66674a7debbce86d191dd9f398949a2f24186c",
+    "fpga/experiments/cu66-v91l-sdram/sdram_pin_model.sv": "0bb096806aebeefaa75a4275a5c0b6846f4705805ed10d8caaa6ae019ad02bae",
+    "fpga/experiments/cu66-v91l-sdram/tb_controller.sv": "cf174ca7b6aa57d1b6cc36b885abb0baba09d5240293835e8a641098d050cd88",
+    "fpga/experiments/cu66-v91l-sdram/generate_controller.py": "989d348a2e78b0add4b01e1309ed3943e313c5f5aa572588cf24229a150d7827",
+    "fpga/experiments/cu66-v91l-sdram/controller-derivation.json": "f9745cf8146ad8b178013fef7395f0da139ef00b5ae20585d48ee1132bc719ae",
+    "fpga/rtl/moonshine_sdram.sv": "f1c3bfd6e41b0f2cae0a68e4bf37155a5914d2993dc27d22b9a052d3e9b0f26f",
+    "scripts/cu66-v91l-sdram/run_controller.py": "0ee306bb4b4b8badd701e41998143f938ca60b63b2ed43915910ef9e2d931a52"
+  },
+  "inputs_sha256": {
+    "experiments/python-gamebub-v91l-sdram/vectors/native-rows.hex.gz": "e1cbb0fca032fe8e5685a875cc15494b5ad90c4f930fa57f32a111a084dd3cbe",
+    "experiments/python-gamebub-v91l-sdram/traffic-results.json": "790c0d3450f451846fb62df25a5d84aeb2735f29829dcc0f6e5366ec1a5f190f"
+  },
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--version"
+      ],
+      "log": "tool-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "g++",
+        "--version"
+      ],
+      "log": "compiler-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--binary",
+        "--timing",
+        "--assert",
+        "-Wall",
+        "-DSIMULATION",
+        "-j",
+        "2",
+        "--top-module",
+        "tb_controller",
+        "-GT_AC_NS=2.0",
+        "--Mdir",
+        "/build/v91l-sdram-20261106T233802043081Z-250d4c4c-tac2",
+        "-CFLAGS",
+        "-std=c++20 -O2 -Wall -Wextra -Werror",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/sources/fpga/experiments/cu66-v91l-sdram/controller/moonshine_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/sources/fpga/experiments/cu66-v91l-sdram/row_to_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/sources/fpga/experiments/cu66-v91l-sdram/sdram_pin_model.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/sources/fpga/experiments/cu66-v91l-sdram/tb_controller.sv"
+      ],
+      "log": "compile-tac2.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-sdram-20261106T233802043081Z-250d4c4c-tac2/Vtb_controller",
+        "+SEED=912302",
+        "+NATIVE_ROWS=/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/native-rows.hex",
+        "+NATIVE_COUNT=140160"
+      ],
+      "log": "simulation-tac2.jsonl",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--binary",
+        "--timing",
+        "--assert",
+        "-Wall",
+        "-DSIMULATION",
+        "-j",
+        "2",
+        "--top-module",
+        "tb_controller",
+        "-GT_AC_NS=7.0",
+        "--Mdir",
+        "/build/v91l-sdram-20261106T233802043081Z-250d4c4c-tac7",
+        "-CFLAGS",
+        "-std=c++20 -O2 -Wall -Wextra -Werror",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/sources/fpga/experiments/cu66-v91l-sdram/controller/moonshine_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/sources/fpga/experiments/cu66-v91l-sdram/row_to_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/sources/fpga/experiments/cu66-v91l-sdram/sdram_pin_model.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/sources/fpga/experiments/cu66-v91l-sdram/tb_controller.sv"
+      ],
+      "log": "compile-tac7.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-sdram-20261106T233802043081Z-250d4c4c-tac7/Vtb_controller",
+        "+SEED=912302"
+      ],
+      "log": "simulation-tac7.jsonl",
+      "exit_code": 0
+    }
+  ],
+  "modes": [
+    {
+      "name": "tac2",
+      "t_ac_ns": 2,
+      "status": "PASS_REAL_CONTROLLER_AND_ROW_BRIDGE",
+      "native_rows": 140160,
+      "verdict": {
+        "type": "verdict",
+        "status": "TEST_PASS",
+        "seed": 912302,
+        "t_ac_ns": 2.0,
+        "checks": 21,
+        "rows": 140249,
+        "logical_responses": 140249,
+        "word_writes": 560992,
+        "read_words": 32,
+        "controller_accepts": 560996,
+        "controller_retires": 560996,
+        "refreshes": 6770,
+        "activates": 89033,
+        "precharges": 89021,
+        "cycles": 5129252,
+        "native_rows": 140160
+      },
+      "checks": [
+        "four_bank_single_writes_and_exact_bl8_reads",
+        "row_hit_exact_four_word_writes",
+        "row_miss_precharge_activate",
+        "three_candidate_bank_aperture_edges",
+        "seeded_distinct_row_payloads",
+        "periodic_refresh_and_post_refresh_row",
+        "cancel_after_word_-1",
+        "cancel_after_word_0",
+        "cancel_after_word_1",
+        "cancel_after_word_2",
+        "cancel_after_word_3",
+        " reset_after_word_-1",
+        " reset_after_word_0",
+        " reset_after_word_1",
+        " reset_after_word_2",
+        " reset_after_word_3",
+        "cancel_held_success_response_stable",
+        "reset_held_success_response_stable",
+        "invalid_bank_alignment_and_aperture_reject",
+        "clean_retry_after_cancel_and_reject",
+        "actual_native_candidate_traffic_replayed"
+      ]
+    },
+    {
+      "name": "tac7",
+      "t_ac_ns": 7,
+      "status": "PASS_REAL_CONTROLLER_AND_ROW_BRIDGE",
+      "native_rows": 0,
+      "verdict": {
+        "type": "verdict",
+        "status": "TEST_PASS",
+        "seed": 912302,
+        "t_ac_ns": 7.0,
+        "checks": 20,
+        "rows": 89,
+        "logical_responses": 89,
+        "word_writes": 352,
+        "read_words": 32,
+        "controller_accepts": 356,
+        "controller_retires": 356,
+        "refreshes": 8,
+        "activates": 85,
+        "precharges": 74,
+        "cycles": 5177,
+        "native_rows": 0
+      },
+      "checks": [
+        "four_bank_single_writes_and_exact_bl8_reads",
+        "row_hit_exact_four_word_writes",
+        "row_miss_precharge_activate",
+        "three_candidate_bank_aperture_edges",
+        "seeded_distinct_row_payloads",
+        "periodic_refresh_and_post_refresh_row",
+        "cancel_after_word_-1",
+        "cancel_after_word_0",
+        "cancel_after_word_1",
+        "cancel_after_word_2",
+        "cancel_after_word_3",
+        " reset_after_word_-1",
+        " reset_after_word_0",
+        " reset_after_word_1",
+        " reset_after_word_2",
+        " reset_after_word_3",
+        "cancel_held_success_response_stable",
+        "reset_held_success_response_stable",
+        "invalid_bank_alignment_and_aperture_reject",
+        "clean_retry_after_cancel_and_reject"
+      ]
+    }
+  ],
+  "native_replay": true,
+  "byte_rmw_supported": false,
+  "physical_hardware_tested": false,
+  "full_live_codec_join": false,
+  "hardware_distinct_30fps_proven": false,
+  "full_frame_decode_under10ms_proven": false,
+  "scope": "Actual single-word SDRAM controller strict-width derivative, row-to-four-word bridge, 4ns forwarded-clock flight and tAC2/7ns functional pin model. Optional native candidate request replay; not live decoder integration, physical timing signoff or shared traffic qualification.",
+  "native_expansion": {
+    "compressed_sha256": "e1cbb0fca032fe8e5685a875cc15494b5ad90c4f930fa57f32a111a084dd3cbe",
+    "raw_sha256": "a6f174e828a09cfe4e22643ef2fbcf00bb34a5fe5956235523e82ab9ed67f455",
+    "rows": 140160
+  },
+  "compressed_artifacts": {
+    "simulation-tac7.jsonl": {
+      "path": "simulation-tac7.jsonl.gz",
+      "gzip_sha256": "abe65a2e37d65a140b81580c5c494d5cbb92fd48aa0beee97010261058263eea",
+      "raw_sha256": "1dc9e66579c498c0a7f755e62f3d9fe279f2c5d7ac2436cecdd4fdc47b73f7d2",
+      "rows": 1625
+    },
+    "simulation-tac2.jsonl": {
+      "path": "simulation-tac2.jsonl.gz",
+      "gzip_sha256": "9c955294e71a52a62d92001fa766e95454eb0f2c59291f3a7c45ffd34151beef",
+      "raw_sha256": "4ca5b23c816da47c7bb2948c1887a55eb6207ad9865ab3e4e353db878b7a91e6",
+      "rows": 2288685
+    }
+  },
+  "wall_seconds": 61.74435834400356,
+  "artifacts_sha256": {
+    "compile-tac2.log": "9b7919dbf4473e441120a5ba8567dc6222a956631e8fb946de61c999c0ac03cd",
+    "compile-tac7.log": "4bc64ac97d5188dabd7ba6c45b7a164c4cf49225573c6b801c7e6b0274f54326",
+    "compiler-version.log": "59d1cbef41d4ae78d5063d525b7aa13d18dc0493ea00537efc19b2ee398cb5a8",
+    "inputs/native-rows.hex.gz": "e1cbb0fca032fe8e5685a875cc15494b5ad90c4f930fa57f32a111a084dd3cbe",
+    "inputs/traffic-results.json": "790c0d3450f451846fb62df25a5d84aeb2735f29829dcc0f6e5366ec1a5f190f",
+    "simulation-tac2.jsonl.gz": "9c955294e71a52a62d92001fa766e95454eb0f2c59291f3a7c45ffd34151beef",
+    "simulation-tac7.jsonl.gz": "abe65a2e37d65a140b81580c5c494d5cbb92fd48aa0beee97010261058263eea",
+    "sources/fpga/experiments/cu66-v91l-sdram/controller/moonshine_sdram.sv": "9ecadf0e42bd0c35267e09d4c3b6df632d663d2096f93a80805b78528d2c6d4f",
+    "sources/fpga/experiments/cu66-v91l-sdram/controller-derivation.json": "f9745cf8146ad8b178013fef7395f0da139ef00b5ae20585d48ee1132bc719ae",
+    "sources/fpga/experiments/cu66-v91l-sdram/generate_controller.py": "989d348a2e78b0add4b01e1309ed3943e313c5f5aa572588cf24229a150d7827",
+    "sources/fpga/experiments/cu66-v91l-sdram/row_to_sdram.sv": "f5d887dae1937e057999c9280a66674a7debbce86d191dd9f398949a2f24186c",
+    "sources/fpga/experiments/cu66-v91l-sdram/sdram_pin_model.sv": "0bb096806aebeefaa75a4275a5c0b6846f4705805ed10d8caaa6ae019ad02bae",
+    "sources/fpga/experiments/cu66-v91l-sdram/tb_controller.sv": "cf174ca7b6aa57d1b6cc36b885abb0baba09d5240293835e8a641098d050cd88",
+    "sources/fpga/rtl/moonshine_sdram.sv": "f1c3bfd6e41b0f2cae0a68e4bf37155a5914d2993dc27d22b9a052d3e9b0f26f",
+    "sources/scripts/cu66-v91l-sdram/run_controller.py": "0ee306bb4b4b8badd701e41998143f938ca60b63b2ed43915910ef9e2d931a52",
+    "tool-version.log": "26daf9ad1ba36ee1c20cab9a869d0a1fbb8117230c80c78ec2d8cf597f64c4a5"
+  },
+  "selected_report": "fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/results.json"
+}

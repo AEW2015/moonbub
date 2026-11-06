@@ -1,0 +1,251 @@
+{
+  "assumptions": {
+    "candidate_bank_mapping": "word=(candidate_bank<<22)|(physical_byte_offset>>1); bank 0..2",
+    "controller_sdram_row_bytes": 1024,
+    "logical_layout": "Y 720x480 bytes, Cb 360x240, Cr 360x240, then 42,240 HUD bytes",
+    "native_order": "source-backed 8-byte requests arrive in the existing 8x8 tile-major candidate order; baseline physical byte offsets are raster/canonical addresses",
+    "payload_roundtrip": "all actual fixture payload bytes are reconstructed at their canonical source offsets, remapped, then inverse reconstructed byte-for-byte",
+    "row_transition_rule": "one ideal ACT for first access to a bank and another after each physical row change in that bank; all rows initially closed; no refresh or command timing"
+  },
+  "comparison": {
+    "fraction_of_raster_activates": {
+      "micro16x8": 0.013385387618516454,
+      "raster": 1.0,
+      "tile8x8": 0.013288392056063435
+    },
+    "ideal_activate_savings_vs_raster": {
+      "micro16x8": 81374,
+      "raster": 0,
+      "tile8x8": 81382
+    }
+  },
+  "inputs": {
+    "fixture_sha256": "e1cbb0fca032fe8e5685a875cc15494b5ad90c4f930fa57f32a111a084dd3cbe",
+    "frames": [
+      "c0_f0",
+      "c0_f1"
+    ],
+    "native_fixture": "experiments/python-gamebub-v91l-sdram/vectors/native-rows.hex.gz",
+    "native_rows": 140160,
+    "traffic_results": "experiments/python-gamebub-v91l-sdram/traffic-results.json",
+    "traffic_status": "PASS_SOURCE_BACKED_NATIVE_TRAFFIC"
+  },
+  "layouts": {
+    "micro16x8": {
+      "description": "Physical plane placement in 16x8 microtiles; HUD starts after padded physical canonical planes.",
+      "per_frame": [
+        {
+          "all_logical_bytes_injective": true,
+          "all_request_payloads_8bytes_contiguous_and_aligned": true,
+          "allocated_physical_extent_bytes": 564480,
+          "candidate_bank": 0,
+          "frame_id": "c0_f0",
+          "ideal_activate_count_closed_first_row": 552,
+          "inverse_reconstruction_sha256": "66fd0ae812c5f3b7f0e33fa47030d8225858e4c022f9f579d3565eee4e19e1ba",
+          "logical_frame_bytes": 560640,
+          "padding_bytes": 3840,
+          "per_request_word_address_log_encoding": "one fixed-width lowercase hex record per request: logical byte offset (5 hex digits), physical byte offset (5), controller word addresses 0..3 (6 each); total 34 hex digits plus newline",
+          "physical_row_transitions": 552,
+          "plane_extents_bytes": {
+            "cb": 88320,
+            "cr": 88320,
+            "hud": 42240,
+            "y": 345600
+          },
+          "reconstruction_exact": true,
+          "request_count": 70080,
+          "source_frame_sha256": "66fd0ae812c5f3b7f0e33fa47030d8225858e4c022f9f579d3565eee4e19e1ba",
+          "word_address_trace": {
+            "format": "each line is 34 lowercase hex digits: logical_byte_addr[5], physical_byte_addr[5], controller_word_addr[0..3][6 each]",
+            "gzip_sha256": "c049bc892b3ecac9117dacd2ce2eed820ebc428ec2eb21b96eaeb501beec89b1",
+            "path": "experiments/python-gamebub-v91l-sdram/vectors/layout-micro16x8-c0_f0.hex.gz",
+            "raw_bytes": 2452800,
+            "raw_sha256": "cb90d08fe06c10462fc13757c22e26013b592f11575a4b9ad761cd3c06a74729",
+            "rows": 70080
+          }
+        },
+        {
+          "all_logical_bytes_injective": true,
+          "all_request_payloads_8bytes_contiguous_and_aligned": true,
+          "allocated_physical_extent_bytes": 564480,
+          "candidate_bank": 1,
+          "frame_id": "c0_f1",
+          "ideal_activate_count_closed_first_row": 552,
+          "inverse_reconstruction_sha256": "a987e8705efaea5ed60113e5969017d422e6288dfaa56e882afd9b089b46be2d",
+          "logical_frame_bytes": 560640,
+          "padding_bytes": 3840,
+          "per_request_word_address_log_encoding": "one fixed-width lowercase hex record per request: logical byte offset (5 hex digits), physical byte offset (5), controller word addresses 0..3 (6 each); total 34 hex digits plus newline",
+          "physical_row_transitions": 552,
+          "plane_extents_bytes": {
+            "cb": 88320,
+            "cr": 88320,
+            "hud": 42240,
+            "y": 345600
+          },
+          "reconstruction_exact": true,
+          "request_count": 70080,
+          "source_frame_sha256": "a987e8705efaea5ed60113e5969017d422e6288dfaa56e882afd9b089b46be2d",
+          "word_address_trace": {
+            "format": "each line is 34 lowercase hex digits: logical_byte_addr[5], physical_byte_addr[5], controller_word_addr[0..3][6 each]",
+            "gzip_sha256": "256a8b47e21180ba4e0532cc2e0a225e3e7f1cb26164c3e8903b8eed2c7481d0",
+            "path": "experiments/python-gamebub-v91l-sdram/vectors/layout-micro16x8-c0_f1.hex.gz",
+            "raw_bytes": 2452800,
+            "raw_sha256": "3591035eac7eb31148e2f69a4cf992176deb720c74e8126cb91b73e2509e5bde",
+            "rows": 70080
+          }
+        }
+      ],
+      "physical_arithmetic": {
+        "cb_bytes": 88320,
+        "cr_bytes": 88320,
+        "hud_bytes": 42240,
+        "padded_canonical_bytes": 522240,
+        "padding_bytes": 3840,
+        "total_allocated_bytes": 564480,
+        "y_bytes": 345600
+      },
+      "two_frame_ideal_activates": 1104
+    },
+    "raster": {
+      "description": "Current canonical raster physical byte placement.",
+      "per_frame": [
+        {
+          "all_logical_bytes_injective": true,
+          "all_request_payloads_8bytes_contiguous_and_aligned": true,
+          "allocated_physical_extent_bytes": 560640,
+          "candidate_bank": 0,
+          "frame_id": "c0_f0",
+          "ideal_activate_count_closed_first_row": 41239,
+          "inverse_reconstruction_sha256": "66fd0ae812c5f3b7f0e33fa47030d8225858e4c022f9f579d3565eee4e19e1ba",
+          "logical_frame_bytes": 560640,
+          "padding_bytes": 0,
+          "per_request_word_address_log_encoding": "one fixed-width lowercase hex record per request: logical byte offset (5 hex digits), physical byte offset (5), controller word addresses 0..3 (6 each); total 34 hex digits plus newline",
+          "physical_row_transitions": 41239,
+          "plane_extents_bytes": {
+            "cb": 86400,
+            "cr": 86400,
+            "hud": 42240,
+            "y": 345600
+          },
+          "reconstruction_exact": true,
+          "request_count": 70080,
+          "source_frame_sha256": "66fd0ae812c5f3b7f0e33fa47030d8225858e4c022f9f579d3565eee4e19e1ba",
+          "word_address_trace": {
+            "format": "each line is 34 lowercase hex digits: logical_byte_addr[5], physical_byte_addr[5], controller_word_addr[0..3][6 each]",
+            "gzip_sha256": "504741bce90a379910d70e4595c00ccb9fcbf5e83d99ba093a50a48654b19fee",
+            "path": "experiments/python-gamebub-v91l-sdram/vectors/layout-raster-c0_f0.hex.gz",
+            "raw_bytes": 2452800,
+            "raw_sha256": "017bd0f5ef1a4df4ae3a5ff9b4bde02a017459fa8c1b5a425bc4e699a97083e9",
+            "rows": 70080
+          }
+        },
+        {
+          "all_logical_bytes_injective": true,
+          "all_request_payloads_8bytes_contiguous_and_aligned": true,
+          "allocated_physical_extent_bytes": 560640,
+          "candidate_bank": 1,
+          "frame_id": "c0_f1",
+          "ideal_activate_count_closed_first_row": 41239,
+          "inverse_reconstruction_sha256": "a987e8705efaea5ed60113e5969017d422e6288dfaa56e882afd9b089b46be2d",
+          "logical_frame_bytes": 560640,
+          "padding_bytes": 0,
+          "per_request_word_address_log_encoding": "one fixed-width lowercase hex record per request: logical byte offset (5 hex digits), physical byte offset (5), controller word addresses 0..3 (6 each); total 34 hex digits plus newline",
+          "physical_row_transitions": 41239,
+          "plane_extents_bytes": {
+            "cb": 86400,
+            "cr": 86400,
+            "hud": 42240,
+            "y": 345600
+          },
+          "reconstruction_exact": true,
+          "request_count": 70080,
+          "source_frame_sha256": "a987e8705efaea5ed60113e5969017d422e6288dfaa56e882afd9b089b46be2d",
+          "word_address_trace": {
+            "format": "each line is 34 lowercase hex digits: logical_byte_addr[5], physical_byte_addr[5], controller_word_addr[0..3][6 each]",
+            "gzip_sha256": "c60ff0f689954d9c44a7e33dfc86d28d2bbb74e0fcfc769e86b17653d13e9f0d",
+            "path": "experiments/python-gamebub-v91l-sdram/vectors/layout-raster-c0_f1.hex.gz",
+            "raw_bytes": 2452800,
+            "raw_sha256": "8324d96ec132ee192ca8ebfe64430253146ea4c470370133a725b48179084c5c",
+            "rows": 70080
+          }
+        }
+      ],
+      "two_frame_ideal_activates": 82478
+    },
+    "tile8x8": {
+      "description": "Physical plane placement in 8x8 tile-major order; no plane padding.",
+      "per_frame": [
+        {
+          "all_logical_bytes_injective": true,
+          "all_request_payloads_8bytes_contiguous_and_aligned": true,
+          "allocated_physical_extent_bytes": 560640,
+          "candidate_bank": 0,
+          "frame_id": "c0_f0",
+          "ideal_activate_count_closed_first_row": 548,
+          "inverse_reconstruction_sha256": "66fd0ae812c5f3b7f0e33fa47030d8225858e4c022f9f579d3565eee4e19e1ba",
+          "logical_frame_bytes": 560640,
+          "padding_bytes": 0,
+          "per_request_word_address_log_encoding": "one fixed-width lowercase hex record per request: logical byte offset (5 hex digits), physical byte offset (5), controller word addresses 0..3 (6 each); total 34 hex digits plus newline",
+          "physical_row_transitions": 548,
+          "plane_extents_bytes": {
+            "cb": 86400,
+            "cr": 86400,
+            "hud": 42240,
+            "y": 345600
+          },
+          "reconstruction_exact": true,
+          "request_count": 70080,
+          "source_frame_sha256": "66fd0ae812c5f3b7f0e33fa47030d8225858e4c022f9f579d3565eee4e19e1ba",
+          "word_address_trace": {
+            "format": "each line is 34 lowercase hex digits: logical_byte_addr[5], physical_byte_addr[5], controller_word_addr[0..3][6 each]",
+            "gzip_sha256": "4dd4b86778b2480661d2b555c98d6645f5a57c3171dd4ce21e7eb1d28bc4cb8f",
+            "path": "experiments/python-gamebub-v91l-sdram/vectors/layout-tile8x8-c0_f0.hex.gz",
+            "raw_bytes": 2452800,
+            "raw_sha256": "2ad37f38277a825826c5c49123ad5198f314d88fefcc71e54cef3a7e4ff6cae8",
+            "rows": 70080
+          }
+        },
+        {
+          "all_logical_bytes_injective": true,
+          "all_request_payloads_8bytes_contiguous_and_aligned": true,
+          "allocated_physical_extent_bytes": 560640,
+          "candidate_bank": 1,
+          "frame_id": "c0_f1",
+          "ideal_activate_count_closed_first_row": 548,
+          "inverse_reconstruction_sha256": "a987e8705efaea5ed60113e5969017d422e6288dfaa56e882afd9b089b46be2d",
+          "logical_frame_bytes": 560640,
+          "padding_bytes": 0,
+          "per_request_word_address_log_encoding": "one fixed-width lowercase hex record per request: logical byte offset (5 hex digits), physical byte offset (5), controller word addresses 0..3 (6 each); total 34 hex digits plus newline",
+          "physical_row_transitions": 548,
+          "plane_extents_bytes": {
+            "cb": 86400,
+            "cr": 86400,
+            "hud": 42240,
+            "y": 345600
+          },
+          "reconstruction_exact": true,
+          "request_count": 70080,
+          "source_frame_sha256": "a987e8705efaea5ed60113e5969017d422e6288dfaa56e882afd9b089b46be2d",
+          "word_address_trace": {
+            "format": "each line is 34 lowercase hex digits: logical_byte_addr[5], physical_byte_addr[5], controller_word_addr[0..3][6 each]",
+            "gzip_sha256": "f2dc22119c4159b06bfa6db8ec2a78a2aebb34db98d95624a9148cc06cea3f5b",
+            "path": "experiments/python-gamebub-v91l-sdram/vectors/layout-tile8x8-c0_f1.hex.gz",
+            "raw_bytes": 2452800,
+            "raw_sha256": "93f4af608adcc7e82bff0d0cf089d0dac300a28ee43d59fe36cc0850c98b351b",
+            "rows": 70080
+          }
+        }
+      ],
+      "two_frame_ideal_activates": 1096
+    }
+  },
+  "limitations": [
+    "No RTL promotion or source traffic change is included.",
+    "ACT counts are ideal bank-local row transitions only; refresh and physical command scheduling are excluded.",
+    "No write bandwidth, shared read/display service, frame-time, or FPS claim is made.",
+    "Micro16x8 needs later validation against read/reference schedules and its padded-plane address contract."
+  ],
+  "schema": "cu66-v91l-sdram-layout-study-v1",
+  "scope": "Source-backed address/data layout study and ideal SDRAM row-transition count only. Does not alter RTL, claim performance, or model refresh/commands/clock cycles.",
+  "status": "PASS_BOUNDED_LAYOUT_BIJECTION_AND_LOCALITY"
+}

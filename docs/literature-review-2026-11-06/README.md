@@ -98,6 +98,14 @@ from the implementation; it is not a new publication result or evidence of
 HEVC/AV1 superiority. Use its live simulation summary for measured cycle fences,
 and keep shared physical service and hardware goals unqualified.
 
+The next implementation checkpoint is now the [real controller row gate](../cu66-v91l-sdram/README.md):
+timed pin simulation of the existing write-single/BL8 command algorithm exposes
+about 25.62 ms of write-only replay per native frame under the modeled clock.
+The accompanying tile/microtile placement study is byte-exact write-locality
+research, not an RTL speedup or new publication result. It motivates checking
+physical layout and command scheduling jointly with reference and scanout reads.
+It does not update the earlier codec rate/quality or HEVC/AV1 comparisons.
+
 ## Literature findings compared with V90
 
 ### 1. Parallel Golomb–Rice parsing: best direct fit

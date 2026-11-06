@@ -158,15 +158,33 @@ Two strict seeds pass 16 commits and 16,400 independently checked SHA jobs;
 FAST cycles reduce 36.64–38.56% and SLOW 55.65–57.51% under these declared rules.
 This is candidate scheduling evidence, not a shared physical memory result.
 
-**Before physical throughput claims:** implement the row-to-word bridge for the
-existing single-write controller, charge its per-word command waits, refresh and
-row transitions, and define byte masks/RMW for the control. The frozen scratch
+**Before physical throughput claims:** use the qualified standalone row-to-word
+bridge/controller gate below in the live shared path, charge all commands and
+clients, and define byte masks/RMW for the control. The frozen scratch
 128-bit and reference 64-byte service actors are not themselves x16 controller
 schedules. Connect them, candidate traffic, RGB conversion and scanout to one
 finite arbiter. Retain the single-row control before measuring two-row overlap.
 The separate Python controller-FSM cost model is a prerequisite estimate, not
 frame latency. RTL HUD decode/overlay, native processor/ESP32 cost and the V91m
 continuous-cadence/full-path gates remain open.
+
+The [actual controller row-to-word gate](cu66-v91l-sdram/README.md) now passes
+two seeds with timed SDRAM pins: full native key/delta candidate replay at the
+2-ns data-delay corner and unit tests at both 2/7-ns corners. The controller's
+command algorithm is retained with four explicit strict-lint edits, checked
+against the original by bounded Icarus trace identity. Four complete native bank
+images and 1,121,280 native physical word writes are independently checked. This
+is standalone write replay, not the current live decoder/shared-controller join.
+
+The measured simulation write fences are 2,561,979 key / 2,562,092 delta clocks
+(about 25.62 ms at the modeled 10 ns period), before other frame work. Next qualify
+write-command scheduling and data placement against the real part constraints.
+The write-only Python locality comparison is raster 82,478 ideal ACTs versus
+tile8x8 1,096 / micro16x8 1,104 over two frames; it excludes refresh/command cost,
+and micro16x8 adds 3,840 padding bytes. No layout is promoted until reference,
+conversion and display traffic are also modeled and checked. Complete the live
+controller/arbiter, byte RMW and HUD boundary, then V91m's source-cadence workload;
+V100–V110 physical mapping/timing/hardware gates remain unchanged.
 
 V91f is promoted for functional scheduling under its bounded ownership contract;
 physical resource fit is still unqualified. V91g is promoted only if measured
