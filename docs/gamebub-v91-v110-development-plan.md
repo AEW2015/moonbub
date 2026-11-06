@@ -20,15 +20,22 @@ can be compared against a stable function and workload.
 [V91](cu66-v91/README.md) now supplies full-corpus coefficient parity,
 directed/native/sanitizer checks and clocked RTL symbol-component evidence.
 Its 32-bit all-ready real-stream comparison reduces cycles by 29.24%; CPU
-candidates are slower. Full packet/context integration, complete decoder timing
-and physical qualification remain pending; the V100–V110 phase stays reserved.
+candidates are slower. The V91b/V91c stages below extend its integration;
+complete decoder timing and physical qualification remain pending.
 
 [V91b](cu66-v91b/README.md) now derives DC/AC requests and emits validated sparse
 addresses through one output slot. The full-corpus Python transaction matches
 all coefficients; the clocked real-context comparison is 685,304 word versus
-937,735 serial cycles. Packet CRC/raw ingress, four-context arbitration,
-zero-default scratch and whole-frame consumers still require integration. This
-substep matures E1 without renumbering V92's finer entropy-choice experiment.
+937,735 serial cycles. This substep matures E1; V91c below adds packet control
+while V92 retains its finer entropy-choice experiment.
+
+[V91c](cu66-v91c/README.md) adds complete residual-chunk packet/CRC/raw control
+in RTL and a separate packed temporary-coefficient store model. All 457 sources
+match; packed corpus peak is 134,352 B versus 658,432 B dense. The store still
+needs RTL metadata/allocator and finite memory ports. The packet staging model
+uses combinational multi-address reads; V100–V105 must bank/register/schedule
+actual RAM ports and remeasure cycles, resources and routed clock. Neither
+component changes full-frame or hardware qualification status.
 
 [V90](cu66-v90/README.md) evaluates 3,656 actual packet candidates from 457
 retained sources. Its selected packets average 18,203.64 B and reach 48,744 B,

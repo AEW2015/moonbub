@@ -317,9 +317,17 @@ These are project experiments, not new published literature or physical
 frame-rate evidence. The [V91b follow-up](../cu66-v91b/README.md) adds
 metadata-derived context requests, run/scatter validation and finite output
 credit; its real-context word path uses 26.92% fewer cycles than its matched
-serial control. Full packet/CRC/raw ingress, coefficient memory and downstream
-decoder integration remain next. This is implementation evidence following the
-review, not another published-literature result or new source-count increase.
+serial control. V91c below extends packet and memory work. This is implementation
+evidence following the review, not another published-literature result or new
+source-count increase.
+
+[V91c](../cu66-v91c/README.md) follows with full BR88 packet/CRC/raw RTL and an
+E6 packed-scratch prototype: direct block/raster/value records reuse parser
+addresses, three AC lookahead heads recover implicit zeros locally, and the
+corpus peak allocation falls from 658,432 B dense to 134,352 B packed. This
+trades value-record bytes for capacity and sequential access; a dense/bitmap
+control retains a useful-byte advantage under ideal memory service. Physical
+RAM ports/controller, frame consumers and routed performance remain unqualified.
 
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
