@@ -2,6 +2,13 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+[V91 results](cu66-v91/README.md) qualify an unchanged-byte word Rice reader
+over all 457 sources and an elastic RTL symbol component. On 48 real streams,
+32-bit all-ready parsing takes 605,514 versus 855,682 serial-control cycles
+(29.24% fewer); native CPU parsing is slower and is not promoted. Component
+gains do not close full-frame timing or physical 30 fps. Next integrate
+packet/context/scatter credits and advance the V92 entropy-choice experiment.
+
 Follow the [V91–V110 development plan](gamebub-v91-v110-development-plan.md).
 V91–V99 turn the [literature-review findings](literature-review-2026-11-06/README.md)
 and [E1–E7 experiments](literature-review-2026-11-06/experiments.md) into a

@@ -310,6 +310,12 @@ adopting their complete format.
 
 ## Recommended experiments and decision
 
+[V91 implementation follow-up](../cu66-v91/README.md) tests the first parser
+recommendation: exact full-corpus coefficients and fewer cycles in a clocked
+real-stream RTL component, with negative Python/native CPU speed results.
+These are project experiments, not new published literature or physical
+frame-rate evidence. Packet/context integration remains next.
+
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
 

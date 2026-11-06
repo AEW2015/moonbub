@@ -17,6 +17,12 @@ can be compared against a stable function and workload.
 
 ## Evidence entering this roadmap
 
+[V91](cu66-v91/README.md) now supplies full-corpus coefficient parity,
+directed/native/sanitizer checks and clocked RTL symbol-component evidence.
+Its 32-bit all-ready real-stream comparison reduces cycles by 29.24%; CPU
+candidates are slower. Full packet/context integration, complete decoder timing
+and physical qualification remain pending; the V100–V110 phase stays reserved.
+
 [V90](cu66-v90/README.md) evaluates 3,656 actual packet candidates from 457
 retained sources. Its selected packets average 18,203.64 B and reach 48,744 B,
 within the 49,152 B experimental admission cap. The four-source exhaustive
