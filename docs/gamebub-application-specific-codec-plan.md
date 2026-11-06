@@ -28,6 +28,10 @@ slower and is not promoted. These component fences do not replace complete
 validated-frame decoding or physical 30-fps qualification.
 
 Follow the [V91–V110 development plan](gamebub-v91-v110-development-plan.md).
+Its [lettered execution path](gamebub-v91-v110-development-plan.md#lettered-execution-path-from-v91d)
+now assigns V91e–V91m to functional integration, V92a–V99d to bounded codec/
+transport selection, and V100a–V110d to physical implementation and ordered
+hardware qualification. Letters are reviewable checkpoints, not calendar dates.
 V91–V99 turn the [literature-review findings](literature-review-2026-11-06/README.md)
 and [E1–E7 experiments](literature-review-2026-11-06/experiments.md) into a
 qualified codec candidate: word-parallel Rice, finer/selective entropy coding,

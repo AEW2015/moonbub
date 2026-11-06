@@ -15,6 +15,131 @@ RTL for **7-series technology mapping, placement, routing and timing closure**.
 Freeze the selected codec before that phase so a physical implementation change
 can be compared against a stable function and workload.
 
+## Lettered execution path from V91d
+
+This section is the concrete next-work sequence. **V91d is the latest completed
+checkpoint; every label below is planned.** The original unlettered V91 and
+published V91b/V91c/V91d retain their names. No historical V91a release is implied.
+
+Letters identify separately reviewable deliverables within a numbered work
+phase. Use only the letters needed; the next unused letters through `z` remain
+available for a failed gate, a measured alternative or an integration repair.
+They are not 26 mandatory
+releases, calendar estimates or permission to postpone a missing gate. Record
+each checkpoint as planned, active, passed, rejected or blocked by a named
+prerequisite. A rejected codec experiment may close its research phase while
+the qualified control continues.
+
+```mermaid
+flowchart LR
+    A["V91d: coefficient RTL qualified"] --> B["V91e–h: measured data movement"]
+    B --> C["V91i–m: complete functional decoder"]
+    C --> E["V99a–d: integrate and freeze"]
+    D["V92a–V98d: bounded codec and transport studies"] --> E
+    E --> F["V100a–V109d: 7-series physical closure"]
+    F --> G["V110a–b: hardware 30 fps"]
+    G --> H["V110c: validated decode below 10 ms"]
+    H --> I["V110d: release and handoff"]
+```
+
+The functional integration path is the priority. V92–V98 research can proceed
+on isolated branches alongside it. Integrate only qualified winners, one at a
+time; completing an ANS, palette or transform experiment does not require adding
+it to the product. A simpler candidate may reach hardware qualification while
+an optional challenger remains a separate study. The V99 freeze must explicitly
+list the selected features and deferred experiments.
+
+### Finish V91: complete the functional decoder
+
+| Checkpoint | Concrete deliverable | Promotion gate |
+|---|---|---|
+| **V91e** | Add stage/stall/queue counters, source/frame/chunk identities and common timestamp fences. Expand golden workloads and identify worst cases. | Reconcile all service cycles and memory transactions; distinguish first-byte→publication, packet-complete→validated-publication and per-stage work. No coefficient-only fence described as full decode. |
+| **V91f** | Overlap a bounded pair of write-assembler buffers with acknowledged memory service. Initially retain one accepted outstanding request. | Exact packed images; measurable stall reduction; no overwrite or new bank reuse before old ACK drain, including error/start races. |
+| **V91g** | Prefetch bounded read lines and overlap next-tile preparation with current-tile delivery. | Exact dense output under consumer stalls; cache/queue occupancy and port costs explicit. Additional outstanding requests require a defined ordering/tag and cancellation contract. |
+| **V91h** | Replace combinational multi-address packet staging assumptions with explicit synchronous memory ports and read latency. | Header, unaligned fields, replay, RAW and rejection parity under real port limits. This establishes functional RAM semantics; 7-series mapping/physical optimization remains V100–V110. |
+| **V91i** | Integrate outer frame descriptors, modes, quantizers, profile negotiation, chunk placement and admission. | Sender/receiver agree on every supported mode and fallback; unsupported modes reject. A chunk packet or scratch seal cannot masquerade as complete-frame acceptance. |
+| **V91j** | Connect bit-true dequantization and IDCT with bounded tile/epoch streams. | Exact signed widths, Q14 rounding/saturation order and native golden parity, including backpressure and abort. No zero-time transform substitute in the measured RTL endpoint. |
+| **V91k** | Connect reconstruction, accepted references, COPY/constant handling, hidden-pixel normalization and output conversion. | Full canonical/reference and intended visible RGB565 pixels match. Reference/scanout ownership prevents overwrite; all memory service is charged. |
+| **V91l** | Integrate HUD/content validation, frame hashes/seals and atomic validated publication. | Late errors never publish a partial frame or corrupt accepted references. Full publication fence, rollback/retry and held-scanout behavior are checked. |
+| **V91m** | Run the complete functional frame path with finite transport, memory and display-consumer service models at 30-Hz source releases. | No hidden software pixel/HUD/publication endpoint in a claimed full-RTL pass; exact full frames, bounded queues, recovery and complete latency distributions. Simulation is still distinct from hardware 30 fps. |
+
+V91f/g are promoted only if measured integrated service improves while their
+ownership and resource contracts remain valid. Preserve the V91d control and
+its retained failure reproduction. The current slower-memory source service
+sums already exceed the one-million-cycle reference budget before transforms
+and validation, so parser-only speedups cannot close the remaining work.
+
+Freeze the V91e timing definitions before optimizing further. Keep ingress and
+end-to-end service timing even when work overlaps arrival: a short final-byte
+latency cannot conceal an unsustainable frame service rate. The physical
+milestone still needs a routed clock and measured memory/controller behavior.
+
+### V92–V99: codec, host and transport selection
+
+Each cell below names a separate checkpoint: for example, the four V92 columns
+are V92a, V92b, V92c and V92d. The existing E1–E7 controls remain applicable.
+
+| Version | a | b | c | d / exit |
+|---|---|---|---|---|
+| **V92** finer entropy/group choices | Specify context/group boundaries, framing, reset semantics and budgets. | Emit actual AB38/BR88 alternatives with all tags/headers included. | Independent Python/native decode and exact pixel/reference/HUD parity; measure bounded host preparation. | Select with integrated memory/latency costs; implement any promoted receiver adapter and rerun complete-path goldens. |
+| **V93** prefix/suffix and adaptive Rice | Define arithmetic-prefix/raw-suffix syntax and small-block Rice/RLGR controls. | Implement finite escapes, RAW fallback and independent readers. | Compare complete bytes, context resets, decoder work and host cost on the same inputs. | Promote only a measured improvement; otherwise retain the control and negative result. |
+| **V94** bounded ANS | Specify 2/4-state rANS/tANS, model IDs, tables, literals and initialization/recovery. | Implement host encoding and independent decode with table-inclusive packets. | Prototype RTL/table ports/state arithmetic and test adversarial boundaries. | Compare full-path bytes, cycles and resource/port budgets; select or reject. A fast entropy kernel alone is insufficient. |
+| **V95** application-specific palettes | Define exact 2/4/8-entry palettes, left/top runs and residual fallback. | Put bounded palette/search work on the PC; implement deterministic decoding. | Test UI/HUD, movement, noise and scene changes with complete reconstruction. | Select exact-lane wins. Keep quality-changing clustering in a separately negotiated, matched-quality experiment. |
+| **V96** reference and memory work | Inventory COPY/alias/constant lifetimes, traffic and display ownership. | Implement bounded copy, grouped bursts and scheduled constant generation. | Test actual addressed traffic, port/refresh/arbitration service and abort/reuse. | Merge qualified memory improvements into the complete frame path; no free generator, gather or cross-position alias. |
+| **V97** Sunshine/ESP32/transport | Instrument actual host preparation and negotiate supported profiles/limits. | Integrate bounded ESP32 forwarding, aligned QSPI/DMA transfers and credits, with CPU/RAM budgets. | Exercise firmware and RTL together using supported emulation where available; explicitly label behavioral substitutes and missing ESP32/Wi-Fi fidelity. | Qualify loss/retry/reconnect, input/audio/UI contention and stale-frame/reference recovery; calibrate against hardware when available. |
+| **V98** common-input comparisons | Obtain independent raw captures at native 30-fps cadence, preserving 720×480 target geometry. | Rebuild HEVC/AV1/JPEG and custom rate/quality controls with recorded low-latency settings. | Measure encode/decode cost, tails, HUD readability, temporal artifacts and scene-change failures; separate offline anchors from live capability. | Publish the rate/quality/latency frontier and candidate decision. Do not infer superiority from mismatched quality or different source frames. |
+| **V99** candidate freeze | Choose one supported codec/profile plus a simpler fallback; list deferred tools. | Integrate promoted winners and run complete functional/recovery regressions on the broader corpus. | Freeze sender/ESP32/FPGA interfaces, board/part/memory assumptions, goldens and measurement counters. | Deliver rebuildable source, grammar, tests, manifests and a hardware-test bundle; record remaining physical prerequisites before V100. |
+
+The minimum candidate must have an implemented sender/receiver path for every
+negotiated mode. If a mode is deferred, the encoder must avoid it through a
+validated supported profile, or negotiation/admission must reject it safely.
+Future-content budget overflow needs a real split/fallback policy, not a claim
+that the current corpus always represents worst-case input.
+
+V97c must document what the available emulation actually models. Host-native
+code or a behavioral queue does not measure ESP32 instruction timing, Wi-Fi
+interrupt service, PSRAM contention or QSPI DMA arbitration. Use Renode and
+Verilator where their configured platform/interfaces support the experiment;
+retain hardware calibration as an explicit gate where they do not.
+
+### V100–V110: keep the dedicated 7-series implementation phase
+
+These lettered steps refine the numbered physical phases below; they do not
+replace their target-part, constraints, signoff or evidence requirements.
+
+| Version | a | b | c | d / exit |
+|---|---|---|---|---|
+| **V100** reproducible baseline | Freeze exact part/board, tool version, source/XDC/IP/memory-init hashes and top. | Cleanly recreate and synthesize the complete candidate; inventory ports, clocks, resources and unfinished endpoints. | Establish baseline placement/routing and workload reports with valid constraints. | Repeat the baseline and publish reproducible reports/checkpoints; missing device/tool support remains a prerequisite, not a pass. |
+| **V101** constraints/methodology | Inventory primary/generated clocks, domains and reset behavior. | Derive actual interface delays and clock relationships from the board/controller requirements. | Audit methodology/DRC, CDC, exceptions and unconstrained paths. | Close critical issues and justify every exception; no invented delays or blanket false paths. |
+| **V102** pipeline/control timing | Attribute long ready/credit, mux and arithmetic paths to measured cones. | Add bounded skid/register stages and trial justified retiming. | Recheck transactions, epochs, drain and stalls; compare cycle/queue effects. | Route matched A/B variants and retain the latency/resource/clock improvement. |
+| **V103** parser technology mapping | Isolate supported parser widths/lanes and diagnostic-counter costs. | Compare inferred LUT6/mux/carry implementations of prefix/refill/control logic. | Recheck every escape, boundary, malformed input and full-path workload. | Select from routed area/cycle/clock results; no assumption that a carry chain automatically wins. |
+| **V104** DSP48E1 arithmetic | Freeze bit widths, signedness, overflow and rounding proofs. | Compare DSP pipelines, symmetry, sharing and parallel transform lanes. | Confirm netlist primitive/register absorption and bit-true stall/epoch alignment. | Route and select using complete service cost, DSP/resources and achieved clock. |
+| **V105** memory mapping/locality | Inventory every memory's depth/width, ports, latency and collision policy. | Map suitable packet/coefficient/table/line storage to RAMB18/36, LUTRAM or SRL structures. | Replay with implemented read latency, real arbitration/refresh and display consumers. | Prove whole-device memory fit and service bounds; remove accidental large register muxes without changing semantics. |
+| **V106** fanout/congestion | Capture high-fanout, control-set and congestion evidence. | Localize grants/valid/epoch/reset and register long credit distribution where needed. | Compare narrowly justified replication/hierarchy/placement changes. | Route and keep demonstrated fixes with ownership/reset parity; avoid uncontrolled placement directives. |
+| **V107** board/CDC integration | Wire the selected controller, transport and display interfaces with their real clocks. | Implement/review crossings, async FIFOs and synchronized reset release. | Exercise reset, clock start, traffic and hardware smoke tests when access exists. | Close CDC/interface timing and board integration; unavailable hardware tests remain pending. |
+| **V108** placement/routing study | Freeze one source/constraint baseline and a small recorded strategy matrix. | Run at most six initial combinations, retaining failures, runtime and memory usage. | Cleanly repeat the selected winner. | Choose a reproducible routed frontier; expand trials only for a stated unresolved hypothesis. |
+| **V109** integrated closure | Merge only qualified physical changes into the complete top. | Route and check setup/hold, pulse width, I/O, CDC, exceptions and methodology. | Replay full pixel/reference/HUD/hash workloads with actual primitive/controller costs and counter calibration. | Freeze the qualification candidate and fallback, with no unexplained functional paths or missing full-system endpoints. |
+| **V110** hardware qualification | Verify clean boot, counters, pixel/reference integrity and failure/recovery behavior. | Pass sustained hardware 30 fps: 1,800 distinct frames/60 s, then 18,000/600 s, with real contention and bounded queues. | After the 30-fps gate, validate every qualified complete-decode sample strictly below 10 ms; publish distributions, maxima and worst identities. | Freeze rebuilt artifacts, bitstream/firmware hashes, profiles, procedures, evidence and known limits for handoff. |
+
+Hardware smoke tests can occur earlier when the board and qualified artifacts
+are available; they do not need to wait for V110. V110b/c are the formal product
+qualification gates. If a gate fails, use the next needed letter for a bounded
+repair and repeat the affected checks; do not advance the success claim simply
+because a version number was reached.
+
+### Milestone order
+
+1. **V91m:** complete functional RTL frame path and finite-interface simulation.
+2. **V99d:** selected candidate/fallback and reproducible hardware-development bundle.
+3. **V109d:** complete routed implementation, valid constraints and calibrated counters.
+4. **V110b:** measured sustained hardware 30 distinct fps at 720×480.
+5. **V110c:** measured complete validated decoding strictly below 10 ms.
+6. **V110d:** qualified release and handoff.
+
+Early simulation may show a possible 30-fps or <10-ms budget, but the hardware
+labels remain pending until their own evidence exists. The detailed product
+gates at the end of this document define the conditions and timestamps.
+
 ## Evidence entering this roadmap
 
 [V91d](cu66-v91d/README.md) joins validated packet metadata/end credits, packed
