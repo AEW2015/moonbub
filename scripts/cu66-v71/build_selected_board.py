@@ -1,6 +1,6 @@
 """Implement a hash-frozen explicit board selection. Never emit a BIT or program."""
 from pathlib import Path
-import argparse, hashlib, json, os, shutil, subprocess, time
+import argparse, hashlib, json, os, re, shutil, subprocess, time
 
 root = Path(__file__).resolve().parents[2]
 p = argparse.ArgumentParser()
@@ -67,6 +67,9 @@ check_timing -verbose -file [file join $out check-timing-postsynth.rpt]
 opt_design
 place_design
 phys_opt_design
+write_checkpoint -force [file join $out placed.dcp]
+report_timing_summary -delay_type min_max -file [file join $out placed-timing-summary.rpt]
+report_timing -delay_type max -max_paths 40 -file [file join $out placed-setup-paths.rpt]
 route_design
 phys_opt_design -directive AggressiveExplore
 route_design -directive Explore -tns_cleanup
@@ -102,8 +105,10 @@ required = ['synthesized.dcp', 'constrained.dcp', 'routed.dcp', 'timing-summary.
             'drc.rpt', 'cdc.rpt', 'exceptions.rpt', 'clock-interaction.rpt',
             'bus-skew.rpt', 'check-timing.rpt']
 result['required_reports_present'] = all((out / name).is_file() and (out / name).stat().st_size for name in required)
+result['native_error_lines'] = re.findall(r'^ERROR:.*$', (out / 'console.log').read_text(), re.M)
 result['status'] = ('REPORTS_COMPLETE_NOT_TIMING_QUALIFIED' if proc.returncode == 0
                     and result['completion_marker'] and result['required_reports_present']
+                    and not result['native_error_lines']
                     else 'INCOMPLETE_NATIVE_IMPLEMENTATION')
 (out / 'execution.json').write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps(result, indent=2))

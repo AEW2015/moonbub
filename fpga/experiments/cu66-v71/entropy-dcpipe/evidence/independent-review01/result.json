@@ -1,0 +1,58 @@
+{
+  "status": "PASS_INDEPENDENT_DC_MATH_AND_ACTUAL_PARENT_DIFFERENTIAL_RESET",
+  "sources": {
+    "fpga\\experiments\\cu66-v71\\entropy-headerpipe\\cu71_ab38_decoder_headerpipe_v5.sv": "8715c9f29c481d8a02bfa3e86eccb57efdea21b3fb1d4cc36110724a85d02893",
+    "fpga\\experiments\\cu66-v71\\entropy-dcpipe\\cu71_ab38_decoder_dcpipe_v6.sv": "cb8573f9f467305dd66754d82005dd23df01bbf505a7623cc78f198765f1b777"
+  },
+  "artifacts": {
+    "actual.log": "3bc20dde1679a573826fe4fc70eb93aad4eda17cf558c23e83eee565b6b93b48",
+    "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cu71_ab38_decoder_dcpipe_v6.sv": "cb8573f9f467305dd66754d82005dd23df01bbf505a7623cc78f198765f1b777",
+    "cu71_ab38_decoder_headerpipe_v5.sv": "8715c9f29c481d8a02bfa3e86eccb57efdea21b3fb1d4cc36110724a85d02893",
+    "executed.ys": "2c8baf415f51049332f5fe2075bb1b44b3c4052b0561df48ca6abbc904001252",
+    "math.sv": "68c1b38eb2b0427353f35c809bbc59aa811f0b7314a664691ea01f724599b1fd",
+    "sat.log": "350bfc1d54b165ae7705afd824c174aa36b50a92407aa5761aa31dd70394545c",
+    "sim": "791eb023b189c6d0d66b618d668037a40f3fd8fe808e699f322758a340bf009a",
+    "tb.sv": "3025f8163381a07ec576b7ec4502250e11f6f6e5ce99f57c228058e360e73acc"
+  },
+  "commands": [
+    {
+      "label": "compile",
+      "command": [
+        "C:/msys64/ucrt64/bin/iverilog.exe",
+        "-g2012",
+        "-s",
+        "tb",
+        "-o",
+        "sim",
+        "cu71_ab38_decoder_headerpipe_v5.sv",
+        "cu71_ab38_decoder_dcpipe_v6.sv",
+        "tb.sv"
+      ],
+      "returncode": 0
+    },
+    {
+      "label": "actual",
+      "command": [
+        "C:/msys64/ucrt64/bin/vvp.exe",
+        "sim"
+      ],
+      "returncode": 0
+    },
+    {
+      "label": "sat",
+      "command": [
+        "wsl.exe",
+        "-d",
+        "MRS-HDL-Research",
+        "--",
+        "bash",
+        "-lc",
+        "source /opt/gamebub-openxc7-20261021/oss-cad-suite/environment && yosys -p 'read_verilog -sv /mnt/c/mb70/fpga/experiments/cu66-v71/entropy-dcpipe/evidence/independent-review01/math.sv; prep -top dc_math -flatten; sat -verify -prove same 1 -show-inputs -show-outputs'"
+      ],
+      "returncode": 0
+    }
+  ],
+  "scope": "All binary signed/wrapped32-bit math SAT, actual parent/new latency-aligned DC stage across boundaries/random/XZ. Direct newstate reset+dirty payload+probability retention+configuration/DC retry and abort priority. Full packet retry covered separately by actual native campaign.",
+  "hardware": false
+}

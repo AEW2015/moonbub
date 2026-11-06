@@ -1,0 +1,54 @@
+[
+  {
+    "label": "simulation-build",
+    "command": [
+      "C:/msys64/ucrt64/bin/iverilog.exe",
+      "-g2012",
+      "-s",
+      "tb_transport_samecycle",
+      "-o",
+      "test.vvp",
+      "transport_samecycle_miter.sv",
+      "tb_transport_samecycle.sv"
+    ],
+    "returncode": 0,
+    "seconds": 0.14099999994505197
+  },
+  {
+    "label": "simulation",
+    "command": [
+      "C:/msys64/ucrt64/bin/vvp.exe",
+      "test.vvp"
+    ],
+    "returncode": 0,
+    "seconds": 3.812000000034459
+  },
+  {
+    "label": "all32",
+    "command": [
+      "wsl.exe",
+      "-d",
+      "MRS-HDL-Research",
+      "--",
+      "bash",
+      "-lc",
+      "source /opt/gamebub-openxc7-20261021/oss-cad-suite/environment && yosys -Q -T -p 'read_verilog -sv /mnt/c/mb70/fpga/experiments/cu66-v71/transport-nonzero/samecycle-v001/evidence/verification01/comb_miter.sv; prep -top transport_comb_miter -flatten; sat -prove mismatch 0 -show-inputs -show-outputs'"
+    ],
+    "returncode": 0,
+    "seconds": 5.796999999904074
+  },
+  {
+    "label": "sequential-induction",
+    "command": [
+      "wsl.exe",
+      "-d",
+      "MRS-HDL-Research",
+      "--",
+      "bash",
+      "-lc",
+      "source /opt/gamebub-openxc7-20261021/oss-cad-suite/environment && yosys -Q -T -p 'read_verilog -sv /mnt/c/mb70/fpga/experiments/cu66-v71/transport-nonzero/samecycle-v001/evidence/verification01/transport_samecycle_miter.sv; prep -top transport_samecycle_miter -flatten; sat -seq 3 -tempinduct -set-init-zero -prove mismatch 0 -show-inputs -show-outputs'"
+    ],
+    "returncode": 0,
+    "seconds": 0.26500000001396984
+  }
+]

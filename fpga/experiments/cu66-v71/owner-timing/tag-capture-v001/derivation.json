@@ -1,0 +1,19 @@
+{
+  "status": "ISOLATED_HUD_EXPECTED_PAYLOAD_CAPTURE_PROOF_PENDING",
+  "parent": "C:\\mb70\\fpga\\experiments\\cu66-v71\\direct-system\\board-math-v001\\cu71_receiver_direct_math.sv",
+  "parent_sha256": "7991bfc59ddf2942080185196b103e9af0b72b94857460f5570b92d035bd71d3",
+  "selected_v005_manifest_sha256": "84cc0f1e93f03f870207c68df2c33aac6a4a7a3cee8da87deab7900ec69daf76",
+  "candidate_sha256": "c17a9dbe93c92a88d5ee90f3c689e40845f56c8f3610e84e72f1dd39915f2d76",
+  "invariant_result_sha256": "e5f75a17f65574e76abdfc7233ca2c9e1f9087637c50fb1aad8b4226f400c933",
+  "exactly_moved_register": "hud_expected128-bit only, same synchronous rst value0 and meta p_hud_tag data",
+  "new_capture_guard": "meta_fire&&!fatal_non_hud; original guard was meta_fire under !fatal && !abort_allowed_abort",
+  "global_fatal_block_byte_identical": true,
+  "all_events_diagnostics_and_other_original_code_exact_reversal": true,
+  "removed_HUD_predicates": [
+    "            else if(hud_result_valid&&hud_match&&(!hud_result_success||\n                hud_result_reference_id!=rid||hud_result_words!=21120||hud_result_tag!=hud_expected))\n                begin fatal=1;fatal_code=8'h70;end\n",
+    "            else if(hud_drain_valid&&hud_write_match&&(!hud_drain_success||\n                hud_drain_bank!=bank_write||hud_drain_words!=21120||hud_drain_tag!=hud_expected))\n                begin fatal=1;fatal_code=8'h71;end\n"
+  ],
+  "non_HUD_helper": "        fatal_non_hud=0;\n        if(state!=IDLE&&state!=DRAIN&&state!=COMMIT_ACK)begin\n            if(state==METADATA&&p_error)begin fatal_non_hud=1;end\n            else if(state==WAIT_BANK&&bank_error)begin fatal_non_hud=1;end\n            else if((state==BASE_RUN)&&b_error)begin fatal_non_hud=1;end\n            else if(state==CACHE_PREPARE_RUN&&cache_prepare_result_valid&&cache_prepare_match&&!cache_prepare_result_success)\n                begin fatal_non_hud=1;end\n            else if(ref_rsp_valid&&ref_match&&ref_rsp_error)begin fatal_non_hud=1;end\n            else if(q_rsp_valid&&q_rsp_index!=q_expected_index)begin fatal_non_hud=1;end\n            else if(!packet_pending&&(p_req_valid||b_req_valid)&&\n                calculated_packet_address>={1'b0,packet_length[15:0]})begin fatal_non_hud=1;end\n            else if(WATCHDOG_CYCLES!=0&&age>=32'(WATCHDOG_CYCLES))begin fatal_non_hud=1;end\n        end",
+  "latency_change": false,
+  "hardware": false
+}

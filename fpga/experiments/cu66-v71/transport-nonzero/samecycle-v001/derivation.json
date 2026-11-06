@@ -1,0 +1,33 @@
+{
+  "status": "PASS_EXACT_FOUR_REVERSIBLE_TOP_CHANGES_PROOFS_PENDING",
+  "parent": "C:\\mb70\\fpga\\experiments\\cu66-v71\\direct-system\\syncsafe-math-v002\\board-source-v003\\moonshine_top_dy71.sv",
+  "parent_sha256": "93b14034d4e95fadc5eafd0737e638f91df9b20a4725a0c080df375434839c79",
+  "selected_v005_manifest_sha256": "84cc0f1e93f03f870207c68df2c33aac6a4a7a3cee8da87deab7900ec69daf76",
+  "candidate_sha256": "c530e2376ad3ac93d8fac31ac60ab3eb545b8fe528b4332b4f1359ef3b79401f",
+  "miter_sha256": "19a858bf9985a6bd5a61dc5565aea3a741d59bfcc9dac20a95646abb1a680e90",
+  "changes": [
+    {
+      "before": " reg[31:0]transport_lost_words=0;",
+      "after": " reg[31:0]transport_lost_words=0;\n (* MAX_FANOUT=64 *)reg transport_lost_nonzero=0;"
+    },
+    {
+      "before": "transport_gray_sync<=0;transport_lost_words<=0;end",
+      "after": "transport_gray_sync<=0;transport_lost_words<=0;transport_lost_nonzero<=0;end"
+    },
+    {
+      "before": "transport_lost_words<=ungray_transport(transport_gray_sync);end",
+      "after": "transport_lost_words<=ungray_transport(transport_gray_sync);transport_lost_nonzero<=|transport_gray_sync;end"
+    },
+    {
+      "before": "wire transport_fault=quarantine_sync[1]||transport_lost_words!=0;",
+      "after": "wire transport_fault=quarantine_sync[1]||transport_lost_nonzero;"
+    }
+  ],
+  "same_core_edge_and_reset": true,
+  "uses_only_second_stage_gray_sync": true,
+  "counter_RTL_retained": true,
+  "unused_counter_can_be_synthesis_pruned": "Original counter has no external statistics readback in selected top; retained in RTL without KEEP/DONT_TOUCH, so synthesis may remove now-unobserved count. No statistics port added.",
+  "fanout_attribute": "MAX_FANOUT64 is an implementation hint only; actual replication/fanout/timing not measured",
+  "two_state_only": true,
+  "hardware": false
+}

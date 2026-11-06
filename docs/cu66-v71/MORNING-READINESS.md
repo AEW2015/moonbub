@@ -1,16 +1,18 @@
 # Morning CU66 hardware readiness
 
-Updated November 6, 2026, about 03:30 Denver. This record distinguishes
+Updated November 6, 2026, about 05:35 Denver. This record distinguishes
 completed offline work from installation and physical qualification.
 
 | Item | State |
 |---|---|
 | Installed application/FPGA | Last physically verified v32 / build50; unchanged overnight |
 | Next ESP32 app | v36 built, packaged, independently audited; not installed |
-| New direct-YUV board | DY71 implementation02 running; no qualified BIT |
+| New direct-YUV board | Final v008 full implementation `dy71i03` running; native directory errors under investigation; no qualified BIT |
 | New complete KEY/P/P model | PASS, zero LCD underruns and exact canonical/HUD/display checks |
 | v36/native on previous SYNCsafe/split RTL | PASS, two accepted/presented, zero rejects/underruns, 42,240 HUD readbacks |
-| v36/native on final safe-staging/validation successor | Separate proof pending |
+| v36/native on final safe-staging/validation successor | PASS: two accepted/presented, zero rejects/underruns, all 42,240 HUD readbacks |
+| v36/native on exact final v008 board core | PASS: two accepted/presented, zero rejects/underruns, all 42,240 HUD writes and readbacks |
+| Exact final v008 KEY/P/P | PASS: three frames, exact panel/canonical/HUD checks, 5,452 clean LCD lines, zero underruns |
 | Physical CU66 playback | Not run |
 | 30 unique displayed fps | Not established; three-frame model interval 46.10029 ms |
 
@@ -27,14 +29,31 @@ The effective SDK is byte-identical to v35. Its static SRAM is 130,916 bytes;
 runtime heap, task high-water and first-exception checks are still physical
 gates, not conclusions from ELF prologues.
 
-Current prospective DY71 board-source-v005 selects the unchanged actual CU66
-codec, owner, grouped SDRAM path and SYNCsafe scanout, with three focused
-successors: registered staging credit, explicit rejection of overlapping
-discard/upload, and a one-work-cycle IDCT classification stage. It also uses
-exact primitive-register C-to-D legacy bundle bounds instead of a broad
-selector that matched a LUT. Numeric clock, I/O and SDRAM hold budgets are
-unchanged. Selection SHA-256:
-`84cc0f1e93f03f870207c68df2c33aac6a4a7a3cee8da87deab7900ec69daf76`.
+Current prospective DY71 board-source-v008 retains the CU66 arithmetic contract,
+grouped SDRAM path, safe staging and SYNCsafe scanout. Focused successors pipeline
+parser length sums, entropy header/DC checks, dequant and IDCT validation; remove
+proved-impossible feedback terms from tag/metadata qualifiers; and retime the
+diagnostic event-ring storage with immediate read bypass. The actual combined
+KEY/P/P and v36 native-HU/CSR/SDRAM replays pass on this exact composition. It uses
+exact primitive-register C-to-D legacy bundle bounds instead of a broad selector
+that matched a LUT. Numeric clock, I/O and SDRAM hold budgets are unchanged.
+Selection SHA-256:
+`3e5760ca6da2d593febe00655cb0a343d6d675f02db2ea8d1e9623df0fef6ba8`.
+Core manifest SHA-256:
+`15cc325a837720ae4f54dbb98b30d457d76271f416b7ef1576c198a68fde4b69`.
+
+The active complete implementation is `C:/mb70/dy71i03`. Its console contains
+three `Common 17-1257` directory-creation errors despite short private TEMP/TMP.
+Its native Vivado log omits those console errors. Preserve both transcripts;
+neither a zero process status nor positive timing can waive this open gate.
+The current build continues for diagnostic placement/routing evidence while
+the environment discrepancy is investigated. No BIT has been generated.
+
+Its placed checkpoint reports setup -1.120 ns and hold -0.098 ns (pre-route,
+not final signoff). The worst reported path crosses command state, parser
+request qualification, arbitration choice and staging RAM address. A separate
+bounded registered-request experiment is being developed without changing this
+selected build; final routed evidence will determine the next selection.
 
 This first DY71 image is a local video diagnostic: fixed native panel timing
 and 40-column landscape borders, rather than build50's adjustable margin13;
@@ -68,3 +87,14 @@ plus transfer edges. Reservation overlaps those waits and is not additive or
 a promised saving. Preserve PHY/map/quota while evaluating bounded DMA
 lookahead and reference/writeback overlap. More arithmetic lanes alone do not
 address the measured bottleneck. See the profiling reports for exact bindings.
+
+The **ESP32 control link also needs its own throughput work**. V36 intentionally
+uses scalar typed CSR commands and complete HUD readback for first-fixture
+correctness. Its numeric-CSR model report is 583,945 virtual microseconds for
+two frames, with 787,090 accesses and HUD CPU time excluded. That is neither
+physical playback rate nor a 30 fps transport result. At 30 fps, 21,120 HUD
+words imply 1.2672 MB/s of actual pixel data in each write/readback direction,
+before command overhead. Measure physical upload, native HUD CPU, write,
+readback and presentation timestamps first; then coordinate bounded bulk HUD
+transfer/readback with exact generation/ticket/tag/drain semantics. A faster
+FPGA alone does not close this scalar diagnostic protocol's streaming gate.

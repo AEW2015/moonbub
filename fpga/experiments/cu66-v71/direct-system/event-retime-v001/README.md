@@ -1,0 +1,27 @@
+# Event-only receiver retime prototype
+
+New isolated receiver: `cu71_receiver_eventpipe.sv`, SHA-256 `54f31ee41412e0ed63a7658427320202f03640f5418f033c18a0a7f66ea12532`. Parent is original board-math-v001 receiver SHA `7991bfc59ddf2942080185196b103e9af0b72b94857460f5570b92d035bd71d3`. No selected source, owner/HUD cleanup, clock, PHY, map, quota, whole-board build or hardware operation is included.
+
+## Design and exact public semantics
+
+The original record is256 bits across eight32-bit diagnostic words: sequence; clock low/high; generation low/high; frame ID; stage/event/fatal/zero; address. The original producer priority remains byte-for-byte unchanged: successive code1…10 assignments retain later-assignment precedence, including fatal9 and successful matched software ACK10. First-fault/status/state/timestamp producer logic is unchanged.
+
+Every clock captures the computed record and write index without an event-derived payload CE or payload reset. A separate pending-valid flag is set only by the original procedural `if(event_code!=0)` semantics. This preserves four-state behavior when the predicate is unknown. Event sequence and overwrite count update on the **original** producer edge; no logical event is delayed. The previous pending payload physically writes one slot on the next edge. Throughput remains one event per clock, including consecutive events.
+
+Diagnostic reads of the pending slot bypass the physical ring using its held record; other valid slots read physical storage. Eight reset validity bits hide arbitrary/uninitialized payload and preserve original fresh-reset zero reads. Bypass is not combinationally gated by reset: before the synchronous reset edge, the old public data remains visible. Reset cancels pending physical writes and clears logical counters/validity on its original edge. `clear_fault` does not clear the ring, as before. Natural sequence/overwrite32-bit wrap behavior is retained rather than redesigned.
+
+Only event declarations, storage and the ring read expression are patched. `patch.json` contains exact old/new fragments and a full textual reverse-equality proof against the pinned parent. To compose with independent HUD-owner changes, apply its swaps **except the first module-name rename** to the new owner source; fail if an expected old fragment does not match. The original producer and all non-ring diagnostic cases are outside the patch. The ring has no flow-control/owner feedback consumer.
+
+## Executed proof
+
+- `focused01`: exact extracted original/new storage and ring/counter diagnostic models, four-state Icarus PASS1,295,859 checks across1264 edges. All1024 diagnostic addresses are checked after each edge, including every ring word and counters. Unaligned/non-ring addresses in this extracted interface return zero; unchanged full receiver non-ring contents are established by the reversible source boundary and native controls, not fabricated as this component's oracle.
+- The focused bench deliberately starts physical payload with random/unknown data, then tests reset masking, continuous events, pointer and32-bit sequence/overwrite wrap, no-event gaps, unknown event predicates, unknown record fields and reset with an undrained pending event. Equality uses case-equality so X-bit mismatches fail. Values before the first synchronous reset are outside the original initialization contract.
+- `focused02` adds before-edge checks after initialization as well as after-edge checks: PASS2,590,434 checks/1264 edges. It explicitly tests synchronous reset assertion and input changes while a pending record is visible.
+- `full-pin02`: actual receiver plus unchanged qualified pin-model system, native control and chronological KEY/P/P canonical/HUD/pixel goldens PASS. An independent old-edge C++ record shadow samples the **producer**, not the new pending payload. It reads all64 actual public ring words and both counters immediately after every producer/reset and its following physical-drain edge, without advancing simulation time. Control checks1280 ring words across six real records, including abort8 and coverage failure9; frames check3264 words across24 records.
+- Every original public control/stage/presentation/fence/frame/counter log line matches frozen `syncsafe-math-v002/evidence/new-fence-three01` **exactly**, including all cycles. Native result has5452 clean lines, zero black lines/underruns and zero RGB traffic; canonical518400bytes/frame and HUD21120words/frame goldens pass. No30fps claim follows.
+
+`full-pin01` is a retained failed verification-wrapper build: grouped-header rewriting initially omitted new observation output declarations. `full-pin02` corrects only the wrapper port insertion. The receiver source and event patch are identical across both attempts.
+
+The extraction proof checks the exact changed storage/read fragments. The native proof checks actual producer timing and actual diagnostic bypass in control/failure/success traces. Neither is routed STA or asynchronous-glitch/MTBF evidence. Final composition with HUD/metadata owner changes needs a separate whole-pair replay and board timing/CDC/IO/DRC qualification before hardware.
+
+`full-pin02/handoff.json` binds71 source/evidence artifacts with a manually verified source/hash/content audit. Component status is PASS; overall release remains INCOMPLETE for the future composed owner pair and timing/hardware. `c_check_handoff` was unavailable and is not claimed.

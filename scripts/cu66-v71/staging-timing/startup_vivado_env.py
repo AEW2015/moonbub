@@ -1,0 +1,13 @@
+"""Minimal native startup TEMP/TMP probes; no project, RTL, clocks or hardware."""
+from pathlib import Path
+import argparse,hashlib,json,os,subprocess,time
+r=Path(__file__).resolve().parents[3];d=r/'fpga/experiments/cu66-v71/direct-system/tag-equality-v001';p=argparse.ArgumentParser();p.add_argument('--output',required=True);a=p.parse_args();o=Path(a.output).resolve();assert o.is_relative_to(Path('C:/vtmp').resolve())and not o.exists();o.mkdir(parents=True);sha=lambda f:hashlib.sha256(f.read_bytes()).hexdigest();script=o/'startup.tcl';script.write_text('''puts "NATIVE_STARTUP_TCL_ENTERED"
+foreach key [array names ::env] {if {[string equal -nocase $key TEMP] || [string equal -nocase $key TMP] || [string equal -nocase $key NODEFAULTCURRENTDIRECTORYINEXEPATH]} {puts "NATIVE_ENV $key=$::env($key)"}}
+puts "NATIVE_STARTUP_PROBE_COMPLETE_NO_PROJECT"
+exit 0
+''',newline='\n');results=[]
+for label,temp_long,tmp_long,forward in [('SS_native',False,False,False),('LS_native',True,False,False),('SL_native',False,True,False),('LL_native',True,True,False),('LL_forward',True,True,True)]:
+ c=o/label;c.mkdir();short=c/'t';short.mkdir();long=d/'evidence'/('env-startup-'+label)/'t';assert not long.exists();long.mkdir(parents=True);tp=long if temp_long else short;mp=long if tmp_long else short;env=dict(os.environ,TEMP=tp.as_posix()if forward else str(tp),TMP=mp.as_posix()if forward else str(mp));cmd=['C:/Xilinx/2025.2/Vivado/bin/vivado.bat','-mode','batch','-source',str(script),'-log',str(c/'vivado.log'),'-journal',str(c/'vivado.jou')];start=time.monotonic()
+ with(c/'console.log').open('w')as log:q=subprocess.run(cmd,cwd=c,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=120)
+ text=(c/'console.log').read_text();errors=[x for x in text.splitlines()if x.startswith('ERROR:')];entry={'label':label,'TEMP':env['TEMP'],'TMP':env['TMP'],'TEMP_length':len(env['TEMP']),'TMP_length':len(env['TMP']),'cwd':str(c),'NoDefault':next((v for k,v in env.items()if k.upper()=='NODEFAULTCURRENTDIRECTORYINEXEPATH'),None),'command':cmd,'returncode':q.returncode,'seconds':time.monotonic()-start,'native_errors':errors,'source_entered':'NATIVE_STARTUP_TCL_ENTERED'in text,'completion':'NATIVE_STARTUP_PROBE_COMPLETE_NO_PROJECT'in text,'log_sha256':sha(c/'console.log'),'TEMP_files':[str(f)for f in tp.rglob('*')if f.is_file()],'TMP_files':[str(f)for f in mp.rglob('*')if f.is_file()]};results.append(entry);(o/'results.json').write_text(json.dumps(results,indent=2)+'\n');print(label,'errors',len(errors),'rc',q.returncode,flush=True)
+(o/'source-binding.json').write_text(json.dumps({'runner_sha256':sha(Path(__file__)),'startup_tcl_sha256':sha(script),'no_project_RTL_clocks_or_hardware':True,'machine_environment_unchanged':True},indent=2)+'\n')

@@ -35,10 +35,14 @@ else:
     timing_ok = all(metrics[k]>0 for k in ['WNS_ns','WHS_ns','WPWS_ns']) and all(metrics[k]==0 for k in ['setup_failures','hold_failures','pulse_failures'])
     route_ok = routes['routable']==routes['fully_routed'] and routes['errors']==0
     native_ok = execution['returncode']==0
+    console = r/'console.log'
+    native_errors = re.findall(r'^ERROR:.*$', console.read_text(), re.M) if console.is_file() else []
+    native_ok = native_ok and not native_errors
     if 'completion_marker' in execution:
         native_ok = native_ok and execution['completion_marker'] and execution.get('required_reports_present', False)
     result.update(status='PASS_NUMERIC_TIMING_ROUTE_NATIVE_MANUAL_REVIEW_REQUIRED' if timing_ok and route_ok and native_ok else 'FAIL_NUMERIC_GATES',
                   timing=metrics, routing=routes, native_execution_ok=native_ok,
+                  native_error_lines=native_errors,
                   manual_open=['DRC errors/warnings and their individual justification',
                                'CDC topology, first-stage fanout and held-data protocol pairing',
                                'Exception coverage, bus-skew coverage and absence of path segmentation',

@@ -1,0 +1,2 @@
+from pathlib import Path
+auditor=Path(__file__).with_name('prove_base_write_pending_audited.py');s=auditor.read_text();needle='s=parent.read_text()';replacement="s=parent.read_text().replace(\"p=r/'fpga/experiments/cu66-v71/direct-system/validpipe-v003/cu71_base_pipeline_math.sv'\",\"p=r/'fpga/experiments/cu66-v71/direct-system/tag-phase-cut-v003/cu71_base_pipeline_math.sv'\")";assert needle in s;s=s.replace(needle,replacement);exec(compile(s,str(auditor),'exec'),globals())

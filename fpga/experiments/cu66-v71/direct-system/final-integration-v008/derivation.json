@@ -1,0 +1,51 @@
+{
+  "parent_core_manifest": "fpga/experiments/cu66-v71/direct-system/core-integration-v006/sources.json",
+  "parent_core_manifest_sha256": "826c979a19ad460090636453c1fd2ba239df61ee55d61fe55569bd3ed96055c3",
+  "owner_source": "fpga/experiments/cu66-v71/owner-timing/meta-payload-v003/cu71_receiver_metapayload_v003.sv",
+  "owner_source_sha256": "1b3be7c9779d4c5c61712c177173a235f1ddbb68737f7687059789325b510f32",
+  "event_patch": "fpga/experiments/cu66-v71/direct-system/event-retime-v001/patch.json",
+  "event_patch_sha256": "0f3f9800b25d996e2cd0dea2bf439e5026c5c855912fa4073c9f2ef1ec98e5e0",
+  "event_source_sha256": "54f31ee41412e0ed63a7658427320202f03640f5418f033c18a0a7f66ea12532",
+  "event_swaps": [
+    [
+      "    logic [255:0] events[0:7];",
+      "    logic [255:0] events[0:7];\n    // Physical payload writes lag the logical event edge; diagnostic bypass\n    // preserves the original immediate ring contents. Payload needs no reset.\n    logic [255:0] event_record_pending;\n    logic [2:0] event_write_index;\n    logic event_pending_valid;\n    logic [7:0] event_slot_valid;"
+    ],
+    [
+      "    always_ff @(posedge clk)begin\n        if(rst)begin\n            event_sequence<=0;event_overwrites<=0;\n            for(integer i=0;i<8;i=i+1)events[i]<=0;\n        end else if(event_code!=0)begin\n            events[event_sequence[2:0]]<={8'd0,last_address,stage,event_code,fatal_code,8'd0,\n                event_fid,event_generation[63:32],event_generation[31:0],clock_count[63:32],clock_count[31:0],event_sequence};\n            event_sequence<=event_sequence+1;\n            if(event_sequence>=8)event_overwrites<=event_overwrites+1;\n        end\n    end\n",
+      "    always_ff @(posedge clk)begin\n        // No event-derived CE or bulk reset on the computed 256-bit record.\n        event_record_pending<={8'd0,last_address,stage,event_code,fatal_code,8'd0,\n                event_fid,event_generation[63:32],event_generation[31:0],clock_count[63:32],clock_count[31:0],event_sequence};\n        event_write_index<=event_sequence[2:0];\n        if(rst)begin\n            event_sequence<=0;event_overwrites<=0;\n            event_pending_valid<=0;event_slot_valid<=0;\n        end else begin\n            // Procedural-if X semantics match the original event predicate.\n            event_pending_valid<=0;\n            if(event_code!=0)begin\n                event_pending_valid<=1;\n                event_slot_valid[event_sequence[2:0]]<=1;\n                event_sequence<=event_sequence+1;\n                if(event_sequence>=8)event_overwrites<=event_overwrites+1;\n            end\n            if(event_pending_valid)events[event_write_index]<=event_record_pending;\n        end\n    end\n"
+    ],
+    [
+      "                    diag_data=events[diag_address[7:5]][int'(diag_address[4:2])*32+:32];",
+      "                    begin\n                        if(event_pending_valid&&diag_address[7:5]==event_write_index)\n                            diag_data=event_record_pending[int'(diag_address[4:2])*32+:32];\n                        else if(event_slot_valid[diag_address[7:5]])\n                            diag_data=events[diag_address[7:5]][int'(diag_address[4:2])*32+:32];\n                    end"
+    ]
+  ],
+  "event_reverse_exact": true,
+  "receiver_binding_swaps": [
+    [
+      "module cu71_receiver_metapayload_v003 #(",
+      "module cu71_receiver_final_v008 #("
+    ],
+    [
+      "cu66_packet_control parser(",
+      "cu71_packet_hudsum parser("
+    ],
+    [
+      "cu71_base_pipeline_math base(",
+      "cu71_base_core_v006 base("
+    ]
+  ],
+  "system_binding_swaps": [
+    [
+      "module cu71_system_core_v006 #(",
+      "module cu71_system_final_v008 #("
+    ],
+    [
+      "cu71_receiver_core_v006 #(",
+      "cu71_receiver_final_v008 #("
+    ]
+  ],
+  "PHY_map_quota_clocks_SYNCsafe_unchanged": true,
+  "whole_combined_pending": true,
+  "hardware": false
+}

@@ -1,0 +1,214 @@
+
+****** Vivado v2025.2 (64-bit)
+  **** SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+  **** IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+  **** SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+  **** Start of session at: Fri Nov  6 03:43:50 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source {C:\mb70\fpga\experiments\cu66-v71\direct-system\board-v005-cdc-audit01\audit.tcl}
+# set_param general.maxThreads 1
+# set out [file normalize [lindex $argv 0]]
+# open_checkpoint [file join $out input-constrained.dcp]
+Command: open_checkpoint C:/mb70/fpga/experiments/cu66-v71/direct-system/board-v005-cdc-audit01/input-constrained.dcp
+
+Starting open_checkpoint Task
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.103 . Memory (MB): peak = 397.879 ; gain = 4.809
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.916 . Memory (MB): peak = 891.027 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 4970 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2025.2
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Read ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.157 . Memory (MB): peak = 1030.152 ; gain = 7.027
+INFO: [Timing 38-478] Restoring timing data from binary archive.
+INFO: [Timing 38-479] Binary timing data restore complete.
+INFO: [Project 1-856] Restoring constraints from binary archive.
+INFO: [Constraints 18-5170] The checkpoint was created with non-default parameter values which do not match the current Vivado settings.  Mismatching parameters are:
+  general.maxThreads
+INFO: [Project 1-853] Binary constraint restore complete.
+INFO: [Designutils 20-5722] Start Reading Physical Databases.
+Reading placement.
+Read Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1719.000 ; gain = 0.000
+Reading placer database...
+Read Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.010 . Memory (MB): peak = 1719.000 ; gain = 0.000
+Read PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1719.000 ; gain = 0.000
+Read placeStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 1719.000 ; gain = 0.000
+Read PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1719.000 ; gain = 0.000
+Reading routing.
+Read RouteStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 1719.000 ; gain = 0.000
+Read Physdb Files: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.034 . Memory (MB): peak = 1719.000 ; gain = 0.000
+Restored from archive | CPU: 0.000000 secs | Memory: 0.000000 MB |
+Finished XDEF File Restore: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.119 . Memory (MB): peak = 1719.000 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.039 . Memory (MB): peak = 1719.000 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 251 instances were transformed.
+  IOBUF => IOBUF (IBUF, OBUFT): 20 instances
+  RAM16X1D => RAM32X1D (RAMD32(x2)): 48 instances
+  RAM16X1S => RAM32X1S (RAMS32): 141 instances
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 22 instances
+  RAM32X1D => RAM32X1D (RAMD32(x2)): 2 instances
+  RAM64M => RAM64M (RAMD64E(x4)): 18 instances
+
+INFO: [Project 1-604] Checkpoint was created with Vivado v2025.2 (64-bit) build 6299465
+open_checkpoint: Time (s): cpu = 00:00:39 ; elapsed = 00:01:28 . Memory (MB): peak = 1719.000 ; gain = 1337.113
+# set failures {}
+# proc issue {message} {global failures;lappend failures $message;puts "AUDIT_FAILURE $message"}
+# proc exact {name} {set v [get_cells -quiet -hier -filter [format {NAME == "%s"} $name]];if {[llength $v]!=1} {issue "expected one cell $name got[llength $v]";return {}};return $v}
+# proc regpin {cell pin} {set p [get_pins -quiet -of_objects $cell -filter [format {REF_PIN_NAME == %s} $pin]];if {[llength $p]!=[llength $cell]} {issue "missing primitive $pin pins for $cell"};return $p}
+# proc prop {object key} {if {[lsearch -exact [list_property $object] $key]<0} {return "<unavailable>"};return [get_property $key $object]}
+# set design [open [file join $out design.tsv] w]
+# foreach key {NAME PART BITSTREAM.CONFIG.USERID BITSTREAM.CONFIG.USR_ACCESS} {puts $design "$key\t[prop [current_design] $key]"}
+# close $design
+# if {[get_property PART [current_design]] ne "xc7a100tcsg324-1"} {issue "wrong part"}
+# set fan [open [file join $out lcd-first-stage.tsv] w]
+# puts $fan "chain\tmeta_Q\texpected_D\tactual_endpoints\tmeta_ASYNC_REG\tnext_ASYNC_REG\tmatch"
+# foreach chain {request_sync0 request_sync1 frame_sync done_sync0 done_sync1 valid_sync} {
+#  set first [exact [format {system_core/scanout/lcd/%s_reg[0]} $chain]];set second [exact [format {system_core/scanout/lcd/%s_reg[1]} $chain]]
+#  if {[llength $first]!=1||[llength $second]!=1} {continue}
+#  set q [regpin $first Q];set d [regpin $second D];set got [all_fanout -flat -endpoints_only -from $q];set ok [expr {[lsort $got] eq [lsort $d]}]
+#  puts $fan "$chain\t$q\t$d\t[join [lsort $got] {;}]\t[get_property ASYNC_REG $first]\t[get_property ASYNC_REG $second]\t$ok"
+#  if {!$ok} {issue "functional/unexpected first-stage fanout $chain: $got"}
+#  if {[get_property ASYNC_REG $first] ne "1"||[get_property ASYNC_REG $second] ne "1"} {issue "missing inherited ASYNC_REG $chain"}
+# }
+# close $fan
+# set regs [open [file join $out bound-registers.tsv] w]
+# puts $regs "group\trole\tcell\tREF_NAME\tpin\tREF_PIN_NAME\tclock\tASYNC_REG"
+# set paths [open [file join $out bound-paths.tsv] w]
+# puts $paths "group\tstart\tend\trequirement\tslack\tdelay\tsegmentation_properties"
+# foreach spec {{request_line0 lcd/request_line0_reg lcd/captured_line_reg 10 10.0} {request_line1 lcd/request_line1_reg lcd/captured_line_reg 10 10.0} {underrun_gray lcd/underrun_gray_reg lcd/underrun_sync1_reg 32 10.0}} {
+#  lassign $spec group sr dr width bound;set source {};set dest {};set cs {};set ds {}
+#  for {set bit 0} {$bit<$width} {incr bit} {
+#   set s [exact [format {system_core/scanout/%s[%d]} $sr $bit]];set d [exact [format {system_core/scanout/%s[%d]} $dr $bit]]
+#   if {[llength $s]!=1||[llength $d]!=1} {continue}
+#   lappend source $s;lappend dest $d;set c [regpin $s C];set pin [regpin $d D];lappend cs $c;lappend ds $pin
+#   foreach pair [list [list source $s $c] [list destination $d $pin]] {lassign $pair role cell p;puts $regs "$group\t$role\t$cell\t[get_property REF_NAME $cell]\t$p\t[get_property REF_PIN_NAME $p]\t[join [get_clocks -of_objects [regpin $cell C]] {;}]\t[prop $cell ASYNC_REG]"}
+#   if {![regexp {^FD} [get_property REF_NAME $s]]||![regexp {^FD} [get_property REF_NAME $d]]||[get_property REF_PIN_NAME $c] ne "C"||[get_property REF_PIN_NAME $pin] ne "D"} {issue "illegal nonprimitive C/D endpoint $group bit$bit"}
+#  }
+#  if {[llength $cs]!=$width||[llength $ds]!=$width} {issue "incomplete $group endpoint count"}
+#  set pths [get_timing_paths -quiet -delay_type max -from $cs -to $ds -max_paths [expr {$width*10}] -nworst 10];set starts {};set ends {}
+#  foreach p $pths {
+#   set start [get_property STARTPOINT_PIN $p];set end [get_property ENDPOINT_PIN $p];lappend starts $start;lappend ends $end;set seg {}
+#   foreach property [list_property $p] {if {[string match -nocase *segment* $property]} {lappend seg "$property=[get_property $property $p]"}}
+#   puts $paths "$group\t$start\t$end\t[get_property REQUIREMENT $p]\t[get_property SLACK $p]\t[prop $p DATAPATH_DELAY]\t[join $seg {;}]"
+#   if {[lsearch -exact $cs $start]<0||[lsearch -exact $ds $end]<0} {issue "segmented/unexpected selected path endpoints $group $start -> $end"}
+#   if {abs([get_property REQUIREMENT $p]-$bound)>0.001} {issue "wrong max bound for $group"}
+#  }
+#  if {[lsort -unique $starts] ne [lsort $cs]||[lsort -unique $ends] ne [lsort $ds]} {issue "timed direct endpoint coverage mismatch $group"}
+#  report_timing -delay_type max -from $cs -to $ds -max_paths [expr {$width*2}] -nworst 2 -file [file join $out ${group}-timing.rpt]
+# }
+INFO: [Timing 38-78] ReportTimingParams: -from_pins  -to_pins  -max_paths 20 -nworst 2 -delay_type max -sort_by slack.
+INFO: [Timing 38-78] ReportTimingParams: -from_pins  -to_pins  -max_paths 20 -nworst 2 -delay_type max -sort_by slack.
+INFO: [Timing 38-78] ReportTimingParams: -from_pins  -to_pins  -max_paths 64 -nworst 2 -delay_type max -sort_by slack.
+# close $regs
+# close $paths
+# set f [open [file join $out clocks.tsv] w]
+# puts $f "clock\tperiod\twaveform\tsource_pins\tmaster\tgenerated"
+# foreach c [get_clocks] {puts $f "$c\t[get_property PERIOD $c]\t[get_property WAVEFORM $c]\t[prop $c SOURCE_PINS]\t[prop $c MASTER_CLOCK]\t[prop $c IS_GENERATED]"}
+# close $f
+# foreach spec {{spi_clock 5.0} {memory_clock 10.0} {read_clock 10.0} {panel_clock 34.05764966740576}} {lassign $spec cell period;set c [get_clocks -of_objects [get_pins $cell/O]];if {[llength $c]!=1||abs([get_property PERIOD $c]-$period)>0.001} {issue "wrong clock $cell"}}
+# set rc [get_clocks -of_objects [get_pins read_clock/O]]
+# set wave [get_property WAVEFORM $rc]
+# set phase [expr {[lindex $wave 0]-floor([lindex $wave 0]/10.0)*10.0}]
+# if {abs($phase-7.625)>0.001} {issue "wrong read phase"}
+# set f [open [file join $out ports.tsv] w]
+# puts $f "port\tdirection\tpackage_pin\tiostandard\tdrive\tslew\tpullup"
+# foreach p [get_ports] {puts $f "$p\t[get_property DIRECTION $p]\t[prop $p PACKAGE_PIN]\t[prop $p IOSTANDARD]\t[prop $p DRIVE]\t[prop $p SLEW]\t[prop $p PULLUP]"}
+# close $f
+# set captures [get_cells -hier -regexp {system_core/memory/controller/dq_capture_reg\[[0-9]+\]}]
+# set dq [get_ports {sdram_dq[*]}]
+# set capd [regpin $captures D]
+# if {[llength $captures]!=16||[llength $dq]!=16} {issue "SDRAM capture/port count"}
+# set f [open [file join $out sdram-paths.tsv] w]
+# puts $f "type\tstart\tend\trequirement\tslack"
+# foreach dtype {max min} {
+#  set paths [get_timing_paths -delay_type $dtype -from $dq -to $capd -max_paths 32 -nworst 2]
+#  set got {}
+#  foreach p $paths {set end [get_property ENDPOINT_PIN $p];lappend got $end;puts $f "$dtype\t[get_property STARTPOINT_PIN $p]\t$end\t[get_property REQUIREMENT $p]\t[get_property SLACK $p]"}
+#  if {[lsort -unique $got] ne [lsort $capd]} {issue "SDRAM $dtype capture coverage"}
+#  report_timing -delay_type $dtype -from $dq -to $capd -max_paths 32 -nworst 2 -file [file join $out sdram-${dtype}.rpt]
+# }
+INFO: [Timing 38-78] ReportTimingParams: -from_pins  -to_pins  -max_paths 32 -nworst 2 -delay_type max -sort_by slack.
+INFO: [Timing 38-78] ReportTimingParams: -from_pins  -to_pins  -max_paths 32 -nworst 2 -delay_type min -sort_by slack.
+# close $f
+# set od [get_cells -hier -regexp {system_core/memory/controller/dq_io\[[0-9]+\][./](data_out|tri_out)}]
+# if {[llength $od]!=32} {issue "SDR ODDR count"}
+# set f [open [file join $out sdr-oddr.tsv] w]
+# puts $f "cell\tedge\tD1_net\tD2_net\tclock"
+# foreach c $od {set d1 [get_nets -of_objects [get_pins $c/D1]];set d2 [get_nets -of_objects [get_pins $c/D2]];set edge [get_property DDR_CLK_EDGE $c];puts $f "$c\t$edge\t$d1\t$d2\t[get_clocks -of_objects [get_pins $c/C]]";if {$edge ne "SAME_EDGE"||$d1 ne $d2} {issue "SDR ODDR structural mismatch $c"}}
+# close $f
+# set f [open [file join $out bridge-registers.tsv] w]
+# puts $f "scope\tcount\tcells"
+# foreach pattern {{bridge/read_sync_reg.*} {bridge/ack_sync_reg.*} {bridge/rg1_reg.*} {bridge/rg2_reg.*} {bridge/wg1_reg.*} {bridge/wg2_reg.*} {bridge/rgray_reg.*} {bridge/wgray_reg.*} {bridge/rp_reg.*} {bridge/wp_reg.*} {bridge/read_address_reg.*} {bridge/latched_address_reg.*} {bridge/response_reg.*} {bridge/spi_rdata_reg.*}} {set cs [get_cells -quiet -hier -regexp $pattern];puts $f "$pattern\t[llength $cs]\t[join [lsort $cs] {;}]"}
+# set queue [get_cells -quiet -hier -filter {NAME =~ bridge/* && REF_NAME =~ RAMB*}]
+# set response {}
+# for {set bit 0} {$bit<32} {incr bit} {set c [exact [format {bridge/response_reg[%d]} $bit]];if {[llength $c]!=1 || ![regexp {^FD} [get_property REF_NAME $c]]} {issue "response must be exact primitive FD register bit$bit"} else {lappend response $c}}
+# set p [get_timing_paths -quiet -from $queue -to [regpin $response D] -max_paths 32]
+# puts $f "queue_BRAM\t[llength $queue]\t$queue"
+# puts $f "direct_queue_response_paths\t[llength $p]\t$p"
+# close $f
+# if {[llength $queue]!=1||[llength $response]!=32||[llength $p]!=0} {issue "split bridge structural cone mismatch"}
+# report_clocks -file [file join $out clocks.rpt]
+# report_exceptions -coverage -file [file join $out exceptions-coverage.rpt]
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+report_exceptions: Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1860.055 ; gain = 0.000
+# report_exceptions -ignored -file [file join $out exceptions-ignored.rpt]
+# check_timing -verbose -file [file join $out check-timing.rpt]
+# write_xdc -force [file join $out effective.xdc]
+# set dy71_bundle_address_C {}
+# set dy71_bundle_address_D {}
+# set dy71_bundle_response_C {}
+# set dy71_bundle_response_D {}
+# foreach spec {{bridge/read_address_reg C 12 dy71_bundle_address_C 5.0} {bridge/latched_address_reg D 12 dy71_bundle_address_D 10.0} {bridge/response_reg C 32 dy71_bundle_response_C 10.0} {bridge/spi_rdata_reg D 32 dy71_bundle_response_D 5.0}} {
+#  lassign $spec base role width target period
+#  for {set bit 0} {$bit<$width} {incr bit} {
+#   set c [exact [format {%s[%d]} $base $bit]]
+#   if {[llength $c]!=1 || ![regexp {^FD} [get_property REF_NAME $c]]} {issue "nonprimitive exact bundle register $base bit$bit";continue}
+#   set cp [regpin $c C];set clock [get_clocks -of_objects $cp]
+#   if {[llength $clock]!=1 || abs([get_property PERIOD $clock]-$period)>0.001} {issue "wrong exact bundle clock $base bit$bit"}
+#   lappend $target {*}[regpin $c $role]
+#  }
+# }
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+# set f [open [file join $out exact-bundle-paths.tsv] w]
+# puts $f "bundle\tsource_count\tdestination_count\tstart\tend\trequirement\tslack"
+# foreach spec [list [list address $dy71_bundle_address_C $dy71_bundle_address_D 12] [list response $dy71_bundle_response_C $dy71_bundle_response_D 32]] {
+#  lassign $spec key cs ds width
+#  if {[llength $cs]!=$width||[llength $ds]!=$width} {issue "exact bundle width differs $key"}
+#  set gotS {};set gotD {}
+#  foreach p [get_timing_paths -quiet -delay_type max -from $cs -to $ds -max_paths [expr {$width*10}] -nworst 10] {
+#   set s [get_property STARTPOINT_PIN $p];set d [get_property ENDPOINT_PIN $p];lappend gotS $s;lappend gotD $d
+#   puts $f "$key\t[llength $cs]\t[llength $ds]\t$s\t$d\t[get_property REQUIREMENT $p]\t[get_property SLACK $p]"
+#   if {[lsearch -exact $cs $s]<0 || [lsearch -exact $ds $d]<0 || abs([get_property REQUIREMENT $p]-10.0)>0.001} {issue "illegal exact bundle C/D/bound $key"}
+#  }
+#  if {[lsort -unique $gotS] ne [lsort $cs] || [lsort -unique $gotD] ne [lsort $ds]} {issue "incomplete direct bundle coverage $key"}
+# }
+# close $f
+# set f [open [file join $out remaining-selectors.tsv] w]
+# puts $f "label\tpattern\tcell\tREF_NAME\tprimitive_FD\tusage"
+# foreach c [get_cells -quiet -hier -regexp {system_core/memory/controller/dq_capture_reg\[[0-9]+\]}] {puts $f "sdram_previous_beat_capture	system_core/memory/controller/dq_capture_reg\[[0-9]+\]	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard"}
+# foreach c [get_cells -quiet -hier -regexp {bridge/rgray_reg\[[0-9]+\]}] {puts $f "fifo_read_gray	bridge/rgray_reg\[[0-9]+\]	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard"}
+# foreach c [get_cells -quiet -hier -regexp {bridge/rg1_reg\[[0-9]+\]}] {puts $f "fifo_read_gray_first	bridge/rg1_reg\[[0-9]+\]	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard"}
+# foreach c [get_cells -quiet -hier -regexp {bridge/wgray_reg\[[0-9]+\]}] {puts $f "fifo_write_gray	bridge/wgray_reg\[[0-9]+\]	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard"}
+# foreach c [get_cells -quiet -hier -regexp {bridge/wg1_reg\[[0-9]+\]}] {puts $f "fifo_write_gray_first	bridge/wg1_reg\[[0-9]+\]	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard"}
+# foreach c [get_cells -quiet -hier -regexp {transport_gray_meta_reg\[[0-9]+\]}] {puts $f "transport_loss_gray_first	transport_gray_meta_reg\[[0-9]+\]	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard"}
+# foreach c [get_cells -quiet -hier -regexp {joint_(core|spi|pixel)_reset_reg.*}] {puts $f "reset_chains	joint_(core|spi|pixel)_reset_reg.*	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard"}
+# foreach c [get_cells -quiet -hier -regexp {joint_(core|spi|pixel)_reset_reg\[[0-3]\]}] {puts $f "joint_reset_chains	joint_(core|spi|pixel)_reset_reg\[[0-3]\]	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard"}
+# foreach c [get_cells -quiet -hier -regexp {system_core/receiver/base/.*}] {puts $f "actual_compute	system_core/receiver/base/.*	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	presence_only"}
+# foreach c [get_cells -quiet -hier -regexp {control_plane/staging/bytes_reg.*}] {puts $f "actual_packet_store	control_plane/staging/bytes_reg.*	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	presence_only"}
+# foreach c [get_cells -quiet -hier -regexp {system_core/memory/controller/.*}] {puts $f "actual_sdram	system_core/memory/controller/.*	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	presence_only"}
+# foreach c [get_cells -quiet -hier -regexp {system_core/scanout/lcd/x_reg.*}] {puts $f "actual_lcd	system_core/scanout/lcd/x_reg.*	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	presence_only"}
+# foreach c [get_cells -quiet -hier -regexp {endpoint/(sck_sync_reg\[0\]|cs_sync_reg\[0\]|dq_meta_reg\[[0-3]\]|buttons_meta_reg\[[0-9]+\]|vblank_sync_reg\[0\])}] {puts $f "first_stage_endpoint_raw	endpoint/(sck_sync_reg\[0\]|cs_sync_reg\[0\]|dq_meta_reg\[[0-3]\]|buttons_meta_reg\[[0-9]+\]|vblank_sync_reg\[0\])	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard";if {![regexp {^FD} [get_property REF_NAME $c]]} {issue "non-FD first stage endpoint_raw $c"}}
+# foreach c [get_cells -quiet -hier -regexp {bridge/(read_sync|ack_sync)_reg\[0\]}] {puts $f "first_stage_bridge_tokens	bridge/(read_sync|ack_sync)_reg\[0\]	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard";if {![regexp {^FD} [get_property REF_NAME $c]]} {issue "non-FD first stage bridge_tokens $c"}}
+# foreach c [get_cells -quiet -hier -regexp {platform_(service|panel)_lock_sync_reg\[0\]}] {puts $f "first_stage_reference_pll_status	platform_(service|panel)_lock_sync_reg\[0\]	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard";if {![regexp {^FD} [get_property REF_NAME $c]]} {issue "non-FD first stage reference_pll_status $c"}}
+# foreach c [get_cells -quiet -hier -regexp {quarantine_sync_reg\[0\]}] {puts $f "first_stage_configuration_quarantine	quarantine_sync_reg\[0\]	$c	[get_property REF_NAME $c]	[regexp {^FD} [get_property REF_NAME $c]]	exception_or_clock_guard";if {![regexp {^FD} [get_property REF_NAME $c]]} {issue "non-FD first stage configuration_quarantine $c"}}
+# close $f
+# set f [open [file join $out audit-failures.txt] w]
+# puts $f [join $failures "\n"]
+# close $f
+# if {[llength $failures]} {error "DY71_READ_ONLY_CONSTRAINED_AUDIT_FAILED count[llength $failures]"}
+# puts DY71_READ_ONLY_CONSTRAINED_TOPOLOGY_AUDIT_PASS_NOT_ROUTED_SIGNOFF
+DY71_READ_ONLY_CONSTRAINED_TOPOLOGY_AUDIT_PASS_NOT_ROUTED_SIGNOFF
+INFO: [Common 17-206] Exiting Vivado at Fri Nov  6 03:47:43 2026...
