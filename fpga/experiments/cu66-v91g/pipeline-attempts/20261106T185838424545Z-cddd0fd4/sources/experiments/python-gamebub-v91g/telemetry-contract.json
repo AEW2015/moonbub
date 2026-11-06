@@ -1,0 +1,176 @@
+{
+  "schema": "cu66-v91g-timing-contract-v1",
+  "clock": "Single simulated decoder clock; no achieved target frequency or physical controller calibration",
+  "edge_convention": "Start edge excluded. Subsequent running rising edges are numbered from1. Histograms sample the pre-edge FSM state. Timestamps identify the accepting/observing edge, not wall-clock milliseconds.",
+  "current_endpoint": "One BR88 residual chunk through packed scratch and dense coefficient completion",
+  "current_fences": {
+    "request_to_coefficient_done": "integrated_done",
+    "first_byte_to_coefficient_done": "integrated_done-first_input",
+    "chunk_last_byte_to_coefficient_done": "integrated_done-last_input",
+    "dense_delivery_span": "last_dense-first_dense+1"
+  },
+  "future_product_fences": {
+    "frame_first_byte_to_validated_publication": "Not implemented; future full-frame timestamp pair",
+    "frame_packet_complete_to_validated_publication": "Not implemented; primary future strictly-under10ms fence",
+    "sustained_frame_service": "Distinct source releases, output identities and queue occupancy over hardware60/600second runs; a short last-byte fence cannot hide unsustainable service"
+  },
+  "packet_states": [
+    "IDLE",
+    "RECEIVE",
+    "HEADER",
+    "DESCRIPTOR",
+    "CONTEXT_START",
+    "CONTEXT_RUN",
+    "RAW",
+    "FINISHED",
+    "FAILED",
+    "METADATA",
+    "CONTEXT_END",
+    "RAW_END",
+    "RESERVED12",
+    "RESERVED13",
+    "RESERVED14",
+    "RESERVED15"
+  ],
+  "scratch_states": [
+    "IDLE",
+    "INGEST",
+    "APPEND",
+    "NEXT_BAND",
+    "WAIT_SEAL",
+    "HEADER0",
+    "HEADER1",
+    "HEADER_DONE",
+    "WRITE_REQ",
+    "WRITE_WAIT",
+    "READ_REQ",
+    "READ_WAIT",
+    "DESC0",
+    "DESC1",
+    "CLEAR_TILE",
+    "DC_FETCH",
+    "DC_EXTRACT",
+    "AC_CHECK",
+    "AC_FETCH",
+    "AC_EXTRACT",
+    "EMIT",
+    "RAW_FETCH",
+    "RAW_EXTRACT",
+    "FINISHED",
+    "FAILED",
+    "DRAIN",
+    "FLUSH_LINE",
+    "PREFETCH_DRAIN",
+    "RESERVED28",
+    "RESERVED29",
+    "RESERVED30",
+    "RESERVED31"
+  ],
+  "exclusive_scratch_groups": {
+    "preallocation_idle": [
+      0
+    ],
+    "coefficient_ingest_assembly_and_seal_control": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "write_request": [
+      8
+    ],
+    "write_ack_wait": [
+      9
+    ],
+    "read_request": [
+      10
+    ],
+    "read_ack_wait": [
+      11
+    ],
+    "descriptor_check": [
+      12,
+      13
+    ],
+    "tile_clear": [
+      14
+    ],
+    "cache_lookup_and_tile_merge": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      21
+    ],
+    "dense_delivery_and_consumer_hold": [
+      20,
+      22
+    ],
+    "terminal_controller": [
+      23
+    ],
+    "failure_or_drain": [
+      24,
+      25
+    ],
+    "reserved": [
+      28,
+      29,
+      30,
+      31
+    ],
+    "write_queue_full": [
+      26
+    ],
+    "prefetch_drain": [
+      27
+    ]
+  },
+  "reconciliation": [
+    "sum(packet_state_cycles)=cycles",
+    "sum(scratch_state_cycles)=cycles",
+    "sum(exclusive_scratch_groups)=cycles",
+    "scratch[EMIT]+scratch[RAW_EXTRACT]=dense_coefficients+dense_stall",
+    "packet[RECEIVE]=input_bytes+input_starved",
+    "integrated_done=cycles=last_dense+1",
+    "physical memory_pending independently observed; WAIT state equalities apply only to overlap-off",
+    "successful overlap data enqueues=physical accepts=physical ACKs=write_requests-2 descriptor writes",
+    "prefetch offers=physical accepts=physical ACKs=first uses for successful cases; prefetch-disabled counts zero",
+    "per-address read/write counts and service multisets match; read order can change",
+    "final done follows all physically accepted memory responses"
+  ],
+  "interpretation": "The packet and scratch histograms each partition the same active interval; do not add them together. Stall/event counters overlap those partitions. State occupancy is not a causal promise that all its cycles can be removed. A memory service hash matches ordered requests, write payloads and assumed ACK delay, excluding epoch tags and absolute cycle.",
+  "highwater_bounds": {
+    "assembly_bytes": 16,
+    "cache_lines": 4,
+    "ac_heads": 3,
+    "outstanding_requests": 1,
+    "write_slot": 1,
+    "owned_lines": 2,
+    "prefetch_offer": 1
+  },
+  "tile_trace": "Per id/config/block: first_dense and last_dense are accepted scalar-output timestamps; inter-tile gap includes preparation and any first-value consumer hold, not IDCT latency. No RTL trace buffer is implemented.",
+  "bounded_write_ownership": "One immutable offered/accepted16B slot and one16B assembler, plus existing scalar pending record. At most1accepted physical request; seal waits for physical ACK drainage; header writes retain sequential ACK gating.",
+  "bounded_read_ownership": "One immutable offered/accepted needed-line read at a time, filling an existing segment cache only after matching successful ACK. No added payload cache. Current tile/raw scalar remains immutable during output hold. Offered or accepted prefetch drains before demand reader continues. Full next-tile merging remains unimplemented.",
+  "service_signature": {
+    "offset": 1469598103934665603,
+    "prime": 1099511628211,
+    "word_encoding": "Every word eight bytes little endian; all operations modulo 2**64. Directions write1/read0; address is byte address.",
+    "request_tuple": "direction,address,assumed_response_latency, followed only for writes by four zero-extended32bit payload words in ascending byte order",
+    "multiset": "Restart FNV offset for each accepted request, sum request hashes modulo2**64. Not a cryptographic proof; exact-byte goldens and per-line occurrence assertions remain mandatory.",
+    "ordered_write": "Continuous FNV over write tuples only. Data lines32..used-16 ascending, then descriptor0,16.",
+    "latency": "FAST1; SLOW(write16/read18)+(((byteaddress>>4)^seed)&3), minimum response1edge."
+  },
+  "read_prefetch_counter_semantics": {
+    "offers": "Immutable needed-line prefetch slot enqueues",
+    "physical_accepts": "Prefetch external request handshakes",
+    "physical_acks": "Matching successful physical prefetch read responses",
+    "uses": "First DC/AC extraction from each ACK-prefetched line",
+    "dense_during_pending": "Accepted dense scalars while prefetch offer and real physical pending read coincide",
+    "drain_wait_edges": "Exclusive scratch state27 occupancy"
+  }
+}

@@ -351,6 +351,16 @@ checks bounded ACK/cancellation/epoch events. This is implementation follow-up,
 not a new literature finding or a HEVC/AV1 compression win. Read/tile overlap,
 synchronous ports and complete-frame validation remain ahead of hardware gates.
 
+[V91g](../cu66-v91g/README.md) adds a measured needed-line read-prefetch
+checkpoint, reusing four cache payloads with one physical outstanding request.
+Actual-packet coefficient service improves another 0.94% FAST and 5.18% SLOW
+versus V91f, preserving bytes and exact output. Two seeds pass matched controls,
+canonical reordered-service accounting and read-specific recovery/hold tests;
+a bounded Python ownership reference is retained separately. This qualifies a
+prefetch implementation, not full next-tile merging, compression superiority,
+physical timing or hardware frame rate. Next-tile merge remains within V91g;
+synchronous ports and complete-frame validation follow.
+
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
 

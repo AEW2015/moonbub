@@ -2,6 +2,18 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+[V91g](cu66-v91g/README.md) qualifies the **bounded needed-line read-prefetch
+part** of its checkpoint: actual-packet coefficient service uses **0.94% fewer
+cycles FAST and 5.18% fewer SLOW** than V91f. Both seeds preserve packed bytes,
+dense output and all 720 disabled-control metric values; 36 integrated checks
+per seed include eight read-prefetch recovery/hold tests. An independent Python
+ownership reference covers bounded cache/ACK/output-hold events. Prefetch reuses
+the four existing cache payloads and retains one accepted physical request.
+**Full next-tile merge overlap is still open within V91g**; implement and measure
+that next, followed by V91h synchronous staging ports and V91i–m complete-frame
+integration. These are coefficient-processing results, not hardware 30 fps or
+complete validated decode latency.
+
 [V91f](cu66-v91f/README.md) now qualifies bounded physical-write overlap for
 the coefficient endpoint: **6.79–6.80% fewer actual-packet service cycles** in
 the stated slower-memory scenario, effectively neutral under one-edge memory.
@@ -11,8 +23,8 @@ checks per run cover ACK, cancellation and semantic-error races. The independent
 Python ownership reference checks bounded event sequences. Only one physical
 request can be accepted at a time and two line owners are allowed. This is
 scheduling progress with unchanged wire/quality, not hardware throughput proof.
-Next is **V91g bounded read prefetch and next-tile preparation overlap**, then
-V91h synchronous staging ports and V91i–m complete-frame consumers/publication.
+V91g above qualifies needed-line prefetch; its full next-tile merge remains
+next before synchronous ports and complete-frame consumers/publication.
 
 [V91e](cu66-v91e/README.md) now reconciles all active cycles and event fences
 without changing V91d behavior. Both seeds exactly match all nine legacy metrics

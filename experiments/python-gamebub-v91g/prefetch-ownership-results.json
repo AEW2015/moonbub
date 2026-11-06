@@ -1,0 +1,207 @@
+{
+  "bfs": {
+    "event_coverage": [
+      "abort_reset_accepted",
+      "abort_reset_unaccepted",
+      "accept_read",
+      "ack_during_dense_hold",
+      "ack_error_priority_over_output",
+      "ack_match_drain",
+      "ack_match_error",
+      "ack_match_fill",
+      "consume_segment_cache",
+      "dense_complete",
+      "dense_hold",
+      "dense_release",
+      "offer_prefetch",
+      "replace_bank",
+      "response_wrong_epoch",
+      "seal_before_prefetch"
+    ],
+    "max_depth": 11,
+    "shortest_event_traces": {
+      "abort_reset_accepted": [
+        "consume_segment_cache",
+        "seal_before_prefetch",
+        "offer_prefetch",
+        "accept_read",
+        "abort_reset_accepted"
+      ],
+      "abort_reset_unaccepted": [
+        "abort_reset_unaccepted"
+      ],
+      "accept_read": [
+        "consume_segment_cache",
+        "seal_before_prefetch",
+        "offer_prefetch",
+        "accept_read"
+      ],
+      "ack_during_dense_hold": [
+        "consume_segment_cache",
+        "dense_hold",
+        "seal_before_prefetch",
+        "offer_prefetch",
+        "accept_read",
+        "ack_during_dense_hold"
+      ],
+      "ack_error_priority_over_output": [
+        "consume_segment_cache",
+        "dense_hold",
+        "seal_before_prefetch",
+        "offer_prefetch",
+        "accept_read",
+        "ack_error_priority_over_output"
+      ],
+      "ack_match_drain": [
+        "consume_segment_cache",
+        "seal_before_prefetch",
+        "offer_prefetch",
+        "accept_read",
+        "response_wrong_epoch",
+        "ack_match_drain"
+      ],
+      "ack_match_error": [
+        "consume_segment_cache",
+        "seal_before_prefetch",
+        "offer_prefetch",
+        "accept_read",
+        "ack_match_error"
+      ],
+      "ack_match_fill": [
+        "consume_segment_cache",
+        "seal_before_prefetch",
+        "offer_prefetch",
+        "accept_read",
+        "ack_match_fill"
+      ],
+      "consume_segment_cache": [
+        "consume_segment_cache"
+      ],
+      "dense_complete": [
+        "seal_before_prefetch",
+        "dense_complete"
+      ],
+      "dense_hold": [
+        "dense_hold"
+      ],
+      "dense_release": [
+        "dense_hold",
+        "dense_release"
+      ],
+      "offer_prefetch": [
+        "consume_segment_cache",
+        "seal_before_prefetch",
+        "offer_prefetch"
+      ],
+      "replace_bank": [
+        "abort_reset_unaccepted",
+        "replace_bank"
+      ],
+      "response_wrong_epoch": [
+        "consume_segment_cache",
+        "seal_before_prefetch",
+        "offer_prefetch",
+        "accept_read",
+        "response_wrong_epoch"
+      ],
+      "seal_before_prefetch": [
+        "seal_before_prefetch"
+      ]
+    },
+    "transitions_checked": 764,
+    "unique_states": 436
+  },
+  "directed": {
+    "checks": [
+      "offer_snapshot_stable_ready_low",
+      "one_accepted_external_read",
+      "ack_during_dense_hold_preserves_output",
+      "consumed_segment_cache_replacement",
+      "ack_error_priority_suppresses_output_advance",
+      "wrong_epoch_fails_closed_until_matching_drain",
+      "matching_error_ack_retires_owner_without_fill",
+      "abort_drops_unaccepted_local_work",
+      "abort_retains_accepted_hazard",
+      "replacement_bank_blocked_until_drain",
+      "seal_precedes_prefetch"
+    ],
+    "traces": {
+      "accepted_abort_drain_replace": [
+        "seal_before_prefetch",
+        "consume_segment_cache",
+        "offer_prefetch",
+        "accept_read",
+        "abort_reset_accepted",
+        "ack_match_drain",
+        "replace_bank"
+      ],
+      "dense_hold_ack": [
+        "seal_before_prefetch",
+        "consume_segment_cache",
+        "offer_prefetch",
+        "ready_low_observe",
+        "accept_read",
+        "dense_hold",
+        "ack_during_dense_hold",
+        "dense_release"
+      ],
+      "error_priority": [
+        "seal_before_prefetch",
+        "consume_segment_cache",
+        "offer_prefetch",
+        "accept_read",
+        "dense_hold",
+        "ack_error_priority_over_output"
+      ],
+      "matching_error_ack": [
+        "seal_before_prefetch",
+        "consume_segment_cache",
+        "offer_prefetch",
+        "accept_read",
+        "ack_match_error"
+      ],
+      "unaccepted_abort": [
+        "seal_before_prefetch",
+        "consume_segment_cache",
+        "offer_prefetch",
+        "abort_reset_unaccepted"
+      ],
+      "wrong_epoch_drain": [
+        "seal_before_prefetch",
+        "consume_segment_cache",
+        "offer_prefetch",
+        "accept_read",
+        "response_wrong_epoch",
+        "ack_match_drain"
+      ]
+    }
+  },
+  "model": "abstract_read_prefetch_ownership",
+  "scope": "bounded ownership-event simulation; not RTL proof, cycle model, or performance model",
+  "seeded": {
+    "event_counts": {
+      "abort_reset_accepted": 11,
+      "abort_reset_unaccepted": 585,
+      "accept_read": 40,
+      "ack_during_dense_hold": 3,
+      "ack_error_priority_over_output": 4,
+      "ack_match_drain": 8,
+      "ack_match_error": 18,
+      "ack_match_fill": 7,
+      "consume_segment_cache": 354,
+      "dense_complete": 112,
+      "dense_hold": 434,
+      "dense_release": 231,
+      "offer_prefetch": 96,
+      "replace_bank": 615,
+      "response_wrong_epoch": 14,
+      "seal_before_prefetch": 356
+    },
+    "events_executed": 2888,
+    "peak_read_owners": 1,
+    "requested_steps": 3000,
+    "seed": 910437,
+    "terminal_restarts": 112
+  },
+  "source_sha256": "4441c916dd57e04c72e1c858931d3738b66ff71dc0ebf635d724aad00ff40936"
+}
