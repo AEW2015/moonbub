@@ -342,6 +342,15 @@ scenario, dense delivery/consumer hold dominates ACK waits; both memory and tile
 service need attention. This is measured coefficient-endpoint occupancy, not
 a new literature result, a scheduling speedup or validated full-frame latency.
 
+[V91f](../cu66-v91f/README.md) tests the bounded-write-overlap recommendation:
+two line owners and one accepted physical request reduce actual-packet service
+cycles 6.79–6.80% in the stated slower-memory scenario, with unchanged bytes and
+exact dense coefficients. FAST is effectively neutral. Two final seeds and
+integrated/direct ownership recovery tests pass; an abstract Python reference
+checks bounded ACK/cancellation/epoch events. This is implementation follow-up,
+not a new literature finding or a HEVC/AV1 compression win. Read/tile overlap,
+synchronous ports and complete-frame validation remain ahead of hardware gates.
+
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
 

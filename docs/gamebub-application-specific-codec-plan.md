@@ -2,12 +2,24 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+[V91f](cu66-v91f/README.md) now qualifies bounded physical-write overlap for
+the coefficient endpoint: **6.79–6.80% fewer actual-packet service cycles** in
+the stated slower-memory scenario, effectively neutral under one-edge memory.
+Both final seeds preserve every packed byte/coefficient and all 720 V91e control
+metric values; 28 integrated recovery checks and nine direct scratch-interface
+checks per run cover ACK, cancellation and semantic-error races. The independent
+Python ownership reference checks bounded event sequences. Only one physical
+request can be accepted at a time and two line owners are allowed. This is
+scheduling progress with unchanged wire/quality, not hardware throughput proof.
+Next is **V91g bounded read prefetch and next-tile preparation overlap**, then
+V91h synchronous staging ports and V91i–m complete-frame consumers/publication.
+
 [V91e](cu66-v91e/README.md) now reconciles all active cycles and event fences
 without changing V91d behavior. Both seeds exactly match all nine legacy metrics
 on the original 17 cases, with three C3/f28 stress packets added. In the expanded
 SLOW scenario, dense delivery/consumer hold occupies 46.67%, write ACK wait
-9.76% and read ACK wait 10.88%. Next is V91f bounded write overlap, followed by
-V91g read/tile overlap. Full-frame publication timestamps remain unset; current
+9.76% and read ACK wait 10.88%. V91f above measures bounded write overlap;
+read/tile overlap remains next. Full-frame publication timestamps remain unset; current
 coefficient completion cannot be reported as validated decode latency.
 
 [V91d](cu66-v91d/README.md) connects validated packet metadata to packed scratch

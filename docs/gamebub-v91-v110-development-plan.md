@@ -17,9 +17,9 @@ can be compared against a stable function and workload.
 
 ## Lettered execution path from V91d
 
-This section is the concrete next-work sequence. **V91e observability now passes
-for the implemented coefficient endpoint; V91f onward remains planned.** V91d
-is the last scheduling/architecture change. The original unlettered V91 and
+This section is the concrete next-work sequence. **V91e observability and V91f
+bounded write overlap pass for the coefficient endpoint; V91g onward remains
+planned.** V91f is the latest scheduling/architecture change. The original unlettered V91 and
 published V91b/V91c/V91d retain their names. No historical V91a release is implied.
 
 Letters identify separately reviewable deliverables within a numbered work
@@ -55,7 +55,7 @@ list the selected features and deferred experiments.
 | Checkpoint | Concrete deliverable | Promotion gate |
 |---|---|---|
 | **V91e** | **Passed for current coefficient endpoint:** stage/stall/queue counters, source/frame/chunk identities, timestamp definitions and expanded worst-case goldens. | All cycles/transactions reconcile and legacy metrics are unchanged. Current coefficient fences are measured; future full-frame first-byte/publication and packet-complete/validated-publication fences are defined but unset. |
-| **V91f** | Overlap a bounded pair of write-assembler buffers with acknowledged memory service. Initially retain one accepted outstanding request. | Exact packed images; measurable stall reduction; no overwrite or new bank reuse before old ACK drain, including error/start races. |
+| **V91f** | **Passed for current coefficient endpoint:** two bounded line owners overlap packing with real physical write ACK service, retaining one accepted outstanding request and exact runtime-off control. | [Two-seed evidence](cu66-v91f/README.md): 6.79–6.80% fewer SLOW actual-packet cycles; FAST effectively neutral; exact images/output, 720 control metric matches, 28 integrated + nine direct-interface checks per run. No bank reuse before old ACK drain, including semantic-error/same-edge acceptance. |
 | **V91g** | Prefetch bounded read lines and overlap next-tile preparation with current-tile delivery. | Exact dense output under consumer stalls; cache/queue occupancy and port costs explicit. Additional outstanding requests require a defined ordering/tag and cancellation contract. |
 | **V91h** | Replace combinational multi-address packet staging assumptions with explicit synchronous memory ports and read latency. | Header, unaligned fields, replay, RAW and rejection parity under real port limits. This establishes functional RAM semantics; 7-series mapping/physical optimization remains V100–V110. |
 | **V91i** | Integrate outer frame descriptors, modes, quantizers, profile negotiation, chunk placement and admission. | Sender/receiver agree on every supported mode and fallback; unsupported modes reject. A chunk packet or scratch seal cannot masquerade as complete-frame acceptance. |
@@ -64,8 +64,10 @@ list the selected features and deferred experiments.
 | **V91l** | Integrate HUD/content validation, frame hashes/seals and atomic validated publication. | Late errors never publish a partial frame or corrupt accepted references. Full publication fence, rollback/retry and held-scanout behavior are checked. |
 | **V91m** | Run the complete functional frame path with finite transport, memory and display-consumer service models at 30-Hz source releases. | No hidden software pixel/HUD/publication endpoint in a claimed full-RTL pass; exact full frames, bounded queues, recovery and complete latency distributions. Simulation is still distinct from hardware 30 fps. |
 
-V91f/g are promoted only if measured integrated service improves while their
-ownership and resource contracts remain valid. Preserve the V91d control and
+V91f is promoted for functional scheduling under its bounded ownership contract;
+physical resource fit is still unqualified. V91g is promoted only if measured
+integrated service improves while its ownership and resource contracts remain
+valid. Preserve the V91d control and
 its retained failure reproduction. The current slower-memory source service
 sums already exceed the one-million-cycle reference budget before transforms
 and validation, so parser-only speedups cannot close the remaining work.

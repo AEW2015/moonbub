@@ -1,0 +1,97 @@
+{
+  "directed_checks": {
+    "ack_enqueue_race_trace": [
+      "enqueue_data(addr=0,tag=100)",
+      "offer_assembler",
+      "accept_request",
+      "enqueue_data(addr=16,tag=101)",
+      "ack_match_ok_and_enqueue"
+    ],
+    "checks": 10,
+    "confirmed": [
+      "second line fills while first accepted",
+      "abort cancels assembler but retains accepted owner",
+      "wrong-epoch response clears local owners but cannot retire physical owner",
+      "replacement waits for matching ACK",
+      "matching ACK can retire old slot and transfer next assembled line atomically",
+      "error ACK has priority and cancels assembler ownership",
+      "seal request is unavailable while a data write is pending",
+      "stale abort from prior epoch leaves replacement untouched"
+    ],
+    "trace": [
+      "enqueue_data(addr=0,tag=100)",
+      "offer_assembler",
+      "accept_request",
+      "enqueue_data(addr=16,tag=101)",
+      "abort_or_reset",
+      "ack_wrong_epoch",
+      "ack_match_ok",
+      "abort_or_reset",
+      "replace_epoch"
+    ]
+  },
+  "exhaustive": {
+    "event_coverage": [
+      "abort_or_reset",
+      "accept_request",
+      "ack_match_error",
+      "ack_match_ok",
+      "ack_match_ok_and_enqueue",
+      "ack_wrong_epoch",
+      "enqueue_data",
+      "enqueue_descriptor",
+      "offer_assembler",
+      "read",
+      "replace_epoch",
+      "seal_request",
+      "sealed_publication_barrier",
+      "stale_abort"
+    ],
+    "max_depth": 20,
+    "shortest_stale_response_trace": [
+      "enqueue_data(addr=0,tag=100)",
+      "offer_assembler",
+      "accept_request",
+      "ack_wrong_epoch"
+    ],
+    "transitions_checked": 18484,
+    "unique_states": 7838
+  },
+  "invariants": [
+    "at most two 16-byte payload owners",
+    "offered/accepted slot payload immutable",
+    "accepted physical owner retires only on matching ACK, even when local slot_valid is clear",
+    "successful ACK may atomically transfer the next assembled line",
+    "wrong-epoch ACK clears local slot-valid/assembler but cannot retire pending physical owner",
+    "error ACK clears unaccepted local ownership",
+    "abort/reset preserves accepted physical owner while clearing local slot_valid",
+    "stale prior-epoch abort is ignored",
+    "commits follow increasing line address",
+    "input seal request follows data ACKs and final barrier follows both descriptor ACKs",
+    "read follows final sealed/publication barrier"
+  ],
+  "model_scope": "abstract two-data/two-descriptor ownership; seal_request maps input seal handshake and sealed_publication_barrier maps descriptor-ACK/read fence; producer-side semantic-failure cause omitted; not RTL/performance/hardware proof",
+  "schema": "v91f-write-ownership-results-v1",
+  "seeded_scenario": {
+    "event_counts": {
+      "abort_or_reset": 277,
+      "accept_request": 397,
+      "ack_match_error": 34,
+      "ack_match_ok": 349,
+      "ack_match_ok_and_enqueue": 13,
+      "ack_wrong_epoch": 55,
+      "enqueue_data": 454,
+      "enqueue_descriptor": 100,
+      "offer_assembler": 434,
+      "read": 7,
+      "replace_epoch": 288,
+      "seal_request": 76,
+      "sealed_publication_barrier": 16
+    },
+    "events_executed": 2500,
+    "max_payload_owners": 2,
+    "requested_steps": 2500,
+    "seed": 910436
+  },
+  "source_sha256": "7cd1b59a8e389c68e36525ccbf0f55289c5d98139835e3c45df67141a0c877c5"
+}
