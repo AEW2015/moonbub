@@ -10,7 +10,8 @@ import sys
 import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
-RUN = ROOT / 'experiments/python-gamebub-v87/quantizers/attempts/20261106T142631412759Z-5847ed8e'
+SELECTED = ROOT / 'experiments/python-gamebub-v87/quantizers/results.json'
+RUN = (ROOT / json.loads(SELECTED.read_text())['selected_report']).parent
 RESULT = RUN / 'results.json'
 ROWS = RUN / 'frames.jsonl'
 V86 = ROOT / 'experiments/python-gamebub-v86/wire-attempts/20261106T135235884295Z-2a73a26a'

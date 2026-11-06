@@ -44,6 +44,7 @@ def main():
     qa=read(prefix+'quantizer-audit.json')
     assert qa['status']=='PASS' and qa['rows_checked']==914 and qa['retained_fixtures_checked']==12
     assert qa['schema']=='cu66-v87-quantizer-independent-audit-v2' and qa['independently_reconstructed_packets']==914
+    assert qa['campaign']==q['selected_report'],'quantizer audit targets a different campaign'
     tests=read(prefix+'quantizers/tests.json');tr=read(tests['selected_report'])
     assert tests==dict(tr,selected_report=tests['selected_report'])
     assert tests['status']=='PASS_CROSS_LANGUAGE_QUANTIZER_AND_NATIVE_RECOVERY' and tests['checks_count']==len(tests['checks'])==37
