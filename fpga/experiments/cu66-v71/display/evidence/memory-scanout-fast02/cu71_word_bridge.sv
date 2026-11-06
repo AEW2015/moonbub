@@ -1,0 +1,100 @@
+`timescale 1ns/1ps
+// Three independent request/response slots. LCD reads are explicit aligned BL8.
+// Scalar writes are masked BL8; completion follows actual controller recovery.
+module cu71_word_bridge(
+ input logic clk,rst,
+ input logic p0_valid,output logic p0_ready,input logic p0_write,input logic[23:0]p0_addr,input logic[15:0]p0_data,
+ input logic[127:0]p0_burst_data,input logic[15:0]p0_burst_mask,
+ output logic p0_rsp_valid,input logic p0_rsp_ready,output logic[15:0]p0_rsp_data,output logic p0_rsp_error,
+ input logic p1_valid,output logic p1_ready,input logic p1_write,input logic[23:0]p1_addr,input logic[15:0]p1_data,
+ output logic p1_rsp_valid,input logic p1_rsp_ready,output logic[15:0]p1_rsp_data,output logic p1_rsp_error,
+ input logic p2_valid,output logic p2_ready,input logic[23:0]p2_addr,
+ output logic p2_rsp_valid,input logic p2_rsp_ready,output logic[127:0]p2_rsp_data,output logic p2_rsp_error,
+ output logic mem_req_valid,input logic mem_req_ready,output logic mem_req_write,output logic[23:0]mem_req_addr,
+ output logic[127:0]mem_req_burst_data,output logic[15:0]mem_req_burst_mask,
+ input logic mem_rsp_valid,input logic[15:0]mem_rsp_data,input logic mem_idle,
+ output logic bridge_busy,output logic[31:0]cache_hits,cache_misses,completed_reads,completed_writes,
+ output logic[31:0]lcd_completed_reads,lcd_max_wait
+);
+ `include "cu70_memory_map.svh"
+ typedef enum logic[1:0]{IDLE,REQUEST,READ_BURST,WRITE_WAIT}state_t;
+ state_t state;
+ logic[2:0]pending,response_valid,response_error,writing;
+ logic[23:0]address[0:2];logic[15:0]wdata[0:2];logic[127:0]response_data[0:2];
+ logic[127:0]canonical_burst_data;logic[15:0]canonical_burst_mask;
+ logic[31:0]wait_cycles[0:2];logic[1:0]owner,selected;
+ logic prefer_one,lcd_turn;
+ logic[2:0]beat;logic[127:0]read_payload;
+ logic[1:0]cache_valid;logic[20:0]cache_tag[0:1];logic[15:0]cache_data[0:15];
+ wire any_pending=|pending;
+ always_comb begin
+  selected=pending[2]&&(lcd_turn||!(pending[0]||pending[1]))?2:
+           pending[1]&&(!pending[0]||prefer_one)?1:0;
+  p0_ready=!rst&&!pending[0]&&!response_valid[0]&&!(state!=IDLE&&owner==0);
+  p1_ready=!rst&&!pending[1]&&!response_valid[1]&&!(state!=IDLE&&owner==1);
+  p2_ready=!rst&&!pending[2]&&!response_valid[2]&&!(state!=IDLE&&owner==2);
+  p0_rsp_valid=response_valid[0]&&!rst;p1_rsp_valid=response_valid[1]&&!rst;p2_rsp_valid=response_valid[2]&&!rst;
+  p0_rsp_data=response_data[0][15:0];p1_rsp_data=response_data[1][15:0];p2_rsp_data=response_data[2];
+  p0_rsp_error=response_error[0];p1_rsp_error=response_error[1];p2_rsp_error=response_error[2];
+  mem_req_valid=state==REQUEST&&!rst;mem_req_write=writing[owner];
+  mem_req_addr={address[owner][23:3],3'b000};
+  mem_req_burst_data=owner==0?canonical_burst_data:128'(wdata[owner])<<(address[owner][2:0]*16);
+  mem_req_burst_mask=owner==0?canonical_burst_mask:16'hffff^(16'h0003<<(address[owner][2:0]*2));
+  bridge_busy=state!=IDLE||any_pending||(|response_valid);
+ end
+ always_ff @(posedge clk)begin
+  if(rst)begin
+   state<=IDLE;pending<=0;response_valid<=0;response_error<=0;writing<=0;owner<=0;prefer_one<=0;lcd_turn<=1;
+   beat<=0;read_payload<=0;cache_valid<=0;cache_hits<=0;cache_misses<=0;completed_reads<=0;completed_writes<=0;
+   lcd_completed_reads<=0;lcd_max_wait<=0;
+   canonical_burst_data<=0;canonical_burst_mask<=16'hffff;
+   for(integer i=0;i<3;i=i+1)begin address[i]<=0;wdata[i]<=0;response_data[i]<=0;wait_cycles[i]<=0;end
+   // Cache data has no reset; valid/tag ownership makes uninitialized bits unreachable.
+   cache_tag[0]<=0;cache_tag[1]<=0;
+  end else begin
+   if(p0_rsp_valid&&p0_rsp_ready)response_valid[0]<=0;
+   if(p1_rsp_valid&&p1_rsp_ready)response_valid[1]<=0;
+   if(p2_rsp_valid&&p2_rsp_ready)response_valid[2]<=0;
+   for(integer i=0;i<3;i=i+1)if(pending[i]||(state!=IDLE&&owner==i))wait_cycles[i]<=wait_cycles[i]+1;
+   if(p0_valid&&p0_ready)begin pending[0]<=1;address[0]<=p0_addr;wdata[0]<=p0_data;writing[0]<=p0_write;wait_cycles[0]<=0;canonical_burst_data<=p0_burst_data;canonical_burst_mask<=p0_burst_mask;end
+   if(p1_valid&&p1_ready)begin pending[1]<=1;address[1]<=p1_addr;wdata[1]<=p1_data;writing[1]<=p1_write;wait_cycles[1]<=0;end
+   if(p2_valid&&p2_ready)begin pending[2]<=1;address[2]<=p2_addr;wdata[2]<=0;writing[2]<=0;wait_cycles[2]<=0;end
+   case(state)
+    IDLE:if(any_pending)begin
+     pending[selected]<=0;owner<=selected;response_error[selected]<=0;
+     if(selected==2)lcd_turn<=0;else begin lcd_turn<=1;prefer_one<=selected==0;end
+     if(!map_word_allowed(address[selected])||!map_word_allowed({address[selected][23:3],3'b000})||
+        !map_word_allowed({address[selected][23:3],3'b111})||(selected==2&&address[selected][2:0]!=0))begin
+      response_error[selected]<=1;response_data[selected]<=0;response_valid[selected]<=1;
+     end else if(selected<2&&!writing[selected]&&cache_valid[selected]&&cache_tag[selected]==address[selected][23:3])begin
+      response_data[selected]<={112'd0,cache_data[selected*8+address[selected][2:0]]};response_valid[selected]<=1;cache_hits<=cache_hits+1;
+     end else begin
+      state<=REQUEST;
+      if(!writing[selected])cache_misses<=cache_misses+1;
+      if(writing[selected])for(integer i=0;i<2;i=i+1)if(cache_valid[i]&&cache_tag[i]==address[selected][23:3])cache_valid[i]<=0;
+     end
+    end
+    REQUEST:if(mem_req_valid&&mem_req_ready)begin beat<=0;read_payload<=0;state<=writing[owner]?WRITE_WAIT:READ_BURST;end
+    READ_BURST:if(mem_rsp_valid)begin
+     read_payload[beat*16+:16]<=mem_rsp_data;
+     if(owner<2)cache_data[owner*8+beat]<=mem_rsp_data;
+     if(beat==7)begin
+      if(owner<2)begin
+       cache_valid[owner]<=1;cache_tag[owner]<=address[owner][23:3];
+       response_data[owner]<={112'd0,address[owner][2:0]==7?mem_rsp_data:read_payload[address[owner][2:0]*16+:16]};
+      end else begin
+       response_data[2]<={mem_rsp_data,read_payload[111:0]};lcd_completed_reads<=lcd_completed_reads+1;
+       if(wait_cycles[2]>lcd_max_wait)lcd_max_wait<=wait_cycles[2];
+      end
+      response_valid[owner]<=1;completed_reads<=completed_reads+1;state<=IDLE;
+     end else beat<=beat+1;
+    end
+    WRITE_WAIT:if(mem_idle)begin
+     response_data[owner]<=0;response_valid[owner]<=1;completed_writes<=completed_writes+1;state<=IDLE;
+     for(integer i=0;i<2;i=i+1)if(cache_valid[i]&&cache_tag[i]==address[owner][23:3])cache_valid[i]<=0;
+    end
+    default:state<=IDLE;
+   endcase
+  end
+ end
+endmodule

@@ -1,0 +1,118 @@
+﻿{
+    "workspace":  "C:/mb70",
+    "experiment":  "fpga/experiments/cu66-v71",
+    "status":  "INCOMPLETE",
+    "audited_at_local":  "2026-11-05",
+    "hardware_programmed":  false,
+    "overall_note":  "Passing component evidence exists for modeled memory/controller logic, synthetic BL8 scanout, packet staging, and local control plus staging plus arbiter. No evidence establishes a complete CU66 v71 system, physical pin/controller operation, routed implementation, board timing, 30 fps, or hardware behavior.",
+    "passing_evidence":  [
+                             {
+                                 "component":  "memory controller/component model",
+                                 "status":  "PASS_COMPONENT_CANONICAL_AUX_LCD_QUALIFIED_CONTROLLER",
+                                 "evidence":  "fpga/experiments/cu66-v71/memory/evidence/rowburst01/result.json",
+                                 "source_binding":  "fpga/experiments/cu66-v71/memory/evidence/rowburst01/execution.json",
+                                 "source_hashes_sha256":  {
+                                                              "cu71_memory_system.sv":  "1f5d91ba7fe81c4d93fec6dad07ae39dd1155a51dc9c7660bd97b6252e73c826",
+                                                              "cu71_word_bridge.sv":  "8b983a099b9f7bc1bd3f0df0c3ea7f04f8d6ec8342f45444c5d55ee3cbd16d66",
+                                                              "cu70_memory_map.svh":  "35f773502ee3be6069af8ee31e24c1dd6865a1d740bc504297b77ee284bc08b1",
+                                                              "primitives.sv":  "66e7988d6901300900e0abe51bfcbabafb78c062aad44a4441ae9301d08d3ec2",
+                                                              "cu71_tile_memory.sv":  "b4bf2b889cf4756a1c80480a58ba0d5cea27b777cbd803be7dc826f752112e1e",
+                                                              "tb.sv":  "22efbffcdd1103576bb9aa152f97b98a69ec1bc6469f8726c3c48dabc93a10fe",
+                                                              "moonshine_sdram_burst.sv":  "05a9a9471f9c9eb61209c55579b82f9d228cc01328044589eec989b200d6f65a",
+                                                              "model.sv":  "e20bb3caeb073fed413757ee294b324bf5c2c2138a18e9eb2a887cf7c91032ca"
+                                                          },
+                                 "scope":  "Icarus simulation of copied RTL and conditional digital model, seed 7001. Canonical four-word rows use masked BL8; auxiliary scalar writes use one masked BL8 each.",
+                                 "limits":  [
+                                                "not hardware",
+                                                "not routed timing",
+                                                "not reset/PVT/fit signoff",
+                                                "no combining performance claim"
+                                            ]
+                             },
+                             {
+                                 "component":  "display scanout component",
+                                 "status":  "PASS_ASYNCHRONOUS_BL8_SCANOUT_COMPONENT",
+                                 "evidence":  "fpga/experiments/cu66-v71/display/evidence/regression01/result.json",
+                                 "source_hashes_sha256":  {
+                                                              "fpga/experiments/cu66-v71/display/cu71_scanout.sv":  "bf15d8a0b5219722794842dbbda0f7399cc7249b9e69ae436144ce4fd8f21ca0",
+                                                              "fpga/experiments/cu66-v71/display/cu71_lcd_lines.sv":  "f1f8b0a5a0d47936b70d13c3364b67284fe3e3a76b1038aaa13374a9b08ed0a7",
+                                                              "fpga/experiments/cu66-v71/display/tb_scanout.cpp":  "10c6d8b20f188ec97d8050e441a89b859b38c8df11fcb64cb1454837a128e3a4",
+                                                              "scripts/cu66-v71/display/run_scanout.py":  "6697d36925ae8bb69a332061009eaa4a21005518730ac6831e2089a5e710c2c7"
+                                                          },
+                                 "scope":  "Synthetic functional BL8 memory response; regression covers asynchronous clocks, ordinary raster and intentional starvation/fault/reset cases. Result reports 8 complete rasters and 3,072,000 compared pixels.",
+                                 "limits":  [
+                                                "synthetic memory behavior, not actual pin/controller model",
+                                                "no panel/PHY/CDC hardware qualification",
+                                                "not unique source-frame proof",
+                                                "not 30 fps proof"
+                                            ]
+                             },
+                             {
+                                 "component":  "actual local control + packet staging + read arbiter",
+                                 "status":  "PASS_ACTUAL_CONTROL_STAGING_ARBITER_TYPED_COMPLETION",
+                                 "evidence":  "fpga/experiments/cu66-v71/system/evidence/local-control03/result.json",
+                                 "source_hashes_sha256":  {
+                                                              "fpga/experiments/cu66-v71/system/cu71_local_control.sv":  "bc4c596e888d66dbcfdde9a2b9740f0d287d1a6c9610d4f48cd907f697877d33",
+                                                              "fpga/experiments/cu66-v71/system/cu71_packet_staging.sv":  "191794ee6e7336a46460a910ab2f040c7c198d705ee1349e4dbadbdfbc794f85",
+                                                              "fpga/experiments/cu66-v71/system/cu71_packet_arbiter.sv":  "17e8445a122c73ad20c5fe20aae870152bd18ddc441f56f2b2c32bc7ab4507f9"
+                                                          },
+                                 "scope":  "The actual control, staging and read-arbiter RTL is exercised with fake owner/AUX endpoints.",
+                                 "limits":  [
+                                                "not complete CU66 decoder",
+                                                "not physical QSPI",
+                                                "not hardware"
+                                            ]
+                             },
+                             {
+                                 "component":  "packet staging maximum and failure cases",
+                                 "status":  "PASS_EXACT_STAGING_RTL_MAXIMUM_AND_FAILURE_TESTS",
+                                 "evidence":  "fpga/experiments/cu66-v71/system/evidence/staging01/result.json",
+                                 "source_hashes_sha256":  {
+                                                              "fpga/experiments/cu66-v71/system/cu71_packet_staging.sv":  "191794ee6e7336a46460a910ab2f040c7c198d705ee1349e4dbadbdfbc794f85"
+                                                          },
+                                 "scope":  "Exact staging RTL; 49,152-byte fixture, compile and simulation return code 0.",
+                                 "limits":  [
+                                                "component only",
+                                                "not hardware"
+                                            ]
+                             }
+                         ],
+    "non_passing_or_unqualified":  [
+                                       {
+                                           "component":  "selected-line memory + scanout integration",
+                                           "evidence":  "fpga/experiments/cu66-v71/display/evidence/memory-full-raster-fast01/result.json",
+                                           "status":  "PASS_SELECTED_LINE_INTEGRATION",
+                                           "classification":  "partial functional integration; not a complete raster/system or performance result",
+                                           "note":  "Includes memory model and scanout RTL; retain distinction from standalone synthetic scanout and from pin-model/system validation."
+                                       },
+                                       {
+                                           "component":  "selected-line cadence integration fast02",
+                                           "evidence":  "fpga/experiments/cu66-v71/display/evidence/memory-scanout-fast02/result.json",
+                                           "status":  "FAIL_SELECTED_LINE_CADENCE_FUNCTIONAL_DATA_PASS",
+                                           "note":  "Preserve as failed cadence result despite functional data-pass label; not a passing system gate."
+                                       },
+                                       {
+                                           "component":  "full pin/system simulation",
+                                           "evidence":  "fpga/experiments/cu66-v71/system/evidence/full-pin01/execution.json",
+                                           "status":  "FAIL",
+                                           "note":  "Build returned 0, control run returned 134. This is an actual pin-model/full-system attempt, distinct from synthetic scanout. It is not a passing system result."
+                                       }
+                                   ],
+    "missing_or_pending_gates":  [
+                                     "A passing actual-pin-model integrated system test with its precise source freeze, successful executable test, and all required source bindings.",
+                                     "Complete CU66 decoder/physical QSPI path evidence; local-control03 explicitly uses fake owner/AUX endpoints.",
+                                     "Reproducible standalone source bundle with all RTL, testbench, model, constraints, and exact hashes bound; audit found evidence-local copied source files, but no complete verified release bundle.",
+                                     "Vivado implementation and reports: routed timing, DRC, route status and resource results.",
+                                     "Board identity, bitstream hash, programming/DONE confirmation and hardware observations.",
+                                     "Measured panel frame rate and unique-frame progression. No 30 fps claim is supported."
+                                 ],
+    "process_snapshot":  {
+                             "note":  "Processes observed during audit; active baseline OOC work may still be running, so no completion inferred.",
+                             "processes":  [
+                                               "vivado (PIDs 23836, 37256, 42004)",
+                                               "verilator_bin (PID 51184)",
+                                               "vivado-mcp-server (PID 25288)"
+                                           ],
+                             "no_process_free_claim":  true
+                         }
+}

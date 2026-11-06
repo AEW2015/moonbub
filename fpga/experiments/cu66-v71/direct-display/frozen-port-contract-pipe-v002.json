@@ -1,0 +1,91 @@
+{
+  "profile": "DY71_DIRECT_TILE_MAJOR_YUV_CANDIDATE",
+  "source_root": "C:\\mb70\\fpga\\experiments\\cu66-v71\\direct-display",
+  "sources": {
+    "cu71_cache_dma.sv": "54dd34782b8a4147706791bf826a525366866f0b985ad437f3746f0a4d091608",
+    "cu71_direct_cache.sv": "141373fd8e5fabfcaf8e065d1d39ab37d2c9206988940f90344613dc2732770f",
+    "cu71_yuv_pixel_pipe.sv": "1d396194a3c20b03e522596c53cbaa3f05a3c390f66fcbf4213794753d7862ba",
+    "cu71_lcd_lines_direct.sv": "5f098b43aa852853a010cfb653253d5dc903560cbe374b3fe3a33e224da6ecd2",
+    "cu71_direct_scanout_pipe.sv": "825ffcd0b134a894ab21612edb4d2aafce299abb3cf15c2d29fdd13fbef9c6dc"
+  },
+  "prepare": {
+    "inputs": "generation64/frame_id32/canonical_bank2/hud_bank2/cache_slot1",
+    "success_fence": "3600 initial BL8 reads, cache writes, checked completion, no outstanding adapter operation",
+    "integrity_owner": "Upstream validates canonical/HUD generation tags and write fences; holds actual memory leases"
+  },
+  "commit": {
+    "inputs": "descriptor generation64/frame_id32/cache_slot1 matching READY token",
+    "irreversible_point": "Accepted descriptor changes READY to PENDING; cannot be aborted",
+    "presentation_fence": "presented pulse with front generation/frame/slot after frame_boundary and scanout_drained",
+    "old_front_release": "Same qualified presentation fence, never ingress ACK or prepared result"
+  },
+  "abort": {
+    "inputs": "generation64/frame_id32/cache_slot1; exact owned FILL or READY context",
+    "completion": "abort_done/error after matching DMA command and physical adapter drain",
+    "forbidden": "PENDING/FRONT cancellation"
+  },
+  "memory": {
+    "port": "lcd_req_valid/ready addr24 x16 aligned8; lcd_rsp_valid/ready data128/error; lcd_abort_i,busy,aborted",
+    "packing": "word i=data[16*i+:16]",
+    "layout": "tile index row-major; physical tile32 words; row-major8x8 bytes; 4 BL8 per tile",
+    "backend": "cu71_memory_system_direct",
+    "late_response_contract": "No successful old response after abort/drain fence; no physical generation echo"
+  },
+  "cdc": {
+    "clocks": "mem_clk100MHz; pixel_clk nominal29.36MHz, unchanged panel porches",
+    "held_payloads": [
+      "request_line0/1 and request_epoch0/1 held until matching done token",
+      "completed_bad0/1 held with completion token until next same-buffer line",
+      "dual-clock line RAM: all480 words written before done toggle, never written until next request"
+    ],
+    "synchronizers": [
+      "request_sync0/1 into memory domain",
+      "done_sync0/1 into pixel domain",
+      "valid_sync and pattern_sync",
+      "frame_toggle synchronization and gray underrun counter"
+    ],
+    "reset": "Coordinated pixel/owner/adapter resets only; no unilateral pixel reset recovery",
+    "physical_gate": "Review bundled-data max-delay/skew and synchronizers in selected routed board; component/OOC evidence does not sign off CDC"
+  },
+  "proofs": [
+    "evidence/direct-owner-pipe02/result.json",
+    "evidence/direct-pipe-pin-fast01/result.json",
+    "evidence/direct-pipe-ooc01/result.json"
+  ],
+  "unproven": [
+    "Root receiver/COMMIT integration",
+    "Concurrent decoder/write cadence",
+    "Actual direct hardware playback",
+    "Routed CDC and full-board timing",
+    "30 unique displayed fps"
+  ],
+  "identity": {
+    "magic": "0x44593731",
+    "abi": "0x00010000",
+    "capability": "0x0000000f",
+    "status": "Root-approved isolated profile identity; external CSR/network implementation not provided by this display component"
+  },
+  "timing": {
+    "synthesis_only": true,
+    "mem_clk_MHz": 100,
+    "mem_intra_setup_slack_ns": 0.255,
+    "pixel_intra_setup_slack_ns": 15.866,
+    "overall_setup_slack_ns": -2.336,
+    "overall_timing_pass": false,
+    "remaining": "CDC bundled-path constraints and routed full-board signoff required; no global false-path workaround"
+  },
+  "counts": {
+    "LUT": 3837,
+    "FF": 2373,
+    "RAMB18": 2,
+    "RAMB36": 41,
+    "DSP": 0
+  },
+  "pipeline_change": "Registers wanted page and stages physical page address before first front refill command. Adds up to two scheduling clocks, no per-pixel color change.",
+  "operational_limits": {
+    "cookie_bits": 32,
+    "behavior": "Fails closed before wrapping; no silent identity reuse",
+    "approximate_exhaustion": "Roughly half an hour at ~2.1 million BL8 commands/s; depends on actual command rate",
+    "release_gate": "Before long-duration release, separately qualify a 64-bit internal-cookie successor with abort/stale tests, or a coordinated owner/backend/pixel reset policy. No unbounded or 20+minute30fps readiness claim."
+  }
+}

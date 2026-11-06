@@ -1,0 +1,70 @@
+{
+  "profile": "EXPERIMENTAL_DIRECT_TILE_MAJOR_YUV_NO_ASSIGNED_ABI",
+  "source_root": "C:\\mb70\\fpga\\experiments\\cu66-v71\\direct-display",
+  "sources": {
+    "cu71_direct_scanout.sv": "5f08b91050ce93d2a279a1346f1b3c0b3907bae5e5a1e4f3754003c1c1d1e224",
+    "cu71_cache_dma.sv": "54dd34782b8a4147706791bf826a525366866f0b985ad437f3746f0a4d091608",
+    "cu71_direct_cache.sv": "141373fd8e5fabfcaf8e065d1d39ab37d2c9206988940f90344613dc2732770f",
+    "cu71_yuv_pixel_pipe.sv": "1d396194a3c20b03e522596c53cbaa3f05a3c390f66fcbf4213794753d7862ba",
+    "cu71_lcd_lines_direct.sv": "5f098b43aa852853a010cfb653253d5dc903560cbe374b3fe3a33e224da6ecd2"
+  },
+  "prepare": {
+    "inputs": "generation64/frame_id32/canonical_bank2/hud_bank2/cache_slot1",
+    "success_fence": "3600 initial BL8 reads, cache writes, checked completion, no outstanding adapter operation",
+    "integrity_owner": "Upstream validates canonical/HUD generation tags and write fences; holds actual memory leases"
+  },
+  "commit": {
+    "inputs": "descriptor generation64/frame_id32/cache_slot1 matching READY token",
+    "irreversible_point": "Accepted descriptor changes READY to PENDING; cannot be aborted",
+    "presentation_fence": "presented pulse with front generation/frame/slot after frame_boundary and scanout_drained",
+    "old_front_release": "Same qualified presentation fence, never ingress ACK or prepared result"
+  },
+  "abort": {
+    "inputs": "generation64/frame_id32/cache_slot1; exact owned FILL or READY context",
+    "completion": "abort_done/error after matching DMA command and physical adapter drain",
+    "forbidden": "PENDING/FRONT cancellation"
+  },
+  "memory": {
+    "port": "lcd_req_valid/ready addr24 x16 aligned8; lcd_rsp_valid/ready data128/error; lcd_abort_i,busy,aborted",
+    "packing": "word i=data[16*i+:16]",
+    "layout": "tile index row-major; physical tile32 words; row-major8x8 bytes; 4 BL8 per tile",
+    "backend": "cu71_memory_system_direct",
+    "late_response_contract": "No successful old response after abort/drain fence; no physical generation echo"
+  },
+  "cdc": {
+    "clocks": "mem_clk100MHz; pixel_clk nominal29.36MHz, unchanged panel porches",
+    "held_payloads": [
+      "request_line0/1 and request_epoch0/1 held until matching done token",
+      "completed_bad0/1 held with completion token until next same-buffer line",
+      "dual-clock line RAM: all480 words written before done toggle, never written until next request"
+    ],
+    "synchronizers": [
+      "request_sync0/1 into memory domain",
+      "done_sync0/1 into pixel domain",
+      "valid_sync and pattern_sync",
+      "frame_toggle synchronization and gray underrun counter"
+    ],
+    "reset": "Coordinated pixel/owner/adapter resets only; no unilateral pixel reset recovery",
+    "physical_gate": "Review bundled-data max-delay/skew and synchronizers in selected routed board; component/OOC evidence does not sign off CDC"
+  },
+  "proofs": [
+    "evidence/pixel-pipe02/result.json",
+    "evidence/cache-pixel01/result.json",
+    "evidence/cache-dma01/result.json",
+    "evidence/direct-owner05/result.json",
+    "evidence/cache-ooc01/result.json"
+  ],
+  "unproven": [
+    "Root receiver/COMMIT integration",
+    "Concurrent decoder/write cadence",
+    "Actual direct hardware playback",
+    "Routed CDC and full-board timing",
+    "30 unique displayed fps"
+  ],
+  "operational_limits": {
+    "cookie_bits": 32,
+    "behavior": "Fails closed before wrapping; no silent identity reuse",
+    "approximate_exhaustion": "Roughly half an hour at ~2.1 million BL8 commands/s; depends on actual command rate",
+    "release_gate": "Before long-duration release, separately qualify a 64-bit internal-cookie successor with abort/stale tests, or a coordinated owner/backend/pixel reset policy. No unbounded or 20+minute30fps readiness claim."
+  }
+}

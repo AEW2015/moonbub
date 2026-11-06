@@ -1,0 +1,7 @@
+#include "../../../../experiments/cu66-native-v69/decoder.hpp"
+#include <filesystem>
+#include <fstream>
+#include <iomanip>
+#include <sstream>
+#include <iostream>
+int main(int argc,char**argv){try{if(argc!=3)throw std::runtime_error("index output");std::filesystem::path index=argv[1],out=argv[2];std::ifstream list(index);std::string line,c,k,p;std::getline(list,line);std::stringstream s(line);std::getline(s,c,'\t');std::getline(s,k,'\t');std::getline(s,p,'\t');std::ifstream in(index.parent_path()/p,std::ios::binary);cu66::Bytes b{std::istreambuf_iterator<char>(in),{}};cu66::Decoder dec;auto f=dec.receive(b);std::vector<uint16_t>words(259200);unsigned offsets[3]={0,172800,216000};for(unsigned plane=0;plane<3;plane++){unsigned w=plane?360:720,h=plane?240:480;for(unsigned y=0;y<h;y++)for(unsigned x=0;x<w;x+=2){unsigned a=offsets[plane]+((y/8)*(w/8)+x/8)*32+(y%8)*4+(x%8)/2;words[a]=f->planes[plane][y*w+x]|(uint16_t(f->planes[plane][y*w+x+1])<<8);}}std::ofstream canon(out/"canonical.hex"),hud(out/"hud.hex"),gold(out/"gold.hex");canon<<std::hex<<std::setfill('0');hud<<std::hex<<std::setfill('0');gold<<std::hex<<std::setfill('0');for(auto v:words)canon<<std::setw(4)<<v<<'\n';for(auto&r:f->hud)for(auto v:r.words)hud<<std::setw(4)<<v<<'\n';for(auto v:cu66::render(f->planes,f->hud))gold<<std::setw(4)<<v<<'\n';std::cout<<"DIRECT_FIXTURE_EXPORT_PASS native_key tile_major_words=259200 HUD_words=21120 canvas_words=345600\n";}catch(std::exception&e){std::cerr<<e.what()<<'\n';return 1;}return 0;}

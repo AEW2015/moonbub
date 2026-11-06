@@ -1,0 +1,11 @@
+"""Execute the inherited exhaustive configuration test against frozen v4 model."""
+from pathlib import Path
+import hashlib,json,re,subprocess,time
+r=Path(__file__).resolve().parents[3];d=r/'fpga/experiments/cu66-v71/entropy';parent=d/'evidence/regression03/cfg.cpp';proof=d/'evidence/arith-malformed03';o=d/'evidence/arith-cfg-v4-02';o.mkdir(exist_ok=False)
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();top='cu71_ab38_decoder_arithpipe_v4';src=proof/'candidate'/(top+'.sv');assert sha(src)==json.loads((d/'arith-v4-derivation.json').read_text())['candidate_sha256']
+command=next(x['command'][-1]for x in json.loads((proof/'result.json').read_text())['executions']if x['label']=='candidate_build');build=re.search(r'--Mdir (\S+)',command).group(1)
+cpp=o/'cfg.cpp';cpp.write_text(parent.read_text().replace('Vcu71_ab38_decoder_cfgpipe','V'+top),newline='\n');lin=lambda p:'/mnt/'+p.drive[0].lower()+p.as_posix()[2:]
+cmd=['wsl','-d','MRS-HDL-Research','--','bash','-lc',f'source /opt/gamebub-openxc7-20261021/oss-cad-suite/environment; g++ -O2 -std=c++17 -pthread -I/opt/gamebub-openxc7-20261021/oss-cad-suite/share/verilator/include -I/opt/gamebub-openxc7-20261021/oss-cad-suite/share/verilator/include/vltstd -I{build} {lin(cpp)} {build}/V{top}__ALL.a {build}/verilated.o {build}/verilated_threads.o -o {build}/cfg_v4_sweep && {build}/cfg_v4_sweep']
+start=time.monotonic();q=subprocess.run(cmd,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True);(o/'executed.log').write_text(q.stdout);assert q.returncode==0,q.stdout
+assert 'CFG_MODULO_EXHAUSTIVE_PASS checks=2073600' in q.stdout and 'abort_positions=17' in q.stdout
+(o/'result.json').write_text(json.dumps({'status':'PASS_SELECTED_V4_EXHAUSTIVE_CFG','checks':2073600,'abort_positions':17,'source_sha256':sha(src),'parent_cfg_test_sha256':sha(parent),'executed_cfg_cpp_sha256':sha(cpp),'reused_model_proof':str((proof/'result.json').relative_to(r)),'reused_model_proof_sha256':sha(proof/'result.json'),'command':cmd,'returncode':q.returncode,'seconds':time.monotonic()-start,'scope':'Samev4RTLmodelusedbymalformedcomparison; allsupported1..8100blocksx1..256widths comparemodulo,retainedmetadata,all17abortpositions. Nativeonly.','hardware':False},indent=2)+'\n');print(q.stdout.strip())

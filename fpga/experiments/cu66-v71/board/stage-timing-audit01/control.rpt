@@ -1,0 +1,749 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Thu Nov  5 23:49:46 2026
+| Host         : DESKTOP-I75K8PP running 64-bit major release  (build 9200)
+| Command      : report_timing -delay_type max -to [get_pins -quiet -of_objects [get_cells -quiet -hier -regexp control_plane/.*] -filter {REF_PIN_NAME == D || REF_PIN_NAME == CE || REF_PIN_NAME == P || REF_PIN_NAME == CEA2 || REF_PIN_NAME == CEP}] -max_paths 10 -file C:/mb70/fpga/experiments/cu66-v71/board/stage-timing-audit01/control.rpt
+| Design       : moonshine_top_cu71
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -9.781ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/ack_sequence_reg[17]/D
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        19.566ns  (logic 1.138ns (5.816%)  route 18.428ns (94.184%))
+  Logic Levels:           5  (LUT4=1 LUT5=2 LUT6=2)
+  Clock Path Skew:        -0.244ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.250ns = ( 15.250 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      12.435    18.647    system_core/receiver/banks/out[0]
+    SLICE_X51Y72         LUT5 (Prop_lut5_I1_O)        0.124    18.771 r  system_core/receiver/banks/faults[3]_i_2/O
+                         net (fo=7, routed)           1.606    20.377    control_plane/staging/start_ready
+    SLICE_X72Y72         LUT4 (Prop_lut4_I2_O)        0.124    20.501 r  control_plane/staging/ack_status[0]_i_4/O
+                         net (fo=35, routed)          2.992    23.494    control_plane/staging/ack_status[0]_i_4_n_0
+    SLICE_X85Y73         LUT6 (Prop_lut6_I1_O)        0.124    23.618 r  control_plane/staging/ack_sequence[17]_i_6/O
+                         net (fo=1, routed)           0.665    24.283    control_plane/staging/ack_sequence[17]_i_6_n_0
+    SLICE_X85Y73         LUT5 (Prop_lut5_I4_O)        0.124    24.407 r  control_plane/staging/ack_sequence[17]_i_5/O
+                         net (fo=1, routed)           0.729    25.136    control_plane/packet_arbiter/ack_sequence_reg[17]_1
+    SLICE_X84Y73         LUT6 (Prop_lut6_I5_O)        0.124    25.260 r  control_plane/packet_arbiter/ack_sequence[17]_i_1/O
+                         net (fo=1, routed)           0.000    25.260    control_plane/packet_arbiter_n_8
+    SLICE_X84Y73         FDRE                                         r  control_plane/ack_sequence_reg[17]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.592    15.250    control_plane/clk100
+    SLICE_X84Y73         FDRE                                         r  control_plane/ack_sequence_reg[17]/C
+                         clock pessimism              0.200    15.450    
+                         clock uncertainty           -0.047    15.402    
+    SLICE_X84Y73         FDRE (Setup_fdre_C_D)        0.077    15.479    control_plane/ack_sequence_reg[17]
+  -------------------------------------------------------------------
+                         required time                         15.479    
+                         arrival time                         -25.260    
+  -------------------------------------------------------------------
+                         slack                                 -9.781    
+
+Slack (VIOLATED) :        -9.456ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/ack_sequence_reg[2]/D
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        19.196ns  (logic 1.138ns (5.928%)  route 18.058ns (94.072%))
+  Logic Levels:           5  (LUT4=1 LUT5=2 LUT6=2)
+  Clock Path Skew:        -0.242ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.252ns = ( 15.252 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      12.435    18.647    system_core/receiver/banks/out[0]
+    SLICE_X51Y72         LUT5 (Prop_lut5_I1_O)        0.124    18.771 r  system_core/receiver/banks/faults[3]_i_2/O
+                         net (fo=7, routed)           1.606    20.377    control_plane/staging/start_ready
+    SLICE_X72Y72         LUT4 (Prop_lut4_I2_O)        0.124    20.501 r  control_plane/staging/ack_status[0]_i_4/O
+                         net (fo=35, routed)          2.640    23.142    control_plane/staging/ack_status[0]_i_4_n_0
+    SLICE_X86Y73         LUT6 (Prop_lut6_I1_O)        0.124    23.266 r  control_plane/staging/ack_sequence[2]_i_6/O
+                         net (fo=1, routed)           0.711    23.977    control_plane/staging/ack_sequence[2]_i_6_n_0
+    SLICE_X87Y73         LUT5 (Prop_lut5_I4_O)        0.124    24.101 r  control_plane/staging/ack_sequence[2]_i_5/O
+                         net (fo=1, routed)           0.665    24.766    control_plane/packet_arbiter/ack_sequence_reg[2]_1
+    SLICE_X87Y73         LUT6 (Prop_lut6_I5_O)        0.124    24.890 r  control_plane/packet_arbiter/ack_sequence[2]_i_1/O
+                         net (fo=1, routed)           0.000    24.890    control_plane/packet_arbiter_n_14
+    SLICE_X87Y73         FDRE                                         r  control_plane/ack_sequence_reg[2]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.594    15.252    control_plane/clk100
+    SLICE_X87Y73         FDRE                                         r  control_plane/ack_sequence_reg[2]/C
+                         clock pessimism              0.200    15.452    
+                         clock uncertainty           -0.047    15.404    
+    SLICE_X87Y73         FDRE (Setup_fdre_C_D)        0.029    15.433    control_plane/ack_sequence_reg[2]
+  -------------------------------------------------------------------
+                         required time                         15.433    
+                         arrival time                         -24.890    
+  -------------------------------------------------------------------
+                         slack                                 -9.456    
+
+Slack (VIOLATED) :        -9.456ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/soft_gen_reg[26]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        18.955ns  (logic 0.766ns (4.041%)  route 18.189ns (95.959%))
+  Logic Levels:           2  (LUT2=1 LUT6=1)
+  Clock Path Skew:        -0.249ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.245ns = ( 15.245 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      11.954    18.166    system_core/receiver/out[0]
+    SLICE_X50Y69         LUT6 (Prop_lut6_I5_O)        0.124    18.290 r  system_core/receiver/soft_gen[63]_i_2/O
+                         net (fo=3, routed)           0.949    19.239    system_core/receiver/software_command_valid
+    SLICE_X53Y69         LUT2 (Prop_lut2_I0_O)        0.124    19.363 r  system_core/receiver/soft_gen[63]_i_1/O
+                         net (fo=163, routed)         5.286    24.649    control_plane/soft_pending0
+    SLICE_X72Y64         FDRE                                         r  control_plane/soft_gen_reg[26]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.587    15.245    control_plane/clk100
+    SLICE_X72Y64         FDRE                                         r  control_plane/soft_gen_reg[26]/C
+                         clock pessimism              0.200    15.445    
+                         clock uncertainty           -0.047    15.397    
+    SLICE_X72Y64         FDRE (Setup_fdre_C_CE)      -0.205    15.192    control_plane/soft_gen_reg[26]
+  -------------------------------------------------------------------
+                         required time                         15.192    
+                         arrival time                         -24.649    
+  -------------------------------------------------------------------
+                         slack                                 -9.456    
+
+Slack (VIOLATED) :        -9.456ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/soft_gen_reg[28]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        18.955ns  (logic 0.766ns (4.041%)  route 18.189ns (95.959%))
+  Logic Levels:           2  (LUT2=1 LUT6=1)
+  Clock Path Skew:        -0.249ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.245ns = ( 15.245 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      11.954    18.166    system_core/receiver/out[0]
+    SLICE_X50Y69         LUT6 (Prop_lut6_I5_O)        0.124    18.290 r  system_core/receiver/soft_gen[63]_i_2/O
+                         net (fo=3, routed)           0.949    19.239    system_core/receiver/software_command_valid
+    SLICE_X53Y69         LUT2 (Prop_lut2_I0_O)        0.124    19.363 r  system_core/receiver/soft_gen[63]_i_1/O
+                         net (fo=163, routed)         5.286    24.649    control_plane/soft_pending0
+    SLICE_X72Y64         FDRE                                         r  control_plane/soft_gen_reg[28]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.587    15.245    control_plane/clk100
+    SLICE_X72Y64         FDRE                                         r  control_plane/soft_gen_reg[28]/C
+                         clock pessimism              0.200    15.445    
+                         clock uncertainty           -0.047    15.397    
+    SLICE_X72Y64         FDRE (Setup_fdre_C_CE)      -0.205    15.192    control_plane/soft_gen_reg[28]
+  -------------------------------------------------------------------
+                         required time                         15.192    
+                         arrival time                         -24.649    
+  -------------------------------------------------------------------
+                         slack                                 -9.456    
+
+Slack (VIOLATED) :        -9.456ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/soft_gen_reg[58]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        18.955ns  (logic 0.766ns (4.041%)  route 18.189ns (95.959%))
+  Logic Levels:           2  (LUT2=1 LUT6=1)
+  Clock Path Skew:        -0.249ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.245ns = ( 15.245 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      11.954    18.166    system_core/receiver/out[0]
+    SLICE_X50Y69         LUT6 (Prop_lut6_I5_O)        0.124    18.290 r  system_core/receiver/soft_gen[63]_i_2/O
+                         net (fo=3, routed)           0.949    19.239    system_core/receiver/software_command_valid
+    SLICE_X53Y69         LUT2 (Prop_lut2_I0_O)        0.124    19.363 r  system_core/receiver/soft_gen[63]_i_1/O
+                         net (fo=163, routed)         5.286    24.649    control_plane/soft_pending0
+    SLICE_X72Y64         FDRE                                         r  control_plane/soft_gen_reg[58]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.587    15.245    control_plane/clk100
+    SLICE_X72Y64         FDRE                                         r  control_plane/soft_gen_reg[58]/C
+                         clock pessimism              0.200    15.445    
+                         clock uncertainty           -0.047    15.397    
+    SLICE_X72Y64         FDRE (Setup_fdre_C_CE)      -0.205    15.192    control_plane/soft_gen_reg[58]
+  -------------------------------------------------------------------
+                         required time                         15.192    
+                         arrival time                         -24.649    
+  -------------------------------------------------------------------
+                         slack                                 -9.456    
+
+Slack (VIOLATED) :        -9.456ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/soft_gen_reg[60]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        18.955ns  (logic 0.766ns (4.041%)  route 18.189ns (95.959%))
+  Logic Levels:           2  (LUT2=1 LUT6=1)
+  Clock Path Skew:        -0.249ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.245ns = ( 15.245 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      11.954    18.166    system_core/receiver/out[0]
+    SLICE_X50Y69         LUT6 (Prop_lut6_I5_O)        0.124    18.290 r  system_core/receiver/soft_gen[63]_i_2/O
+                         net (fo=3, routed)           0.949    19.239    system_core/receiver/software_command_valid
+    SLICE_X53Y69         LUT2 (Prop_lut2_I0_O)        0.124    19.363 r  system_core/receiver/soft_gen[63]_i_1/O
+                         net (fo=163, routed)         5.286    24.649    control_plane/soft_pending0
+    SLICE_X72Y64         FDRE                                         r  control_plane/soft_gen_reg[60]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.587    15.245    control_plane/clk100
+    SLICE_X72Y64         FDRE                                         r  control_plane/soft_gen_reg[60]/C
+                         clock pessimism              0.200    15.445    
+                         clock uncertainty           -0.047    15.397    
+    SLICE_X72Y64         FDRE (Setup_fdre_C_CE)      -0.205    15.192    control_plane/soft_gen_reg[60]
+  -------------------------------------------------------------------
+                         required time                         15.192    
+                         arrival time                         -24.649    
+  -------------------------------------------------------------------
+                         slack                                 -9.456    
+
+Slack (VIOLATED) :        -9.387ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/ack_sequence_reg[3]/D
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        19.174ns  (logic 1.138ns (5.935%)  route 18.036ns (94.065%))
+  Logic Levels:           5  (LUT4=1 LUT5=2 LUT6=2)
+  Clock Path Skew:        -0.242ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.252ns = ( 15.252 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      12.435    18.647    system_core/receiver/banks/out[0]
+    SLICE_X51Y72         LUT5 (Prop_lut5_I1_O)        0.124    18.771 r  system_core/receiver/banks/faults[3]_i_2/O
+                         net (fo=7, routed)           1.606    20.377    control_plane/staging/start_ready
+    SLICE_X72Y72         LUT4 (Prop_lut4_I2_O)        0.124    20.501 r  control_plane/staging/ack_status[0]_i_4/O
+                         net (fo=35, routed)          2.994    23.496    control_plane/staging/ack_status[0]_i_4_n_0
+    SLICE_X85Y73         LUT6 (Prop_lut6_I1_O)        0.124    23.620 r  control_plane/staging/ack_sequence[3]_i_6/O
+                         net (fo=1, routed)           0.320    23.940    control_plane/staging/ack_sequence[3]_i_6_n_0
+    SLICE_X88Y73         LUT5 (Prop_lut5_I4_O)        0.124    24.064 r  control_plane/staging/ack_sequence[3]_i_5/O
+                         net (fo=1, routed)           0.680    24.744    control_plane/packet_arbiter/ack_sequence_reg[3]_1
+    SLICE_X88Y73         LUT6 (Prop_lut6_I5_O)        0.124    24.868 r  control_plane/packet_arbiter/ack_sequence[3]_i_1/O
+                         net (fo=1, routed)           0.000    24.868    control_plane/packet_arbiter_n_13
+    SLICE_X88Y73         FDRE                                         r  control_plane/ack_sequence_reg[3]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.594    15.252    control_plane/clk100
+    SLICE_X88Y73         FDRE                                         r  control_plane/ack_sequence_reg[3]/C
+                         clock pessimism              0.200    15.452    
+                         clock uncertainty           -0.047    15.404    
+    SLICE_X88Y73         FDRE (Setup_fdre_C_D)        0.077    15.481    control_plane/ack_sequence_reg[3]
+  -------------------------------------------------------------------
+                         required time                         15.481    
+                         arrival time                         -24.868    
+  -------------------------------------------------------------------
+                         slack                                 -9.387    
+
+Slack (VIOLATED) :        -9.382ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/ack_data_reg[2]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        18.889ns  (logic 1.014ns (5.368%)  route 17.875ns (94.632%))
+  Logic Levels:           4  (LUT4=2 LUT5=1 LUT6=1)
+  Clock Path Skew:        -0.240ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.254ns = ( 15.254 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      12.435    18.647    system_core/receiver/banks/out[0]
+    SLICE_X51Y72         LUT5 (Prop_lut5_I1_O)        0.124    18.771 r  system_core/receiver/banks/faults[3]_i_2/O
+                         net (fo=7, routed)           1.606    20.377    control_plane/staging/start_ready
+    SLICE_X72Y72         LUT4 (Prop_lut4_I2_O)        0.124    20.501 r  control_plane/staging/ack_status[0]_i_4/O
+                         net (fo=35, routed)          0.661    21.162    control_plane/staging/ack_status[0]_i_4_n_0
+    SLICE_X71Y73         LUT6 (Prop_lut6_I4_O)        0.124    21.286 r  control_plane/staging/command_state[3]_i_6/O
+                         net (fo=7, routed)           1.284    22.570    control_plane/packet_arbiter/command_state_reg[0]_1
+    SLICE_X72Y75         LUT4 (Prop_lut4_I2_O)        0.124    22.694 r  control_plane/packet_arbiter/ack_data[31]_i_1/O
+                         net (fo=32, routed)          1.889    24.583    control_plane/ack_data
+    SLICE_X82Y69         FDRE                                         r  control_plane/ack_data_reg[2]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.596    15.254    control_plane/clk100
+    SLICE_X82Y69         FDRE                                         r  control_plane/ack_data_reg[2]/C
+                         clock pessimism              0.200    15.454    
+                         clock uncertainty           -0.047    15.406    
+    SLICE_X82Y69         FDRE (Setup_fdre_C_CE)      -0.205    15.201    control_plane/ack_data_reg[2]
+  -------------------------------------------------------------------
+                         required time                         15.201    
+                         arrival time                         -24.583    
+  -------------------------------------------------------------------
+                         slack                                 -9.382    
+
+Slack (VIOLATED) :        -9.382ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/ack_data_reg[9]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        18.889ns  (logic 1.014ns (5.368%)  route 17.875ns (94.632%))
+  Logic Levels:           4  (LUT4=2 LUT5=1 LUT6=1)
+  Clock Path Skew:        -0.240ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.254ns = ( 15.254 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      12.435    18.647    system_core/receiver/banks/out[0]
+    SLICE_X51Y72         LUT5 (Prop_lut5_I1_O)        0.124    18.771 r  system_core/receiver/banks/faults[3]_i_2/O
+                         net (fo=7, routed)           1.606    20.377    control_plane/staging/start_ready
+    SLICE_X72Y72         LUT4 (Prop_lut4_I2_O)        0.124    20.501 r  control_plane/staging/ack_status[0]_i_4/O
+                         net (fo=35, routed)          0.661    21.162    control_plane/staging/ack_status[0]_i_4_n_0
+    SLICE_X71Y73         LUT6 (Prop_lut6_I4_O)        0.124    21.286 r  control_plane/staging/command_state[3]_i_6/O
+                         net (fo=7, routed)           1.284    22.570    control_plane/packet_arbiter/command_state_reg[0]_1
+    SLICE_X72Y75         LUT4 (Prop_lut4_I2_O)        0.124    22.694 r  control_plane/packet_arbiter/ack_data[31]_i_1/O
+                         net (fo=32, routed)          1.889    24.583    control_plane/ack_data
+    SLICE_X82Y69         FDRE                                         r  control_plane/ack_data_reg[9]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.596    15.254    control_plane/clk100
+    SLICE_X82Y69         FDRE                                         r  control_plane/ack_data_reg[9]/C
+                         clock pessimism              0.200    15.454    
+                         clock uncertainty           -0.047    15.406    
+    SLICE_X82Y69         FDRE (Setup_fdre_C_CE)      -0.205    15.201    control_plane/ack_data_reg[9]
+  -------------------------------------------------------------------
+                         required time                         15.201    
+                         arrival time                         -24.583    
+  -------------------------------------------------------------------
+                         slack                                 -9.382    
+
+Slack (VIOLATED) :        -9.361ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/ack_sequence_reg[1]/D
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        19.139ns  (logic 1.138ns (5.946%)  route 18.001ns (94.054%))
+  Logic Levels:           5  (LUT4=1 LUT5=2 LUT6=2)
+  Clock Path Skew:        -0.251ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.243ns = ( 15.243 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      12.435    18.647    system_core/receiver/banks/out[0]
+    SLICE_X51Y72         LUT5 (Prop_lut5_I1_O)        0.124    18.771 r  system_core/receiver/banks/faults[3]_i_2/O
+                         net (fo=7, routed)           1.606    20.377    control_plane/staging/start_ready
+    SLICE_X72Y72         LUT4 (Prop_lut4_I2_O)        0.124    20.501 r  control_plane/staging/ack_status[0]_i_4/O
+                         net (fo=35, routed)          2.463    22.964    control_plane/staging/ack_status[0]_i_4_n_0
+    SLICE_X82Y73         LUT6 (Prop_lut6_I1_O)        0.124    23.088 r  control_plane/staging/ack_sequence[1]_i_6/O
+                         net (fo=1, routed)           0.433    23.521    control_plane/staging/ack_sequence[1]_i_6_n_0
+    SLICE_X82Y73         LUT5 (Prop_lut5_I4_O)        0.124    23.645 r  control_plane/staging/ack_sequence[1]_i_5/O
+                         net (fo=1, routed)           1.064    24.709    control_plane/packet_arbiter/ack_sequence_reg[1]_2
+    SLICE_X80Y73         LUT6 (Prop_lut6_I5_O)        0.124    24.833 r  control_plane/packet_arbiter/ack_sequence[1]_i_1/O
+                         net (fo=1, routed)           0.000    24.833    control_plane/packet_arbiter_n_15
+    SLICE_X80Y73         FDRE                                         r  control_plane/ack_sequence_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.585    15.243    control_plane/clk100
+    SLICE_X80Y73         FDRE                                         r  control_plane/ack_sequence_reg[1]/C
+                         clock pessimism              0.200    15.443    
+                         clock uncertainty           -0.047    15.395    
+    SLICE_X80Y73         FDRE (Setup_fdre_C_D)        0.077    15.472    control_plane/ack_sequence_reg[1]
+  -------------------------------------------------------------------
+                         required time                         15.472    
+                         arrival time                         -24.833    
+  -------------------------------------------------------------------
+                         slack                                 -9.361    
+
+
+
+

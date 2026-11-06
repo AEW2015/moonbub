@@ -1,0 +1,49 @@
+{
+  "status": "DERIVED_VALID_FENCED_PAYLOAD_RESET_REDUCTION_REGRESSION_PENDING",
+  "bindings": [
+    {
+      "parent": "fpga/experiments/cu66-v69/inverse/cu66_idct8x8.sv",
+      "parent_sha256": "251d4c11d762f6a040c1934d9dca9d80e6187f470a90b7261c63d06d1f3c310c",
+      "candidate": "fpga/experiments/cu66-v71/inverse-reset/cu71_idct_resetlight.sv",
+      "candidate_sha256": "eb17556b9e49c625c12da463a7ba717020e7e65c9da85ddd1ac45d254be2ed98",
+      "payload_reset_bits_removed": 3784,
+      "initialization_before_valid": [
+        "source_tile captured in accepted IDLE before any multiply",
+        "all products overwritten in MUL before ACC",
+        "even/odd sums initialized on each accepted tile and each group boundary",
+        "dc_middle written in DC_FIRST_ACC before DC_SECOND_MUL",
+        "all64 output positions written by fast-zero, DC broadcast or complete second pass before OUTPUT_TILE",
+        "FSM/id/error/counters still reset; abort clears validity and cannot resume old work"
+      ]
+    },
+    {
+      "parent": "fpga/experiments/cu66-v71/dequant/cu71_dequant_pipe.sv",
+      "parent_sha256": "0505d5ef989b63037290294766909194d1cdbf3f423e4919e2bea89e1791b2c8",
+      "candidate": "fpga/experiments/cu66-v71/inverse-reset/cu71_dequant_resetlight.sv",
+      "candidate_sha256": "e2abdd9ecfe74612ed1f4f495be5d760454aa7431d9c23e19fe919d02d8a891a",
+      "payload_reset_bits_removed": 2307,
+      "initialization_before_valid": [
+        "coefficients/chroma/scale captured by accepted input before RUN",
+        "fast invalid/zero explicitly writes all1280 output bits before HOLD_TILE",
+        "all8 complete product groups stored before HOLD_TILE; reset/abort suppress every store",
+        "selection/product valid flags and FSM reset, so stale scratch cannot become a valid result"
+      ]
+    },
+    {
+      "parent": "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv",
+      "parent_sha256": "3eb9fbc02732f06b05f68499a5c03d48c00f24f7621db6cb318fc13f07c40d64",
+      "candidate": "fpga/experiments/cu66-v71/inverse-reset/cu71_reconstruct_resetlight.sv",
+      "candidate_sha256": "3ea16f4e36f0f4478d1ffb6f5422d97a08a2502dc643d2bbca1a97f805dc1781",
+      "payload_reset_bits_removed": 512,
+      "initialization_before_valid": [
+        "all64 pixel positions assigned in every accepted key/hidden/valid-reference transaction",
+        "out_valid/id/error reset and required-reference identity checks retained"
+      ]
+    }
+  ],
+  "total_payload_reset_bits_removed": 6603,
+  "contract": "Payload values while out_valid=false are unspecified; IDs/error/control reset retained",
+  "pipeline_latency_changed": false,
+  "hardware": false,
+  "selected_in_board": false
+}

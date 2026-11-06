@@ -1,0 +1,16 @@
+set_property PACKAGE_PIN L6 [get_ports btn_a]
+set_property PACKAGE_PIN K6 [get_ports btn_b]
+set_property PACKAGE_PIN M6 [get_ports btn_x]
+set_property PACKAGE_PIN N5 [get_ports btn_y]
+set_property PACKAGE_PIN N16 [get_ports btn_up]
+set_property PACKAGE_PIN L13 [get_ports btn_down]
+set_property PACKAGE_PIN L14 [get_ports btn_left]
+set_property PACKAGE_PIN M16 [get_ports btn_right]
+set_property PACKAGE_PIN K13 [get_ports btn_l]
+set_property PACKAGE_PIN K5 [get_ports btn_r]
+set_property PACKAGE_PIN H6 [get_ports btn_start]
+set_property PACKAGE_PIN H5 [get_ports btn_select]
+set_property IOSTANDARD LVCMOS33 [get_ports btn_*]
+set_property PULLTYPE PULLUP [get_ports btn_*]
+# First-stage button CDC constraint is in timing-reviewed.tcl and names the
+# actual endpoint/buttons_meta registers; no stale optional-cell exception.

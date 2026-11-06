@@ -1,0 +1,773 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Thu Nov  5 23:49:46 2026
+| Host         : DESKTOP-I75K8PP running 64-bit major release  (build 9200)
+| Command      : report_timing -delay_type max -to [get_pins -quiet -of_objects [get_cells -quiet -hier -regexp system_core/receiver/parser/.*] -filter {REF_PIN_NAME == D || REF_PIN_NAME == CE || REF_PIN_NAME == P || REF_PIN_NAME == CEA2 || REF_PIN_NAME == CEP}] -max_paths 10 -file C:/mb70/fpga/experiments/cu66-v71/board/stage-timing-audit01/parser.rpt
+| Design       : moonshine_top_cu71
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -11.085ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            system_core/receiver/parser/hud_header_reg[27][4]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        20.679ns  (logic 1.014ns (4.903%)  route 19.665ns (95.097%))
+  Logic Levels:           4  (LUT2=1 LUT3=2 LUT6=1)
+  Clock Path Skew:        -0.153ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.332ns = ( 15.332 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.209ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      13.003    19.215    system_core/receiver/parser/out[0]
+    SLICE_X15Y77         LUT2 (Prop_lut2_I0_O)        0.124    19.339 r  system_core/receiver/parser/inner_header[4][7]_i_2/O
+                         net (fo=87, routed)          4.261    23.600    system_core/receiver/parser/inner_header[4][7]_i_2_n_0
+    SLICE_X6Y46          LUT3 (Prop_lut3_I2_O)        0.124    23.724 f  system_core/receiver/parser/hud_header[59][7]_i_3/O
+                         net (fo=2, routed)           0.570    24.294    system_core/receiver/parser/hud_header[59][7]_i_3_n_0
+    SLICE_X6Y45          LUT6 (Prop_lut6_I0_O)        0.124    24.418 r  system_core/receiver/parser/hud_header[91][7]_i_2/O
+                         net (fo=2, routed)           0.299    24.716    system_core/receiver/parser/hud_header[91][7]_i_2_n_0
+    SLICE_X6Y45          LUT3 (Prop_lut3_I0_O)        0.124    24.840 r  system_core/receiver/parser/hud_header[27][7]_i_1/O
+                         net (fo=8, routed)           1.533    26.373    system_core/receiver/parser/hud_header[27][7]_i_1_n_0
+    SLICE_X49Y46         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][4]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.675    15.332    system_core/receiver/parser/clk100
+    SLICE_X49Y46         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][4]/C
+                         clock pessimism              0.209    15.541    
+                         clock uncertainty           -0.047    15.493    
+    SLICE_X49Y46         FDRE (Setup_fdre_C_CE)      -0.205    15.288    system_core/receiver/parser/hud_header_reg[27][4]
+  -------------------------------------------------------------------
+                         required time                         15.288    
+                         arrival time                         -26.373    
+  -------------------------------------------------------------------
+                         slack                                -11.085    
+
+Slack (VIOLATED) :        -11.085ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            system_core/receiver/parser/hud_header_reg[27][7]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        20.679ns  (logic 1.014ns (4.903%)  route 19.665ns (95.097%))
+  Logic Levels:           4  (LUT2=1 LUT3=2 LUT6=1)
+  Clock Path Skew:        -0.153ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.332ns = ( 15.332 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.209ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      13.003    19.215    system_core/receiver/parser/out[0]
+    SLICE_X15Y77         LUT2 (Prop_lut2_I0_O)        0.124    19.339 r  system_core/receiver/parser/inner_header[4][7]_i_2/O
+                         net (fo=87, routed)          4.261    23.600    system_core/receiver/parser/inner_header[4][7]_i_2_n_0
+    SLICE_X6Y46          LUT3 (Prop_lut3_I2_O)        0.124    23.724 f  system_core/receiver/parser/hud_header[59][7]_i_3/O
+                         net (fo=2, routed)           0.570    24.294    system_core/receiver/parser/hud_header[59][7]_i_3_n_0
+    SLICE_X6Y45          LUT6 (Prop_lut6_I0_O)        0.124    24.418 r  system_core/receiver/parser/hud_header[91][7]_i_2/O
+                         net (fo=2, routed)           0.299    24.716    system_core/receiver/parser/hud_header[91][7]_i_2_n_0
+    SLICE_X6Y45          LUT3 (Prop_lut3_I0_O)        0.124    24.840 r  system_core/receiver/parser/hud_header[27][7]_i_1/O
+                         net (fo=8, routed)           1.533    26.373    system_core/receiver/parser/hud_header[27][7]_i_1_n_0
+    SLICE_X49Y46         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][7]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.675    15.332    system_core/receiver/parser/clk100
+    SLICE_X49Y46         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][7]/C
+                         clock pessimism              0.209    15.541    
+                         clock uncertainty           -0.047    15.493    
+    SLICE_X49Y46         FDRE (Setup_fdre_C_CE)      -0.205    15.288    system_core/receiver/parser/hud_header_reg[27][7]
+  -------------------------------------------------------------------
+                         required time                         15.288    
+                         arrival time                         -26.373    
+  -------------------------------------------------------------------
+                         slack                                -11.085    
+
+Slack (VIOLATED) :        -11.052ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            system_core/receiver/parser/hud_header_reg[27][0]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        20.682ns  (logic 1.014ns (4.903%)  route 19.668ns (95.097%))
+  Logic Levels:           4  (LUT2=1 LUT3=2 LUT6=1)
+  Clock Path Skew:        -0.153ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.332ns = ( 15.332 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.209ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      13.003    19.215    system_core/receiver/parser/out[0]
+    SLICE_X15Y77         LUT2 (Prop_lut2_I0_O)        0.124    19.339 r  system_core/receiver/parser/inner_header[4][7]_i_2/O
+                         net (fo=87, routed)          4.261    23.600    system_core/receiver/parser/inner_header[4][7]_i_2_n_0
+    SLICE_X6Y46          LUT3 (Prop_lut3_I2_O)        0.124    23.724 f  system_core/receiver/parser/hud_header[59][7]_i_3/O
+                         net (fo=2, routed)           0.570    24.294    system_core/receiver/parser/hud_header[59][7]_i_3_n_0
+    SLICE_X6Y45          LUT6 (Prop_lut6_I0_O)        0.124    24.418 r  system_core/receiver/parser/hud_header[91][7]_i_2/O
+                         net (fo=2, routed)           0.299    24.716    system_core/receiver/parser/hud_header[91][7]_i_2_n_0
+    SLICE_X6Y45          LUT3 (Prop_lut3_I0_O)        0.124    24.840 r  system_core/receiver/parser/hud_header[27][7]_i_1/O
+                         net (fo=8, routed)           1.536    26.376    system_core/receiver/parser/hud_header[27][7]_i_1_n_0
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][0]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.675    15.332    system_core/receiver/parser/clk100
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][0]/C
+                         clock pessimism              0.209    15.541    
+                         clock uncertainty           -0.047    15.493    
+    SLICE_X46Y44         FDRE (Setup_fdre_C_CE)      -0.169    15.324    system_core/receiver/parser/hud_header_reg[27][0]
+  -------------------------------------------------------------------
+                         required time                         15.324    
+                         arrival time                         -26.376    
+  -------------------------------------------------------------------
+                         slack                                -11.052    
+
+Slack (VIOLATED) :        -11.052ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            system_core/receiver/parser/hud_header_reg[27][1]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        20.682ns  (logic 1.014ns (4.903%)  route 19.668ns (95.097%))
+  Logic Levels:           4  (LUT2=1 LUT3=2 LUT6=1)
+  Clock Path Skew:        -0.153ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.332ns = ( 15.332 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.209ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      13.003    19.215    system_core/receiver/parser/out[0]
+    SLICE_X15Y77         LUT2 (Prop_lut2_I0_O)        0.124    19.339 r  system_core/receiver/parser/inner_header[4][7]_i_2/O
+                         net (fo=87, routed)          4.261    23.600    system_core/receiver/parser/inner_header[4][7]_i_2_n_0
+    SLICE_X6Y46          LUT3 (Prop_lut3_I2_O)        0.124    23.724 f  system_core/receiver/parser/hud_header[59][7]_i_3/O
+                         net (fo=2, routed)           0.570    24.294    system_core/receiver/parser/hud_header[59][7]_i_3_n_0
+    SLICE_X6Y45          LUT6 (Prop_lut6_I0_O)        0.124    24.418 r  system_core/receiver/parser/hud_header[91][7]_i_2/O
+                         net (fo=2, routed)           0.299    24.716    system_core/receiver/parser/hud_header[91][7]_i_2_n_0
+    SLICE_X6Y45          LUT3 (Prop_lut3_I0_O)        0.124    24.840 r  system_core/receiver/parser/hud_header[27][7]_i_1/O
+                         net (fo=8, routed)           1.536    26.376    system_core/receiver/parser/hud_header[27][7]_i_1_n_0
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][1]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.675    15.332    system_core/receiver/parser/clk100
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][1]/C
+                         clock pessimism              0.209    15.541    
+                         clock uncertainty           -0.047    15.493    
+    SLICE_X46Y44         FDRE (Setup_fdre_C_CE)      -0.169    15.324    system_core/receiver/parser/hud_header_reg[27][1]
+  -------------------------------------------------------------------
+                         required time                         15.324    
+                         arrival time                         -26.376    
+  -------------------------------------------------------------------
+                         slack                                -11.052    
+
+Slack (VIOLATED) :        -11.052ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            system_core/receiver/parser/hud_header_reg[27][2]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        20.682ns  (logic 1.014ns (4.903%)  route 19.668ns (95.097%))
+  Logic Levels:           4  (LUT2=1 LUT3=2 LUT6=1)
+  Clock Path Skew:        -0.153ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.332ns = ( 15.332 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.209ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      13.003    19.215    system_core/receiver/parser/out[0]
+    SLICE_X15Y77         LUT2 (Prop_lut2_I0_O)        0.124    19.339 r  system_core/receiver/parser/inner_header[4][7]_i_2/O
+                         net (fo=87, routed)          4.261    23.600    system_core/receiver/parser/inner_header[4][7]_i_2_n_0
+    SLICE_X6Y46          LUT3 (Prop_lut3_I2_O)        0.124    23.724 f  system_core/receiver/parser/hud_header[59][7]_i_3/O
+                         net (fo=2, routed)           0.570    24.294    system_core/receiver/parser/hud_header[59][7]_i_3_n_0
+    SLICE_X6Y45          LUT6 (Prop_lut6_I0_O)        0.124    24.418 r  system_core/receiver/parser/hud_header[91][7]_i_2/O
+                         net (fo=2, routed)           0.299    24.716    system_core/receiver/parser/hud_header[91][7]_i_2_n_0
+    SLICE_X6Y45          LUT3 (Prop_lut3_I0_O)        0.124    24.840 r  system_core/receiver/parser/hud_header[27][7]_i_1/O
+                         net (fo=8, routed)           1.536    26.376    system_core/receiver/parser/hud_header[27][7]_i_1_n_0
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][2]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.675    15.332    system_core/receiver/parser/clk100
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][2]/C
+                         clock pessimism              0.209    15.541    
+                         clock uncertainty           -0.047    15.493    
+    SLICE_X46Y44         FDRE (Setup_fdre_C_CE)      -0.169    15.324    system_core/receiver/parser/hud_header_reg[27][2]
+  -------------------------------------------------------------------
+                         required time                         15.324    
+                         arrival time                         -26.376    
+  -------------------------------------------------------------------
+                         slack                                -11.052    
+
+Slack (VIOLATED) :        -11.052ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            system_core/receiver/parser/hud_header_reg[27][3]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        20.682ns  (logic 1.014ns (4.903%)  route 19.668ns (95.097%))
+  Logic Levels:           4  (LUT2=1 LUT3=2 LUT6=1)
+  Clock Path Skew:        -0.153ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.332ns = ( 15.332 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.209ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      13.003    19.215    system_core/receiver/parser/out[0]
+    SLICE_X15Y77         LUT2 (Prop_lut2_I0_O)        0.124    19.339 r  system_core/receiver/parser/inner_header[4][7]_i_2/O
+                         net (fo=87, routed)          4.261    23.600    system_core/receiver/parser/inner_header[4][7]_i_2_n_0
+    SLICE_X6Y46          LUT3 (Prop_lut3_I2_O)        0.124    23.724 f  system_core/receiver/parser/hud_header[59][7]_i_3/O
+                         net (fo=2, routed)           0.570    24.294    system_core/receiver/parser/hud_header[59][7]_i_3_n_0
+    SLICE_X6Y45          LUT6 (Prop_lut6_I0_O)        0.124    24.418 r  system_core/receiver/parser/hud_header[91][7]_i_2/O
+                         net (fo=2, routed)           0.299    24.716    system_core/receiver/parser/hud_header[91][7]_i_2_n_0
+    SLICE_X6Y45          LUT3 (Prop_lut3_I0_O)        0.124    24.840 r  system_core/receiver/parser/hud_header[27][7]_i_1/O
+                         net (fo=8, routed)           1.536    26.376    system_core/receiver/parser/hud_header[27][7]_i_1_n_0
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][3]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.675    15.332    system_core/receiver/parser/clk100
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][3]/C
+                         clock pessimism              0.209    15.541    
+                         clock uncertainty           -0.047    15.493    
+    SLICE_X46Y44         FDRE (Setup_fdre_C_CE)      -0.169    15.324    system_core/receiver/parser/hud_header_reg[27][3]
+  -------------------------------------------------------------------
+                         required time                         15.324    
+                         arrival time                         -26.376    
+  -------------------------------------------------------------------
+                         slack                                -11.052    
+
+Slack (VIOLATED) :        -11.052ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            system_core/receiver/parser/hud_header_reg[27][5]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        20.682ns  (logic 1.014ns (4.903%)  route 19.668ns (95.097%))
+  Logic Levels:           4  (LUT2=1 LUT3=2 LUT6=1)
+  Clock Path Skew:        -0.153ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.332ns = ( 15.332 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.209ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      13.003    19.215    system_core/receiver/parser/out[0]
+    SLICE_X15Y77         LUT2 (Prop_lut2_I0_O)        0.124    19.339 r  system_core/receiver/parser/inner_header[4][7]_i_2/O
+                         net (fo=87, routed)          4.261    23.600    system_core/receiver/parser/inner_header[4][7]_i_2_n_0
+    SLICE_X6Y46          LUT3 (Prop_lut3_I2_O)        0.124    23.724 f  system_core/receiver/parser/hud_header[59][7]_i_3/O
+                         net (fo=2, routed)           0.570    24.294    system_core/receiver/parser/hud_header[59][7]_i_3_n_0
+    SLICE_X6Y45          LUT6 (Prop_lut6_I0_O)        0.124    24.418 r  system_core/receiver/parser/hud_header[91][7]_i_2/O
+                         net (fo=2, routed)           0.299    24.716    system_core/receiver/parser/hud_header[91][7]_i_2_n_0
+    SLICE_X6Y45          LUT3 (Prop_lut3_I0_O)        0.124    24.840 r  system_core/receiver/parser/hud_header[27][7]_i_1/O
+                         net (fo=8, routed)           1.536    26.376    system_core/receiver/parser/hud_header[27][7]_i_1_n_0
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][5]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.675    15.332    system_core/receiver/parser/clk100
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][5]/C
+                         clock pessimism              0.209    15.541    
+                         clock uncertainty           -0.047    15.493    
+    SLICE_X46Y44         FDRE (Setup_fdre_C_CE)      -0.169    15.324    system_core/receiver/parser/hud_header_reg[27][5]
+  -------------------------------------------------------------------
+                         required time                         15.324    
+                         arrival time                         -26.376    
+  -------------------------------------------------------------------
+                         slack                                -11.052    
+
+Slack (VIOLATED) :        -11.052ns  (required time - arrival time)
+  Source:                 joint_core_reset_reg[3]/C
+                            (rising edge-triggered cell FDPE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            system_core/receiver/parser/hud_header_reg[27][6]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        20.682ns  (logic 1.014ns (4.903%)  route 19.668ns (95.097%))
+  Logic Levels:           4  (LUT2=1 LUT3=2 LUT6=1)
+  Clock Path Skew:        -0.153ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.332ns = ( 15.332 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.694ns
+    Clock Pessimism Removal (CPR):    0.209ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.844     5.694    clk100
+    SLICE_X78Y32         FDPE                                         r  joint_core_reset_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X78Y32         FDPE (Prop_fdpe_C_Q)         0.518     6.212 f  joint_core_reset_reg[3]/Q
+                         net (fo=13782, routed)      13.003    19.215    system_core/receiver/parser/out[0]
+    SLICE_X15Y77         LUT2 (Prop_lut2_I0_O)        0.124    19.339 r  system_core/receiver/parser/inner_header[4][7]_i_2/O
+                         net (fo=87, routed)          4.261    23.600    system_core/receiver/parser/inner_header[4][7]_i_2_n_0
+    SLICE_X6Y46          LUT3 (Prop_lut3_I2_O)        0.124    23.724 f  system_core/receiver/parser/hud_header[59][7]_i_3/O
+                         net (fo=2, routed)           0.570    24.294    system_core/receiver/parser/hud_header[59][7]_i_3_n_0
+    SLICE_X6Y45          LUT6 (Prop_lut6_I0_O)        0.124    24.418 r  system_core/receiver/parser/hud_header[91][7]_i_2/O
+                         net (fo=2, routed)           0.299    24.716    system_core/receiver/parser/hud_header[91][7]_i_2_n_0
+    SLICE_X6Y45          LUT3 (Prop_lut3_I0_O)        0.124    24.840 r  system_core/receiver/parser/hud_header[27][7]_i_1/O
+                         net (fo=8, routed)           1.536    26.376    system_core/receiver/parser/hud_header[27][7]_i_1_n_0
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][6]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.675    15.332    system_core/receiver/parser/clk100
+    SLICE_X46Y44         FDRE                                         r  system_core/receiver/parser/hud_header_reg[27][6]/C
+                         clock pessimism              0.209    15.541    
+                         clock uncertainty           -0.047    15.493    
+    SLICE_X46Y44         FDRE (Setup_fdre_C_CE)      -0.169    15.324    system_core/receiver/parser/hud_header_reg[27][6]
+  -------------------------------------------------------------------
+                         required time                         15.324    
+                         arrival time                         -26.376    
+  -------------------------------------------------------------------
+                         slack                                -11.052    
+
+Slack (VIOLATED) :        -10.971ns  (required time - arrival time)
+  Source:                 control_plane/staging/bytes_reg_0_0/CLKBWRCLK
+                            (rising edge-triggered cell RAMB36E1 clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            system_core/receiver/parser/hud_header_reg[85][0]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        20.654ns  (logic 2.197ns (10.637%)  route 18.457ns (89.363%))
+  Logic Levels:           7  (LUT2=1 LUT5=3 LUT6=2 RAMB36E1=1)
+  Clock Path Skew:        -0.064ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.417ns = ( 15.417 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.690ns
+    Clock Pessimism Removal (CPR):    0.209ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.841     5.690    control_plane/staging/clk100
+    RAMB36_X1Y7          RAMB36E1                                     r  control_plane/staging/bytes_reg_0_0/CLKBWRCLK
+  -------------------------------------------------------------------    -------------------
+    RAMB36_X1Y7          RAMB36E1 (Prop_ramb36e1_CLKBWRCLK_CASCADEOUTB)
+                                                      1.028     6.718 r  control_plane/staging/bytes_reg_0_0/CASCADEOUTB
+                         net (fo=1, routed)           0.065     6.784    control_plane/staging/bytes_reg_0_0_n_1
+    RAMB36_X1Y8          RAMB36E1 (Prop_ramb36e1_CASCADEINB_DOBDO[0])
+                                                      0.425     7.209 f  control_plane/staging/bytes_reg_1_0/DOBDO[0]
+                         net (fo=295, routed)         9.361    16.570    control_plane/staging/memory_q[0]
+    SLICE_X15Y76         LUT5 (Prop_lut5_I3_O)        0.124    16.694 r  control_plane/staging/metadata_plane_blocks[1][5]_i_1/O
+                         net (fo=5, routed)           0.890    17.583    system_core/receiver/parser/p_4_out[0]
+    SLICE_X14Y77         LUT5 (Prop_lut5_I4_O)        0.124    17.707 f  system_core/receiver/parser/metadata_plane_dispatch[0][2]_i_6/O
+                         net (fo=4, routed)           0.466    18.174    system_core/receiver/parser/metadata_plane_dispatch[0][2]_i_6_n_0
+    SLICE_X12Y76         LUT5 (Prop_lut5_I4_O)        0.124    18.298 f  system_core/receiver/parser/state[2]_i_6__0/O
+                         net (fo=1, routed)           0.655    18.953    system_core/receiver/parser/state[2]_i_6__0_n_0
+    SLICE_X13Y76         LUT6 (Prop_lut6_I0_O)        0.124    19.077 r  system_core/receiver/parser/state[2]_i_2__1/O
+                         net (fo=10, routed)          0.597    19.674    system_core/receiver/parser/state[2]_i_2__1_n_0
+    SLICE_X14Y69         LUT2 (Prop_lut2_I1_O)        0.124    19.798 r  system_core/receiver/parser/inner_header[4][7]_i_3/O
+                         net (fo=174, routed)         5.649    25.447    system_core/receiver/parser/inner_header[4][7]_i_3_n_0
+    SLICE_X3Y37          LUT6 (Prop_lut6_I0_O)        0.124    25.571 r  system_core/receiver/parser/hud_header[85][7]_i_1/O
+                         net (fo=8, routed)           0.774    26.344    system_core/receiver/parser/hud_header[85][7]_i_1_n_0
+    SLICE_X0Y32          FDRE                                         r  system_core/receiver/parser/hud_header_reg[85][0]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.760    15.417    system_core/receiver/parser/clk100
+    SLICE_X0Y32          FDRE                                         r  system_core/receiver/parser/hud_header_reg[85][0]/C
+                         clock pessimism              0.209    15.626    
+                         clock uncertainty           -0.047    15.578    
+    SLICE_X0Y32          FDRE (Setup_fdre_C_CE)      -0.205    15.373    system_core/receiver/parser/hud_header_reg[85][0]
+  -------------------------------------------------------------------
+                         required time                         15.373    
+                         arrival time                         -26.344    
+  -------------------------------------------------------------------
+                         slack                                -10.971    
+
+Slack (VIOLATED) :        -10.971ns  (required time - arrival time)
+  Source:                 control_plane/staging/bytes_reg_0_0/CLKBWRCLK
+                            (rising edge-triggered cell RAMB36E1 clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            system_core/receiver/parser/hud_header_reg[85][4]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        20.654ns  (logic 2.197ns (10.637%)  route 18.457ns (89.363%))
+  Logic Levels:           7  (LUT2=1 LUT5=3 LUT6=2 RAMB36E1=1)
+  Clock Path Skew:        -0.064ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.417ns = ( 15.417 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.690ns
+    Clock Pessimism Removal (CPR):    0.209ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=27749, routed)       1.841     5.690    control_plane/staging/clk100
+    RAMB36_X1Y7          RAMB36E1                                     r  control_plane/staging/bytes_reg_0_0/CLKBWRCLK
+  -------------------------------------------------------------------    -------------------
+    RAMB36_X1Y7          RAMB36E1 (Prop_ramb36e1_CLKBWRCLK_CASCADEOUTB)
+                                                      1.028     6.718 r  control_plane/staging/bytes_reg_0_0/CASCADEOUTB
+                         net (fo=1, routed)           0.065     6.784    control_plane/staging/bytes_reg_0_0_n_1
+    RAMB36_X1Y8          RAMB36E1 (Prop_ramb36e1_CASCADEINB_DOBDO[0])
+                                                      0.425     7.209 f  control_plane/staging/bytes_reg_1_0/DOBDO[0]
+                         net (fo=295, routed)         9.361    16.570    control_plane/staging/memory_q[0]
+    SLICE_X15Y76         LUT5 (Prop_lut5_I3_O)        0.124    16.694 r  control_plane/staging/metadata_plane_blocks[1][5]_i_1/O
+                         net (fo=5, routed)           0.890    17.583    system_core/receiver/parser/p_4_out[0]
+    SLICE_X14Y77         LUT5 (Prop_lut5_I4_O)        0.124    17.707 f  system_core/receiver/parser/metadata_plane_dispatch[0][2]_i_6/O
+                         net (fo=4, routed)           0.466    18.174    system_core/receiver/parser/metadata_plane_dispatch[0][2]_i_6_n_0
+    SLICE_X12Y76         LUT5 (Prop_lut5_I4_O)        0.124    18.298 f  system_core/receiver/parser/state[2]_i_6__0/O
+                         net (fo=1, routed)           0.655    18.953    system_core/receiver/parser/state[2]_i_6__0_n_0
+    SLICE_X13Y76         LUT6 (Prop_lut6_I0_O)        0.124    19.077 r  system_core/receiver/parser/state[2]_i_2__1/O
+                         net (fo=10, routed)          0.597    19.674    system_core/receiver/parser/state[2]_i_2__1_n_0
+    SLICE_X14Y69         LUT2 (Prop_lut2_I1_O)        0.124    19.798 r  system_core/receiver/parser/inner_header[4][7]_i_3/O
+                         net (fo=174, routed)         5.649    25.447    system_core/receiver/parser/inner_header[4][7]_i_3_n_0
+    SLICE_X3Y37          LUT6 (Prop_lut6_I0_O)        0.124    25.571 r  system_core/receiver/parser/hud_header[85][7]_i_1/O
+                         net (fo=8, routed)           0.774    26.344    system_core/receiver/parser/hud_header[85][7]_i_1_n_0
+    SLICE_X0Y32          FDRE                                         r  system_core/receiver/parser/hud_header_reg[85][4]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=6, routed)           0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=27749, routed)       1.760    15.417    system_core/receiver/parser/clk100
+    SLICE_X0Y32          FDRE                                         r  system_core/receiver/parser/hud_header_reg[85][4]/C
+                         clock pessimism              0.209    15.626    
+                         clock uncertainty           -0.047    15.578    
+    SLICE_X0Y32          FDRE (Setup_fdre_C_CE)      -0.205    15.373    system_core/receiver/parser/hud_header_reg[85][4]
+  -------------------------------------------------------------------
+                         required time                         15.373    
+                         arrival time                         -26.344    
+  -------------------------------------------------------------------
+                         slack                                -10.971    
+
+
+
+
