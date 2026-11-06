@@ -370,6 +370,14 @@ model pass. This is implementation evidence, not a new literature finding,
 compression-quality win or hardware frame-rate result. Next make staging ports
 synchronous, then integrate the full reconstruction/validation path.
 
+[V91h](../cu66-v91h/README.md) replaces zero-latency packet-array assumptions
+with a static registered byte-read port, preserving exact bytes/coefficient
+output and rejection behavior. The measured actual-packet cost is +0.1000%
+FAST and +0.0865–0.0921% SLOW versus V91g2. Two seeds, separate static controls,
+byte/purpose accounting and cancellation/held-output tests pass. This qualifies
+functional port semantics, not inferred BRAM, routed timing or hardware frame
+rate; outer-frame and full reconstruction/validation integration remain next.
+
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
 

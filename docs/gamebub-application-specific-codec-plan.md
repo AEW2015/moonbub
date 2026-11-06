@@ -2,18 +2,31 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+[V91h](cu66-v91h/README.md) qualifies **explicit synchronous packet-staging
+RAM ports**. The static registered-read implementation preserves every packed
+byte and dense coefficient with **0.1000% FAST and 0.0865–0.0921% SLOW added
+actual-packet cycles** versus V91g2. This is a functional RAM-port promotion,
+not a speedup or proven BRAM mapping. Two seeds pass separate static binaries,
+720 exact legacy control metric values, 56 synchronous integrated checks
+(including nine staging groups), 47 legacy checks and nine standalone checks per
+seed. The independent Python port model and exact per-byte/purpose accounting
+are retained. The slowest tested SLOW coefficient sum is 990,859 cycles;
+complete validated latency and achieved clock remain unqualified. **Next is
+V91i outer-frame descriptors, modes, quantizers and admission**, then V91j–m
+actual pixel/reconstruction/validation integration. Hardware 30 fps and complete
+validated decoding under 10 ms remain open.
+
 [V91g2](cu66-v91g2/README.md) completes the bounded coded tile-preparation/
 delivery overlap part of V91g. Two tile banks reduce actual-packet coefficient
 service cycles **16.08% FAST and 16.30–16.31% SLOW** relative to V91g prefetch.
 Both seeds preserve exact output, all 720 disabled-control metric values and RAW
 scheduling in both modes. Each seed passes 47 integrated recovery checks plus
 nine standalone checks; independent Python bank ownership and RTL audits are
-retained. The slowest tested three-plane SLOW coefficient sum is now 990,205
-cycles. That is not validated 10-ms decoding: achieved clock and the complete
-pixel/reference/HUD/hash/publication path remain unqualified. **Next is V91h
-explicit synchronous packet-staging RAM ports**, followed by V91i–m full-frame
-integration. Hardware 30 fps and complete validated decoding under 10 ms remain
-open.
+retained. At that checkpoint, the slowest tested three-plane SLOW coefficient
+sum was 990,205 cycles. That is not validated 10-ms decoding: achieved clock and the complete
+pixel/reference/HUD/hash/publication path remain unqualified. V91h above
+qualifies synchronous staging; V91i–m full-frame integration follows. Hardware
+30 fps and complete validated decoding under 10 ms remain open.
 
 [V91g](cu66-v91g/README.md) qualifies the **bounded needed-line read-prefetch
 part** of its checkpoint: actual-packet coefficient service uses **0.94% fewer
@@ -22,10 +35,9 @@ dense output and all 720 disabled-control metric values; 36 integrated checks
 per seed include eight read-prefetch recovery/hold tests. An independent Python
 ownership reference covers bounded cache/ACK/output-hold events. Prefetch reuses
 the four existing cache payloads and retains one accepted physical request.
-V91g2 above qualifies the remaining next-tile merge overlap; the next step is
-synchronous staging ports before complete-frame integration. These are
-coefficient-processing results, not hardware 30 fps or complete validated decode
-latency.
+V91g2 and V91h above qualify next-tile merge and synchronous staging. Complete-
+frame integration follows. These are coefficient-processing results, not hardware
+30 fps or complete validated decode latency.
 
 [V91f](cu66-v91f/README.md) now qualifies bounded physical-write overlap for
 the coefficient endpoint: **6.79–6.80% fewer actual-packet service cycles** in
@@ -37,7 +49,7 @@ Python ownership reference checks bounded event sequences. Only one physical
 request can be accepted at a time and two line owners are allowed. This is
 scheduling progress with unchanged wire/quality, not hardware throughput proof.
 V91g and V91g2 above qualify needed-line reads and next-tile merge overlap;
-synchronous ports and complete-frame consumers/publication follow.
+V91h now qualifies synchronous ports; complete-frame consumers/publication follow.
 
 [V91e](cu66-v91e/README.md) now reconciles all active cycles and event fences
 without changing V91d behavior. Both seeds exactly match all nine legacy metrics
@@ -59,8 +71,9 @@ hash integration, hardware 30 fps and complete <10-ms decoding remain open.
 [V91c](cu66-v91c/README.md) established complete BR88 chunk bytes/CRC and
 autonomously runs DC/AC/raw in RTL. A separate Python packed-scratch prototype
 matches every coefficient and reduces corpus peak storage from 658,432 B to
-134,352 B. V91d above implements that store and metadata/credit handshakes. The
-packet staging array's combinational reads still need physical port scheduling.
+134,352 B. V91d above implements that store and metadata/credit handshakes.
+V91h above replaces the packet staging array's combinational reads with explicit
+synchronous ports; physical mapping is still unqualified.
 V92 selection and the V100–V110 physical phase retain their planned scope.
 
 The preceding controls remain frozen. [V91](cu66-v91/README.md) qualifies the

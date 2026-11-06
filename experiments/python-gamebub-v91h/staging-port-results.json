@@ -1,0 +1,182 @@
+{
+  "schema": "cu66-v91h-staging-port-model-v1",
+  "scope": "abstract registered staging-port semantics only; not RTL proof, cycle equivalence, codec correctness, BRAM inference, fit, timing, or hardware evidence",
+  "source": "experiments/python-gamebub-v91h/staging-port-model.py",
+  "source_sha256": "b516a6765032f00c4ad5e3c26cf29a82d705789f6c3d76b1c8bea38276f537b8",
+  "bounds": {
+    "staging_bytes": 192,
+    "header_cache_bytes": 46,
+    "header_bytes": 42,
+    "crc_bytes": 4,
+    "descriptor_bytes": 6,
+    "descriptor_tail_bytes": 1,
+    "replay_word_bytes": 4,
+    "raw_pair_bytes": 2,
+    "blocks": 1,
+    "registered_read_latency_edges": 1,
+    "read_ports": 1,
+    "write_ports": 1
+  },
+  "buffer_highwater": {
+    "staging_address": 173,
+    "header_crc_cache_bytes": 46,
+    "descriptor_and_tail_bytes": 7,
+    "replay_bytes": 4,
+    "raw_pair_bytes": 2
+  },
+  "requested_scenarios": 9,
+  "actual_scenarios": 9,
+  "directed_checks_requested": 6,
+  "directed_checks_actual": 6,
+  "restarts_requested": 1,
+  "restarts_actual": 1,
+  "seed": 910438,
+  "randomized_stall_policy": {
+    "receive_ready_probability": 0.82,
+    "consumer_ready_probability": 0.65,
+    "fixed_read_stall_edges": "per-vector deterministic lists"
+  },
+  "requested_event_types": [
+    "receive_accept",
+    "receive_hold",
+    "header_crc_validated_after_receive",
+    "full_receive_before_any_staging_read",
+    "descriptor6_read",
+    "descriptor_tail_read",
+    "replay_word_assembly",
+    "partial_replay_word",
+    "raw_pair_assembly",
+    "consumer_hold",
+    "packet_memory_immutable",
+    "epoch_cancelled_pending_response",
+    "epoch_stale_response_ignored",
+    "registered_request_edge_snapshot",
+    "held_output_stable_during_next_fetch",
+    "read_write_overlap_excluded",
+    "restart_after_epoch_cancel"
+  ],
+  "actual_event_coverage": {
+    "consumer_accept": 73,
+    "consumer_hold": 41,
+    "descriptor6_read": 32,
+    "descriptor_tail_read": 32,
+    "epoch_cancelled_pending_response": 1,
+    "epoch_stale_response_ignored": 1,
+    "full_receive_before_any_staging_read": 9,
+    "header_crc_validated_after_receive": 9,
+    "held_output_stable_during_next_fetch": 1,
+    "packet_memory_immutable": 9,
+    "partial_replay_word": 4,
+    "raw_pair_assembly": 64,
+    "read_write_overlap_excluded": 1,
+    "receive_accept": 759,
+    "receive_hold": 169,
+    "registered_request_edge_snapshot": 1,
+    "replay_word_assembly": 9,
+    "reset_abort_over_start_priority": 1,
+    "restart_after_epoch_cancel": 1,
+    "zero_replay_bits": 1
+  },
+  "staging_port_event_counts": {
+    "read_requests": 791,
+    "read_responses": 791,
+    "receive_writes": 759
+  },
+  "vectors": [
+    {
+      "kind": "coded",
+      "replay_bits": 0,
+      "packet_bytes": 70,
+      "receive_edges": 80,
+      "read_edges": 151,
+      "read_accepts": 74,
+      "read_responses": 74,
+      "outputs": 0
+    },
+    {
+      "kind": "coded",
+      "replay_bits": 1,
+      "packet_bytes": 71,
+      "receive_edges": 82,
+      "read_edges": 153,
+      "read_accepts": 75,
+      "read_responses": 75,
+      "outputs": 1
+    },
+    {
+      "kind": "coded",
+      "replay_bits": 7,
+      "packet_bytes": 71,
+      "receive_edges": 89,
+      "read_edges": 153,
+      "read_accepts": 75,
+      "read_responses": 75,
+      "outputs": 1
+    },
+    {
+      "kind": "coded",
+      "replay_bits": 9,
+      "packet_bytes": 72,
+      "receive_edges": 89,
+      "read_edges": 155,
+      "read_accepts": 76,
+      "read_responses": 76,
+      "outputs": 1
+    },
+    {
+      "kind": "coded",
+      "replay_bits": 31,
+      "packet_bytes": 74,
+      "receive_edges": 98,
+      "read_edges": 160,
+      "read_accepts": 78,
+      "read_responses": 78,
+      "outputs": 1
+    },
+    {
+      "kind": "coded",
+      "replay_bits": 32,
+      "packet_bytes": 74,
+      "receive_edges": 91,
+      "read_edges": 160,
+      "read_accepts": 78,
+      "read_responses": 78,
+      "outputs": 1
+    },
+    {
+      "kind": "coded",
+      "replay_bits": 33,
+      "packet_bytes": 75,
+      "receive_edges": 95,
+      "read_edges": 162,
+      "read_accepts": 79,
+      "read_responses": 79,
+      "outputs": 2
+    },
+    {
+      "kind": "coded",
+      "replay_bits": 63,
+      "packet_bytes": 78,
+      "receive_edges": 95,
+      "read_edges": 168,
+      "read_accepts": 82,
+      "read_responses": 82,
+      "outputs": 2
+    },
+    {
+      "kind": "raw",
+      "packet_bytes": 174,
+      "receive_edges": 209,
+      "read_edges": 353,
+      "read_accepts": 174,
+      "read_responses": 174,
+      "outputs": 64
+    }
+  ],
+  "limitations": [
+    "Packet construction and validation cover only the selected BR88 header/CRC/descriptor staging subset.",
+    "Replay bits and RAW words use independent byte slicing/indexing oracles; context coefficient decoding is not modeled.",
+    "The outer packed-store external bus, its physical request retention, and concurrent tile-store hazards are outside this model.",
+    "Simulated read latency is one edge by construction; the model does not establish a Vivado RAM primitive or physical latency."
+  ]
+}
