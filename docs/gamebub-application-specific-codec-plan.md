@@ -2,6 +2,26 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+[V91k](cu66-v91k/README.md) connects the actual BR88 frame path through
+accepted-reference prediction, COPY/hidden CONST128, signed residual addition
+and clamping to complete canonical Y/Cb/Cr candidate memory. Separate RGB565
+RTL reads those **actual committed candidate bytes**, with native interpolation
+and conversion checked against independent source-backed goldens. This is an
+explicit memory-replay join, not a monolithic shared controller. Per seed,
+12 successful rows compare 6,220,800 canonical bytes and 4,147,200 base RGB565
+words; provisional late-CRC prefixes are checked separately. Six inputs include
+four related native frames and two labeled synthetic cases. New reference and
+candidate-memory service is charged; accepted read owners survive warm reset
+and cancellation until matching ACK drain. No encoding or quantization changes.
+
+The uncached converter costs 3,110,400 external byte reads per frame. Next
+qualify a **1,440-byte two-row chroma cache** against this exact control: loading
+each chroma byte once would reduce total reads to 518,400, sixfold fewer. This
+is an architectural read-count target; cached RTL performance is not yet
+measured. Proceed directly to **V91l HUD/content validation and atomic
+publication**, then complete finite transport/memory/display integration at
+V91m. Hardware 30 fps and complete validated decoding under 10 ms remain open.
+
 [V91i2b](cu66-v91i2b/README.md) qualifies bounded registered-read refill
 overlap with **5.1656% fewer FAST native-frame coefficient cycles** and
 **4.2342–4.2450% fewer SLOW cycles** under the stated seeded service rules.
@@ -13,9 +33,9 @@ wire bytes, quantization and the 98,304-byte packet staging budget are unchanged
 [V91j](cu66-v91j/README.md) now connects the actual BR88 frame path through
 two bounded coefficient banks to the unchanged RTL dequantizer and two-pass
 Q14 IDCT. Exact Python goldens qualify signed, unclipped residuals, including
-quantizer placement, metadata, stalls and cancellation. **Next is V91k directly:**
-accepted-reference prediction, COPY/constant handling, reconstruction and output
-conversion. AB38, HUD/content validation and atomic publication remain open.
+quantizer placement, metadata, stalls and cancellation. V91k above adds accepted-reference prediction, COPY/constant handling,
+reconstruction and base RGB565 conversion through actual candidate-memory
+replay. AB38, HUD/content validation and atomic publication remain open.
 Hardware 30 fps and complete validated decoding under 10 ms remain open.
 
 [V91i2a](cu66-v91i2/README.md) connects **actual all-BR88 CS88 frames to the

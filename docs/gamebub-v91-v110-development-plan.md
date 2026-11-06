@@ -23,9 +23,10 @@ its V91g2 two-bank preparation/delivery follow-up also pass. V91h synchronous
 packet-staging ports, V91i1 restricted CS88 structural admission, V91i2a
 all-BR88 residual dispatch/placement and V91i2b bounded refill overlap pass
 functionally. V91j now passes actual dequantization/Q14 IDCT integration;
-V91k reconstruction is the direct next milestone.** Mixed entropy,
-complete transactions and the remaining pixel/validation path stay open, but
-are not extra V91i prerequisites for starting transforms on the BR88 subset.
+V91k canonical reconstruction and base RGB565 memory replay now pass;
+V91l validation/publication is the direct next milestone.** Mixed entropy,
+complete transactions, HUD/content validation and the monolithic memory/display
+join stay open; they do not require additional V91i subcheckpoints.
 The original unlettered V91 and published V91b/V91c/V91d retain their names.
 No historical V91a release is implied.
 
@@ -67,7 +68,7 @@ list the selected features and deferred experiments.
 | **V91h** | **Passed functionally:** compile-time synchronous staging with one byte receive-write port, one registered byte-read port and bounded gather/held-word registers. | [Two-seed evidence](cu66-v91h/README.md): exact bytes/coefficient and legacy parity, 56 synchronous / 47 legacy integrated checks plus nine standalone checks per seed. Actual-packet cycle cost +0.1000% FAST / +0.0865–0.0921% SLOW; no speedup claim. Header/descriptor/padding, RAW, held sparse output and canceled pending reads pass. RAM inference/fit/clock remain V100–V110 work. |
 | **V91i** | **Admission, BR88 dispatch/placement and bounded refill overlap passed for the documented subset.** Preserve provisional mode/scales, exact dense tuples and real child ACK ownership. Mixed entropy and complete transaction integration remain open alongside later consumers. | [V91i2b evidence](cu66-v91i2b/README.md): two static configurations per seed, exact V91i2a disabled control, unchanged coefficients and 5.1656% FAST / 4.2342–4.2450% SLOW native-cycle reductions under the defined service rules. No further V91i subcheckpoint is required before V91j. |
 | **V91j — passed for BR88 residuals** | [Actual frame-to-residual integration](cu66-v91j/README.md): two bounded coefficient banks feed the unchanged V69 dequantizer and Q14 IDCT with frame/child/position ownership. | Independent exact signed20 DQ and signed24 residual goldens; two strict seeds, FAST/SLOW service, 48 boundary cases and active-math cancellation. Completion waits for the last accepted residual. No software transform substitutes for RTL; pixels/publication remain later gates. |
-| **V91k** | Connect reconstruction, accepted references, COPY/constant handling, hidden-pixel normalization and output conversion. | Full canonical/reference and intended visible RGB565 pixels match. Reference/scanout ownership prevents overwrite; all memory service is charged. |
+| **V91k — passed for the BR88 base path** | [Canonical reconstruction and base RGB565 replay](cu66-v91k/README.md): actual modes/residuals, leased accepted references, COPY/hidden CONST128, add/clamp and native color conversion. | Two strict seeds, 12 complete successful rows each, exact source-backed canonical/base RGB565 bytes, finite reference/write/read service, abort/reset/owner drain and retries. The RGB consumer replays actual canonical memory from a separate RTL simulation; a monolithic controller, HUD and publication remain later gates. |
 | **V91l** | Integrate HUD/content validation, frame hashes/seals and atomic validated publication. | Late errors never publish a partial frame or corrupt accepted references. Full publication fence, rollback/retry and held-scanout behavior are checked. |
 | **V91m** | Run the complete functional frame path with finite transport, memory and display-consumer service models at 30-Hz source releases. | No hidden software pixel/HUD/publication endpoint in a claimed full-RTL pass; exact full frames, bounded queues, recovery and complete latency distributions. Simulation is still distinct from hardware 30 fps. |
 
@@ -101,15 +102,24 @@ V91i is divided into three reviewable integration gates:
   scanout ownership. Integrate the consumers in V91j–l before claiming complete
   frame acceptance. Unsupported native profiles remain explicit rejections.
 
-**V91j closes the transform milestone; proceed directly to V91k.** The
-[current integration evidence](cu66-v91j/README.md) checks real coefficient
-assembly, real dequantizer output and real Q14 IDCT residuals against independent
-Python goldens. Two 64×16-bit coefficient banks add 256 logical payload bytes,
-plus existing math workspace and control; this is not a mapped-fit result.
-V91k must consume provisional modes/scales and accepted references, implement
-COPY/constant and residual reconstruction, and measure actual memory service.
-V91l then commits only fully validated frames. No additional V91i nesting is
-needed, and no coefficient/residual endpoint may be labeled full decoding.
+**V91k closes canonical reconstruction/base conversion; proceed to V91l.**
+[V91j](cu66-v91j/README.md) retains exact transform qualification.
+[V91k](cu66-v91k/README.md) adds real admitted modes and accepted-reference
+reads, full canonical candidate writes and separate RTL conversion from those
+actual memory bytes. Base RGB565 excludes HUD. No additional V91i nesting is
+needed; neither endpoint validates or publishes frames. V91l must verify
+canonical/HUD content roots and seals before atomic accepted-reference and
+publication commit; V91m joins the full finite-service workload.
+
+The measured uncached RGB control performs 3,110,400 acknowledged byte reads
+per frame. Before declaring the 30-Hz service gate, implement and compare a
+1,440-byte two-row chroma cache: 345,600 Y + 172,800 unique Cb/Cr bytes would
+reduce external reads sixfold to 518,400. Bank row/parity data for synchronous
+7-series ports, preserve the two interpolation rounding points and edge
+replication, and invalidate row tags without releasing an accepted pending
+fill owner on reset/cancel. Qualify exact disabled/control output, all service
+costs and cancellation before claiming any cycle reduction. This is a bounded
+memory-scheduling optimization, not another prerequisite letter under V91i.
 
 V91f is promoted for functional scheduling under its bounded ownership contract;
 physical resource fit is still unqualified. V91g is promoted only if measured

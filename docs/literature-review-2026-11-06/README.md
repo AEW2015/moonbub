@@ -455,8 +455,22 @@ python3 scripts/literature-review-2026-11-06/derive_comparison.py --check
 integration on actual BR88 frames. Two coefficient banks overlap assembly with
 real dequantization and two-pass Q14 IDCT; independent Python arithmetic checks
 exact signed residuals. This changes neither the wire format nor quantization
-and makes no compression-superiority claim. Next is V91k reconstruction against
-accepted references, followed by HUD/content validation and atomic publication.
+and makes no compression-superiority claim. V91k below adds reconstruction
+against accepted references and base RGB565 conversion; HUD/content validation
+and atomic publication remain later gates.
 Residual completion cycles include actual transform service and must not be
 compared as a speedup against earlier coefficient-only endpoints. Physical
 30 fps, complete validated sub-10-ms decoding and 7-series fit/timing remain open.
+
+
+[V91k](../cu66-v91k/README.md) extends the measured path to actual canonical
+reconstruction and base RGB565 conversion from replayed actual candidate-memory
+writes. Accepted native references and full expected pixels are source-backed;
+all reference reads, candidate writes and converter reads have finite service.
+The uncached converter exposes 3,110,400 acknowledged byte reads/frame as a
+new cost baseline. A two-row, 1,440-byte chroma cache targets 518,400 total
+external reads/frame while preserving exact interpolation and signed rounding;
+this sixfold read-count opportunity is not yet a measured cached-RTL speedup.
+No representation/quality or HEVC/AV1 superiority claim follows. Next integrate
+HUD/content checks and atomic publication, then qualify finite full-frame
+service and physical implementation.
