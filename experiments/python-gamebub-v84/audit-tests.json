@@ -1,0 +1,140 @@
+{
+  "schema": "cu66-v84-audit-tests-v1",
+  "checks": [
+    {
+      "name": "valid_two_tile_lifetimes",
+      "result": "accepted_as_expected",
+      "summary": {
+        "stages": {
+          "reference": {
+            "peak_bytes": 64,
+            "peak_slots": 1,
+            "capacity_slots": 1,
+            "bytes_per_slot": 64,
+            "producers": 2
+          },
+          "inverse": {
+            "peak_bytes": 192,
+            "peak_slots": 1,
+            "capacity_slots": 1,
+            "bytes_per_slot": 192,
+            "producers": 2
+          },
+          "coefficient": {
+            "peak_bytes": 128,
+            "peak_slots": 1,
+            "capacity_slots": 1,
+            "bytes_per_slot": 128,
+            "producers": 2
+          }
+        },
+        "output_peak_bytes": 128,
+        "combined_peak_bytes": 512,
+        "conservative_logical_capacity_bytes": 4480,
+        "scope": "Reserved from producer admission through consumer completion; excludes all other decoder/transport state and RAM rounding."
+      }
+    },
+    {
+      "name": "exact_slot_release_boundary",
+      "result": "accepted_as_expected",
+      "summary": {
+        "stages": {
+          "reference": {
+            "peak_bytes": 64,
+            "peak_slots": 1,
+            "capacity_slots": 1,
+            "bytes_per_slot": 64,
+            "producers": 2
+          },
+          "inverse": {
+            "peak_bytes": 192,
+            "peak_slots": 1,
+            "capacity_slots": 1,
+            "bytes_per_slot": 192,
+            "producers": 2
+          },
+          "coefficient": {
+            "peak_bytes": 128,
+            "peak_slots": 1,
+            "capacity_slots": 1,
+            "bytes_per_slot": 128,
+            "producers": 2
+          }
+        },
+        "output_peak_bytes": 128,
+        "combined_peak_bytes": 512,
+        "conservative_logical_capacity_bytes": 4480,
+        "scope": "Reserved from producer admission through consumer completion; excludes all other decoder/transport state and RAM rounding."
+      }
+    },
+    {
+      "name": "hidden_inverse_skip_proper",
+      "result": "accepted_as_expected",
+      "summary": {
+        "stages": {
+          "reference": {
+            "peak_bytes": 64,
+            "peak_slots": 1,
+            "capacity_slots": 1,
+            "bytes_per_slot": 64,
+            "producers": 2
+          },
+          "inverse": {
+            "peak_bytes": 192,
+            "peak_slots": 1,
+            "capacity_slots": 1,
+            "bytes_per_slot": 192,
+            "producers": 1
+          },
+          "coefficient": {
+            "peak_bytes": 128,
+            "peak_slots": 1,
+            "capacity_slots": 1,
+            "bytes_per_slot": 128,
+            "producers": 2
+          }
+        },
+        "output_peak_bytes": 128,
+        "combined_peak_bytes": 512,
+        "conservative_logical_capacity_bytes": 4480,
+        "scope": "Reserved from producer admission through consumer completion; excludes all other decoder/transport state and RAM rounding."
+      }
+    },
+    {
+      "name": "negative_capacity_oversubscription",
+      "result": "rejected_as_expected",
+      "reason": "('reference', 128, 64)"
+    },
+    {
+      "name": "missing_entropy_to_map_fence",
+      "result": "rejected_as_expected",
+      "reason": "AssertionError"
+    },
+    {
+      "name": "missing_sequential_entropy_edge",
+      "result": "rejected_as_expected",
+      "reason": "AssertionError"
+    },
+    {
+      "name": "missing_group_start_dependency",
+      "result": "rejected_as_expected",
+      "reason": "AssertionError"
+    },
+    {
+      "name": "missing_credit_reuse_edge",
+      "result": "rejected_as_expected",
+      "reason": "('coefficient', 'credit reuse')"
+    },
+    {
+      "name": "premature_final_fence",
+      "result": "rejected_as_expected",
+      "reason": "AssertionError"
+    }
+  ],
+  "passed": 9,
+  "failed": 0,
+  "source_sha256": {
+    "experiments/python-gamebub-v84/audit.py": "b8d900076fb6b01087dbecdf3dfadb67f7f9a74d82f91a33869e6de57f44319c",
+    "scripts/cu66-v84/test_audit.py": "1fdfc53c69bfa45f18c4ee4b4f889f1e6d723dbd111a4523bdfe7189ebbe950d"
+  }
+}
