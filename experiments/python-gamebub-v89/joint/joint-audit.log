@@ -1,0 +1,17 @@
+V89 joint row accounting audit
+
+Command: python3 scripts/cu66-v89/audit_joint.py
+Observed exit code: 0
+Observed stdout: V89_JOINT_ACCOUNTING_AUDIT_PASS rows=64 native_packets=64 summary_groups=16
+Observed stderr: (empty)
+
+The independent check verified 33 source pins, the 64 unique rows covering four
+sources × four policies × LOW/HIGH × alias/no-alias, and packet SHA-256 and byte
+counts against the selected V88 native wire rows. It recomputed min/median/max,
+totals and under-10-ms counts for all 16 four-row groups. Same-source paired
+comparisons against AB38_control show feedback_overhead5 regressed in 14/16
+comparisons (median +582 cycles; total +8,321 cycles), while feedback_overhead15
+regressed in 10/16 (median +504 cycles; total -1,004,399 cycles). all_BR88 also
+has six regressions despite improving overall. Thus latency benefit depends on
+the policy and source. These are modeled schedule comparisons, not hardware
+qualification; the separate stored-DAG audit covers schedule structure.
