@@ -336,6 +336,12 @@ coefficient-endpoint cycles 34.43%/27.10% in two explicit memory scenarios.
 This is application-specific implementation evidence; external-memory overlap,
 the pixel/reference/HUD/hash path and physical timing remain open.
 
+[V91e](../cu66-v91e/README.md) supplies per-stage/event observability, exact
+legacy metric parity and broader peak-memory coverage. In its explicit slower
+scenario, dense delivery/consumer hold dominates ACK waits; both memory and tile
+service need attention. This is measured coefficient-endpoint occupancy, not
+a new literature result, a scheduling speedup or validated full-frame latency.
+
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
 

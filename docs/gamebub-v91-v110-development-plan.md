@@ -17,8 +17,9 @@ can be compared against a stable function and workload.
 
 ## Lettered execution path from V91d
 
-This section is the concrete next-work sequence. **V91d is the latest completed
-checkpoint; every label below is planned.** The original unlettered V91 and
+This section is the concrete next-work sequence. **V91e observability now passes
+for the implemented coefficient endpoint; V91f onward remains planned.** V91d
+is the last scheduling/architecture change. The original unlettered V91 and
 published V91b/V91c/V91d retain their names. No historical V91a release is implied.
 
 Letters identify separately reviewable deliverables within a numbered work
@@ -53,7 +54,7 @@ list the selected features and deferred experiments.
 
 | Checkpoint | Concrete deliverable | Promotion gate |
 |---|---|---|
-| **V91e** | Add stage/stall/queue counters, source/frame/chunk identities and common timestamp fences. Expand golden workloads and identify worst cases. | Reconcile all service cycles and memory transactions; distinguish first-byte→publication, packet-complete→validated-publication and per-stage work. No coefficient-only fence described as full decode. |
+| **V91e** | **Passed for current coefficient endpoint:** stage/stall/queue counters, source/frame/chunk identities, timestamp definitions and expanded worst-case goldens. | All cycles/transactions reconcile and legacy metrics are unchanged. Current coefficient fences are measured; future full-frame first-byte/publication and packet-complete/validated-publication fences are defined but unset. |
 | **V91f** | Overlap a bounded pair of write-assembler buffers with acknowledged memory service. Initially retain one accepted outstanding request. | Exact packed images; measurable stall reduction; no overwrite or new bank reuse before old ACK drain, including error/start races. |
 | **V91g** | Prefetch bounded read lines and overlap next-tile preparation with current-tile delivery. | Exact dense output under consumer stalls; cache/queue occupancy and port costs explicit. Additional outstanding requests require a defined ordering/tag and cancellation contract. |
 | **V91h** | Replace combinational multi-address packet staging assumptions with explicit synchronous memory ports and read latency. | Header, unaligned fields, replay, RAW and rejection parity under real port limits. This establishes functional RAM semantics; 7-series mapping/physical optimization remains V100–V110. |
@@ -141,6 +142,13 @@ labels remain pending until their own evidence exists. The detailed product
 gates at the end of this document define the conditions and timestamps.
 
 ## Evidence entering this roadmap
+
+[V91e](cu66-v91e/README.md) adds reconciled instrumentation and the C3/f28
+maximum-memory/sparse-write source, preserving all legacy cycle/traffic metrics.
+Expanded SLOW scratch occupancy is 46.67% dense delivery/consumer hold, 9.76%
+write ACK waits and 10.88% read ACK waits. These counters guide V91f/g; they are
+not a new speedup or full-frame decode result. Three source service sums now
+exceed the one-million-cycle reference budget before remaining pixel stages.
 
 [V91d](cu66-v91d/README.md) joins validated packet metadata/end credits, packed
 scratch RTL, finite acknowledged memory and dense coefficient delivery. Mask

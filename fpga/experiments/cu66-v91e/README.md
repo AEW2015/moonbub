@@ -1,0 +1,31 @@
+# V91e integrated coefficient-pipeline observability
+
+V91e copies the functional V91d packet-to-packed-scratch-to-dense pipeline and adds observation ports, counters and timestamps. The packet ingress remains the unchanged V91d module; the Rice and context parsers remain V91 and V91b. `packed_scratch_v91e` and `br88_pipeline_v91e` retain the V91d scheduling, validation, memory ownership and cancellation rules. V91e has no pixel, IDCT, frame-publication, display, physical-memory, fit or clock result.
+
+The scratch storage is one external 262144-byte bank with acknowledged 16-byte requests, one outstanding request, a 16-byte assembler, four 16-byte caches, three AC heads, one local 64-coefficient tile and a validity mask. The packed format and acceptance rules are described in [V91d](../cu66-v91d/README.md). V91e still compares the entire external image and every dense coefficient against independently generated goldens. Memory service remains FAST ACK after one edge, or SLOW write16/read18 plus address/seed jitter0..3, with finite request, packet-input and dense-output stalls. Accepted writes commit on their delayed ACK, including through cancellation. No physical bandwidth is inferred.
+
+## Edge and event contract
+
+Start is excluded. Every subsequent pre-edge `running` state contributes one edge, including the edge that observes scratch `done` and asserts integrated `done`. Cycle indices start at1; zero timestamps mean the event did not occur. Both packet and scratch histograms independently sum to `count_cycles`. Scratch IDLE before metadata allocation is included. The two histograms describe simultaneous stage occupancy and must not be summed together. Stall flags can overlap each other and state occupancy; they must not be added as if they were disjoint or entirely removable delay.
+
+`ts_first_input` and `ts_last_input` record packet-byte handshakes. `ts_metadata_accept` records allocation handshake. `ts_last_sparse_coef` records the last decoder-to-scratch coefficient handshake; the historical sparse name also includes DC and RAW coefficients. `ts_first_coef_band[4]`, `ts_last_coef_band[4]`, and `ts_band_end[4]` record per-context coefficient and context-end handshakes. Empty AC contexts have coefficient timestamps0 and an end timestamp; RAW uses context0 only.
+
+`ts_packet_done_observed` is the first integrated edge with packet `done` already high. `ts_seal_accepted` is the seal handshake. `ts_scratch_sealed_observed` is the first integrated edge with scratch `sealed` already high. The observed events occur on the edge after the child register assertion. First/last dense timestamps record actual output acceptance. `ts_integrated_done` records the integrated completion edge, equals `count_cycles` on success and follows final dense acceptance. It is a dense-coefficient endpoint, not a frame-publication event.
+
+The harness samples boundary signals before each edge, derives its own event timestamps and histograms, and compares every histogram entry, timestamp, overlapping-stall counter and storage highwater to RTL telemetry. It also checks successful fence order, per-band counts, empty-context timestamp consistency and storage bounds. The reported memory-pending count derives independently from the external bus model and checks the scratch outstanding flag.
+
+## Debug and output schema
+
+Top-level `dbg_*` outputs expose running/allocation/seal ownership, packet done, metadata valid/ready/raw, coefficient valid/ready/band, band-end valid/ready/band and seal valid/ready. Scratch debug outputs directly view existing registers: state/return-state5bits, outstanding1, phase3, assembly bytes5, cache-valid4 and head-valid3. These observations do not register a new pipeline stage or change control behavior.
+
+`packet_state_cycles` index order is IDLE, RECEIVE, HEADER, DESCRIPTOR, CONTEXT_START, CONTEXT_RUN, RAW, FINISHED, FAILED, METADATA, CONTEXT_END, RAW_END; remaining entries are reserved. See the unchanged ingress enumeration for the authoritative mapping. `scratch_state_cycles` index order is IDLE, INGEST, APPEND, NEXT_BAND, WAIT_SEAL, HEADER0, HEADER1, HEADER_DONE, WRITE_REQ, WRITE_WAIT, READ_REQ, READ_WAIT, DESC0, DESC1, CLEAR_TILE, DC_FETCH, DC_EXTRACT, AC_CHECK, AC_FETCH, AC_EXTRACT, EMIT, RAW_FETCH, RAW_EXTRACT, FINISHED, FAILED, DRAIN; entries26..31 are reserved.
+
+Each JSON case row retains V91d metrics and adds `request_service_hash` plus `observability`: state histograms, coefficient/band-end handshake counts by band, per-band event timestamps, `highwaters`, `overlapping_edges` and `timestamps`. The service hash is FNV-1a over ordered request direction/address/service latency and write payload words, each encoded as eight little-endian bytes. Epoch and absolute cycle are excluded so mask/serial-clear memory service traces can be compared. It is a diagnostic checksum, not an independent byte golden or cryptographic identity.
+
+The optional third harness argument writes a separate `tile-events.jsonl` file containing id, serial_clear, memory_profile, block, first_dense and last_dense. Only corpus runs emit rows; directed checks do not. Each tile's first/last timestamp refers to output acceptance. Trace source identities can be joined through the immutable vector id map in the runner's retained evidence.
+
+## Reproduce
+
+Run the V91e runner from the repository root. It snapshots sources and vectors before compilation and retains hashes, strict compile logs, per-case metrics, tile traces and the verdict. The source filenames and module names include `_v91e`, preserving fatal Verilator `-Wall` without disabling DECLFILENAME. C++ uses `-Wall -Wextra -Werror`. The harness also supports compilation with `-DV91E_LEGACY` against original V91d for diagnostic baseline comparison, omitting new RTL telemetry.
+
+The directed sequence retains all11 V91d checks, including the replacement-start/write-error race, delayed accepted-write cancellation, warm reset and final dense backpressure. Every vector runs the four serial-clear×memory-profile configurations; vector count is discovered rather than fixed at17. A seeded cycle-for-cycle comparison of the original17 case rows against frozen V91d receipts checks that observation did not change the coefficient endpoint. Expanded vectors are a separate workload addition, not a performance improvement claim.

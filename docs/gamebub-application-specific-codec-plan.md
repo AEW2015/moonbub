@@ -2,6 +2,14 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+[V91e](cu66-v91e/README.md) now reconciles all active cycles and event fences
+without changing V91d behavior. Both seeds exactly match all nine legacy metrics
+on the original 17 cases, with three C3/f28 stress packets added. In the expanded
+SLOW scenario, dense delivery/consumer hold occupies 46.67%, write ACK wait
+9.76% and read ACK wait 10.88%. Next is V91f bounded write overlap, followed by
+V91g read/tile overlap. Full-frame publication timestamps remain unset; current
+coefficient completion cannot be reported as validated decode latency.
+
 [V91d](cu66-v91d/README.md) connects validated packet metadata to packed scratch
 RTL, acknowledged external memory and dense coefficient output. A validity mask
 removes 63 clear cycles per coded block: actual-packet cycles fall 34.43%/27.10%
