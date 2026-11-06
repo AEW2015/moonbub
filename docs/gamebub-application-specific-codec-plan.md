@@ -2,6 +2,32 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+The [live canonical/write-ACK follow-up](cu66-v91l-live/README.md) joins the
+unchanged supported BR88 parser, entropy decoder, inverse transform and canonical
+reconstruction directly to tagged candidate writes, actual C2/HUD/seal hashing
+and validated publication. It targets the real c0/f0 key → c0/f1 delta chain;
+the delta uses the key's actual accepted memory and captured registered quantizer
+cache. Canonical replay no longer substitutes for the producer in this lane.
+Two strict seeds pass eight validated commits, 8,200 independently checked RTL
+SHA jobs and 4,485,120 reconciled write/ACK/hash deliveries. FAST start-to-commit
+is 3,101,135 cycles for the key and 2,795,859 for the delta; this is not a
+complete software/transport/display latency fence. See its [summary](../experiments/python-gamebub-v91l-live/summary.json) and
+[independent audit](../experiments/python-gamebub-v91l-live/audit.json) for the
+qualified current-source runs, cycle fences and exact coverage.
+
+**V91l remains partial as an all-RTL milestone.** Native C++ HUD semantics and
+start-header preparation precede the RTL fence. RTL HUD decode/overlay, mixed
+entropy or negotiated fallback, shared memory/RGB/display service, actual ESP32
+transport and physical qualification remain open. Component cycles are neither
+sustained hardware 30 fps nor validated under-10-ms decoding.
+
+Next compare bounded **eight-byte tile-row candidate writes** against the frozen
+single-byte ACK control: 64,800 canonical row requests plus 5,280 aligned HUD
+requests are the structural count, each charged four x16 payload transfers and
+controller service. Preserve byte-exact hashing order, rollback and accepted
+burst ownership. These calculated request counts are not measured acceleration;
+qualify the full shared service before promotion.
+
 [V91l's validation partition](cu66-v91l/README.md) now qualifies real RTL C2
 Merkle roots, semantic-HUD hashes, frame seals and atomic three-bank commit/
 presentation. Two strict seeds validate 28 case/profile commits and compare
@@ -9,8 +35,9 @@ presentation. Two strict seeds validate 28 case/profile commits and compare
 producer errors and 54 directed entries per seed preserve accepted state;
 held writes, vblank and scanout drain gate commit/presentation. Actual HU25/HX
 HUD semantic decoding remains native C++, and canonical input is replayed.
-**V91l is partial as an all-RTL milestone:** join the live canonical producer,
-actual write ACKs, HUD semantic decoder/overlay and full memory/display service.
+**The original replay checkpoint remains a historical control.** Its live
+canonical and write-ACK follow-up is linked above; actual HUD semantic decoder/
+overlay and full shared memory/display service remain open.
 Reported RTL cycles exclude CPU HUD decode, fixture I/O and packet CRC parsing.
 
 The [aligned line reader](cu66-v91k-lines/README.md) adds 48 logical payload
@@ -44,8 +71,9 @@ edge frame and late-eviction cancellation; each path checks 9,676,800 RGB565
 words across the combined main/diagnostic campaign. SLOW compares measured
 runs under the same seeded service rules, with different absolute stall traces.
 
-Continue the remaining **V91l live-producer and HUD integration** described
-above, then complete finite transport/memory/display integration at V91m. Further
+Continue the remaining **V91l HUD and shared-service integration** described
+above, using the live producer/write-ACK control, then qualify finite transport/
+memory/display integration at V91m. Further
 memory optimization should compare actual bounded multi-byte reads and local
 lookup overlap against this exact cache control. No physical clock or full
 validated latency follows from converter-only replay. Hardware 30 fps and

@@ -26,8 +26,9 @@ functionally. V91j now passes actual dequantization/Q14 IDCT integration;
 V91k canonical reconstruction and base RGB565 memory replay now pass,
 including the measured registered chroma-row-cache and aligned-line-reader
 comparisons. V91l now qualifies real RTL C2/HUD/seal hashing and atomic bank
-publication with a native C++ HUD endpoint and canonical replay. It remains
-partial until live producer and HUD integration close.** Mixed entropy,
+publication with a native C++ HUD endpoint. Its [live write-ACK follow-up](cu66-v91l-live/README.md)
+connects the actual BR88 reconstruction producer and accepted-bank delta
+reference. It remains partial until HUD and complete shared-service integration close.** Mixed entropy,
 complete transactions, HUD/content validation and the monolithic memory/display
 join stay open; they do not require additional V91i subcheckpoints.
 The original unlettered V91 and published V91b/V91c/V91d retain their names.
@@ -72,7 +73,7 @@ list the selected features and deferred experiments.
 | **V91i** | **Admission, BR88 dispatch/placement and bounded refill overlap passed for the documented subset.** Preserve provisional mode/scales, exact dense tuples and real child ACK ownership. Mixed entropy and complete transaction integration remain open alongside later consumers. | [V91i2b evidence](cu66-v91i2b/README.md): two static configurations per seed, exact V91i2a disabled control, unchanged coefficients and 5.1656% FAST / 4.2342–4.2450% SLOW native-cycle reductions under the defined service rules. No further V91i subcheckpoint is required before V91j. |
 | **V91j — passed for BR88 residuals** | [Actual frame-to-residual integration](cu66-v91j/README.md): two bounded coefficient banks feed the unchanged V69 dequantizer and Q14 IDCT with frame/child/position ownership. | Independent exact signed20 DQ and signed24 residual goldens; two strict seeds, FAST/SLOW service, 48 boundary cases and active-math cancellation. Completion waits for the last accepted residual. No software transform substitutes for RTL; pixels/publication remain later gates. |
 | **V91k — passed for the BR88 base path** | [Canonical reconstruction and base RGB565 replay](cu66-v91k/README.md): actual modes/residuals, leased accepted references, COPY/hidden CONST128, add/clamp and native color conversion. | Two strict seeds, 12 complete successful rows each, exact source-backed canonical/base RGB565 bytes, finite reference/write/read service, abort/reset/owner drain and retries. The RGB consumer replays actual canonical memory from a separate RTL simulation; a monolithic controller, HUD and publication remain later gates. |
-| **V91l — partial; validation partition passed** | [Real C2/HUD/seal RTL and atomic publication](cu66-v91l/README.md), actual native C++ HUD decode, finite candidate-write drain and source-backed canonical replay. | Two strict seeds, 28 committed case/profile rows, all 28,700 hash jobs independently checked, late rollback/identity/retry and held scanout. Full RTL HUD decode/overlay, live canonical/write-ACK join and physical service remain open; this is not a complete all-RTL milestone. |
+| **V91l — partial; live canonical/write-ACK partition** | [Real C2/HUD/seal RTL and atomic publication](cu66-v91l/README.md), followed by the [live BR88 reconstruction and tagged-write join](cu66-v91l-live/README.md). Native C++ HUD decode remains explicit. | Preserve the replay control's 28 committed rows and 28,700 checked hash jobs. The live lane adds two strict seeds, eight validated commits, 8,200 checked RTL SHA jobs and 37 directed entries per seed using actual accepted-bank references and captured RTL quantizer cache, finite write ACKs, rollback and safe presentation; full RTL HUD decode/overlay, shared memory/RGB/display service and physical qualification remain open. |
 | **V91m** | Run the complete functional frame path with finite transport, memory and display-consumer service models at 30-Hz source releases. | No hidden software pixel/HUD/publication endpoint in a claimed full-RTL pass; exact full frames, bounded queues, recovery and complete latency distributions. Simulation is still distinct from hardware 30 fps. |
 
 V91i is divided into three reviewable integration gates:
@@ -137,8 +138,13 @@ service join and local lookup overlap remain separate measurements.
 hash in RTL and atomically commits accepted metadata/bank state only after
 validation and write drain; presentation separately waits for vblank/scanout.
 Its HUD semantic decoding is real native C++ work before the RTL start fence.
-Complete live canonical and physical write-ACK joins, actual HUD decode/overlay
-and intended processor timing/memory are the next functional gates. V91m's
+The [live canonical/write-ACK follow-up](cu66-v91l-live/README.md) now removes
+canonical replay for the c0/f0 → c0/f1 chain, using actual committed bank bytes
+and captured RTL quantizer-cache values for the delta. Actual HUD decode/overlay,
+intended processor timing/memory and shared finite service are the next gates.
+A proposed eight-byte tile-row write coalescer must retain this byte control and
+price real x16 payload/command service; no request-count calculation alone
+qualifies it as a speedup. V91m's
 30-Hz finite-service and the later physical goals remain unproven.
 
 V91f is promoted for functional scheduling under its bounded ownership contract;

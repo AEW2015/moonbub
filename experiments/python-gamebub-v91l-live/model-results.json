@@ -1,0 +1,77 @@
+{
+  "schema": "cu66-v91l-live-python-contract-v1",
+  "status": "PASS_PROTOCOL_MODEL_ONLY",
+  "claim_scope": "Independent abstract protocol model; no RTL, decoder, physical memory, or performance evidence.",
+  "canonical_stream": {
+    "bytes": 518400,
+    "order": "plane, tile, byte-index",
+    "plane_tiles": [
+      5400,
+      1350,
+      1350
+    ],
+    "bytes_per_tile": 64
+  },
+  "write_ack": {
+    "outstanding_capacity": 1,
+    "ack_match_fields": [
+      "epoch",
+      "token",
+      "bank",
+      "address"
+    ],
+    "wrapper_owned_transaction_fields": [
+      "fid",
+      "generation"
+    ],
+    "mismatch": "reject, fail transaction, retain lease until matching owner ACK drains"
+  },
+  "checks": [
+    {
+      "name": "tile_stream_order",
+      "result": "PASS",
+      "notes": "plane-major, tile-major, byte-major; raster address is separately computed"
+    },
+    {
+      "name": "raster_order_is_not_tile_order",
+      "result": "PASS",
+      "notes": "a row-major raster producer must be tiled/reordered before the V91l hash input"
+    },
+    {
+      "name": "tile_to_raster_address",
+      "result": "PASS",
+      "notes": "selected edge coordinates round-trip, including plane boundaries"
+    },
+    {
+      "name": "wrong_producer_epoch_rejected",
+      "result": "PASS",
+      "notes": ""
+    },
+    {
+      "name": "wrong_epoch_write_ack_keeps_lease",
+      "result": "PASS",
+      "notes": ""
+    },
+    {
+      "name": "reset_pending_write_lease",
+      "result": "PASS",
+      "notes": ""
+    },
+    {
+      "name": "late_failure_rolls_back",
+      "result": "PASS",
+      "notes": ""
+    },
+    {
+      "name": "commit_waits_for_write_ack",
+      "result": "PASS",
+      "notes": ""
+    },
+    {
+      "name": "vblank_and_scandrain_gate_front",
+      "result": "PASS",
+      "notes": ""
+    }
+  ],
+  "check_count": 9
+}

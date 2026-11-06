@@ -88,6 +88,15 @@ See the [board overview](https://docs.gamebub.net/developing-cores/overview/),
 [local resource audit](../gamebub-hevc-av1-fpga-plan.md) and
 [routed JPEG utilization](../../fpga/build-final/utilization.rpt).
 
+Implementation follow-up: the [V91l live write-ACK lane](../cu66-v91l-live/README.md)
+connects actual supported BR88 reconstruction to integrity/publication while
+retaining the native C++ HUD endpoint. The next bounded memory experiment is
+an eight-byte tile-row write coalescer, with explicit x16 transfer cost and
+preserved ACK/hash ownership. This is a local architecture proposal arising
+from the implementation; it is not a new publication result or evidence of
+HEVC/AV1 superiority. Use its live simulation summary for measured cycle fences,
+and keep shared physical service and hardware goals unqualified.
+
 ## Literature findings compared with V90
 
 ### 1. Parallel Golomb–Rice parsing: best direct fit
