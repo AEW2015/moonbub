@@ -1,0 +1,866 @@
+{
+  "schema": "v91i2b-byte-queue-ownership-model-v1",
+  "status": "PASS",
+  "scope": [
+    "Independent abstract Python port model; not RTL proof or hardware performance.",
+    "Reuses pinned V91i2 vectors and exact span bytes; no entropy codec or new frame goldens.",
+    "Mode 0 abstracts frozen REQ/WAIT/SEND; mode 1 models two FIFO byte slots plus one registered-response owner with total reservation <=2.",
+    "One-edge response, no bypass, exact address/frame epoch/child epoch/last ownership; child ready schedule is deterministic synthetic backpressure.",
+    "Cancellation/reset clear modeled local queue and response ownership; external accepted scratch ACK ownership is outside this byte refill model."
+  ],
+  "pins": {
+    "manifest_sha256": "dc8a7e378f09e25e0b78795b6042eca0c6a957765c1352fa3fe4b373bf70b4e0",
+    "cases_tsv_sha256": "54fe65f22dd8d0fc45b1fd0444e12632e1d800269705371f677aae5e6b8b5abc",
+    "case_count": 11
+  },
+  "protocol": {
+    "mode0": "frozen REQ/WAIT/SEND byte service",
+    "mode1_fifo_slots": 2,
+    "mode1_registered_pending_slots": 1,
+    "mode1_total_owners_bound": 2,
+    "response_latency_edges": 1,
+    "bypass": false,
+    "issue_rule": "issued < chunk_length and count + pending - pop < 2",
+    "pop_rule": "count > 0 and child_ready",
+    "push_rule": "old pending response, after address and epoch verification"
+  },
+  "case_rows": [
+    {
+      "id": "actual_001",
+      "packet_bytes": 30109,
+      "expected_error": 0,
+      "all_br88": true,
+      "admitted_refill": true,
+      "spans": [
+        {
+          "axis": 0,
+          "chunk": 0,
+          "address": 191,
+          "bytes": 15901,
+          "source_sha256": "8fe3277908a3b63c93ffb8a44e0f4b29513c3416c229b9af3480e03389099ad2",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 58308,
+              "sent": 15901,
+              "issued": 15901,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 10605,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 15901,
+              "responses": 15901,
+              "pops": 15901,
+              "output_sha256": "8fe3277908a3b63c93ffb8a44e0f4b29513c3416c229b9af3480e03389099ad2",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 21871,
+              "sent": 15901,
+              "issued": 15901,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 5968,
+              "full_owner_cycles": 21868,
+              "simultaneous_pop_push": 11924,
+              "requests": 15901,
+              "responses": 15901,
+              "pops": 15901,
+              "output_sha256": "8fe3277908a3b63c93ffb8a44e0f4b29513c3416c229b9af3480e03389099ad2",
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "axis": 1,
+          "chunk": 0,
+          "address": 16104,
+          "bytes": 675,
+          "source_sha256": "e42781da7a59999ba104d05144dac17912adcb247fd9016dc62385b81bb0032f",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 2480,
+              "sent": 675,
+              "issued": 675,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 455,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 675,
+              "responses": 675,
+              "pops": 675,
+              "output_sha256": "e42781da7a59999ba104d05144dac17912adcb247fd9016dc62385b81bb0032f",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 936,
+              "sent": 675,
+              "issued": 675,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 259,
+              "full_owner_cycles": 933,
+              "simultaneous_pop_push": 505,
+              "requests": 675,
+              "responses": 675,
+              "pops": 675,
+              "output_sha256": "e42781da7a59999ba104d05144dac17912adcb247fd9016dc62385b81bb0032f",
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "axis": 2,
+          "chunk": 0,
+          "address": 16791,
+          "bytes": 907,
+          "source_sha256": "ebba403f64db8e5b3f800490b085abc5a139bd848f6f39d6e5e15775ec46d3f2",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 3329,
+              "sent": 907,
+              "issued": 907,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 608,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 907,
+              "responses": 907,
+              "pops": 907,
+              "output_sha256": "ebba403f64db8e5b3f800490b085abc5a139bd848f6f39d6e5e15775ec46d3f2",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 1253,
+              "sent": 907,
+              "issued": 907,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 344,
+              "full_owner_cycles": 1250,
+              "simultaneous_pop_push": 679,
+              "requests": 907,
+              "responses": 907,
+              "pops": 907,
+              "output_sha256": "ebba403f64db8e5b3f800490b085abc5a139bd848f6f39d6e5e15775ec46d3f2",
+              "cancelled": false
+            }
+          }
+        }
+      ],
+      "read_requests": 17483,
+      "emitted_bytes": 17483
+    },
+    {
+      "id": "actual_006",
+      "packet_bytes": 19594,
+      "expected_error": 0,
+      "all_br88": true,
+      "admitted_refill": true,
+      "spans": [
+        {
+          "axis": 0,
+          "chunk": 0,
+          "address": 958,
+          "bytes": 9922,
+          "source_sha256": "b8959654f1b50498205d657fa8934b43e8ab4e03df6b2b5db7b65697b7440b62",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 36387,
+              "sent": 9922,
+              "issued": 9922,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 6621,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 9922,
+              "responses": 9922,
+              "pops": 9922,
+              "output_sha256": "b8959654f1b50498205d657fa8934b43e8ab4e03df6b2b5db7b65697b7440b62",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 13651,
+              "sent": 9922,
+              "issued": 9922,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 3727,
+              "full_owner_cycles": 13648,
+              "simultaneous_pop_push": 7440,
+              "requests": 9922,
+              "responses": 9922,
+              "pops": 9922,
+              "output_sha256": "b8959654f1b50498205d657fa8934b43e8ab4e03df6b2b5db7b65697b7440b62",
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "axis": 1,
+          "chunk": 0,
+          "address": 10892,
+          "bytes": 238,
+          "source_sha256": "acc06158289de7c1e69bec59adecb00810c31da663bc12b7e88f20fc596fb57c",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 876,
+              "sent": 238,
+              "issued": 238,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 162,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 238,
+              "responses": 238,
+              "pops": 238,
+              "output_sha256": "acc06158289de7c1e69bec59adecb00810c31da663bc12b7e88f20fc596fb57c",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 333,
+              "sent": 238,
+              "issued": 238,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 93,
+              "full_owner_cycles": 330,
+              "simultaneous_pop_push": 177,
+              "requests": 238,
+              "responses": 238,
+              "pops": 238,
+              "output_sha256": "acc06158289de7c1e69bec59adecb00810c31da663bc12b7e88f20fc596fb57c",
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "axis": 2,
+          "chunk": 0,
+          "address": 11142,
+          "bytes": 325,
+          "source_sha256": "6180b9481651bfbefa110823fdb2dbb75f72c20b6dc9c280b699735fe1b8a2fb",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 1195,
+              "sent": 325,
+              "issued": 325,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 220,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 325,
+              "responses": 325,
+              "pops": 325,
+              "output_sha256": "6180b9481651bfbefa110823fdb2dbb75f72c20b6dc9c280b699735fe1b8a2fb",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 455,
+              "sent": 325,
+              "issued": 325,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 128,
+              "full_owner_cycles": 450,
+              "simultaneous_pop_push": 243,
+              "requests": 325,
+              "responses": 325,
+              "pops": 325,
+              "output_sha256": "6180b9481651bfbefa110823fdb2dbb75f72c20b6dc9c280b699735fe1b8a2fb",
+              "cancelled": false
+            }
+          }
+        }
+      ],
+      "read_requests": 10485,
+      "emitted_bytes": 10485
+    },
+    {
+      "id": "actual_043",
+      "packet_bytes": 15088,
+      "expected_error": 0,
+      "all_br88": true,
+      "admitted_refill": true,
+      "spans": [
+        {
+          "axis": 0,
+          "chunk": 0,
+          "address": 1010,
+          "bytes": 6406,
+          "source_sha256": "37c0082d5440a17952468c8588c0e7ade9bdc9ce63f8ea0b27f135b131d9d52d",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 23492,
+              "sent": 6406,
+              "issued": 6406,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 4274,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 6406,
+              "responses": 6406,
+              "pops": 6406,
+              "output_sha256": "37c0082d5440a17952468c8588c0e7ade9bdc9ce63f8ea0b27f135b131d9d52d",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 8814,
+              "sent": 6406,
+              "issued": 6406,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 2406,
+              "full_owner_cycles": 8811,
+              "simultaneous_pop_push": 4803,
+              "requests": 6406,
+              "responses": 6406,
+              "pops": 6406,
+              "output_sha256": "37c0082d5440a17952468c8588c0e7ade9bdc9ce63f8ea0b27f135b131d9d52d",
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "axis": 1,
+          "chunk": 0,
+          "address": 7428,
+          "bytes": 146,
+          "source_sha256": "d653812563c8f463d7c3e243a4f3677270caa1f75173f8c2fc678ce5660b921f",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 538,
+              "sent": 146,
+              "issued": 146,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 100,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 146,
+              "responses": 146,
+              "pops": 146,
+              "output_sha256": "d653812563c8f463d7c3e243a4f3677270caa1f75173f8c2fc678ce5660b921f",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 208,
+              "sent": 146,
+              "issued": 146,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 60,
+              "full_owner_cycles": 205,
+              "simultaneous_pop_push": 108,
+              "requests": 146,
+              "responses": 146,
+              "pops": 146,
+              "output_sha256": "d653812563c8f463d7c3e243a4f3677270caa1f75173f8c2fc678ce5660b921f",
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "axis": 2,
+          "chunk": 0,
+          "address": 7586,
+          "bytes": 158,
+          "source_sha256": "b8d8917cab668795ed8d01cfd7a814a18f0c96b38d731a591bd0138092a7b0f2",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 584,
+              "sent": 158,
+              "issued": 158,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 110,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 158,
+              "responses": 158,
+              "pops": 158,
+              "output_sha256": "b8d8917cab668795ed8d01cfd7a814a18f0c96b38d731a591bd0138092a7b0f2",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 224,
+              "sent": 158,
+              "issued": 158,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 64,
+              "full_owner_cycles": 221,
+              "simultaneous_pop_push": 117,
+              "requests": 158,
+              "responses": 158,
+              "pops": 158,
+              "output_sha256": "b8d8917cab668795ed8d01cfd7a814a18f0c96b38d731a591bd0138092a7b0f2",
+              "cancelled": false
+            }
+          }
+        }
+      ],
+      "read_requests": 6710,
+      "emitted_bytes": 6710
+    },
+    {
+      "id": "actual_031",
+      "packet_bytes": 47960,
+      "expected_error": 0,
+      "all_br88": true,
+      "admitted_refill": true,
+      "spans": [
+        {
+          "axis": 0,
+          "chunk": 0,
+          "address": 561,
+          "bytes": 27309,
+          "source_sha256": "2f8c8a4f80da5d51bb1a0aa9bd146161c9d977f88ab8ad90e31c0283d5aa423c",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 100138,
+              "sent": 27309,
+              "issued": 27309,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 18211,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 27309,
+              "responses": 27309,
+              "pops": 27309,
+              "output_sha256": "2f8c8a4f80da5d51bb1a0aa9bd146161c9d977f88ab8ad90e31c0283d5aa423c",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 37556,
+              "sent": 27309,
+              "issued": 27309,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 10245,
+              "full_owner_cycles": 37553,
+              "simultaneous_pop_push": 20480,
+              "requests": 27309,
+              "responses": 27309,
+              "pops": 27309,
+              "output_sha256": "2f8c8a4f80da5d51bb1a0aa9bd146161c9d977f88ab8ad90e31c0283d5aa423c",
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "axis": 1,
+          "chunk": 0,
+          "address": 27882,
+          "bytes": 2212,
+          "source_sha256": "adb4d1c81e57b31b75f275b97c91f8fd5ac39800f4ce5c0b6226392fe7159010",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 8115,
+              "sent": 2212,
+              "issued": 2212,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 1479,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 2212,
+              "responses": 2212,
+              "pops": 2212,
+              "output_sha256": "adb4d1c81e57b31b75f275b97c91f8fd5ac39800f4ce5c0b6226392fe7159010",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 3049,
+              "sent": 2212,
+              "issued": 2212,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 835,
+              "full_owner_cycles": 3044,
+              "simultaneous_pop_push": 1658,
+              "requests": 2212,
+              "responses": 2212,
+              "pops": 2212,
+              "output_sha256": "adb4d1c81e57b31b75f275b97c91f8fd5ac39800f4ce5c0b6226392fe7159010",
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "axis": 2,
+          "chunk": 0,
+          "address": 30106,
+          "bytes": 1403,
+          "source_sha256": "4c161f64f23246173bb108fa3c3c94ce515be44c28fa17460077e91efc3892e8",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 5150,
+              "sent": 1403,
+              "issued": 1403,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 941,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 1403,
+              "responses": 1403,
+              "pops": 1403,
+              "output_sha256": "4c161f64f23246173bb108fa3c3c94ce515be44c28fa17460077e91efc3892e8",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 1937,
+              "sent": 1403,
+              "issued": 1403,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 532,
+              "full_owner_cycles": 1934,
+              "simultaneous_pop_push": 1051,
+              "requests": 1403,
+              "responses": 1403,
+              "pops": 1403,
+              "output_sha256": "4c161f64f23246173bb108fa3c3c94ce515be44c28fa17460077e91efc3892e8",
+              "cancelled": false
+            }
+          }
+        }
+      ],
+      "read_requests": 30924,
+      "emitted_bytes": 30924
+    },
+    {
+      "id": "actual_000",
+      "packet_bytes": 25495,
+      "expected_error": 64,
+      "all_br88": false,
+      "admitted_refill": false,
+      "spans": [],
+      "read_requests": 0,
+      "emitted_bytes": 0
+    },
+    {
+      "id": "actual_003",
+      "packet_bytes": 25663,
+      "expected_error": 64,
+      "all_br88": false,
+      "admitted_refill": false,
+      "spans": [],
+      "read_requests": 0,
+      "emitted_bytes": 0
+    },
+    {
+      "id": "structural_all_copy_zero_residual",
+      "packet_bytes": 8410,
+      "expected_error": 0,
+      "all_br88": false,
+      "admitted_refill": false,
+      "spans": [],
+      "read_requests": 0,
+      "emitted_bytes": 0
+    },
+    {
+      "id": "actual_006_varied_qcache",
+      "packet_bytes": 19594,
+      "expected_error": 0,
+      "all_br88": true,
+      "admitted_refill": true,
+      "spans": [
+        {
+          "axis": 0,
+          "chunk": 0,
+          "address": 958,
+          "bytes": 9922,
+          "source_sha256": "b8959654f1b50498205d657fa8934b43e8ab4e03df6b2b5db7b65697b7440b62",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 36383,
+              "sent": 9922,
+              "issued": 9922,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 6617,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 9922,
+              "responses": 9922,
+              "pops": 9922,
+              "output_sha256": "b8959654f1b50498205d657fa8934b43e8ab4e03df6b2b5db7b65697b7440b62",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 13649,
+              "sent": 9922,
+              "issued": 9922,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 3725,
+              "full_owner_cycles": 13646,
+              "simultaneous_pop_push": 7440,
+              "requests": 9922,
+              "responses": 9922,
+              "pops": 9922,
+              "output_sha256": "b8959654f1b50498205d657fa8934b43e8ab4e03df6b2b5db7b65697b7440b62",
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "axis": 1,
+          "chunk": 0,
+          "address": 10892,
+          "bytes": 238,
+          "source_sha256": "acc06158289de7c1e69bec59adecb00810c31da663bc12b7e88f20fc596fb57c",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 875,
+              "sent": 238,
+              "issued": 238,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 161,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 238,
+              "responses": 238,
+              "pops": 238,
+              "output_sha256": "acc06158289de7c1e69bec59adecb00810c31da663bc12b7e88f20fc596fb57c",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 334,
+              "sent": 238,
+              "issued": 238,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 94,
+              "full_owner_cycles": 331,
+              "simultaneous_pop_push": 177,
+              "requests": 238,
+              "responses": 238,
+              "pops": 238,
+              "output_sha256": "acc06158289de7c1e69bec59adecb00810c31da663bc12b7e88f20fc596fb57c",
+              "cancelled": false
+            }
+          }
+        },
+        {
+          "axis": 2,
+          "chunk": 0,
+          "address": 11142,
+          "bytes": 325,
+          "source_sha256": "6180b9481651bfbefa110823fdb2dbb75f72c20b6dc9c280b699735fe1b8a2fb",
+          "modes": {
+            "mode0": {
+              "completed": true,
+              "cycles": 1194,
+              "sent": 325,
+              "issued": 325,
+              "max_total_owners": 1,
+              "max_fifo_occupancy": 0,
+              "max_pending_owner": 0,
+              "stall_cycles": 219,
+              "full_owner_cycles": 0,
+              "simultaneous_pop_push": 0,
+              "requests": 325,
+              "responses": 325,
+              "pops": 325,
+              "output_sha256": "6180b9481651bfbefa110823fdb2dbb75f72c20b6dc9c280b699735fe1b8a2fb",
+              "cancelled": false
+            },
+            "mode1": {
+              "completed": true,
+              "cycles": 454,
+              "sent": 325,
+              "issued": 325,
+              "max_total_owners": 2,
+              "max_fifo_occupancy": 2,
+              "max_pending_owner": 1,
+              "stall_cycles": 127,
+              "full_owner_cycles": 451,
+              "simultaneous_pop_push": 242,
+              "requests": 325,
+              "responses": 325,
+              "pops": 325,
+              "output_sha256": "6180b9481651bfbefa110823fdb2dbb75f72c20b6dc9c280b699735fe1b8a2fb",
+              "cancelled": false
+            }
+          }
+        }
+      ],
+      "read_requests": 10485,
+      "emitted_bytes": 10485
+    },
+    {
+      "id": "actual_006_wrong_cache_tag",
+      "packet_bytes": 19594,
+      "expected_error": 7,
+      "all_br88": true,
+      "admitted_refill": false,
+      "spans": [],
+      "read_requests": 0,
+      "emitted_bytes": 0
+    },
+    {
+      "id": "actual_006_reserved_qcache_code",
+      "packet_bytes": 19594,
+      "expected_error": 7,
+      "all_br88": true,
+      "admitted_refill": false,
+      "spans": [],
+      "read_requests": 0,
+      "emitted_bytes": 0
+    },
+    {
+      "id": "actual_001_bad_third_inner_crc",
+      "packet_bytes": 30109,
+      "expected_error": 147,
+      "all_br88": true,
+      "admitted_refill": false,
+      "spans": [],
+      "read_requests": 0,
+      "emitted_bytes": 0
+    }
+  ],
+  "totals": {
+    "mode0": {
+      "bytes_requested": 76087,
+      "bytes_responded": 76087,
+      "bytes_emitted": 76087,
+      "cycles": 279044,
+      "child_stall_cycles": 50783,
+      "full_owner_cycles": 0,
+      "peak_total_owners": 1,
+      "peak_fifo_occupancy": 0,
+      "simultaneous_pop_push": 0
+    },
+    "mode1": {
+      "bytes_requested": 76087,
+      "bytes_responded": 76087,
+      "bytes_emitted": 76087,
+      "cycles": 104724,
+      "child_stall_cycles": 28607,
+      "full_owner_cycles": 104675,
+      "peak_total_owners": 2,
+      "peak_fifo_occupancy": 2,
+      "simultaneous_pop_push": 57044
+    }
+  },
+  "exhaustive_small_traces": {
+    "trace_count": 2560,
+    "payload_lengths": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "ready_bits_per_trace": 8,
+    "modes": [
+      0,
+      1
+    ],
+    "max_total_owners_seen": 2
+  },
+  "directed": {
+    "full_queue_stall_head_stable": true,
+    "simultaneous_pop_push_issue_ordered": true,
+    "cancel_reset_and_failure_clear_local_owners": true,
+    "replacement_epochs_reject_old_local_ownership": true,
+    "cancellation_positions": [
+      {
+        "cancel_cycle": 2,
+        "owners_invalidated": 1,
+        "replacement_epoch": 32,
+        "replacement_child_epoch": 9
+      },
+      {
+        "cancel_cycle": 3,
+        "owners_invalidated": 2,
+        "replacement_epoch": 32,
+        "replacement_child_epoch": 9
+      },
+      {
+        "cancel_cycle": 4,
+        "owners_invalidated": 2,
+        "replacement_epoch": 32,
+        "replacement_child_epoch": 9
+      }
+    ]
+  },
+  "claims": {
+    "exact_output_bytes_checked": true,
+    "exact_addresses_checked": true,
+    "exact_last_position_checked": true,
+    "frame_and_child_epochs_checked": true,
+    "queue_head_stable_while_stalled": true,
+    "overread_checked": true,
+    "request_response_pop_conservation_checked": true,
+    "hardware_performance_claim": false,
+    "rtl_proof_claim": false
+  }
+}

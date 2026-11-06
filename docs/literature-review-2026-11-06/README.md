@@ -400,6 +400,16 @@ decoder, physical memory-fit result or hardware frame-rate proof. Next compare
 bounded refill overlap while retaining safe ownership, then complete entropy
 fallback and transform/reconstruction/validation consumers.
 
+[V91i2b](../cu66-v91i2b/README.md) closes the bounded refill experiment:
+native coefficient cycles fall 5.1656% FAST and 4.2342–4.2450% SLOW, with exact
+disabled-control parity and no coefficient/quantization change. FAST isolates
+deterministic refill cost; SLOW uses the same seeded service rule without an
+identical absolute stall trace. The direct next milestone is V91j, reusing and
+requalifying existing inverse blocks behind bounded tile/epoch ownership.
+Constant compatibility (384 quantizers, 64 DCT values) is checked; complete
+inverse integration and hardware milestones remain open. More V91i nesting
+is not a prerequisite, and this is not a rate/quality gain over HEVC/AV1.
+
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
 
