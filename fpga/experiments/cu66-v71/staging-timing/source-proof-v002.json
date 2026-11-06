@@ -1,0 +1,23 @@
+{
+  "sources_sha256": {
+    "fpga/experiments/cu66-v71/staging-timing/cu71_local_control_credit.sv": "24ac709dc0b67739ca68bd00b00795300c3cc61454d8f249afdc20cf42ffbcb6",
+    "fpga/experiments/cu66-v71/staging-timing/cu71_packet_staging_credit.sv": "b400151a8a3e1c269eddb73203850ecd96cc4dca36f74c186f13a39f36f1d1f5",
+    "fpga/experiments/cu66-v71/staging-timing/dy71_local_control_credit.sv": "6f22a457b034e20889f2015b1b2b4cebe13a5dc01e25f581ff9290865dbbe323"
+  },
+  "invariants": [
+    "remaining_bytes==(packet_bytes-written_bytes) mod2^32",
+    "within_packet==(written_bytes<=packet_bytes)",
+    "upload_capacity==min(4,remaining_bytes)"
+  ],
+  "admission": "Original 33-bit sum inequality equals within_packet && upload_count<=upload_capacity, retaining original count1..4 gates",
+  "reset_begin_drain": "Reset remaining0/within1/cap0; accepted BEGIN remaining=begin_bytes/within1/cap=min4; actual byte drain decrements remaining modulo32, computes nextwithin=(oldwritten==ffffffff)||(oldwithin&&oldremaining!=0), nextcap=(oldremaining>4||oldremaining==0)?4:oldremaining-1",
+  "stale_empty": "No clearing added on discard/release/BEGIN; retained parent stale-held-count behavior is explicitly exercised",
+  "counter_domain": "Full32-bit counters preserved; no MAX_BYTES narrowing or untrusted input assumption",
+  "exhaustive_reduced_widths": [
+    4,
+    5,
+    8
+  ],
+  "algebra_boundary_checks": 538400,
+  "formal_tool_proof": false
+}

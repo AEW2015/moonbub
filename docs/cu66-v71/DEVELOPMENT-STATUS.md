@@ -1,5 +1,12 @@
 # CU71 implementation status
 
+Current test gates and image pairing are in [Morning readiness](MORNING-READINESS.md).
+The revised DY71 build is `direct-system/board-implementation02`; the earlier
+`board-implementation01` has a known invalid legacy endpoint selector and is
+diagnostic only. New completed source/model results and remaining timing work
+are described in the [reference wait measurements](DY71-REFERENCE-BLOCK-RESULTS.md)
+and [next timing triage](TIMING-NEXT-TRIAGE.md). No CU66 image has been installed.
+
 ## November 6, 02:55 Denver — current checkpoint
 
 The installed hardware remains the last verified **v32 ESP32 application plus build50 FPGA**. The separate CP23/CPL1 reset-replica diagnostic passed its physical fixed-frame test and was rolled back to build50. No CU71/DY71 application or FPGA image has been installed, and no new network run was started.
@@ -8,7 +15,7 @@ The installed hardware remains the last verified **v32 ESP32 application plus bu
 
 Selected producer UF2 SHA-256: `20cdbd6db030b0e99f363f93d0b081d2ca1f718c5e6dc6cb4d5d7edeff52ed97`; ELF: `13278b1f5a16afbcc5c1ed2f3c4c225c628a05b4491cc8e9ec489d02c88d3535`. Static shared SRAM is 130,916 bytes. Individual new-ELF frames are 3,104 bytes for the local runner, 624 for its worker, and 416 for the USB command. These are **not a whole-stack safety proof**; physical first-throw overhead, live heap and task high-water remain open.
 
-Actual v36/native-to-DY71 CSR/PIPE/grouped RTL plus the checked SDRAM pin model passes KEY/P: two accepted, two presented, zero rejects/underruns, and 42,240 HUD writes plus 42,240 real readback comparisons. This numeric CSR co-simulation does not model the physical QSPI wire, CPU wall time or FreeRTOS. A successor binding to SYNCsafe/math/split-control is being prepared separately.
+Actual v36/native-to-DY71 CSR/PIPE/grouped RTL plus the checked SDRAM pin model passes KEY/P: two accepted, two presented, zero rejects/underruns, and 42,240 HUD writes plus 42,240 real readback comparisons. The **SYNCsafe/math/split-control successor now passes the same actual v36/native KEY/P gate**, with 58,394,568 model clocks and the same zero-fault outcomes; qualification SHA-256 `e6405c8ec06ff9c805a8c86c838f8dbdf52798a6d7fde2d026832e4452e83cd2`. This numeric CSR co-simulation does not model the physical QSPI wire, CPU wall time or FreeRTOS.
 
 **The direct-YUV scheduler now has clean complete KEY/P/P simulations.** Bounded groups retain the nominal 2:1 LCD/background share, improve SDRAM locality, and produce zero LCD misses/black pixels in the declared three-frame replay. The SYNCsafe successor restricts each of six first synchronizer stages to its second-stage D input and passes the same replay; only presentation timing changes by four memory clocks. It has a reviewed native clock-ratio/held-data CDC proof and scoped C-start delay/skew constraints, not a blanket clock-domain exception. The second presentation interval is 46.10029 ms: the 30 fps gate remains **FAIL**.
 

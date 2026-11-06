@@ -16,12 +16,12 @@ skip={'inputs','build','tmp','.Xil','__pycache__','target','python-deps','xsim.d
 files=set()
 for directory in [root/'docs/cu66-v71',root/'scripts/cu66-v71',root/'firmware/experiments/v35-cu71-local-fixture-20261105',root/'firmware/experiments/v36-dual-local-fixture-20261106']:
  for path in directory.rglob('*'):
-  if path.is_file()and not any(part in skip for part in path.relative_to(directory).parts)and not any(path.relative_to(root).as_posix().startswith(prefix.rstrip('/')+'/')for prefix in args.exclude_prefix):files.add(path)
+  if path.is_file()and not any(part in skip for part in path.relative_to(directory).parts)and not any(path.relative_to(root).as_posix()==prefix.rstrip('/')or path.relative_to(root).as_posix().startswith(prefix.rstrip('/')+'/')for prefix in args.exclude_prefix):files.add(path)
 fpga=root/'fpga/experiments/cu66-v71'
 omitted=[]
 for path in fpga.rglob('*'):
  if not path.is_file():continue
- if any(path.relative_to(root).as_posix().startswith(prefix.rstrip('/')+'/') for prefix in args.exclude_prefix):continue
+ if any(path.relative_to(root).as_posix()==prefix.rstrip('/')or path.relative_to(root).as_posix().startswith(prefix.rstrip('/')+'/') for prefix in args.exclude_prefix):continue
  parts=path.relative_to(fpga).parts
  if any(part in skip for part in parts):continue
  if parts[0]=='board'and len(parts)>1 and parts[1].startswith('implementation'):

@@ -1,0 +1,107 @@
+`timescale 1ns/1ps
+module tb;
+reg  clk=0;
+reg  rst=0;
+reg  bus_write=0;
+reg [11:0] bus_address=0;
+reg [11:0] bus_read_address=0;
+reg [31:0] bus_wdata=0;
+wire [31:0] bus_rdata;
+reg  transport_fault=0;
+wire  start_valid;
+reg  start_ready=0;
+wire [63:0] start_generation;
+wire [31:0] start_packet_bytes;
+wire  abort_i;
+wire  clear_fault;
+reg  busy=0;
+reg  done=0;
+reg  error=0;
+reg [7:0] stage=0;
+reg [7:0] error_code=0;
+reg  memory_tile_busy=0;
+reg  memory_aux_busy=0;
+reg [31:0] accepted_count=0;
+reg [31:0] presented_count=0;
+reg [31:0] rejected_count=0;
+reg [31:0] lcd_underruns=0;
+reg  packet_req_valid=0;
+wire  packet_req_ready;
+reg [15:0] packet_req_address=0;
+reg [63:0] packet_req_generation=0;
+reg [31:0] packet_req_sequence=0;
+wire  packet_rsp_valid;
+reg  packet_rsp_ready=0;
+wire [15:0] packet_rsp_address;
+wire [63:0] packet_rsp_generation;
+wire [31:0] packet_rsp_sequence;
+wire [7:0] packet_rsp_data;
+reg  hud_prepare_valid=0;
+wire  hud_prepare_ready;
+reg [63:0] active_generation=0;
+reg [31:0] active_frame_id=0;
+reg [31:0] active_reference_id=0;
+reg  active_key=0;
+reg [15:0] hud_address=0;
+reg [15:0] hud_bytes=0;
+reg [127:0] expected_hud_tag=0;
+reg [1:0] candidate_bank=0;
+wire  hud_result_valid;
+reg  hud_result_ready=0;
+wire [63:0] hud_result_generation;
+wire [31:0] hud_result_frame_id;
+wire [31:0] hud_result_reference_id;
+wire [127:0] hud_result_tag;
+wire [15:0] hud_result_words;
+wire  hud_result_success;
+wire  hud_drain_valid;
+reg  hud_drain_ready=0;
+wire [63:0] hud_drain_generation;
+wire [31:0] hud_drain_frame_id;
+wire [1:0] hud_drain_bank;
+wire [127:0] hud_drain_tag;
+wire [15:0] hud_drain_words;
+wire  hud_drain_success;
+reg  software_command_valid=0;
+wire  software_command_ready;
+reg [2:0] software_command_opcode=0;
+wire  software_ack_valid;
+reg  software_ack_ready=0;
+wire [2:0] software_ack_opcode;
+wire [63:0] software_ack_generation;
+wire [31:0] software_ack_frame_id;
+wire  software_ack_success;
+wire  hud_aux_req_valid;
+reg  hud_aux_req_ready=0;
+wire [63:0] hud_aux_generation;
+wire [31:0] hud_aux_frame_id;
+wire  hud_aux_req_write;
+wire [23:0] hud_aux_req_addr;
+wire [15:0] hud_aux_req_data;
+reg  hud_aux_rsp_valid=0;
+wire  hud_aux_rsp_ready;
+reg [15:0] hud_aux_rsp_data=0;
+reg  hud_aux_rsp_error=0;
+wire [9:0] diag_address;
+reg [31:0] diag_data=0;
+wire  quarantine;
+always #5 clk=~clk;
+dy71_local_control_split dut(.clk(clk),.rst(rst),.bus_write(bus_write),.bus_address(bus_address),.bus_read_address(bus_read_address),.bus_wdata(bus_wdata),.bus_rdata(bus_rdata),.transport_fault(transport_fault),.start_valid(start_valid),.start_ready(start_ready),.start_generation(start_generation),.start_packet_bytes(start_packet_bytes),.abort_i(abort_i),.clear_fault(clear_fault),.busy(busy),.done(done),.error(error),.stage(stage),.error_code(error_code),.memory_tile_busy(memory_tile_busy),.memory_aux_busy(memory_aux_busy),.accepted_count(accepted_count),.presented_count(presented_count),.rejected_count(rejected_count),.lcd_underruns(lcd_underruns),.packet_req_valid(packet_req_valid),.packet_req_ready(packet_req_ready),.packet_req_address(packet_req_address),.packet_req_generation(packet_req_generation),.packet_req_sequence(packet_req_sequence),.packet_rsp_valid(packet_rsp_valid),.packet_rsp_ready(packet_rsp_ready),.packet_rsp_address(packet_rsp_address),.packet_rsp_generation(packet_rsp_generation),.packet_rsp_sequence(packet_rsp_sequence),.packet_rsp_data(packet_rsp_data),.hud_prepare_valid(hud_prepare_valid),.hud_prepare_ready(hud_prepare_ready),.active_generation(active_generation),.active_frame_id(active_frame_id),.active_reference_id(active_reference_id),.active_key(active_key),.hud_address(hud_address),.hud_bytes(hud_bytes),.expected_hud_tag(expected_hud_tag),.candidate_bank(candidate_bank),.hud_result_valid(hud_result_valid),.hud_result_ready(hud_result_ready),.hud_result_generation(hud_result_generation),.hud_result_frame_id(hud_result_frame_id),.hud_result_reference_id(hud_result_reference_id),.hud_result_tag(hud_result_tag),.hud_result_words(hud_result_words),.hud_result_success(hud_result_success),.hud_drain_valid(hud_drain_valid),.hud_drain_ready(hud_drain_ready),.hud_drain_generation(hud_drain_generation),.hud_drain_frame_id(hud_drain_frame_id),.hud_drain_bank(hud_drain_bank),.hud_drain_tag(hud_drain_tag),.hud_drain_words(hud_drain_words),.hud_drain_success(hud_drain_success),.software_command_valid(software_command_valid),.software_command_ready(software_command_ready),.software_command_opcode(software_command_opcode),.software_ack_valid(software_ack_valid),.software_ack_ready(software_ack_ready),.software_ack_opcode(software_ack_opcode),.software_ack_generation(software_ack_generation),.software_ack_frame_id(software_ack_frame_id),.software_ack_success(software_ack_success),.hud_aux_req_valid(hud_aux_req_valid),.hud_aux_req_ready(hud_aux_req_ready),.hud_aux_generation(hud_aux_generation),.hud_aux_frame_id(hud_aux_frame_id),.hud_aux_req_write(hud_aux_req_write),.hud_aux_req_addr(hud_aux_req_addr),.hud_aux_req_data(hud_aux_req_data),.hud_aux_rsp_valid(hud_aux_rsp_valid),.hud_aux_rsp_ready(hud_aux_rsp_ready),.hud_aux_rsp_data(hud_aux_rsp_data),.hud_aux_rsp_error(hud_aux_rsp_error),.diag_address(diag_address),.diag_data(diag_data),.quarantine(quarantine));
+
+task step;begin @(posedge clk);#1;@(negedge clk);#1;end endtask
+task put(input[11:0]a,input[31:0]v);begin bus_write=1;bus_address=a;bus_wdata=v;step();bus_write=0;end endtask
+initial begin
+ rst=1;repeat(3)step();rst=0;
+ put('h40,1);put('h44,0);put('h50,3);put('h54,0);put('h20,1);put('h24,1);step();
+ if(!dut.upload_ready)$fatal(1,"begin setup");
+ put('h20,2);put('h24,4);
+ // Next consecutive bus beat lands while DISCARD_PACKET executes.
+ put('h100,32'h00030201);
+ if(dut.staging.state!=0 || dut.staging.held_count!=3)$fatal(1,"CSR did not retain upload after discard");
+ $display("CSR_EDGE_EMPTY_WITH_STALE_UPLOAD state=%0d held=%0d ack=%0d",dut.staging.state,dut.staging.held_count,dut.ack_status);
+ put('h40,2);put('h50,1);put('h20,3);put('h24,1);step();repeat(3)step();
+ if(dut.written_bytes!=3 || dut.packet_bytes!=1)$fatal(1,"subsequent smaller begin did not overshoot");
+ $display("ACTUAL_SPLIT_CSR_EDGE_REPRODUCED written=%0d packet=%0d faults=%h",dut.written_bytes,dut.packet_bytes,dut.staging_faults);$finish;
+end
+initial begin #10000;$fatal(1,"watchdog");end
+endmodule
