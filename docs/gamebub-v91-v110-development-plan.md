@@ -20,9 +20,10 @@ can be compared against a stable function and workload.
 This section is the concrete next-work sequence. **V91e observability and V91f
 bounded write overlap pass for the coefficient endpoint. V91g read prefetch and
 its V91g2 two-bank preparation/delivery follow-up also pass. V91h synchronous
-packet-staging ports and V91i1 restricted CS88 structural admission pass
-functionally; V91i2 onward remains planned.** V91i1 is the latest architecture
-change and does not close full-frame acceptance.
+packet-staging ports, V91i1 restricted CS88 structural admission and V91i2a
+all-BR88 residual dispatch/placement pass functionally.** V91i2a is the latest
+architecture change; mixed-entropy support, complete transactions and the
+remaining pixel/validation path remain open.
 The original unlettered V91 and published V91b/V91c/V91d retain their names.
 No historical V91a release is implied.
 
@@ -62,7 +63,7 @@ list the selected features and deferred experiments.
 | **V91f** | **Passed for current coefficient endpoint:** two bounded line owners overlap packing with real physical write ACK service, retaining one accepted outstanding request and exact runtime-off control. | [Two-seed evidence](cu66-v91f/README.md): 6.79–6.80% fewer SLOW actual-packet cycles; FAST effectively neutral; exact images/output, 720 control metric matches, 28 integrated + nine direct-interface checks per run. No bank reuse before old ACK drain, including semantic-error/same-edge acceptance. |
 | **V91g / V91g2** | **Passed for the coefficient endpoint:** bounded read prefetch, then two-bank coded preparation concurrent with delivery; RAW retains its qualified path. | [V91g2 evidence](cu66-v91g2/README.md): another 16.08%/16.30–16.31% fewer FAST/SLOW actual-packet cycles than V91g, exact bytes/output, 720 control metric matches and exact RAW parity. Each seed passes 47 integrated + nine standalone checks; at most two tile owners and one accepted request. Physical fit remains unqualified. |
 | **V91h** | **Passed functionally:** compile-time synchronous staging with one byte receive-write port, one registered byte-read port and bounded gather/held-word registers. | [Two-seed evidence](cu66-v91h/README.md): exact bytes/coefficient and legacy parity, 56 synchronous / 47 legacy integrated checks plus nine standalone checks per seed. Actual-packet cycle cost +0.1000% FAST / +0.0865–0.0921% SLOW; no speedup claim. Header/descriptor/padding, RAW, held sparse output and canceled pending reads pass. RAM inference/fit/clock remain V100–V110 work. |
-| **V91i** | **V91i1 passed for restricted structural admission:** actual CS88 envelope, grouped modes, QM2/QM6 eligibility and bounded AB38/BR88 span descriptors. V91i2–i3 consumer dispatch, positional/quantizer binding and transaction ownership remain open. | [Two-seed evidence](cu66-v91i/README.md): 86 vectors, 14 interface/recovery checks and 156 plane-slot comparisons per seed, independently audited. Unsupported profiles reject. Recognition of an entropy prefix does not decode it; a structural receipt or chunk scratch seal cannot masquerade as complete-frame acceptance. |
+| **V91i** | **V91i1 restricted admission and V91i2a all-BR88 dispatch/placement passed:** concrete provisional mode/scales, exact dense coefficient plane/tile/qcell/qscale binding and real child ACK ownership. Mixed entropy, refill optimization and V91i3 complete transaction integration remain open. | [V91i2a evidence](cu66-v91i2/README.md): two seeds each pass 22 case/profile rows, 4,058,368 exact coefficient/tuple checks and 10 directed checks, with independent byte/entropy/trace audit. AB38 rejects before jobs. Structural receipts, coefficient completion and scratch seals cannot masquerade as complete-frame acceptance. |
 | **V91j** | Connect bit-true dequantization and IDCT with bounded tile/epoch streams. | Exact signed widths, Q14 rounding/saturation order and native golden parity, including backpressure and abort. No zero-time transform substitute in the measured RTL endpoint. |
 | **V91k** | Connect reconstruction, accepted references, COPY/constant handling, hidden-pixel normalization and output conversion. | Full canonical/reference and intended visible RGB565 pixels match. Reference/scanout ownership prevents overwrite; all memory service is charged. |
 | **V91l** | Integrate HUD/content validation, frame hashes/seals and atomic validated publication. | Late errors never publish a partial frame or corrupt accepted references. Full publication fence, rollback/retry and held-scanout behavior are checked. |
@@ -84,6 +85,13 @@ V91i is divided into three reviewable integration gates:
   any duplicate packet staging explicitly; sharing a bank must not permit
   receive, descriptor reads or restart to overwrite bytes still owned by a
   consumer. Serialize or queue consumers with real bounded credits.
+  **V91i2a passes for the documented all-BR88 subset:** two explicit 49,152-byte
+  packet banks, retained provisional modes/scales, one-shot real quantizer
+  snapshots, serial child jobs and exact positional outputs. V91i2b should
+  compare a bounded refill FIFO and reduced mode-initialization work against
+  this frozen control; preserve synchronous port, held-byte and ACK-drain
+  contracts. Complete mixed-entropy support or a qualified negotiated sender
+  fallback before treating V91i2 as the complete supported profile.
 - **V91i3 — frame transaction ownership:** retain provisional modes/scales and
   descriptors until the complete reconstruction/validation transaction commits;
   test rejection, replay, retry and cancellation against accepted-reference and
@@ -100,6 +108,14 @@ The worst tested slower-memory three-plane coefficient sum is now 990,859 cycles
 below the old one-million-cycle reference budget for this component. This is
 not full-frame latency or an achieved-clock result; transforms, reconstruction
 and validated publication still need integration and measurement.
+
+V91i2a now measures the actual frame-to-coefficient bridge: its largest tested
+native-frame count is 1,140,868 cycles from frame start, or 1,068,582 cycles
+after the last accepted outer packet byte, with 1,350 cache preload cycles
+separately charged on QM6 rows. The older 990,859-cycle sum remains a chunk
+component fence; the new counters are not a matched speedup comparison. Use the
+new integrated baseline when evaluating refill/mapping changes. Neither fence
+is complete validated decoding, and no routed operating frequency is implied.
 
 Freeze the V91e timing definitions before optimizing further. Keep ingress and
 end-to-end service timing even when work overlaps arrival: a short final-byte

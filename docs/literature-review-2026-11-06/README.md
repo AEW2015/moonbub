@@ -388,6 +388,18 @@ accepted references/HUD/content seals/publication remain later gates. This is
 implementation progress toward a complete application-specific receiver, not
 compression superiority over HEVC/AV1 or hardware throughput evidence.
 
+[V91i2a](../cu66-v91i2/README.md) connects the actual all-BR88 frame subset to
+the coefficient RTL with provisional plane/tile/qcell/qscale binding. Two
+seeds each pass 4,058,368 exact coefficient/tuple checks under two finite memory
+models, 63,412 observed tile records and 10 recovery checks. Four related native
+frames reuse existing exact goldens; synthetic variants do not broaden content
+coverage. It explicitly budgets 98,304 bytes of duplicate packet staging and
+measures a worst tested native coefficient path of 1,140,868 cycles from start.
+This is a new integration baseline, not a codec-rate/quality gain, full pixel
+decoder, physical memory-fit result or hardware frame-rate proof. Next compare
+bounded refill overlap while retaining safe ownership, then complete entropy
+fallback and transform/reconstruction/validation consumers.
+
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
 

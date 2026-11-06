@@ -2,6 +2,21 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+[V91i2a](cu66-v91i2/README.md) connects **actual all-BR88 CS88 frames to the
+frozen V91h coefficient pipeline**, retaining provisional modes/scales and
+binding each dense coefficient to its plane, native tile, qcell and qscale.
+Two final seeds each pass 22 FAST/SLOW rows, 4,058,368 exact coefficient/tuple
+checks, 63,412 observed tile records and 10 directed checks. Four related native
+frames have exact older goldens; synthetic cache/empty/error cases are separate.
+Mixed AB38 frames reject before any child job. A third-plane CRC failure never
+completes, and a clean retry works without reset. Packet staging explicitly
+uses two 49,152-byte banks (98,304 bytes total), before tables/caches; fit is not
+proven. The slowest tested integrated native coefficient path takes 1,140,868
+cycles from frame start, with QM6 preload separately charged. **Next is a
+bounded refill-overlap comparison against this control**, then remaining mixed
+entropy and transform/reconstruction/validation integration. Hardware 30 fps
+and complete validated FPGA decode under 10 ms remain open.
+
 [V91i1](cu66-v91i/README.md) passes the **restricted CS88 structural-admission
 checkpoint**. Independent Python parsing and two strict RTL seeds agree on
 86 vectors: 51 retained native packet variants, one structural-only all-COPY
@@ -11,8 +26,8 @@ fixtures represent 25 distinct packet byte strings and eight cohort/frame
 identities, not 51 new gameplay frames. The gate validates the supported
 envelope, grouped modes, QM87 and bounded chunk descriptors before issuing a
 held receipt; it cannot decode entropy, commit references or publish pixels.
-The wire and quantization are unchanged. **Next is V91i2 residual dispatch and
-positional/quantizer binding**, followed by transaction ownership and actual
+The wire and quantization are unchanged. V91i2a above adds all-BR88 residual
+dispatch and positional/quantizer binding; transaction ownership and actual
 pixel/reconstruction/validation integration. Sustained hardware 30 fps and
 complete validated FPGA decode under 10 ms remain open.
 
