@@ -1,6 +1,6 @@
 """Source-bound implementation only; no bitstream emission or hardware access."""
 from pathlib import Path
-import argparse,hashlib,json,shutil,subprocess,time
+import argparse,hashlib,json,os,shutil,subprocess,time
 root=Path(__file__).resolve().parents[1]
 parser=argparse.ArgumentParser();parser.add_argument('--output');parser.add_argument('--candidate',default='fpga/candidates/cp23-sdram-capture135-20261105-v001');args=parser.parse_args()
 c=(root/args.candidate).resolve()
@@ -14,7 +14,9 @@ for n in ['key.cp23.hex','quantizers.hex']:shutil.copyfile(c/n,out/n)
     for f in out.rglob('*')if f.is_file()},indent=2)+'\n')
 cmd=['C:/Xilinx/2025.2/Vivado/bin/vivado.bat','-mode','batch','-source',str(out/'inputs/build_board.tcl'),
      '-log',str(out/'vivado.log'),'-journal',str(out/'vivado.jou'),'-tclargs',str(out)]
-started=time.monotonic();q=subprocess.run(cmd,cwd=out)
+child_tmp=out/'tmp';child_tmp.mkdir()
+env=dict(os.environ);env['TEMP']=str(child_tmp);env['TMP']=str(child_tmp)
+started=time.monotonic();q=subprocess.run(cmd,cwd=out,env=env)
 (out/'execution.json').write_text(json.dumps(dict(command=cmd,returncode=q.returncode,wall_seconds=time.monotonic()-started,
     scope='Implementation reports only; no BIT, no hardware'),indent=2)+'\n')
 raise SystemExit(q.returncode)
