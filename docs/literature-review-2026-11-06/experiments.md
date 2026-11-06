@@ -4,6 +4,13 @@ These are proposed experiments after the [completed literature review](README.md
 They are not implemented codec features or hardware results. Keep V90 and its
 artifacts frozen; create a separate experiment/version for each wire change.
 
+The [V91–V110 roadmap](../gamebub-v91-v110-development-plan.md) assigns E1–E7
+to V91–V99 and adds the dedicated **V100–V110 7-series physical implementation
+phase**. V99 freezes a qualified candidate/fallback; V100–V110 then compare
+RTL changes under matched constraints, inspect real primitive inference and
+close placement/routing/timing before hardware qualification. Passing a Python
+or component test below does not pass that implementation phase.
+
 ## Shared controls and measurement contract
 
 Use V88 AB38, V88 BR88 and V90 selected packets as controls. Retain the source

@@ -3,6 +3,13 @@
 Reviewed 2026-11-06 against baseline commit
 `7c24b4d80b2a79a45a9a06ddc82a9ef8f83ce030`.
 
+Planning update: the findings below now feed the
+[V91–V110 roadmap](../gamebub-v91-v110-development-plan.md). V91–V99 cover the
+codec experiments; **V100–V110 focus on 7-series RTL mapping, placement, routing
+and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
+and complete routed-design qualification. These phases are planned work, not
+new literature benchmark results or completed implementation milestones.
+
 The strongest next experiment is **a word-oriented BR88 parser coupled to a
 decoder-cost-aware host policy**. For better compression, compare a small-table
 interleaved ANS candidate and a prefix/suffix hybrid against the current

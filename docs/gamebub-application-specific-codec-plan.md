@@ -1,5 +1,35 @@
 # Game Bub application-specific codec: selected direction and gates
 
+## Active roadmap after V90 and the literature review — 2026-11-06
+
+Follow the [V91–V110 development plan](gamebub-v91-v110-development-plan.md).
+V91–V99 turn the [literature-review findings](literature-review-2026-11-06/README.md)
+and [E1–E7 experiments](literature-review-2026-11-06/experiments.md) into a
+qualified codec candidate: word-parallel Rice, finer/selective entropy coding,
+bounded ANS, small host-selected palettes, exact reference reuse, real memory
+service and a finite ESP32/QSPI arrival-service contract. Retain common-input
+HEVC/AV1/JPEG controls and exact reconstruction/quality gates.
+
+**V100–V110 are reserved for 7-series RTL technology mapping, placement,
+routing and timing closure on `xc7a100tcsg324-1`.** The sequence covers a
+reproducible baseline and constraints, elastic pipelines, LUT/carry parser
+mapping, DSP48E1 arithmetic, BRAM/LUTRAM/SRL inference, fanout/control sets,
+CDC/reset integration, bounded routing trials, integrated closure and hardware
+qualification. Every change needs exact-output and recovery checks plus
+mapped-resource and routed-timing evidence; higher assumed clock rates do not
+remove memory/display service limits.
+
+The goals remain **720×480 at sustained hardware 30 fps**, followed by
+**complete validated FPGA decoding strictly under 10 ms**. Both gates remain
+open. [V90](cu66-v90/README.md) supplies packet/model/native correctness evidence,
+not physical signoff. The new roadmap defines each version's deliverables,
+timing and publication fences, reports and 60/600-second hardware gates.
+
+The sections below retain earlier checkpoints and historical next-step/status
+statements; the active forward schedule is the linked V91–V110 roadmap.
+
+## Historical research direction through V39
+
 The [v39 checkpoint](custom-codec-prototype-v39-2026-11-05.md) extends exact
 adaptive coefficient coding to both 48-frame causal histories: complete bytes
 fall 11.98% / 10.07% versus CS37, with no pixel/reference change. Rank coding
