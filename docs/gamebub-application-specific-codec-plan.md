@@ -10,13 +10,13 @@ matches all 506 previous case fields and 63,412 ordered tile records per seed.
 The queue permits at most two queued/pending owners, with standalone legal
 backpressure tests and integrated abort/reset coverage. Mode initialization,
 wire bytes, quantization and the 98,304-byte packet staging budget are unchanged.
-**Next is V91j directly, with no further V91i subcheckpoint required:** reuse
-the existing V69 dequantizer/Q14 IDCT behind bounded coefficient-tile assembly
-and current metadata/epoch ownership, then requalify exact arithmetic and
-integrated residual output. A source-data check matches 384 quantizer entries
-and 64 DCT constants; it is not a new inverse RTL proof. AB38 and complete
-frame transactions remain separate integration work. Hardware 30 fps and
-complete validated decoding under 10 ms remain open.
+[V91j](cu66-v91j/README.md) now connects the actual BR88 frame path through
+two bounded coefficient banks to the unchanged RTL dequantizer and two-pass
+Q14 IDCT. Exact Python goldens qualify signed, unclipped residuals, including
+quantizer placement, metadata, stalls and cancellation. **Next is V91k directly:**
+accepted-reference prediction, COPY/constant handling, reconstruction and output
+conversion. AB38, HUD/content validation and atomic publication remain open.
+Hardware 30 fps and complete validated decoding under 10 ms remain open.
 
 [V91i2a](cu66-v91i2/README.md) connects **actual all-BR88 CS88 frames to the
 frozen V91h coefficient pipeline**, retaining provisional modes/scales and
@@ -29,8 +29,8 @@ completes, and a clean retry works without reset. Packet staging explicitly
 uses two 49,152-byte banks (98,304 bytes total), before tables/caches; fit is not
 proven. The slowest tested integrated native coefficient path takes 1,140,868
 cycles from frame start, with QM6 preload separately charged. V91i2b above
-qualifies refill overlap against this control; V91j transform integration is
-next on the supported BR88 path. Hardware 30 fps
+qualifies refill overlap against this control; V91j above adds actual RTL
+transform integration on the supported BR88 path. Hardware 30 fps
 and complete validated FPGA decode under 10 ms remain open.
 
 [V91i1](cu66-v91i/README.md) passes the **restricted CS88 structural-admission

@@ -22,7 +22,8 @@ bounded write overlap pass for the coefficient endpoint. V91g read prefetch and
 its V91g2 two-bank preparation/delivery follow-up also pass. V91h synchronous
 packet-staging ports, V91i1 restricted CS88 structural admission, V91i2a
 all-BR88 residual dispatch/placement and V91i2b bounded refill overlap pass
-functionally. V91j is the direct next implementation milestone.** Mixed entropy,
+functionally. V91j now passes actual dequantization/Q14 IDCT integration;
+V91k reconstruction is the direct next milestone.** Mixed entropy,
 complete transactions and the remaining pixel/validation path stay open, but
 are not extra V91i prerequisites for starting transforms on the BR88 subset.
 The original unlettered V91 and published V91b/V91c/V91d retain their names.
@@ -65,7 +66,7 @@ list the selected features and deferred experiments.
 | **V91g / V91g2** | **Passed for the coefficient endpoint:** bounded read prefetch, then two-bank coded preparation concurrent with delivery; RAW retains its qualified path. | [V91g2 evidence](cu66-v91g2/README.md): another 16.08%/16.30–16.31% fewer FAST/SLOW actual-packet cycles than V91g, exact bytes/output, 720 control metric matches and exact RAW parity. Each seed passes 47 integrated + nine standalone checks; at most two tile owners and one accepted request. Physical fit remains unqualified. |
 | **V91h** | **Passed functionally:** compile-time synchronous staging with one byte receive-write port, one registered byte-read port and bounded gather/held-word registers. | [Two-seed evidence](cu66-v91h/README.md): exact bytes/coefficient and legacy parity, 56 synchronous / 47 legacy integrated checks plus nine standalone checks per seed. Actual-packet cycle cost +0.1000% FAST / +0.0865–0.0921% SLOW; no speedup claim. Header/descriptor/padding, RAW, held sparse output and canceled pending reads pass. RAM inference/fit/clock remain V100–V110 work. |
 | **V91i** | **Admission, BR88 dispatch/placement and bounded refill overlap passed for the documented subset.** Preserve provisional mode/scales, exact dense tuples and real child ACK ownership. Mixed entropy and complete transaction integration remain open alongside later consumers. | [V91i2b evidence](cu66-v91i2b/README.md): two static configurations per seed, exact V91i2a disabled control, unchanged coefficients and 5.1656% FAST / 4.2342–4.2450% SLOW native-cycle reductions under the defined service rules. No further V91i subcheckpoint is required before V91j. |
-| **V91j — next** | Reuse/requalify the existing V69 dequantizer and Q14 IDCT, connected through bounded tile assembly and current metadata/epoch ownership. | Exact signed widths, two-pass Q14 rounding and unclipped residual parity; zero/DC/AC, both plane types/all scales, limits, backpressure, abort/retry and integrated completion fences. Pixel prediction/add/clamp remains V91k. No zero-time transform substitute in the measured RTL endpoint. |
+| **V91j — passed for BR88 residuals** | [Actual frame-to-residual integration](cu66-v91j/README.md): two bounded coefficient banks feed the unchanged V69 dequantizer and Q14 IDCT with frame/child/position ownership. | Independent exact signed20 DQ and signed24 residual goldens; two strict seeds, FAST/SLOW service, 48 boundary cases and active-math cancellation. Completion waits for the last accepted residual. No software transform substitutes for RTL; pixels/publication remain later gates. |
 | **V91k** | Connect reconstruction, accepted references, COPY/constant handling, hidden-pixel normalization and output conversion. | Full canonical/reference and intended visible RGB565 pixels match. Reference/scanout ownership prevents overwrite; all memory service is charged. |
 | **V91l** | Integrate HUD/content validation, frame hashes/seals and atomic validated publication. | Late errors never publish a partial frame or corrupt accepted references. Full publication fence, rollback/retry and held-scanout behavior are checked. |
 | **V91m** | Run the complete functional frame path with finite transport, memory and display-consumer service models at 30-Hz source releases. | No hidden software pixel/HUD/publication endpoint in a claimed full-RTL pass; exact full frames, bounded queues, recovery and complete latency distributions. Simulation is still distinct from hardware 30 fps. |
@@ -100,15 +101,15 @@ V91i is divided into three reviewable integration gates:
   scanout ownership. Integrate the consumers in V91j–l before claiming complete
   frame acceptance. Unsupported native profiles remain explicit rejections.
 
-**Stop adding V91i subcheckpoints before transforms.** The next implementation
-is V91j, with three tasks: bounded 64-coefficient tile assembly and metadata
-ownership; reuse/adaptation of the existing dequantizer and two-pass IDCT;
-independent exact residual goldens plus integrated backpressure/cancellation
-tests. The [reuse check](cu66-v91i2b/README.md#direct-next-milestone-v91j)
-matches 384 quantizer entries and 64 DCT constants to the native profile.
-Those constant checks and historical component tests are prerequisites to
-reuse, not a substitute for current-stream integration. V91i3 commits/publication
-must integrate with V91j–l, rather than creating a circular prerequisite for J.
+**V91j closes the transform milestone; proceed directly to V91k.** The
+[current integration evidence](cu66-v91j/README.md) checks real coefficient
+assembly, real dequantizer output and real Q14 IDCT residuals against independent
+Python goldens. Two 64×16-bit coefficient banks add 256 logical payload bytes,
+plus existing math workspace and control; this is not a mapped-fit result.
+V91k must consume provisional modes/scales and accepted references, implement
+COPY/constant and residual reconstruction, and measure actual memory service.
+V91l then commits only fully validated frames. No additional V91i nesting is
+needed, and no coefficient/residual endpoint may be labeled full decoding.
 
 V91f is promoted for functional scheduling under its bounded ownership contract;
 physical resource fit is still unqualified. V91g is promoted only if measured
@@ -118,8 +119,8 @@ and one accepted request. Preserve all frozen controls and retained failures.
 V91h adds registered staging service with a small measured cycle cost.
 The worst tested slower-memory three-plane coefficient sum is now 990,859 cycles,
 below the old one-million-cycle reference budget for this component. This is
-not full-frame latency or an achieved-clock result; transforms, reconstruction
-and validated publication still need integration and measurement.
+not full-frame latency or an achieved-clock result. V91j measures transforms
+through accepted residuals; reconstruction and validated publication remain open.
 
 V91i2a now measures the actual frame-to-coefficient bridge: its largest tested
 native-frame count is 1,140,868 cycles from frame start, or 1,068,582 cycles

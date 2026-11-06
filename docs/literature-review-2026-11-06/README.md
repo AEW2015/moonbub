@@ -404,11 +404,11 @@ fallback and transform/reconstruction/validation consumers.
 native coefficient cycles fall 5.1656% FAST and 4.2342–4.2450% SLOW, with exact
 disabled-control parity and no coefficient/quantization change. FAST isolates
 deterministic refill cost; SLOW uses the same seeded service rule without an
-identical absolute stall trace. The direct next milestone is V91j, reusing and
-requalifying existing inverse blocks behind bounded tile/epoch ownership.
-Constant compatibility (384 quantizers, 64 DCT values) is checked; complete
-inverse integration and hardware milestones remain open. More V91i nesting
-is not a prerequisite, and this is not a rate/quality gain over HEVC/AV1.
+identical absolute stall trace. V91j below qualifies the actual inverse blocks
+behind bounded tile/epoch ownership, extending the prior constant-compatibility
+check (384 quantizers, 64 DCT values) to live-stream arithmetic. Reconstruction
+and hardware milestones remain open. More V91i nesting is not a prerequisite,
+and this is not a rate/quality gain over HEVC/AV1.
 
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
@@ -449,3 +449,14 @@ validated FPGA decode strictly below 10 ms remains a separate open gate.
 ```sh
 python3 scripts/literature-review-2026-11-06/derive_comparison.py --check
 ```
+
+
+[V91j](../cu66-v91j/README.md) now qualifies the proposed bounded-transform
+integration on actual BR88 frames. Two coefficient banks overlap assembly with
+real dequantization and two-pass Q14 IDCT; independent Python arithmetic checks
+exact signed residuals. This changes neither the wire format nor quantization
+and makes no compression-superiority claim. Next is V91k reconstruction against
+accepted references, followed by HUD/content validation and atomic publication.
+Residual completion cycles include actual transform service and must not be
+compared as a speedup against earlier coefficient-only endpoints. Physical
+30 fps, complete validated sub-10-ms decoding and 7-series fit/timing remain open.
