@@ -1,0 +1,76 @@
+{
+  "schema": "cu66-v86-wire-layout-audit-v1",
+  "status": "PASS_LAYOUT_REVIEW_SMOKE_ONLY",
+  "sources": {
+    "builder": "scripts/cu66-v86/run_wire.py",
+    "builder_sha256": "543f116837e0a2385adc81b3f46661d1a2cb3573934072385dc304b5208987dc",
+    "receiver": "experiments/python-gamebub-v86/receiver.cpp",
+    "receiver_sha256": "5b44225d2ca4e999c169f3b61bcdbeb599f3bb03553e318bccccc69324266973",
+    "smoke_report": "experiments/python-gamebub-v86/wire-attempts/20261106T134936488174Z-233e30ae/results.json"
+  },
+  "header": {
+    "prefix_bytes": 52,
+    "digest_bytes": 64,
+    "reserved_bytes": 12,
+    "total_bytes": 128,
+    "arithmetic": "52 + 64 + 12 = 128",
+    "fields": [
+      {"offset": 0, "bytes": 4, "field": "magic", "value": "CS86"},
+      {"offset": 4, "bytes": 1, "field": "version", "value": 1},
+      {"offset": 5, "bytes": 1, "field": "flags", "delta": 0, "key": 1},
+      {"offset": 6, "bytes": 1, "field": "group_size", "value": 16},
+      {"offset": 7, "bytes": 1, "field": "map_method", "accepted_range": [0, 3]},
+      {"offset": 8, "bytes": 4, "field": "frame_id", "encoding": "u32 big-endian"},
+      {"offset": 12, "bytes": 4, "field": "reference_id", "encoding": "u32 big-endian"},
+      {"offset": 16, "bytes": 8, "field": "generation", "encoding": "u64 big-endian"},
+      {"offset": 24, "bytes": 2, "field": "width", "value": 720},
+      {"offset": 26, "bytes": 2, "field": "height", "value": 480},
+      {"offset": 28, "bytes": 2, "field": "block_size", "accepted_values": [16, 32]},
+      {"offset": 30, "bytes": 2, "field": "reserved", "value": 0},
+      {"offset": 32, "bytes": 4, "field": "chunk_cap", "accepted_values": [256, 65536]},
+      {"offset": 36, "bytes": 4, "field": "map_body_length", "maximum": 976},
+      {"offset": 40, "bytes": 4, "field": "quantizer_map_length", "value": 338},
+      {"offset": 44, "bytes": 4, "field": "hud_length", "range_inclusive": [110, 49152]},
+      {"offset": 48, "bytes": 4, "field": "residual_data_length", "encoding": "u32 big-endian"},
+      {"offset": 52, "bytes": 32, "field": "expected_content_root"},
+      {"offset": 84, "bytes": 32, "field": "expected_content_seal"},
+      {"offset": 116, "bytes": 12, "field": "reserved_padding", "value": 0}
+    ]
+  },
+  "body_order": ["raw_mode_map_body", "338_byte_qmap", "Y_U_V_chunk_records", "HUD_payload", "4_byte_big_endian_crc32"],
+  "length_rule": "packet_bytes = 128 + map_body_length + 338 + residual_data_length + hud_length + 4",
+  "profile_binding": {
+    "context_and_hidden_mask_transmitted": false,
+    "context_and_hidden_mask": "fixed receiver profile; geometry 720x480, granularity 16, profile CU66-V82-CONTENT-SHA256-TREE-2",
+    "previous_root_transmitted": false,
+    "previous_root_source": "accepted receiver state for deltas; all zero for key frames",
+    "implicit_values_checked_by": ["fixed-profile map reconstruction", "reference/state checks", "recomputed root", "recomputed content seal"],
+    "hud_digest_transmitted": false,
+    "hud_digest_source": "computed from decoded semantic HUD patches and bound into the recomputed C2 seal",
+    "key_flag": {"delta": 0, "key": 1},
+    "map_method_3": "CS86 grouped 16-tile map body; not a silent reinterpretation of CS85 fields"
+  },
+  "limits": {
+    "chunk_caps": [256, 65536],
+    "research_host_packet_max_bytes": 2097152,
+    "research_host_packet_max_is_hardware_capacity": false,
+    "compatibility_budget_bytes": 49152,
+    "formal_transport_negotiation_implemented": false,
+    "bounded_hardware_streaming_implemented": false
+  },
+  "smoke_observation": {
+    "attempt": "20261106T134936488174Z-233e30ae",
+    "status": "PASS_SMOKE_ONLY",
+    "sources": 2,
+    "received_packets": 12,
+    "configurations": 6,
+    "native_receiver_exit_codes": [0, 0, 0, 0, 0, 0],
+    "scope": "Two-source actual packet smoke and native parity only; no full 457-source native parity claim"
+  },
+  "qualification": {
+    "full_457_native_parity": false,
+    "fpga_or_esp32_integration": false,
+    "sustained_30fps_or_sub_10ms_hardware_result": false,
+    "hardware_receive_memory_or_timing_closure": false
+  }
+}
