@@ -1,0 +1,111 @@
+{
+  "schema": "cu76-structured-cache-v1",
+  "status": "PASS_PYTHON_CACHE_AND_RENDER_MODEL",
+  "models": [
+    {
+      "lookahead_strips": 0,
+      "Y_column_slots": 1,
+      "chroma_column_slots_per_plane": 2,
+      "HUD_block_columns_per_rectangle": 2,
+      "cache_data_bytes": 14592,
+      "RGB_words_checked": 345600,
+      "cache_sample_checks": 1921920,
+      "bursts": 35040,
+      "per_strip_miss_sets_equal_independent_LRU_trace": true
+    },
+    {
+      "lookahead_strips": 1,
+      "Y_column_slots": 2,
+      "chroma_column_slots_per_plane": 2,
+      "HUD_block_columns_per_rectangle": 3,
+      "cache_data_bytes": 19968,
+      "RGB_words_checked": 345600,
+      "cache_sample_checks": 1921920,
+      "bursts": 35040,
+      "per_strip_miss_sets_equal_independent_LRU_trace": true
+    },
+    {
+      "lookahead_strips": 2,
+      "Y_column_slots": 3,
+      "chroma_column_slots_per_plane": 3,
+      "HUD_block_columns_per_rectangle": 4,
+      "cache_data_bytes": 29184,
+      "RGB_words_checked": 345600,
+      "cache_sample_checks": 1921920,
+      "bursts": 35040,
+      "per_strip_miss_sets_equal_independent_LRU_trace": true
+    }
+  ],
+  "early_schedule_contract": {
+    "service_release": "strip i at max(0,i-1)*P",
+    "cache_ready_deadline_and_consumer_start": "strip i at (i+1)*P",
+    "initial_preroll_periods": 1,
+    "max_live_strips": 3,
+    "requires_model_lookahead_strips": 2,
+    "required_data_bytes": 29184
+  },
+  "underbudget_probes": [
+    {
+      "configuration": "three-live strips with Y slots2",
+      "expected_live_column_hazard": [
+        "YUV",
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      "status": "EXPECTED_HAZARD_DETECTED"
+    },
+    {
+      "configuration": "three-live strips with chroma slots2",
+      "expected_live_column_hazard": [
+        "YUV",
+        1,
+        4,
+        0,
+        0,
+        2
+      ],
+      "status": "EXPECTED_HAZARD_DETECTED"
+    },
+    {
+      "configuration": "three-live strips with HUD slots3",
+      "expected_live_column_hazard": [
+        "HUD",
+        0,
+        2,
+        0,
+        0,
+        3
+      ],
+      "status": "EXPECTED_HAZARD_DETECTED"
+    }
+  ],
+  "negative_probe": {
+    "configuration": "one-striplookahead withonlytwoHUDblockcolumns",
+    "expected_live_column_hazard": [
+      "HUD",
+      0,
+      2,
+      0,
+      0,
+      2
+    ],
+    "status": "EXPECTED_HAZARD_DETECTED"
+  },
+  "source_sha256": {
+    "scripts/cu66-v76/structured_cache.py": "71eecebbe29fb25491becbd71633f27893c1f268b2e9f2cbb338b4963c4f2120"
+  },
+  "input_sha256": {
+    "fpga/experiments/cu66-v76/service/trace.json": "c201389db8547b3ab6fed2638892eb0041c8b907e2b8c24c02e68921e1d9d27c",
+    "fpga/experiments/cu66-v76/service/trace.mem": "0b10f21bccb4545a1cca1b0685a8565e726c801686c1e48dbf75ffa892fecce8"
+  },
+  "scope": "Independent fixed-column softwarebank model versus independent LRUmemorymiss trace and mathematical fullframe RGB565 oracle; synthetic YUV/HUD pixels only",
+  "limitations": [
+    "Not RTLcache/renderer, port inference, cycle/compute-latency, CDC or physical proof",
+    "Prefetch moves require separate live tags/data for pending strip; generation switches and leases unmodeled",
+    "Oneword-perbeat streamedfill versus128-bit unpack/bankwrite timing must be implemented and measured",
+    "No target30fps or under10ms result"
+  ]
+}
