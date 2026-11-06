@@ -14,13 +14,22 @@ four related native frames and two labeled synthetic cases. New reference and
 candidate-memory service is charged; accepted read owners survive warm reset
 and cancellation until matching ACK drain. No encoding or quantization changes.
 
-The uncached converter costs 3,110,400 external byte reads per frame. Next
-qualify a **1,440-byte two-row chroma cache** against this exact control: loading
-each chroma byte once would reduce total reads to 518,400, sixfold fewer. This
-is an architectural read-count target; cached RTL performance is not yet
-measured. Proceed directly to **V91l HUD/content validation and atomic
-publication**, then complete finite transport/memory/display integration at
-V91m. Hardware 30 fps and complete validated decoding under 10 ms remain open.
+The [registered chroma cache](cu66-v91k-cache/README.md) now qualifies against
+the unchanged uncached converter: **1,440 logical payload bytes** reduce external
+reads from 3,110,400 to 518,400/frame, sixfold fewer. FAST conversion falls from
+10,022,400 to 2,938,320 cycles (**70.68247% fewer**), including startup and local
+registered reads. Prefill increases first-accepted-read to first-word latency
+from 28 to 4,328 FAST cycles. Two final seeds also check a nonuniform synthetic
+edge frame and late-eviction cancellation; each path checks 9,676,800 RGB565
+words across the combined main/diagnostic campaign. SLOW compares measured
+runs under the same seeded service rules, with different absolute stall traces.
+
+Proceed directly to **V91l HUD/content validation and atomic publication**,
+then complete finite transport/memory/display integration at V91m. Further
+memory optimization should compare actual bounded multi-byte reads and local
+lookup overlap against this exact cache control. No physical clock or full
+validated latency follows from converter-only replay. Hardware 30 fps and
+complete validated decoding under 10 ms remain open.
 
 [V91i2b](cu66-v91i2b/README.md) qualifies bounded registered-read refill
 overlap with **5.1656% fewer FAST native-frame coefficient cycles** and

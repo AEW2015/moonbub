@@ -23,8 +23,9 @@ its V91g2 two-bank preparation/delivery follow-up also pass. V91h synchronous
 packet-staging ports, V91i1 restricted CS88 structural admission, V91i2a
 all-BR88 residual dispatch/placement and V91i2b bounded refill overlap pass
 functionally. V91j now passes actual dequantization/Q14 IDCT integration;
-V91k canonical reconstruction and base RGB565 memory replay now pass;
-V91l validation/publication is the direct next milestone.** Mixed entropy,
+V91k canonical reconstruction and base RGB565 memory replay now pass,
+including the measured registered chroma-row-cache comparison. V91l
+validation/publication is the direct next milestone.** Mixed entropy,
 complete transactions, HUD/content validation and the monolithic memory/display
 join stay open; they do not require additional V91i subcheckpoints.
 The original unlettered V91 and published V91b/V91c/V91d retain their names.
@@ -111,15 +112,23 @@ needed; neither endpoint validates or publishes frames. V91l must verify
 canonical/HUD content roots and seals before atomic accepted-reference and
 publication commit; V91m joins the full finite-service workload.
 
-The measured uncached RGB control performs 3,110,400 acknowledged byte reads
-per frame. Before declaring the 30-Hz service gate, implement and compare a
-1,440-byte two-row chroma cache: 345,600 Y + 172,800 unique Cb/Cr bytes would
-reduce external reads sixfold to 518,400. Bank row/parity data for synchronous
-7-series ports, preserve the two interpolation rounding points and edge
-replication, and invalidate row tags without releasing an accepted pending
-fill owner on reset/cancel. Qualify exact disabled/control output, all service
-costs and cancellation before claiming any cycle reduction. This is a bounded
-memory-scheduling optimization, not another prerequisite letter under V91i.
+The [registered two-row chroma cache](cu66-v91k-cache/README.md) now passes
+that bounded scheduling comparison: 1,440 logical payload bytes, four registered
+180×16 row/parity banks, exact output and 518,400 acknowledged reads/frame
+versus the unchanged control's 3,110,400. FAST full conversion is 2,938,320
+versus 10,022,400 cycles, including prefill and local RAM service; startup to
+the first word grows (first accepted read → first word: 4,328 versus 28 cycles).
+Two seeds check the retained matrix plus a separate nonuniform synthetic
+edge fixture and 29 cache recovery checks. SLOW observations use the same
+seeded service rules, not identical absolute stall traces. The actual RAM
+mapping/fit/clock remains unqualified.
+
+Before declaring 30-Hz full service, compare bounded aligned multi-byte memory
+reads and overlapped local lookup against this exact cached byte-service
+control. Preserve row validity, interpolation rounding, pending-owner drain
+and all explicit service costs. This is a bounded memory-scheduling follow-up,
+not another prerequisite letter under V91i. V91l/V91m validation and the full
+physical qualification remain separate gates.
 
 V91f is promoted for functional scheduling under its bounded ownership contract;
 physical resource fit is still unqualified. V91g is promoted only if measured

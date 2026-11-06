@@ -474,3 +474,18 @@ this sixfold read-count opportunity is not yet a measured cached-RTL speedup.
 No representation/quality or HEVC/AV1 superiority claim follows. Next integrate
 HUD/content checks and atomic publication, then qualify finite full-frame
 service and physical implementation.
+
+
+The [V91k chroma-cache experiment](../cu66-v91k-cache/README.md) measures the
+row-reuse proposal in RTL. Four registered row/parity banks add 1,440 logical
+payload bytes; external reads fall sixfold to 518,400/frame. Exact FAST RGB565
+conversion falls from 10,022,400 to 2,938,320 cycles (70.68247% fewer), with
+prefill startup explicitly retained (first accepted read → first word grows
+from 28 to 4,328 cycles). Both current-source seeds compare the unchanged
+control, source-backed candidate memories and a separate nonuniform edge
+pattern; cancellation during partial fill and later eviction also passes.
+SLOW traces share service rules but differ in random draw consumption. This
+is an exact memory-scheduling win, without changing codec bytes, quantization
+or claiming compression superiority. Bounded aligned multi-byte service and
+local lookup overlap are subsequent candidates; HUD/content validation,
+publication, full finite-service integration and physical milestones stay open.
