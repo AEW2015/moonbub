@@ -489,3 +489,20 @@ is an exact memory-scheduling win, without changing codec bytes, quantization
 or claiming compression superiority. Bounded aligned multi-byte service and
 local lookup overlap are subsequent candidates; HUD/content validation,
 publication, full finite-service integration and physical milestones stay open.
+
+
+[V91l's heterogeneous validation partition](../cu66-v91l/README.md) now measures
+real RTL C2/HUD/seal hashing and atomic reference/presentation ownership. All
+28,700 SHA-job digests across two seeds match an independent hashlib oracle;
+54 directed entries per seed cover late errors, identity/replay, pending-write
+abort and negative presentation gates. Native C++ HUD decode is an explicit
+endpoint outside the RTL cycle fence. Full RTL HUD and the live producer/shared
+memory/display joins stay open; this does not complete all-RTL V91l/V91m.
+
+The [aligned read follow-up](../cu66-v91k-lines/README.md) preserves exact RGB565
+while reducing external transactions to 32,400 gathered 16-byte responses/frame.
+The service model charges eight x16 payload beats for each response, consistent
+with the board interface width, plus response/stall costs. FAST cycles improve
+another ~6.62% over the byte-service chroma cache, with both inner and outer
+owners tested on reset/ACK coincidence. No codec/quality superiority or
+physical SDRAM/timing result follows from this converter-only replay.

@@ -24,8 +24,10 @@ packet-staging ports, V91i1 restricted CS88 structural admission, V91i2a
 all-BR88 residual dispatch/placement and V91i2b bounded refill overlap pass
 functionally. V91j now passes actual dequantization/Q14 IDCT integration;
 V91k canonical reconstruction and base RGB565 memory replay now pass,
-including the measured registered chroma-row-cache comparison. V91l
-validation/publication is the direct next milestone.** Mixed entropy,
+including the measured registered chroma-row-cache and aligned-line-reader
+comparisons. V91l now qualifies real RTL C2/HUD/seal hashing and atomic bank
+publication with a native C++ HUD endpoint and canonical replay. It remains
+partial until live producer and HUD integration close.** Mixed entropy,
 complete transactions, HUD/content validation and the monolithic memory/display
 join stay open; they do not require additional V91i subcheckpoints.
 The original unlettered V91 and published V91b/V91c/V91d retain their names.
@@ -70,7 +72,7 @@ list the selected features and deferred experiments.
 | **V91i** | **Admission, BR88 dispatch/placement and bounded refill overlap passed for the documented subset.** Preserve provisional mode/scales, exact dense tuples and real child ACK ownership. Mixed entropy and complete transaction integration remain open alongside later consumers. | [V91i2b evidence](cu66-v91i2b/README.md): two static configurations per seed, exact V91i2a disabled control, unchanged coefficients and 5.1656% FAST / 4.2342–4.2450% SLOW native-cycle reductions under the defined service rules. No further V91i subcheckpoint is required before V91j. |
 | **V91j — passed for BR88 residuals** | [Actual frame-to-residual integration](cu66-v91j/README.md): two bounded coefficient banks feed the unchanged V69 dequantizer and Q14 IDCT with frame/child/position ownership. | Independent exact signed20 DQ and signed24 residual goldens; two strict seeds, FAST/SLOW service, 48 boundary cases and active-math cancellation. Completion waits for the last accepted residual. No software transform substitutes for RTL; pixels/publication remain later gates. |
 | **V91k — passed for the BR88 base path** | [Canonical reconstruction and base RGB565 replay](cu66-v91k/README.md): actual modes/residuals, leased accepted references, COPY/hidden CONST128, add/clamp and native color conversion. | Two strict seeds, 12 complete successful rows each, exact source-backed canonical/base RGB565 bytes, finite reference/write/read service, abort/reset/owner drain and retries. The RGB consumer replays actual canonical memory from a separate RTL simulation; a monolithic controller, HUD and publication remain later gates. |
-| **V91l** | Integrate HUD/content validation, frame hashes/seals and atomic validated publication. | Late errors never publish a partial frame or corrupt accepted references. Full publication fence, rollback/retry and held-scanout behavior are checked. |
+| **V91l — partial; validation partition passed** | [Real C2/HUD/seal RTL and atomic publication](cu66-v91l/README.md), actual native C++ HUD decode, finite candidate-write drain and source-backed canonical replay. | Two strict seeds, 28 committed case/profile rows, all 28,700 hash jobs independently checked, late rollback/identity/retry and held scanout. Full RTL HUD decode/overlay, live canonical/write-ACK join and physical service remain open; this is not a complete all-RTL milestone. |
 | **V91m** | Run the complete functional frame path with finite transport, memory and display-consumer service models at 30-Hz source releases. | No hidden software pixel/HUD/publication endpoint in a claimed full-RTL pass; exact full frames, bounded queues, recovery and complete latency distributions. Simulation is still distinct from hardware 30 fps. |
 
 V91i is divided into three reviewable integration gates:
@@ -103,7 +105,7 @@ V91i is divided into three reviewable integration gates:
   scanout ownership. Integrate the consumers in V91j–l before claiming complete
   frame acceptance. Unsupported native profiles remain explicit rejections.
 
-**V91k closes canonical reconstruction/base conversion; proceed to V91l.**
+**V91k closes canonical reconstruction/base conversion; V91l integration is active.**
 [V91j](cu66-v91j/README.md) retains exact transform qualification.
 [V91k](cu66-v91k/README.md) adds real admitted modes and accepted-reference
 reads, full canonical candidate writes and separate RTL conversion from those
@@ -123,12 +125,21 @@ edge fixture and 29 cache recovery checks. SLOW observations use the same
 seeded service rules, not identical absolute stall traces. The actual RAM
 mapping/fit/clock remains unqualified.
 
-Before declaring 30-Hz full service, compare bounded aligned multi-byte memory
-reads and overlapped local lookup against this exact cached byte-service
-control. Preserve row validity, interpolation rounding, pending-owner drain
-and all explicit service costs. This is a bounded memory-scheduling follow-up,
-not another prerequisite letter under V91i. V91l/V91m validation and the full
-physical qualification remain separate gates.
+The [aligned 16-byte gatherer](cu66-v91k-lines/README.md) now qualifies the
+bounded multi-byte follow-up: three 16-byte plane slots, 32,400 physical line
+requests/frame, each priced as eight x16 data beats plus response overhead.
+FAST conversion is 2,743,921 cycles versus 2,938,320 for the unchanged byte
+cache. Both byte credits and physical read owners drain through reset/error;
+no unpriced wide memory bus is assumed. A command-accurate controller/shared
+service join and local lookup overlap remain separate measurements.
+
+[V91l's qualified partition](cu66-v91l/README.md) computes every C2 tree/HUD/seal
+hash in RTL and atomically commits accepted metadata/bank state only after
+validation and write drain; presentation separately waits for vblank/scanout.
+Its HUD semantic decoding is real native C++ work before the RTL start fence.
+Complete live canonical and physical write-ACK joins, actual HUD decode/overlay
+and intended processor timing/memory are the next functional gates. V91m's
+30-Hz finite-service and the later physical goals remain unproven.
 
 V91f is promoted for functional scheduling under its bounded ownership contract;
 physical resource fit is still unqualified. V91g is promoted only if measured

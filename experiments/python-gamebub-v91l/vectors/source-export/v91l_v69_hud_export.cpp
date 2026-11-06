@@ -1,0 +1,8 @@
+#include "experiments/cu66-native-v69/decoder.hpp"
+#include <fstream>
+#include <iostream>
+#include <sstream>
+using namespace cu66;
+static Bytes readfile(const std::string &p){std::ifstream f(p,std::ios::binary);need(bool(f),"fixture packet open");return Bytes(std::istreambuf_iterator<char>(f),{});}
+static std::vector<std::string> split(const std::string &s){std::vector<std::string> v;std::stringstream x(s);std::string z;while(std::getline(x,z,'\t'))v.push_back(z);return v;}
+int main(int argc,char **argv){try{need(argc==4,"usage index.tsv cohort outputdir");unsigned wanted=unsigned(std::stoul(argv[2]));std::ifstream in(argv[1]);need(bool(in),"index open");std::string line,base=argv[1];base=base.substr(0,base.find_last_of('/')+1);Decoder decoder;int current=-1;unsigned exported=0;while(std::getline(in,line)){auto p=split(line);need(p.size()==6,"index row shape");int caseid=std::stoi(p[0]);unsigned fid=unsigned(std::stoul(p[1]));if(caseid!=current){decoder=Decoder();current=caseid;}if(unsigned(caseid)!=wanted)continue;auto out=decoder.receive(readfile(base+p[2]));need(out->id==fid,"accepted fid mismatch");if((wanted==0&&fid<=3)||(wanted==3&&fid>=48&&fid<=50)){std::string name=std::string(argv[3])+"/c"+std::to_string(wanted)+"-f"+std::to_string(fid)+".hud";std::ofstream dest(name,std::ios::binary);need(bool(dest),"output open");for(auto &patch:out->hud){auto raw=word_bytes(patch.words);dest.write(reinterpret_cast<const char*>(raw.data()),std::streamsize(raw.size()));}dest.close();std::cout<<"cohort="<<wanted<<" fid="<<fid<<" hud_words="<<21120<<"\n";exported++;}}need(exported==(wanted==0?4u:3u),"history exports");return 0;}catch(const std::exception &e){std::cerr<<"ERROR: "<<e.what()<<"\n";return 1;}}

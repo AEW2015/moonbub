@@ -2,6 +2,26 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+[V91l's validation partition](cu66-v91l/README.md) now qualifies real RTL C2
+Merkle roots, semantic-HUD hashes, frame seals and atomic three-bank commit/
+presentation. Two strict seeds validate 28 case/profile commits and compare
+28,700 actual SHA-job digests with an independent oracle. Late content/receipt/
+producer errors and 54 directed entries per seed preserve accepted state;
+held writes, vblank and scanout drain gate commit/presentation. Actual HU25/HX
+HUD semantic decoding remains native C++, and canonical input is replayed.
+**V91l is partial as an all-RTL milestone:** join the live canonical producer,
+actual write ACKs, HUD semantic decoder/overlay and full memory/display service.
+Reported RTL cycles exclude CPU HUD decode, fixture I/O and packet CRC parsing.
+
+The [aligned line reader](cu66-v91k-lines/README.md) adds 48 logical payload
+bytes behind the frozen chroma cache. It fetches each of the 32,400 canonical
+16-byte lines once, replacing 518,400 byte transactions. Responses explicitly
+cost eight x16 data beats plus response/stall service; this is not a widened
+physical bus assumption. FAST conversion improves from 2,938,320 to 2,743,921
+cycles (about 6.62% fewer), with exact output and physical/inner-byte drain
+checks. Command-accurate SDRAM, arbitration/refresh, target timing and hardware
+frame rate remain unqualified. No wire or quantization change is introduced.
+
 [V91k](cu66-v91k/README.md) connects the actual BR88 frame path through
 accepted-reference prediction, COPY/hidden CONST128, signed residual addition
 and clamping to complete canonical Y/Cb/Cr candidate memory. Separate RGB565
@@ -24,8 +44,8 @@ edge frame and late-eviction cancellation; each path checks 9,676,800 RGB565
 words across the combined main/diagnostic campaign. SLOW compares measured
 runs under the same seeded service rules, with different absolute stall traces.
 
-Proceed directly to **V91l HUD/content validation and atomic publication**,
-then complete finite transport/memory/display integration at V91m. Further
+Continue the remaining **V91l live-producer and HUD integration** described
+above, then complete finite transport/memory/display integration at V91m. Further
 memory optimization should compare actual bounded multi-byte reads and local
 lookup overlap against this exact cache control. No physical clock or full
 validated latency follows from converter-only replay. Hardware 30 fps and
