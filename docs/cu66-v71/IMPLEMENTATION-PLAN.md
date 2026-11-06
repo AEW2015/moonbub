@@ -284,10 +284,33 @@ strong D setup/hold checks and audit every moved primitive leaf. Temporary
 mixed control sets during an ECO are not evidence of a legal final placement.
 
 For the morning, preserve build50 for the separately coordinated 25 fps test.
-The first CU71 fixture uses the sealed v35 local key/P loader after an app-only
-update and a qualified BIT. CU66 network capability remains false. The direct
-profile needs an explicit version/capability decision before firmware use;
-do not silently reinterpret an RGB slot or claim a new network contract.
+The selected successor app is now sealed **v36**, with explicit local USB `G`
+for CU71 and `Y` for incompatible DY71. The direct profile is identified by
+magic `44593731`, ABI `00010000` and capabilities `0f`; it does not reinterpret
+CU71's RGB slot. First use still requires an app-only update and a separately
+qualified, exact-profile BIT. V35 remains an immutable prior artifact and
+must reject DY71. CU66 network capability remains false.
+
+Current completion sequence (November 6):
+
+1. Retain build50/v32 for the separately coordinated morning 25 fps test.
+2. Complete report-only full-board DY71 implementation with the proven grouped
+   memory scheduler, SYNCsafe LCD crossing, bounded tile/index arithmetic,
+   lookahead SHA and structural CSR read-address split. Do not relax clocks,
+   SDRAM hold or board I/O budgets. Bind exact source and legal CDC endpoints.
+3. Replay the actual sealed v36/native KEY/P worker against that selected
+   SYNCsafe/math/split-control CSR and checked SDRAM pin model. Keep numeric
+   CSR, physical QSPI wire tests and physical playback evidence separate.
+4. Resolve each measured routed critical path; require positive setup, hold,
+   pulse, complete routing, no DRC errors, reviewed CDC/exception coverage and
+   frozen functional proofs before generating and hashing a BIT.
+5. After the baseline test, perform the known physical app-only update step,
+   check the installed ELF identity, and run the W exception probe plus one
+   explicit local G or Y fixture with USB/camera/counters and build50 rollback.
+6. Keep the 30 fps gate closed until clean unique presentation is measured.
+   The grouped direct three-frame replay has no underruns but a 46.10029 ms
+   second presentation interval. Profile arithmetic, reference traffic and
+   bounded scheduler idle time before changing another parameter.
 
 1. Freeze the pinned sources and generated map/contracts; reproduce the
   457-frame and 28-negative controls without modifying their archived results.

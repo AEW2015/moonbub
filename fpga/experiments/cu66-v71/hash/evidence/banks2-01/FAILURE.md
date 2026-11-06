@@ -1,0 +1,1 @@
+The first functional attempt stopped at NIST_empty because Windows-exported TSV CRLF left a trailing CR in the original C++ digest field. The logged actual and expected visible digest strings match; wrapper public-cycle comparison did not fail. Preserve this attempt. Exporter now explicitly writes LF; no RTL change.

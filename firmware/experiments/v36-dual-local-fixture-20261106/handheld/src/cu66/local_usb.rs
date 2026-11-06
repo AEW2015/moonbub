@@ -1,0 +1,38 @@
+//! USB G: guarded local two-fixture CU71 loader, no network backend or autoprogramming.
+use super::local::{self,Bus,Error};
+use crate::{core_access::MaintenanceGuard,core_coordinator::{Maintenance,CONTROL},device::{Device,drivers::fpga::{FpgaSpiWordSize,SpiCommand,MAX_SPI_READ_CLOCK}},diag_dispatch::{self,Launcher}};
+use std::sync::mpsc;
+static REQUESTS:diag_dispatch::Requests=diag_dispatch::Requests::new();
+const STACK:usize=12_288;
+struct Spawn{profile:local::Profile}
+impl Launcher for Spawn{
+ type Job=MaintenanceGuard;type Sender=mpsc::SyncSender<Self::Job>;
+ fn reserve(&mut self)->Result<Self::Job,()>{MaintenanceGuard::acquire(Maintenance::Benchmark).map_err(|_|())}
+ fn spawn_empty(&mut self)->Result<Self::Sender,()>{let profile=self.profile;let(tx,rx)=mpsc::sync_channel(1);std::thread::Builder::new().name("Cu71Local".into()).stack_size(STACK).spawn(move||{if let Ok(p)=rx.recv(){worker(p,profile);REQUESTS.finished();}}).map_err(|_|())?;Ok(tx)}
+ fn send(&mut self,tx:&Self::Sender,p:Self::Job)->Result<(),Self::Job>{tx.send(p).map_err(|e|e.0)}
+ fn release_unissued(&mut self,p:Self::Job)->bool{drop(p);!CONTROL.lock().unwrap().quarantined()}
+ fn publish(&mut self,tx:Self::Sender){drop(tx)}
+}
+fn heap()->(usize,usize){unsafe{let caps=(esp_idf_svc::sys::MALLOC_CAP_INTERNAL|esp_idf_svc::sys::MALLOC_CAP_8BIT)as u32;(esp_idf_svc::sys::heap_caps_get_free_size(caps),esp_idf_svc::sys::heap_caps_get_largest_free_block(caps))}}
+pub fn start(){start_profile(local::Profile::Cu71)}
+pub fn start_direct(){start_profile(local::Profile::Dy71)}
+fn start_profile(profile:local::Profile){log::info!("USB_CU71_LOCAL requested_profile={:?} network_capability=false",profile);let(free,largest)=heap();if free<170_000||largest<24_576{log::info!("USB_CU71_LOCAL result=heap_budget free={} largest={} required=170000/24576",free,largest);return}if !crate::streaming::diagnostic_trace_idle(){log::info!("USB_CU71_LOCAL result=busy");return}let result=diag_dispatch::launch(&REQUESTS,&mut Spawn{profile});log::info!("USB_CU71_LOCAL launch={:?} network_capability=false",result);}
+struct Adapter<'a>{guard:&'a mut MaintenanceGuard,epoch:Option<u32>,reads:u32,writes:u32}
+impl Bus for Adapter<'_>{
+ fn now(&self)->u64{unsafe{esp_idf_svc::sys::esp_timer_get_time().max(0)as u64}}
+ fn yield_now(&mut self){std::thread::yield_now();}
+ fn read(&mut self,o:u32)->Result<u32,Error>{if o>=0x1000||o&3!=0{return Err(Error::Bounds)}let Some(mut d)=Device::try_lock()else{return Err(Error::Contended)};let epoch=d.fpga.program_epoch();if let Some(old)=self.epoch{if old!=epoch{return Err(Error::Epoch)}}else{self.epoch=Some(epoch)}let r=d.fpga.read_u32(0xe0000000+o).map_err(|_|Error::Io);self.reads=self.reads.saturating_add(1);r}
+ fn write(&mut self,o:u32,value:u32)->Result<(),Error>{if o>=0x1000||o&3!=0{return Err(Error::Bounds)}let Some(mut d)=Device::try_lock()else{return Err(Error::Contended)};if self.epoch!=Some(d.fpga.program_epoch()){return Err(Error::Epoch)}self.guard.side_effects_begin();self.writes=self.writes.saturating_add(1);d.fpga.spi_write(Some(MAX_SPI_READ_CLOCK),SpiCommand{word_size:FpgaSpiWordSize::Bits32,byte_swap:false,increment_address:true},0xe0000000+o,&value.to_be_bytes()).map_err(|_|Error::Io)}
+}
+#[inline(never)]fn worker(mut guard:MaintenanceGuard,profile:local::Profile){
+ let before=heap();let mut io=Adapter{guard:&mut guard,epoch:None,reads:0,writes:0};
+ let mut hud=match super::hud::Hud::new(131072){Ok(h)=>h,Err(e)=>{log::info!("USB_CU71_LOCAL result=allocation reason={:?}",e);return}};
+ let result=local::run_with_profile(&mut io,&mut hud,profile);let reads=io.reads;let writes=io.writes;let epoch=io.epoch;drop(io);
+ // Completed verifies this fixture outcome; accepted/front leases remain live and are retained.
+ // Every attempted mutation retains endpoint+lease; ambiguous errors additionally quarantine explicitly.
+ let succeeded=result.is_ok();log::info!("USB_CU71_LOCAL completed_profile={:?} success={}",profile,succeeded);
+ let retain=writes!=0;
+ let stack=unsafe{esp_idf_svc::sys::uxTaskGetStackHighWaterMark(std::ptr::null_mut())};
+ match result{Ok((report,_proof))=>log::info!("USB_CU71_LOCAL result=completed report={:?} reads={} writes={} epoch={:?} heap_before={:?} heap_after={:?} stack_low={} throughput_claim=false",report,reads,writes,epoch,before,heap(),stack),Err(reason)=>log::info!("USB_CU71_LOCAL result=failed reason={:?} reads={} writes={} epoch={:?} heap_before={:?} heap_after={:?} stack_low={} recovery=retain_endpoint_and_lease_after_mutation",reason,reads,writes,epoch,before,heap(),stack)}
+ if retain{if !succeeded{CONTROL.lock().unwrap().quarantine();}log::info!("USB_CU71_LOCAL state={} endpoint_retained=true lease_retained=true reconfigure_required=true",if succeeded{"completed_held"}else{"quarantined_held"});loop{std::hint::black_box(&hud);std::hint::black_box(&guard);std::thread::park();}}
+}

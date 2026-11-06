@@ -1,5 +1,23 @@
 # CU71 implementation status
 
+## November 6, 02:55 Denver — current checkpoint
+
+The installed hardware remains the last verified **v32 ESP32 application plus build50 FPGA**. The separate CP23/CPL1 reset-replica diagnostic passed its physical fixed-frame test and was rolled back to build50. No CU71/DY71 application or FPGA image has been installed, and no new network run was started.
+
+**ESP32 v36 is built, packaged and independently audited offline.** It preserves the effective v35 SDK configuration byte for byte and adds explicit local USB profile selection: `G` selects CU71 (`43553731`, ABI `00010000`, caps `7`); `Y` selects DY71 (`44593731`, same ABI, caps `f`). A mismatch rejects before writes. Both share the existing maintenance lease and quarantine lifecycle. There is no new network capability or port. Eighteen actual native-endpoint/control-model tests pass. The production UF2 parser validates all 13,137 blocks; the independent sealed source/image audit passes 591 checks. The source bundle is in `firmware/experiments/v36-dual-local-fixture-20261106` and intentionally omits executable images.
+
+Selected producer UF2 SHA-256: `20cdbd6db030b0e99f363f93d0b081d2ca1f718c5e6dc6cb4d5d7edeff52ed97`; ELF: `13278b1f5a16afbcc5c1ed2f3c4c225c628a05b4491cc8e9ec489d02c88d3535`. Static shared SRAM is 130,916 bytes. Individual new-ELF frames are 3,104 bytes for the local runner, 624 for its worker, and 416 for the USB command. These are **not a whole-stack safety proof**; physical first-throw overhead, live heap and task high-water remain open.
+
+Actual v36/native-to-DY71 CSR/PIPE/grouped RTL plus the checked SDRAM pin model passes KEY/P: two accepted, two presented, zero rejects/underruns, and 42,240 HUD writes plus 42,240 real readback comparisons. This numeric CSR co-simulation does not model the physical QSPI wire, CPU wall time or FreeRTOS. A successor binding to SYNCsafe/math/split-control is being prepared separately.
+
+**The direct-YUV scheduler now has clean complete KEY/P/P simulations.** Bounded groups retain the nominal 2:1 LCD/background share, improve SDRAM locality, and produce zero LCD misses/black pixels in the declared three-frame replay. The SYNCsafe successor restricts each of six first synchronizer stages to its second-stage D input and passes the same replay; only presentation timing changes by four memory clocks. It has a reviewed native clock-ratio/held-data CDC proof and scoped C-start delay/skew constraints, not a blanket clock-domain exception. The second presentation interval is 46.10029 ms: the 30 fps gate remains **FAIL**.
+
+Full-board timing is still open. The earlier RGB-based implementation05 completes at **WNS -4.265 ns**, hold +0.012 ns, pulse +2.000 ns. Its critical SHA path motivated a cycle-equivalent lookahead hash and bounded IDCT word-index successor. Implementation06 is running with those exact successors; intermediate physical-optimization slack is not final signoff. The new DY71 shell is being bound to SYNCsafe/math and a structurally split CSR read address. Split-bus old/new wire tests pass, and the unintended queue-to-read-response timing cone disappears (32 paths to zero), with no timing exception added. Its unplaced global estimate still fails; this is not board closure.
+
+Morning order remains: **(1)** separately coordinated existing JPEG/build50 25 fps test; **(2)** finish the exact DY71 source binding, v36 co-simulation and full-board setup/hold/pulse/route/DRC/CDC gates; **(3)** qualify/hash the BIT and pair it with the already sealed v36 image; **(4)** request the known physical app-only USB update step, then run CPU exception and one local KEY/P fixture under USB/camera/counter capture with a build50 rollback. Do not offer Sunshine a custom network test or claim hardware-ready CU66 until those gates are actually complete.
+
+The sections below are historical checkpoints and are superseded by this update.
+
 ## November 6 update — supersedes the historical checkpoint below
 
 Latest checkpoint (about 01:10 Denver): implementation03 completed with **WNS -9.606 ns**, hold +0.028 ns and pulse +2.000 ns. The worst measured path is upstream command selection through row-major tile division/address arithmetic to `tile_base`, not the already repaired entropy modulo. A separately derived address micro-pipeline is being verified. Implementation04 uses reset-light payload successors and is still running; it is not a qualified BIT.

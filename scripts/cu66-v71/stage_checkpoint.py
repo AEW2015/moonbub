@@ -6,6 +6,7 @@ root=Path(__file__).resolve().parents[2]
 parser=argparse.ArgumentParser()
 parser.add_argument('--index',required=True)
 parser.add_argument('--stage',action='store_true')
+parser.add_argument('--exclude-prefix',action='append',default=[],help='Repository-relative active producer directory to omit')
 args=parser.parse_args()
 index=root/args.index
 assert not index.exists()
@@ -13,18 +14,17 @@ sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 allowed={'.sv','.svh','.v','.cpp','.hpp','.h','.rs','.py','.tcl','.xdc','.json','.md','.rpt','.log','.sh','.tsv'}
 skip={'inputs','build','tmp','.Xil','__pycache__','target','python-deps','xsim.dir','.git'}
 files=set()
-for directory in [root/'docs/cu66-v71',root/'scripts/cu66-v71',root/'firmware/experiments/v35-cu71-local-fixture-20261105']:
+for directory in [root/'docs/cu66-v71',root/'scripts/cu66-v71',root/'firmware/experiments/v35-cu71-local-fixture-20261105',root/'firmware/experiments/v36-dual-local-fixture-20261106']:
  for path in directory.rglob('*'):
-  if path.is_file()and not any(part in skip for part in path.relative_to(directory).parts):files.add(path)
+  if path.is_file()and not any(part in skip for part in path.relative_to(directory).parts)and not any(path.relative_to(root).as_posix().startswith(prefix.rstrip('/')+'/')for prefix in args.exclude_prefix):files.add(path)
 fpga=root/'fpga/experiments/cu66-v71'
 omitted=[]
 for path in fpga.rglob('*'):
  if not path.is_file():continue
+ if any(path.relative_to(root).as_posix().startswith(prefix.rstrip('/')+'/') for prefix in args.exclude_prefix):continue
  parts=path.relative_to(fpga).parts
  if any(part in skip for part in parts):continue
- if parts[0]=='tile-address':continue # Active unqualified derivation, next checkpoint.
  if parts[0]=='board'and len(parts)>1 and parts[1].startswith('implementation'):
-  if parts[1]=='implementation04':continue # Native process still writes this directory.
   if path.name not in {'source-freeze.json','selection.json','execution.json','executed.tcl','synthesized-utilization.rpt','timing-summary.rpt','setup-paths.rpt','hold-paths.rpt','utilization.rpt','route-status.rpt','drc.rpt','cdc.rpt','exceptions.rpt','check-timing.rpt','bus-skew.rpt'}:continue
  if path.suffix.lower()in allowed and path.stat().st_size<=2_000_000:files.add(path)
  else:omitted.append(dict(path=path.relative_to(root).as_posix(),bytes=path.stat().st_size))

@@ -1,0 +1,18 @@
+"""Bind whole SYNCsafe integration and intentional frame-fence latency."""
+from pathlib import Path
+import hashlib,json,re
+r=Path(__file__).resolve().parents[4];root=r/'fpga/experiments/cu66-v71/direct-system';d=root/'syncsafe-math-v002';p=root/'board-math-v001';run=d/'evidence/syncsafe-three01';old=p/'evidence/math-group-three01';o=d/'qualification-native-v002.json';assert not o.exists();sha=lambda f:hashlib.sha256(f.read_bytes()).hexdigest();cdc=r/'fpga/experiments/cu66-v71/direct-display/cdc';hpath=cdc/'handoff02/manifest.json';h=json.loads(hpath.read_text())
+assert json.loads((run/'result.json').read_text())['frames']==3
+for n,v in json.loads((run/'source-freeze.json').read_text()).items():assert sha(r/n)==v,n
+lines=(run/'frames.log').read_text().splitlines();prior=(old/'frames.log').read_text().splitlines();vals=lambda x:{k:int(v)for k,v in re.findall(r'(\w+)=(\d+)',x)};newpresent=[vals(x)for x in lines if x.startswith('DY71_PRESENTED')];oldpresent=[vals(x)for x in prior if x.startswith('DY71_PRESENTED')];assert len(newpresent)==3
+for a,b in zip(oldpresent,newpresent):assert b['cycle']-a['cycle']==4 and all(b[k]==a[k]for k in ['generation','fid','count'])
+assert [x for x in lines if not x.startswith('DY71_PRESENTED')]==[x for x in prior if not x.startswith('DY71_PRESENTED')],'Unexpected non-frame-fence change'
+assert(run/'control.log').read_bytes()==(old/'control.log').read_bytes()
+frames=[vals(x)for x in lines if x.startswith('SYSTEM_FRAME_PASS')];summary=vals(next(x for x in lines if x.startswith('SYSTEM_PASS')));assert summary['total_underruns']==0 and summary['black_lines']==0
+top=(d/'cu71_system_direct_syncsafe.sv').read_text().replace('module cu71_system_direct_syncsafe #(','module cu71_system_direct_math #(').replace('    cu71_direct_scanout_syncsafe scanout(','    cu71_direct_scanout_pipe scanout(');assert top==(p/'cu71_system_direct_math.sv').read_text()
+fanout=cdc/'syncsafe-ooc02/first-stage-fanout.txt';fanout_lines=fanout.read_text().splitlines();assert len(fanout_lines)==6
+for chain in ['request_sync0','request_sync1','frame_sync','done_sync0','done_sync1','valid_sync']:assert 'lcd/'+chain+'_reg[0] ENDPOINTS lcd/'+chain+'_reg[1]/D'in fanout_lines
+for a in h['artifacts']:assert sha(r/a['path'])==a['sha256'],a['path']
+proofs={}
+for f in [d/'sources.json',d/'derivation.json',run/'result.json',run/'frames.log',run/'control.log',run/'source-freeze.json',run/'execution.json',run/'tb.cpp',run/'cu71_direct_system_sim.sv',p/'qualification-native-v001.json',old/'frames.log',hpath,fanout,cdc/'direct_cdc_candidate.tcl',Path(__file__).resolve()]:proofs[f.relative_to(r).as_posix()]=sha(f)
+o.write_text(json.dumps({'status':'PASS_SYNCsafe_DY71_WHOLE_NATIVE_KEY_P_P_AND_FANOUT_REFERENCES','frames':frames,'summary':summary,'presentation_clock_deltas':[b['cycle']-a['cycle']for a,b in zip(oldpresent,newpresent)],'all_other_timeline_lines_identical':True,'bounded_control_identical':True,'source_defined_idle_change':'Stage1-only token equality plus2quietmemoryclocks; not universal+2 on completeownerdrain','fixed_frame_qualification_memclocks':4,'six_stage0_only_stage1D_proofs':fanout_lines,'remaining_manual_CDC':h['remaining_manual_CDC'],'new_C_start_constraints_sha256':sha(cdc/'direct_cdc_candidate.tcl'),'proofs':proofs,'board_source_preparation_allowed':True,'routed_timing':False,'whole_board_CDC_qualified':False,'physical_QSPI_qualified':False,'hardware':False,'thirty_fps_qualified':False},indent=2)+'\n');print(json.dumps({'qualification':str(o),'sha256':sha(o),'presentation_deltas':[b['cycle']-a['cycle']for a,b in zip(oldpresent,newpresent)]}))

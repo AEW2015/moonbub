@@ -1,0 +1,21 @@
+from pathlib import Path
+import subprocess,os,json,hashlib,re,shutil,sys
+p=Path(__file__).resolve().parent;e=p/'evidence';t=Path('C:/mv36a/xtensa-esp32s3-espidf/release');parent=p.parent/'v35-cu71-local-fixture-20261105';h=lambda f:hashlib.sha256(f.read_bytes()).hexdigest()
+subprocess.run([sys.executable,str(p/'review_source.py')],check=True)
+for action in ['check','build']:assert json.loads((e/f'target-{action}-v001.json').read_text())['returncode']==0
+r=p/'release-dual-local-fixture-v001';r.mkdir(exist_ok=False);shutil.copyfile(t/'handheld',r/'moonshine-rev4.elf')
+config=list(t.glob('build/esp-idf-sys-*/out/build/config/sdkconfig.h'));assert len(config)==1;config=config[0];s=config.read_text();assert '#define CONFIG_COMPILER_CXX_EXCEPTIONS 1' in s and '#define CONFIG_COMPILER_CXX_EXCEPTIONS_EMG_POOL_SIZE 1024' in s;assert '#define CONFIG_COMPILER_CXX_RTTI 1'not in s and '#define CONFIG_SPIRAM 1'not in s;shutil.copyfile(config,e/'compiled-sdkconfig.h')
+py=Path.home()/'.espressif/python_env/idf5.4_py3.11_env/Scripts/python.exe';rustc=Path.home()/'.cargo/bin/rustc.exe';steps=[]
+def run(name,cmd):
+ q=subprocess.run(list(map(str,cmd)),capture_output=True,text=True);(e/(name+'.log')).write_text(q.stdout+q.stderr);steps.append({'name':name,'command':list(map(str,cmd)),'returncode':q.returncode});assert q.returncode==0,(name,q.stdout,q.stderr);return q.stdout
+run('elf2image',[py,'-m','esptool','--chip','esp32s3','elf2image','--flash_mode','dio','--flash_freq','80m','--flash_size','8MB','--output',r/'moonshine-rev4.bin',r/'moonshine-rev4.elf'])
+run('image-info',[py,'-m','esptool','--chip','esp32s3','image_info',r/'moonshine-rev4.bin'])
+run('uf2-package',[py,p/'tools/make_gamebub_uf2.py',r/'moonshine-rev4.bin',r/'moonshine-rev4.uf2'])
+run('uf2-verifier-compile',[rustc,'+stable','--edition=2021',p/'tools/verify_uf2.rs','-o',e/'verify-uf2.exe'])
+uf2=run('uf2-validation',[e/'verify-uf2.exe',r/'moonshine-rev4.uf2',r/'moonshine-rev4.bin']);assert 'blocks parsed by production DFU parser'in uf2
+old=json.loads((parent/'evidence/build-manifest.json').read_text());size=Path.home()/'.espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/bin/xtensa-esp32s3-elf-size.exe';raw=run('elf-sections',[size,'-A',r/'moonshine-rev4.elf']);sections={k:int(v)for k,v in re.findall(r'^(\.\S+)\s+(\d+)\s+\d+\s*$',raw,re.M)};static=sum(sections[k]for k in ['.dram0.dummy','.dram0.data','.dram0.bss'])
+run('memory-budget',[py,p/'tools/check_memory_budget.py','--sdkconfig',config,'--elf',r/'moonshine-rev4.elf','--size-tool',size])
+nm=size.with_name('xtensa-esp32s3-elf-nm.exe');symbols=run('elf-symbols',[nm,'--demangle',r/'moonshine-rev4.elf']);assert 'v34_hud_transact'in symbols and '__cxa_throw'in symbols and '__wrap___cxa_throw'not in symbols
+elf=r/'moonshine-rev4.elf';binary=(r/'moonshine-rev4.bin').read_bytes();assert binary[32+144:32+176].hex()==h(elf)
+meta={'variant':'v36-dual-local-fixture-20261106','status':'OFFLINE_PACKAGE_NOT_INSTALLED','source_snapshot_sha256':h(e/'source-snapshot-v001.json'),'images':{f.name:{'bytes':f.stat().st_size,'sha256':h(f)}for f in [r/'moonshine-rev4.elf',r/'moonshine-rev4.bin',r/'moonshine-rev4.uf2']},'static_shared_sram_bytes':static,'parent_static_shared_sram_bytes':old['static_shared_sram_bytes'],'static_delta_bytes':static-old['static_shared_sram_bytes'],'lazy_probe_declared_stacks_bytes':{'CPU_W':8192,'CU71_G_or_DY71_Y':12288},'local_driver_lifecycle':'One-shot completion and ambiguous mutation errors retain native endpoint and maintenance lease; qualified paired reset/reconfiguration required','exception_pool_bytes':1024,'exception_heap_overhead_physical':'NOT_RUN','network_CU66_capability':False,'FPGA_control_driver':'LAB_ONLY_EXPLICIT_CU71_G_DY71_Y_FIXED_KEY_P','physical':False,'steps':steps,'limits':['Static SRAM excludes task stacks/TCB/TLS and dynamic allocations.','110730B native container peak is a host requested-byte measurement, not target live heap/stack proof.','1024B configured emergency pool and first-throw runtime cost must be measured in future physical W probe.','Local control driver is implemented/testedoffline; physical SDRAM/FPGAcommit and30fps remainNOT_RUN.']}
+(r/'moonshine-rev4.json').write_text(json.dumps(meta,indent=2)+'\n');(e/'release-summary.json').write_text(json.dumps(meta,indent=2)+'\n');print(json.dumps(meta,indent=2))

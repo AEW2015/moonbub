@@ -1,0 +1,1 @@
+The actual-RTL test stopped at an incorrect test-oracle assumption that fresh reference/front IDs equal0. The frozen bank-controller source explicitly initializes both to0xffffffff. No source RTL changed; the test now checks the correct sentinels. The v36driver relies on zero counters/fresh ownership, not initialFID0.

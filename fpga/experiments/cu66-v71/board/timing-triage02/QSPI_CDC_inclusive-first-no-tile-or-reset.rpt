@@ -1,0 +1,109 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Fri Nov  6 01:41:02 2026
+| Host         : DESKTOP-I75K8PP running 64-bit major release  (build 9200)
+| Command      : report_timing -of_objects {{joint_core_reset_reg[3]/C --> transport_lost_words_reg[23]/R}} -file C:/mb70/fpga/experiments/cu66-v71/board/timing-triage02/QSPI_CDC_inclusive-first-no-tile-or-reset.rpt
+| Design       : moonshine_top_cu71
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -5.017ns  (required time - arrival time)
+  Source:                 bridge/queue_reg/CLKARDCLK
+                            (rising edge-triggered cell RAMB36E1 clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            bridge/response_reg[27]/D
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        14.646ns  (logic 3.074ns (20.989%)  route 11.572ns (79.011%))
+  Logic Levels:           5  (LUT5=1 LUT6=4)
+  Clock Path Skew:        -0.354ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    5.156ns = ( 15.156 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.710ns
+    Clock Pessimism Removal (CPR):    0.200ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                                                               r  input_buffer/I
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4                                                     r  base_clock/I
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0                                                    r  service_pll/CLKIN1
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15                                                    r  memory_clock_replica/I
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=12, routed)          0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0                                                     r  memory_clock/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=28796, routed)       1.861     5.710    bridge/clk100
+    RAMB36_X0Y8          RAMB36E1                                     r  bridge/queue_reg/CLKARDCLK
+  -------------------------------------------------------------------    -------------------
+    RAMB36_X0Y8          RAMB36E1 (Prop_ramb36e1_CLKARDCLK_DOBDO[9])
+                                                      2.454     8.164 f  bridge/queue_reg/DOBDO[9]
+                         net (fo=44, routed)          5.739    13.903    bridge/q_2[41]
+    SLICE_X55Y66                                                      f  bridge/response[29]_i_12/I1
+    SLICE_X55Y66         LUT5 (Prop_lut5_I1_O)        0.124    14.027 f  bridge/response[29]_i_12/O
+                         net (fo=10, routed)          2.025    16.052    bridge/response[29]_i_12_n_0
+    SLICE_X42Y45                                                      f  bridge/response[29]_i_4/I5
+    SLICE_X42Y45         LUT6 (Prop_lut6_I5_O)        0.124    16.176 r  bridge/response[29]_i_4/O
+                         net (fo=14, routed)          1.836    18.011    bridge/queue_reg_7
+    SLICE_X44Y66                                                      r  bridge/response[29]_i_8/I5
+    SLICE_X44Y66         LUT6 (Prop_lut6_I5_O)        0.124    18.135 f  bridge/response[29]_i_8/O
+                         net (fo=4, routed)           0.823    18.958    bridge/response[29]_i_8_n_0
+    SLICE_X43Y66                                                      f  bridge/response[27]_i_2/I0
+    SLICE_X43Y66         LUT6 (Prop_lut6_I0_O)        0.124    19.082 r  bridge/response[27]_i_2/O
+                         net (fo=1, routed)           1.150    20.232    bridge/response[27]_i_2_n_0
+    SLICE_X44Y77                                                      r  bridge/response[27]_i_1/I0
+    SLICE_X44Y77         LUT6 (Prop_lut6_I0_O)        0.124    20.356 r  bridge/response[27]_i_1/O
+                         net (fo=1, routed)           0.000    20.356    bridge/bus_rdata[27]
+    SLICE_X44Y77         FDRE                                         r  bridge/response_reg[27]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                                                               r  input_buffer/I
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911    13.328    inclk
+    BUFGCTRL_X0Y4                                                     r  base_clock/I
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091    13.419 r  base_clock/O
+                         net (fo=9, routed)           1.702    15.121    clk50
+    PLLE2_ADV_X0Y0                                                    r  service_pll/CLKIN1
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711    11.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918    13.328    raw100
+    BUFGCTRL_X0Y15                                                    r  memory_clock_replica/I
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091    13.419 r  memory_clock_replica/O
+                         net (fo=12, routed)          0.147    13.566    clk100_repN
+    BUFGCTRL_X0Y0                                                     r  memory_clock/I
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.657 r  memory_clock/O
+                         net (fo=28796, routed)       1.498    15.156    bridge/clk100
+    SLICE_X44Y77         FDRE                                         r  bridge/response_reg[27]/C
+                         clock pessimism              0.200    15.356    
+                         clock uncertainty           -0.047    15.308    
+    SLICE_X44Y77         FDRE (Setup_fdre_C_D)        0.031    15.339    bridge/response_reg[27]
+  -------------------------------------------------------------------
+                         required time                         15.339    
+                         arrival time                         -20.356    
+  -------------------------------------------------------------------
+                         slack                                 -5.017    
+
+
+
+

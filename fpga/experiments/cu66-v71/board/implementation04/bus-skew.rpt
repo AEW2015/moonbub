@@ -1,0 +1,515 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Fri Nov  6 01:34:08 2026
+| Host         : DESKTOP-I75K8PP running 64-bit major release  (build 9200)
+| Command      : report_bus_skew -file C:/mb70/fpga/experiments/cu66-v71/board/implementation04/bus-skew.rpt
+| Design       : moonshine_top_cu71
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Bus Skew Report
+
+Table of Contents
+-----------------
+1. Bus Skew Report Summary
+2. Bus Skew Report Per Constraint
+
+1. Bus Skew Report Summary
+--------------------------
+
+Id  Position  From                            To                              Corner  Requirement(ns)  Actual(ns)  Slack(ns)
+--  --------  ------------------------------  ------------------------------  ------  ---------------  ----------  ---------
+1   20        [all_registers -clock [get_clocks -of_objects [get_pins memory_clock/O]]]
+                                              [get_cells -quiet -hier -regexp {bridge/rg1_reg\[[0-9]+\]}]
+                                                                              Slow             10.000       0.903      9.097
+2   22        [all_registers -clock [get_clocks -of_objects [get_pins spi_clock/O]]]
+                                              [get_cells -quiet -hier -regexp {bridge/wg1_reg\[[0-9]+\]}]
+                                                                              Slow              5.000       0.962      4.038
+3   24        [all_registers -clock [get_clocks -of_objects [get_pins spi_clock/O]]]
+                                              [get_cells -quiet -hier -regexp {transport_gray_meta_reg\[[0-9]+\]}]
+                                                                              Slow              5.000       1.586      3.414
+4   26        [get_cells -quiet -hier -regexp {system_core/scanout/lcd/underrun_gray_reg\[[0-9]+\]}]
+                                              [get_cells -quiet -hier -regexp {system_core/scanout/lcd/underrun_sync1_reg\[[0-9]+\]}]
+                                                                              Slow             34.000       1.414     32.586
+
+
+2. Bus Skew Report Per Constraint
+---------------------------------
+
+Id: 1
+set_bus_skew -from [all_registers -clock [get_clocks -of_objects [get_pins memory_clock/O]]] -to [get_cells -quiet -hier -regexp {bridge/rg1_reg\[[0-9]+\]}] 10.000
+Requirement: 10.000ns
+Endpoints: 7
+
+From Clock            To Clock              Endpoint Pin                    Reference Pin                   Corner  Actual(ns)  Slack(ns)
+--------------------  --------------------  ------------------------------  ------------------------------  ------  ----------  ---------
+raw100                raw200                bridge/rg1_reg[5]/D             bridge/rg1_reg[1]/D             Slow         0.903      9.097
+
+
+Slack (MET) :             9.097ns  (requirement - actual skew)
+  Endpoint Source:        bridge/rgray_reg[5]/C
+                            (rising edge-triggered cell FDRE clocked by raw100)
+  Endpoint Destination:   bridge/rg1_reg[5]/D
+                            (rising edge-triggered cell FDRE clocked by raw200)
+  Reference Source:       bridge/rgray_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100)
+  Reference Destination:  bridge/rg1_reg[1]/D
+                            (rising edge-triggered cell FDRE clocked by raw200)
+  Path Type:              Bus Skew (Max at Slow Process Corner)
+  Requirement:            10.000ns
+  Endpoint Relative Delay:    2.052ns
+  Reference Relative Delay:   0.720ns
+  Relative CRPR:              0.429ns
+  Actual Bus Skew:            0.903ns  (Endpoint Relative Delay - Reference Relative Delay - Relative CRPR)
+
+Endpoint path:
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=2, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=28833, routed)       1.802     5.652    bridge/clk100
+    SLICE_X68Y40         FDRE                                         r  bridge/rgray_reg[5]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X68Y40         FDRE (Prop_fdre_C_Q)         0.456     6.108 r  bridge/rgray_reg[5]/Q
+                         net (fo=2, routed)           1.024     7.131    bridge/rgray[5]
+    SLICE_X69Y39         FDRE                                         r  bridge/rg1_reg[5]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     1.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     3.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     3.419 r  base_clock/O
+                         net (fo=9, routed)           1.702     5.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.711     1.410 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           1.918     3.328    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.091     3.419 r  spi_clock/O
+                         net (fo=476, routed)         1.672     5.091    bridge/clk200
+    SLICE_X69Y39         FDRE                                         r  bridge/rg1_reg[5]/C
+                         clock pessimism              0.081     5.172    
+    SLICE_X69Y39         FDRE (Setup_fdre_C_D)       -0.093     5.079    bridge/rg1_reg[5]
+  -------------------------------------------------------------------
+                         data arrival                           7.131    
+                         clock arrival                          5.079    
+  -------------------------------------------------------------------
+                         relative delay                         2.052    
+
+Reference path:
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     1.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     3.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     3.419 r  base_clock/O
+                         net (fo=9, routed)           1.702     5.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711     1.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918     3.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091     3.419 r  memory_clock_replica/O
+                         net (fo=2, routed)           0.147     3.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091     3.657 r  memory_clock/O
+                         net (fo=28833, routed)       1.672     5.329    bridge/clk100
+    SLICE_X68Y40         FDRE                                         r  bridge/rgray_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X68Y40         FDRE (Prop_fdre_C_Q)         0.367     5.696 r  bridge/rgray_reg[1]/Q
+                         net (fo=2, routed)           0.514     6.210    bridge/rgray[1]
+    SLICE_X67Y38         FDRE                                         r  bridge/rg1_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.939     1.491 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           2.012     3.503    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.096     3.599 r  spi_clock/O
+                         net (fo=476, routed)         1.801     5.401    bridge/clk200
+    SLICE_X67Y38         FDRE                                         r  bridge/rg1_reg[1]/C
+                         clock pessimism             -0.081     5.320    
+    SLICE_X67Y38         FDRE (Hold_fdre_C_D)         0.170     5.490    bridge/rg1_reg[1]
+  -------------------------------------------------------------------
+                         data arrival                           6.210    
+                         clock arrival                          5.490    
+  -------------------------------------------------------------------
+                         relative delay                         0.720    
+
+
+
+Id: 2
+set_bus_skew -from [all_registers -clock [get_clocks -of_objects [get_pins spi_clock/O]]] -to [get_cells -quiet -hier -regexp {bridge/wg1_reg\[[0-9]+\]}] 5.000
+Requirement: 5.000ns
+Endpoints: 7
+
+From Clock            To Clock              Endpoint Pin                    Reference Pin                   Corner  Actual(ns)  Slack(ns)
+--------------------  --------------------  ------------------------------  ------------------------------  ------  ----------  ---------
+raw200                raw100                bridge/wg1_reg[3]/D             bridge/wg1_reg[5]/D             Slow         0.962      4.038
+
+
+Slack (MET) :             4.038ns  (requirement - actual skew)
+  Endpoint Source:        bridge/wgray_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by raw200)
+  Endpoint Destination:   bridge/wg1_reg[3]/D
+                            (rising edge-triggered cell FDRE clocked by raw100)
+  Reference Source:       bridge/wgray_reg[5]/C
+                            (rising edge-triggered cell FDRE clocked by raw200)
+  Reference Destination:  bridge/wg1_reg[5]/D
+                            (rising edge-triggered cell FDRE clocked by raw100)
+  Path Type:              Bus Skew (Max at Slow Process Corner)
+  Requirement:            5.000ns
+  Endpoint Relative Delay:    1.545ns
+  Reference Relative Delay:   0.178ns
+  Relative CRPR:              0.404ns
+  Actual Bus Skew:            0.962ns  (Endpoint Relative Delay - Reference Relative Delay - Relative CRPR)
+
+Endpoint path:
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.939     1.491 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           2.012     3.503    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.096     3.599 r  spi_clock/O
+                         net (fo=476, routed)         1.802     5.402    bridge/clk200
+    SLICE_X70Y40         FDRE                                         r  bridge/wgray_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X70Y40         FDRE (Prop_fdre_C_Q)         0.518     5.920 r  bridge/wgray_reg[3]/Q
+                         net (fo=1, routed)           0.930     6.850    bridge/wgray[3]
+    SLICE_X68Y39         FDRE                                         r  bridge/wg1_reg[3]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     1.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     3.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     3.419 r  base_clock/O
+                         net (fo=9, routed)           1.702     5.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711     1.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918     3.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091     3.419 r  memory_clock_replica/O
+                         net (fo=2, routed)           0.147     3.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091     3.657 r  memory_clock/O
+                         net (fo=28833, routed)       1.672     5.329    bridge/clk100
+    SLICE_X68Y39         FDRE                                         r  bridge/wg1_reg[3]/C
+                         clock pessimism              0.081     5.410    
+    SLICE_X68Y39         FDRE (Setup_fdre_C_D)       -0.105     5.305    bridge/wg1_reg[3]
+  -------------------------------------------------------------------
+                         data arrival                           6.850    
+                         clock arrival                          5.305    
+  -------------------------------------------------------------------
+                         relative delay                         1.545    
+
+Reference path:
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     1.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     3.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     3.419 r  base_clock/O
+                         net (fo=9, routed)           1.702     5.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.711     1.410 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           1.918     3.328    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.091     3.419 r  spi_clock/O
+                         net (fo=476, routed)         1.723     5.142    bridge/clk200
+    SLICE_X72Y41         FDRE                                         r  bridge/wgray_reg[5]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X72Y41         FDRE (Prop_fdre_C_Q)         0.367     5.509 r  bridge/wgray_reg[5]/Q
+                         net (fo=1, routed)           0.470     5.979    bridge/wgray[5]
+    SLICE_X70Y39         FDRE                                         r  bridge/wg1_reg[5]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=2, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=28833, routed)       1.802     5.652    bridge/clk100
+    SLICE_X70Y39         FDRE                                         r  bridge/wg1_reg[5]/C
+                         clock pessimism             -0.081     5.571    
+    SLICE_X70Y39         FDRE (Hold_fdre_C_D)         0.230     5.801    bridge/wg1_reg[5]
+  -------------------------------------------------------------------
+                         data arrival                           5.979    
+                         clock arrival                          5.801    
+  -------------------------------------------------------------------
+                         relative delay                         0.178    
+
+
+
+Id: 3
+set_bus_skew -from [all_registers -clock [get_clocks -of_objects [get_pins spi_clock/O]]] -to [get_cells -quiet -hier -regexp {transport_gray_meta_reg\[[0-9]+\]}] 5.000
+Requirement: 5.000ns
+Endpoints: 32
+
+From Clock            To Clock              Endpoint Pin                    Reference Pin                   Corner  Actual(ns)  Slack(ns)
+--------------------  --------------------  ------------------------------  ------------------------------  ------  ----------  ---------
+raw200                raw100                transport_gray_meta_reg[4]/D    transport_gray_meta_reg[22]/D   Slow         1.586      3.414
+
+
+Slack (MET) :             3.414ns  (requirement - actual skew)
+  Endpoint Source:        bridge/overflow_gray_reg[4]/C
+                            (rising edge-triggered cell FDRE clocked by raw200)
+  Endpoint Destination:   transport_gray_meta_reg[4]/D
+                            (rising edge-triggered cell FDRE clocked by raw100)
+  Reference Source:       bridge/overflow_gray_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by raw200)
+  Reference Destination:  transport_gray_meta_reg[22]/D
+                            (rising edge-triggered cell FDRE clocked by raw100)
+  Path Type:              Bus Skew (Max at Slow Process Corner)
+  Requirement:            5.000ns
+  Endpoint Relative Delay:    2.039ns
+  Reference Relative Delay:   0.049ns
+  Relative CRPR:              0.403ns
+  Actual Bus Skew:            1.586ns  (Endpoint Relative Delay - Reference Relative Delay - Relative CRPR)
+
+Endpoint path:
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.939     1.491 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           2.012     3.503    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.096     3.599 r  spi_clock/O
+                         net (fo=476, routed)         1.848     5.448    bridge/clk200
+    SLICE_X72Y36         FDRE                                         r  bridge/overflow_gray_reg[4]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X72Y36         FDRE (Prop_fdre_C_Q)         0.419     5.867 r  bridge/overflow_gray_reg[4]/Q
+                         net (fo=1, routed)           1.349     7.216    overflow_gray[4]
+    SLICE_X79Y32         FDRE                                         r  transport_gray_meta_reg[4]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     1.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     3.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     3.419 r  base_clock/O
+                         net (fo=9, routed)           1.702     5.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711     1.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918     3.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091     3.419 r  memory_clock_replica/O
+                         net (fo=2, routed)           0.147     3.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091     3.657 r  memory_clock/O
+                         net (fo=28833, routed)       1.716     5.373    clk100
+    SLICE_X79Y32         FDRE                                         r  transport_gray_meta_reg[4]/C
+                         clock pessimism              0.081     5.454    
+    SLICE_X79Y32         FDRE (Setup_fdre_C_D)       -0.277     5.177    transport_gray_meta_reg[4]
+  -------------------------------------------------------------------
+                         data arrival                           7.216    
+                         clock arrival                          5.177    
+  -------------------------------------------------------------------
+                         relative delay                         2.039    
+
+Reference path:
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw200 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     1.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     3.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     3.419 r  base_clock/O
+                         net (fo=9, routed)           1.702     5.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT0)
+                                                     -3.711     1.410 r  service_pll/CLKOUT0
+                         net (fo=1, routed)           1.918     3.328    raw200
+    BUFGCTRL_X0Y3        BUFG (Prop_bufg_I_O)         0.091     3.419 r  spi_clock/O
+                         net (fo=476, routed)         1.720     5.139    bridge/clk200
+    SLICE_X77Y38         FDRE                                         r  bridge/overflow_gray_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X77Y38         FDRE (Prop_fdre_C_Q)         0.367     5.506 r  bridge/overflow_gray_reg[22]/Q
+                         net (fo=1, routed)           0.393     5.899    overflow_gray[22]
+    SLICE_X78Y39         FDRE                                         r  transport_gray_meta_reg[22]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=2, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=28833, routed)       1.851     5.701    clk100
+    SLICE_X78Y39         FDRE                                         r  transport_gray_meta_reg[22]/C
+                         clock pessimism             -0.081     5.620    
+    SLICE_X78Y39         FDRE (Hold_fdre_C_D)         0.230     5.850    transport_gray_meta_reg[22]
+  -------------------------------------------------------------------
+                         data arrival                           5.899    
+                         clock arrival                          5.850    
+  -------------------------------------------------------------------
+                         relative delay                         0.049    
+
+
+
+Id: 4
+set_bus_skew -from [get_cells -quiet -hier -regexp {system_core/scanout/lcd/underrun_gray_reg\[[0-9]+\]}] -to [get_cells -quiet -hier -regexp {system_core/scanout/lcd/underrun_sync1_reg\[[0-9]+\]}] 34.000
+Requirement: 34.000ns
+Endpoints: 32
+
+From Clock            To Clock              Endpoint Pin                    Reference Pin                   Corner  Actual(ns)  Slack(ns)
+--------------------  --------------------  ------------------------------  ------------------------------  ------  ----------  ---------
+praw                  raw100                system_core/scanout/lcd/underrun_sync1_reg[2]/D
+                                                                            system_core/scanout/lcd/underrun_sync1_reg[27]/D
+                                                                                                            Slow         1.414     32.586
+
+
+Slack (MET) :             32.586ns  (requirement - actual skew)
+  Endpoint Source:        system_core/scanout/lcd/underrun_gray_reg[2]/C
+                            (rising edge-triggered cell FDRE clocked by praw)
+  Endpoint Destination:   system_core/scanout/lcd/underrun_sync1_reg[2]/D
+                            (rising edge-triggered cell FDRE clocked by raw100)
+  Reference Source:       system_core/scanout/lcd/underrun_gray_reg[27]/C
+                            (rising edge-triggered cell FDRE clocked by praw)
+  Reference Destination:  system_core/scanout/lcd/underrun_sync1_reg[27]/D
+                            (rising edge-triggered cell FDRE clocked by raw100)
+  Path Type:              Bus Skew (Max at Slow Process Corner)
+  Requirement:            34.000ns
+  Endpoint Relative Delay:    1.837ns
+  Reference Relative Delay:   0.251ns
+  Relative CRPR:              0.172ns
+  Actual Bus Skew:            1.414ns  (Endpoint Relative Delay - Reference Relative Delay - Relative CRPR)
+
+Endpoint path:
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock praw rise edge)       0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.807     5.407    clk50
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.922     1.485 r  panel_mmcm/CLKOUT0
+                         net (fo=1, routed)           2.018     3.503    praw
+    BUFGCTRL_X0Y1        BUFG (Prop_bufg_I_O)         0.096     3.599 r  panel_clock/O
+                         net (fo=159, routed)         1.626     5.226    system_core/scanout/lcd/CLK
+    SLICE_X38Y81         FDRE                                         r  system_core/scanout/lcd/underrun_gray_reg[2]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X38Y81         FDRE (Prop_fdre_C_Q)         0.478     5.704 r  system_core/scanout/lcd/underrun_gray_reg[2]/Q
+                         net (fo=1, routed)           1.244     6.948    system_core/scanout/lcd/underrun_gray[2]
+    SLICE_X46Y78         FDRE                                         r  system_core/scanout/lcd/underrun_sync1_reg[2]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     1.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     3.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     3.419 r  base_clock/O
+                         net (fo=9, routed)           1.702     5.121    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.711     1.410 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           1.918     3.328    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.091     3.419 r  memory_clock_replica/O
+                         net (fo=2, routed)           0.147     3.566    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091     3.657 r  memory_clock/O
+                         net (fo=28833, routed)       1.498     5.156    system_core/scanout/lcd/clk100
+    SLICE_X46Y78         FDRE                                         r  system_core/scanout/lcd/underrun_sync1_reg[2]/C
+                         clock pessimism              0.180     5.336    
+    SLICE_X46Y78         FDRE (Setup_fdre_C_D)       -0.225     5.111    system_core/scanout/lcd/underrun_sync1_reg[2]
+  -------------------------------------------------------------------
+                         data arrival                           6.948    
+                         clock arrival                          5.111    
+  -------------------------------------------------------------------
+                         relative delay                         1.837    
+
+Reference path:
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock praw rise edge)       0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417     1.417 r  input_buffer/O
+                         net (fo=1, routed)           1.911     3.328    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.091     3.419 r  base_clock/O
+                         net (fo=9, routed)           1.680     5.099    clk50
+    MMCME2_ADV_X0Y0      MMCME2_ADV (Prop_mmcme2_adv_CLKIN1_CLKOUT0)
+                                                     -3.694     1.405 r  panel_mmcm/CLKOUT0
+                         net (fo=1, routed)           1.923     3.328    praw
+    BUFGCTRL_X0Y1        BUFG (Prop_bufg_I_O)         0.091     3.419 r  panel_clock/O
+                         net (fo=159, routed)         1.512     4.932    system_core/scanout/lcd/CLK
+    SLICE_X37Y87         FDRE                                         r  system_core/scanout/lcd/underrun_gray_reg[27]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X37Y87         FDRE (Prop_fdre_C_Q)         0.367     5.299 r  system_core/scanout/lcd/underrun_gray_reg[27]/Q
+                         net (fo=1, routed)           0.489     5.788    system_core/scanout/lcd/underrun_gray[27]
+    SLICE_X38Y88         FDRE                                         r  system_core/scanout/lcd/underrun_sync1_reg[27]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, routed)           2.016     3.503    inclk
+    BUFGCTRL_X0Y4        BUFG (Prop_bufg_I_O)         0.096     3.599 r  base_clock/O
+                         net (fo=9, routed)           1.830     5.430    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.939     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, routed)           2.012     3.503    raw100
+    BUFGCTRL_X0Y15       BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock_replica/O
+                         net (fo=2, routed)           0.154     3.753    clk100_repN
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.849 r  memory_clock/O
+                         net (fo=28833, routed)       1.634     5.484    system_core/scanout/lcd/clk100
+    SLICE_X38Y88         FDRE                                         r  system_core/scanout/lcd/underrun_sync1_reg[27]/C
+                         clock pessimism             -0.180     5.304    
+    SLICE_X38Y88         FDRE (Hold_fdre_C_D)         0.233     5.537    system_core/scanout/lcd/underrun_sync1_reg[27]
+  -------------------------------------------------------------------
+                         data arrival                           5.788    
+                         clock arrival                          5.537    
+  -------------------------------------------------------------------
+                         relative delay                         0.251    
+
+
+

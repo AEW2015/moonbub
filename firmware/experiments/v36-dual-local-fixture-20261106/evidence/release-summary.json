@@ -1,0 +1,137 @@
+{
+  "variant": "v36-dual-local-fixture-20261106",
+  "status": "OFFLINE_PACKAGE_NOT_INSTALLED",
+  "source_snapshot_sha256": "ff083a2b7b3a3438fe35a27b855f1ca01396e54e585845912e2562b5a64283e3",
+  "images": {
+    "moonshine-rev4.elf": {
+      "bytes": 7372968,
+      "sha256": "13278b1f5a16afbcc5c1ed2f3c4c225c628a05b4491cc8e9ec489d02c88d3535"
+    },
+    "moonshine-rev4.bin": {
+      "bytes": 3362976,
+      "sha256": "67c604dace5d80c24a3ca924c71e76f74b271b56011cbbaa02727d1431c5e017"
+    },
+    "moonshine-rev4.uf2": {
+      "bytes": 6726144,
+      "sha256": "20cdbd6db030b0e99f363f93d0b081d2ca1f718c5e6dc6cb4d5d7edeff52ed97"
+    }
+  },
+  "static_shared_sram_bytes": 130916,
+  "parent_static_shared_sram_bytes": 130924,
+  "static_delta_bytes": -8,
+  "lazy_probe_declared_stacks_bytes": {
+    "CPU_W": 8192,
+    "CU71_G_or_DY71_Y": 12288
+  },
+  "local_driver_lifecycle": "One-shot completion and ambiguous mutation errors retain native endpoint and maintenance lease; qualified paired reset/reconfiguration required",
+  "exception_pool_bytes": 1024,
+  "exception_heap_overhead_physical": "NOT_RUN",
+  "network_CU66_capability": false,
+  "FPGA_control_driver": "LAB_ONLY_EXPLICIT_CU71_G_DY71_Y_FIXED_KEY_P",
+  "physical": false,
+  "steps": [
+    {
+      "name": "elf2image",
+      "command": [
+        "C:\\Users\\lavat\\.espressif\\python_env\\idf5.4_py3.11_env\\Scripts\\python.exe",
+        "-m",
+        "esptool",
+        "--chip",
+        "esp32s3",
+        "elf2image",
+        "--flash_mode",
+        "dio",
+        "--flash_freq",
+        "80m",
+        "--flash_size",
+        "8MB",
+        "--output",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\release-dual-local-fixture-v001\\moonshine-rev4.bin",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\release-dual-local-fixture-v001\\moonshine-rev4.elf"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "image-info",
+      "command": [
+        "C:\\Users\\lavat\\.espressif\\python_env\\idf5.4_py3.11_env\\Scripts\\python.exe",
+        "-m",
+        "esptool",
+        "--chip",
+        "esp32s3",
+        "image_info",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\release-dual-local-fixture-v001\\moonshine-rev4.bin"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "uf2-package",
+      "command": [
+        "C:\\Users\\lavat\\.espressif\\python_env\\idf5.4_py3.11_env\\Scripts\\python.exe",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\tools\\make_gamebub_uf2.py",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\release-dual-local-fixture-v001\\moonshine-rev4.bin",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\release-dual-local-fixture-v001\\moonshine-rev4.uf2"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "uf2-verifier-compile",
+      "command": [
+        "C:\\Users\\lavat\\.cargo\\bin\\rustc.exe",
+        "+stable",
+        "--edition=2021",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\tools\\verify_uf2.rs",
+        "-o",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\evidence\\verify-uf2.exe"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "uf2-validation",
+      "command": [
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\evidence\\verify-uf2.exe",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\release-dual-local-fixture-v001\\moonshine-rev4.uf2",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\release-dual-local-fixture-v001\\moonshine-rev4.bin"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "elf-sections",
+      "command": [
+        "C:\\Users\\lavat\\.espressif\\tools\\xtensa-esp-elf\\esp-14.2.0_20250730\\xtensa-esp-elf\\bin\\xtensa-esp32s3-elf-size.exe",
+        "-A",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\release-dual-local-fixture-v001\\moonshine-rev4.elf"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "memory-budget",
+      "command": [
+        "C:\\Users\\lavat\\.espressif\\python_env\\idf5.4_py3.11_env\\Scripts\\python.exe",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\tools\\check_memory_budget.py",
+        "--sdkconfig",
+        "C:\\mv36a\\xtensa-esp32s3-espidf\\release\\build\\esp-idf-sys-9e5d0a1961f9c7d2\\out\\build\\config\\sdkconfig.h",
+        "--elf",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\release-dual-local-fixture-v001\\moonshine-rev4.elf",
+        "--size-tool",
+        "C:\\Users\\lavat\\.espressif\\tools\\xtensa-esp-elf\\esp-14.2.0_20250730\\xtensa-esp-elf\\bin\\xtensa-esp32s3-elf-size.exe"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "elf-symbols",
+      "command": [
+        "C:\\Users\\lavat\\.espressif\\tools\\xtensa-esp-elf\\esp-14.2.0_20250730\\xtensa-esp-elf\\bin\\xtensa-esp32s3-elf-nm.exe",
+        "--demangle",
+        "C:\\Users\\lavat\\codex\\moonbub\\firmware\\experiments\\v36-dual-local-fixture-20261106\\release-dual-local-fixture-v001\\moonshine-rev4.elf"
+      ],
+      "returncode": 0
+    }
+  ],
+  "limits": [
+    "Static SRAM excludes task stacks/TCB/TLS and dynamic allocations.",
+    "110730B native container peak is a host requested-byte measurement, not target live heap/stack proof.",
+    "1024B configured emergency pool and first-throw runtime cost must be measured in future physical W probe.",
+    "Local control driver is implemented/testedoffline; physical SDRAM/FPGAcommit and30fps remainNOT_RUN."
+  ]
+}

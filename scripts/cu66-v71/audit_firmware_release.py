@@ -28,11 +28,13 @@ for name, details in manifest['images'].items():
     path = Path(manifest['release_directory']) / name
     assert path.stat().st_size == details['bytes'], path
     verify(path, details['sha256'], 'selected_image')
-snapshot = root / 'evidence/source-snapshot-v004.json'
+snapshot = root / manifest.get('source_snapshot', 'evidence/source-snapshot-v004.json')
 verify(snapshot, manifest['source_snapshot_sha256'], 'source_manifest')
 source = json.loads(snapshot.read_text())
 for relative, expected in source['files'].items():
     verify(root / relative, expected, 'source')
+for proof in manifest.get('external_proofs', []):
+    verify(Path(proof['path']), proof['sha256'], 'external_scope_bound_proof')
 assert sha(manifest_path) == manifest_hash
 result = dict(
     status='PASS_READ_ONLY_SOURCE_AND_IMAGE_HASH_AUDIT_PHYSICAL_NOT_RUN',
