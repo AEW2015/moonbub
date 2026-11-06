@@ -1,0 +1,130 @@
+{
+  "schema": "cu79-reference-prefetch-prototype-v1",
+  "status": "PASS_STANDALONE_LOGIC_SIMPLE_BACKEND",
+  "source_sha256": {
+    "fpga/experiments/cu66-v79/prefetch/cu79_reference_prefetch.sv": "10c0decb0617630a68ee476f79e0d011ec9b84095db6b119e9bf623fb8a134a4",
+    "fpga/experiments/cu66-v79/prefetch/tb_prefetch.cpp": "574dc1ade3ecfe17e20ebc1cefa75ca3f35bf69bf962ab9ff1853dded6f0bb3a",
+    "scripts/cu66-v79/run_prefetch.py": "b10244b1d619c269c5f839fcb02f1e3cf9fda75e7e2d7385107f704b903f8024",
+    "fpga/experiments/cu66-v70/memory/cu70_memory_map.svh": "35f773502ee3be6069af8ee31e24c1dd6865a1d740bc504297b77ee284bc08b1"
+  },
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--version"
+      ],
+      "log": "fpga/experiments/cu66-v79/prefetch/attempt6/version.log",
+      "exit_code": 0,
+      "timed_out": false,
+      "timeout_seconds": 30,
+      "wall_seconds": 0.11415668996050954,
+      "sha256": "26daf9ad1ba36ee1c20cab9a869d0a1fbb8117230c80c78ec2d8cf597f64c4a5"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--cc",
+        "--exe",
+        "--build",
+        "-j",
+        "1",
+        "--Wall",
+        "--top-module",
+        "cu79_reference_prefetch",
+        "--Mdir",
+        "/build/v79-prefetch",
+        "-CFLAGS",
+        "-O2 -std=c++17",
+        "-I/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v79/prefetch/cu79_reference_prefetch.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v79/prefetch/tb_prefetch.cpp"
+      ],
+      "log": "fpga/experiments/cu66-v79/prefetch/attempt6/build.log",
+      "exit_code": 0,
+      "timed_out": false,
+      "timeout_seconds": 300,
+      "wall_seconds": 1.1669067188631743,
+      "sha256": "0947018b26aee6b960a3ec426b5a2c6d181cfd34c066fe832855e5155178d73a"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "sha256sum",
+        "/build/v79-prefetch/Vcu79_reference_prefetch"
+      ],
+      "log": "fpga/experiments/cu66-v79/prefetch/attempt6/binary.log",
+      "exit_code": 0,
+      "timed_out": false,
+      "timeout_seconds": 30,
+      "wall_seconds": 0.06415105098858476,
+      "sha256": "b328dd469b9a98643c8b257cb9bb3dd2d4d1a55b7a669754a293e1365d54a596"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "60s",
+        "/build/v79-prefetch/Vcu79_reference_prefetch"
+      ],
+      "log": "fpga/experiments/cu66-v79/prefetch/attempt6/run.log",
+      "exit_code": 0,
+      "timed_out": false,
+      "timeout_seconds": 70,
+      "wall_seconds": 0.7645948219578713,
+      "sha256": "baf4a82e6b8b96f0d138771f7e5558b8ff44331fe41991a9308620e55415bd11"
+    }
+  ],
+  "attempt": 6,
+  "summary": {
+    "cases": 9,
+    "full_replay_tiles": 8100,
+    "hidden_replay_tiles": 8100,
+    "read_commands": 32400,
+    "read_beats": 259200,
+    "logical_reference_bytes": 128,
+    "physical_sdram_model": 0,
+    "system_integration": 0,
+    "speedup_proven": 0
+  },
+  "cases": [
+    "PREFETCH_CASE_PASS case=full_replay tiles=8100 read_commands=32400 read_beats=259200 visible=8100 unused=0 max_slots=2 cycles=440447 seed=2041262477 simple_backend=1 physical_sdram_model=0",
+    "PREFETCH_CASE_PASS case=hidden_full_replay tiles=8100 unused=8100 read_commands=32400 read_beats=259200 all_plane_first_last_hidden=1 seed=2031236182",
+    "PREFETCH_CASE_PASS case=identity_retirement_held_response concurrent_lookup_unused=1 wrong_identity_fields=4 stale_retire=1 early_retire=1",
+    "PREFETCH_CASE_PASS case=hidden_early_retire backpressured_cycles=51",
+    "PREFETCH_CASE_PASS case=abort_all_accepted_offsets offsets=8 coincident_beat_offsets=8 missing_beat_hold=1",
+    "PREFETCH_CASE_PASS case=abort_unaccepted_and_held_response",
+    "PREFETCH_CASE_PASS case=memory_faults_lease_reset faults=4 joint_backend_reset=1 malformed_last_drain_actual8=1",
+    "PREFETCH_CASE_PASS case=monotonic_epoch duplicate_stale_rejected=2 fresh_recovery=1",
+    "PREFETCH_CASE_PASS case=atomic_fault_edge no_new_request_lookup_retire=1 held_response_cancelled=1"
+  ],
+  "simulator": "Verilator 5.020 2024-01-01 rev (Debian 5.020-1)",
+  "binary_sha256": "d5e9b72b7f5eddf60aecb04f45abdd569f23de4162bfa7d9570a16a10a24a476",
+  "resources": {
+    "reference_slots": 2,
+    "reference_payload_bits": 1024,
+    "logical_reference_bytes": 128,
+    "slot_identity_control_bits": 184,
+    "candidate_staging_bytes": 0,
+    "physical_read_outstanding_limit": 1
+  },
+  "limitations": [
+    "Standalone RTL and deterministic simple address-pattern backend only; no actual SDRAM model/controller, decoder, HUD or display integration.",
+    "All8100 references are prefetched; no qmap-directed traffic savings.",
+    "Caller authenticates candidate completion and translates candidate bank to retirement reference bank; no write_done shim implemented.",
+    "Reset requires a joint backend reset; abort instead drains8 actually accepted beats. Missing beats retain ownership until delivery or joint reset.",
+    "No latency reduction, sustained source FPS, target Fmax/fit/CDC or hardware proof."
+  ],
+  "wall_seconds": 2.1114213480614126
+}

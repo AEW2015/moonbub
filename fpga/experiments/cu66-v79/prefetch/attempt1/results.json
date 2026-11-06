@@ -1,0 +1,92 @@
+{
+  "schema": "cu79-reference-prefetch-prototype-v1",
+  "status": "FAIL_STANDALONE",
+  "source_sha256": {
+    "fpga/experiments/cu66-v79/prefetch/cu79_reference_prefetch.sv": "e2add26506d92b13849833ea92760019c7a58b58644bfb403dd1d126f52270c0",
+    "fpga/experiments/cu66-v79/prefetch/tb_prefetch.cpp": "2b8594fc57a9733180c3b1567b60ff95c3b459d205f6979a97ddb40b61fae892",
+    "scripts/cu66-v79/run_prefetch.py": "a2804ad43eb95d4edacc9ef0295639b864451dccb8b5e898e26189f3c87578d3",
+    "fpga/experiments/cu66-v70/memory/cu70_memory_map.svh": "35f773502ee3be6069af8ee31e24c1dd6865a1d740bc504297b77ee284bc08b1"
+  },
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--version"
+      ],
+      "log": "fpga/experiments/cu66-v79/prefetch/attempt1/version.log",
+      "exit_code": 0,
+      "timed_out": false,
+      "timeout_seconds": 30,
+      "wall_seconds": 0.11418691603466868,
+      "sha256": "26daf9ad1ba36ee1c20cab9a869d0a1fbb8117230c80c78ec2d8cf597f64c4a5"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--cc",
+        "--exe",
+        "--build",
+        "-j",
+        "1",
+        "--Wall",
+        "--top-module",
+        "cu79_reference_prefetch",
+        "--Mdir",
+        "/build/v79-prefetch",
+        "-CFLAGS",
+        "-O2 -std=c++17",
+        "-I/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v70/memory",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v79/prefetch/cu79_reference_prefetch.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v79/prefetch/tb_prefetch.cpp"
+      ],
+      "log": "fpga/experiments/cu66-v79/prefetch/attempt1/build.log",
+      "exit_code": 0,
+      "timed_out": false,
+      "timeout_seconds": 300,
+      "wall_seconds": 5.475563522893935,
+      "sha256": "0225f9200686b93d2bc3b6e52cb7061d415175735f83998af88de43c277ab8ac"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "sha256sum",
+        "/build/v79-prefetch/Vcu79_reference_prefetch"
+      ],
+      "log": "fpga/experiments/cu66-v79/prefetch/attempt1/binary.log",
+      "exit_code": 0,
+      "timed_out": false,
+      "timeout_seconds": 30,
+      "wall_seconds": 0.0642208899371326,
+      "sha256": "32bc255c701a086975c24ec07eeedc49eadaf1d88ba215aa36f55f44ab808da4"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "--signal=TERM",
+        "--kill-after=5s",
+        "60s",
+        "/build/v79-prefetch/Vcu79_reference_prefetch"
+      ],
+      "log": "fpga/experiments/cu66-v79/prefetch/attempt1/run.log",
+      "exit_code": 1,
+      "timed_out": false,
+      "timeout_seconds": 70,
+      "wall_seconds": 0.06404961389489472,
+      "sha256": "0407cd781fccbfb9c4258f486d98c6df095b162200255eacd2ff4b8562dc2d23"
+    }
+  ],
+  "attempt": 1,
+  "failure": "run.log: exit=1 timed_out=False; retained attempt1",
+  "wall_seconds": 5.7186329970136285
+}
