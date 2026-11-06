@@ -1,0 +1,47 @@
+{
+  "status": "PASS_EXACT_ELASTIC_PIXEL_PIPELINE",
+  "source_sha256": {
+    "fpga/experiments/cu66-v77/render/cu77_yuv_rgb.sv": "622b0e25b7662e8cdc22a335ba24b78e7ebaa24789a18f6bba9709057c1e73b4",
+    "fpga/experiments/cu66-v77/render/tb_pixel.cpp": "527a41c9d36a3d12e3c4c76fea6f99139d59161ee6f3b041e55d937a9ed1f474",
+    "scripts/cu66-v77/run_render.py": "2de084768fa07ab5a038333ab85fa407a9bef0bdb30efbc1e6b525b1e8456c98"
+  },
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--cc",
+        "--exe",
+        "--build",
+        "-j",
+        "1",
+        "--Wall",
+        "--top-module",
+        "cu77_yuv_rgb",
+        "--Mdir",
+        "/build/v77-pixel",
+        "-CFLAGS",
+        "-O2 -std=c++17",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v77/render/cu77_yuv_rgb.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v77/render/tb_pixel.cpp"
+      ],
+      "log": "fpga/experiments/cu66-v77/render/pixel-build.log",
+      "exit_code": 0,
+      "sha256": "95d7b385d7980b615c61f3146f673812ffa447b2c24b45eb04ffe1b6464c39e4"
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v77-pixel/Vcu77_yuv_rgb"
+      ],
+      "log": "fpga/experiments/cu66-v77/render/pixel-run.log",
+      "exit_code": 0,
+      "sha256": "dbf75ec906806c97bce99fe105913527c12d891dda694c742038960a9eeacda8"
+    }
+  ],
+  "scope": "Exact mathematical CU66 color oracle; bounded random/extreme/stalled elastic arithmetic; not cache/controller/CDC/frameproof"
+}
