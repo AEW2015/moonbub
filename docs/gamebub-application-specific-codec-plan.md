@@ -2,6 +2,20 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+[V91i1](cu66-v91i/README.md) passes the **restricted CS88 structural-admission
+checkpoint**. Independent Python parsing and two strict RTL seeds agree on
+86 vectors: 51 retained native packet variants, one structural-only all-COPY
+case and 34 malformed/unsupported/state rejection cases. Each seed passes
+14 interface/recovery checks and 156 plane-slot comparisons. The native
+fixtures represent 25 distinct packet byte strings and eight cohort/frame
+identities, not 51 new gameplay frames. The gate validates the supported
+envelope, grouped modes, QM87 and bounded chunk descriptors before issuing a
+held receipt; it cannot decode entropy, commit references or publish pixels.
+The wire and quantization are unchanged. **Next is V91i2 residual dispatch and
+positional/quantizer binding**, followed by transaction ownership and actual
+pixel/reconstruction/validation integration. Sustained hardware 30 fps and
+complete validated FPGA decode under 10 ms remain open.
+
 [V91h](cu66-v91h/README.md) qualifies **explicit synchronous packet-staging
 RAM ports**. The static registered-read implementation preserves every packed
 byte and dense coefficient with **0.1000% FAST and 0.0865–0.0921% SLOW added
@@ -11,9 +25,9 @@ not a speedup or proven BRAM mapping. Two seeds pass separate static binaries,
 (including nine staging groups), 47 legacy checks and nine standalone checks per
 seed. The independent Python port model and exact per-byte/purpose accounting
 are retained. The slowest tested SLOW coefficient sum is 990,859 cycles;
-complete validated latency and achieved clock remain unqualified. **Next is
-V91i outer-frame descriptors, modes, quantizers and admission**, then V91j–m
-actual pixel/reconstruction/validation integration. Hardware 30 fps and complete
+complete validated latency and achieved clock remain unqualified. V91i1 above
+adds outer structural admission; residual dispatch and V91j–m actual
+pixel/reconstruction/validation integration follow. Hardware 30 fps and complete
 validated decoding under 10 ms remain open.
 
 [V91g2](cu66-v91g2/README.md) completes the bounded coded tile-preparation/

@@ -378,6 +378,16 @@ byte/purpose accounting and cancellation/held-output tests pass. This qualifies
 functional port semantics, not inferred BRAM, routed timing or hardware frame
 rate; outer-frame and full reconstruction/validation integration remain next.
 
+[V91i1](../cu66-v91i/README.md) adds restricted structural admission on actual
+CS88 packets without changing wire bytes or quantization. Independent Python
+parsing and two strict RTL seeds agree on 51 retained native variants, one
+synthetic zero-residual case and 34 rejection vectors; each seed also passes
+14 interface/recovery checks. These fixtures cover eight cohort/frame identities,
+not new held-out gameplay. Typed AB38/BR88 descriptors remain unconsumed, and
+accepted references/HUD/content seals/publication remain later gates. This is
+implementation progress toward a complete application-specific receiver, not
+compression superiority over HEVC/AV1 or hardware throughput evidence.
+
 Proceed in this order; [the executable work specification](experiments.md)
 defines controls, gates and failure cases:
 
