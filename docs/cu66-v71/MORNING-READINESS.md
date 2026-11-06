@@ -1,13 +1,13 @@
 # Morning CU66 hardware readiness
 
-Updated November 6, 2026, about 05:35 Denver. This record distinguishes
+Updated November 6, 2026, about 06:00 Denver. This record distinguishes
 completed offline work from installation and physical qualification.
 
 | Item | State |
 |---|---|
 | Installed application/FPGA | Last physically verified v32 / build50; unchanged overnight |
 | Next ESP32 app | v36 built, packaged, independently audited; not installed |
-| New direct-YUV board | Final v008 full implementation `dy71i03` running; native directory errors under investigation; no qualified BIT |
+| New direct-YUV board | Final v008 `dy71i03` completed; setup -0.834 ns, native directory errors retained; no qualified BIT |
 | New complete KEY/P/P model | PASS, zero LCD underruns and exact canonical/HUD/display checks |
 | v36/native on previous SYNCsafe/split RTL | PASS, two accepted/presented, zero rejects/underruns, 42,240 HUD readbacks |
 | v36/native on final safe-staging/validation successor | PASS: two accepted/presented, zero rejects/underruns, all 42,240 HUD readbacks |
@@ -42,18 +42,22 @@ Selection SHA-256:
 Core manifest SHA-256:
 `15cc325a837720ae4f54dbb98b30d457d76271f416b7ef1576c198a68fde4b69`.
 
-The active complete implementation is `C:/mb70/dy71i03`. Its console contains
+The completed full implementation is `C:/mb70/dy71i03`. Its console contains
 three `Common 17-1257` directory-creation errors despite short private TEMP/TMP.
 Its native Vivado log omits those console errors. Preserve both transcripts;
 neither a zero process status nor positive timing can waive this open gate.
-The current build continues for diagnostic placement/routing evidence while
-the environment discrepancy is investigated. No BIT has been generated.
+The reports are complete: routed setup -0.834 ns, hold +0.023 ns, pulse
++2.000 ns, all 49,051 nets routed, and 4,696 setup endpoints failing. The
+environment discrepancy is still being investigated. No BIT was generated.
 
 Its placed checkpoint reports setup -1.120 ns and hold -0.098 ns (pre-route,
 not final signoff). The worst reported path crosses command state, parser
 request qualification, arbitration choice and staging RAM address. A separate
 bounded registered-request experiment is being developed without changing this
-selected build; final routed evidence will determine the next selection.
+selected build. Its actual v36/native KEY/P pairing also passes. Final routed
+worst timing now targets event-overwrite counter enable. Separate event-counter,
+entropy address, SHA payload-enable and cache read-address experiments remain
+unselected pending their component and combined proofs.
 
 This first DY71 image is a local video diagnostic: fixed native panel timing
 and 40-column landscape borders, rather than build50's adjustable margin13;
