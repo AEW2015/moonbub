@@ -1,0 +1,104 @@
+{
+  "assumptions_and_exclusions": [
+    "All counted writes target one already-open SDRAM row for the best-case scenario; row misses and precharge/activate on later rows are excluded.",
+    "Refresh, reads, arbitration, queueing, and producer gaps are excluded.",
+    "The byte adapter's 560,640 x16 word writes assume an as-yet-unspecified byte-lane/mask bridge. moonshine_sdram has no byte-enable port, so this mapping is not implemented or established by this model.",
+    "The row adapter packs two ordered bytes per x16 word, yielding 280,320 physical word writes, but its complete bridge into the controller is also not implemented or established here.",
+    "Optional one-edge-per-logical-request ACK cost is a wrapper scenario only: the controller exposes no write response, so this is not a controller signal or measured edge.",
+    "Counts are controller edge-work budgets, not elapsed frame time, bandwidth, or 30fps evidence."
+  ],
+  "fsm_probes": {
+    "three_open_row_word_writes": {
+      "acceptance_edges": [
+        0,
+        6,
+        12
+      ],
+      "acceptance_spacing": [
+        6,
+        6
+      ],
+      "cycles_through_final_idle_drain": 18
+    },
+    "three_writes_first_row_closed_then_hits": {
+      "acceptance_edges": [
+        0,
+        10,
+        16
+      ],
+      "acceptance_spacing": [
+        10,
+        6
+      ],
+      "cycles_through_final_idle_drain": 22
+    }
+  },
+  "scenarios": [
+    {
+      "accepted_word_write_edge_spacing": 6,
+      "cold_closed_row_convention": "first accepted write activates the target row; later writes are open-row hits; includes final IDLE drain",
+      "cold_first_row_activation_incremental_edges": 4,
+      "cold_row_controller_edges_through_final_drain": 3363844,
+      "cold_row_edges_plus_optional_ack_edges": 3924484,
+      "logical_ack_requests": 560640,
+      "name": "byte_adapter",
+      "open_row_controller_edges_per_logical_ack_request": 6,
+      "open_row_controller_edges_per_logical_request_including_optional_ack": 7,
+      "open_row_controller_edges_through_final_drain": 3363840,
+      "open_row_edges_plus_optional_ack_edges": 3924480,
+      "open_row_startup_convention": "controller starts IDLE with target row already open; each accepted write's RW_CMD and WRITE wait are charged, through final IDLE drain",
+      "optional_logical_ack_convention": "add one assumed wrapper ACK edge per logical ACK request, including final request; controller itself has no write response",
+      "physical_word_writes_per_logical_ack_request": 1,
+      "physical_x16_word_writes": 560640
+    },
+    {
+      "accepted_word_write_edge_spacing": 6,
+      "cold_closed_row_convention": "first accepted write activates the target row; later writes are open-row hits; includes final IDLE drain",
+      "cold_first_row_activation_incremental_edges": 4,
+      "cold_row_controller_edges_through_final_drain": 1681924,
+      "cold_row_edges_plus_optional_ack_edges": 1752004,
+      "logical_ack_requests": 70080,
+      "name": "8_byte_row_adapter",
+      "open_row_controller_edges_per_logical_ack_request": 24,
+      "open_row_controller_edges_per_logical_request_including_optional_ack": 25,
+      "open_row_controller_edges_through_final_drain": 1681920,
+      "open_row_edges_plus_optional_ack_edges": 1752000,
+      "open_row_startup_convention": "controller starts IDLE with target row already open; each accepted write's RW_CMD and WRITE wait are charged, through final IDLE drain",
+      "optional_logical_ack_convention": "add one assumed wrapper ACK edge per logical ACK request, including final request; controller itself has no write response",
+      "physical_word_writes_per_logical_ack_request": 4,
+      "physical_x16_word_writes": 280320
+    }
+  ],
+  "schema": "cu66-v91l-controller-write-cost-v1",
+  "scope": "Exact cycle-edge service model for the frozen moonshine_sdram WRITE FSM under all-open-row best-case assumptions; no end-to-end latency, implementation, or hardware performance claim.",
+  "source": {
+    "byte_enable_or_mask_port": false,
+    "mode_register_meaning": "BL8 reads, write-single mode",
+    "mode_register_value": "13'h233",
+    "path": "fpga/rtl/moonshine_sdram.sv",
+    "ready_condition": "state==IDLE && refresh_count<REFRESH_CYCLES",
+    "request_address_unit": "word address",
+    "request_data_bits": 16,
+    "sha256": "f1c3bfd6e41b0f2cae0a68e4bf37155a5914d2993dc27d22b9a052d3e9b0f26f",
+    "state_constants": {
+      "ACTIVATE": 7,
+      "IDLE": 5,
+      "INIT_MRS": 3,
+      "INIT_PRE": 1,
+      "INIT_REF": 2,
+      "INIT_WAIT": 0,
+      "PRECHARGE": 6,
+      "READ_BURST": 10,
+      "READ_WAIT": 9,
+      "REFRESH": 13,
+      "REFRESH_PRE": 12,
+      "RW_CMD": 8,
+      "WAITING": 4,
+      "WRITE_WAIT": 11
+    },
+    "write_command_state": "RW_CMD(8)",
+    "write_response_port": false,
+    "write_wait": "wait_cycles(3,IDLE)"
+  },
+  "status": "PASS"
+}

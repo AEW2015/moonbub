@@ -2,6 +2,30 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+The [bounded eight-byte tile-row writer](cu66-v91l-rows/README.md) is the next
+controlled implementation comparison. Its static row mode preserves the live
+key/delta canonical/HUD bytes, accepted-bank references, captured quantizer cache,
+all C2 hashes and publication behavior. Candidate requests reduce from 560,640
+to 70,080/frame; declared x16 candidate payload transfers reduce from 560,640
+to 280,320. The payload register grows from one to eight bytes, without a second
+row or overlap. Two strict seeds pass 16 validated commits, all 16,400 checked
+RTL SHA digests and 39 integrated entries per mode/seed. Under the declared
+candidate service, FAST uses 36.64–38.56% fewer cycles and SLOW 55.65–57.51% fewer.
+See its independent audit/summary for exact source and bounds; prior FAST numbers
+use a different response rule and are not its performance control.
+
+**Next physical-memory gate:** join each row to four actual x16 word-write
+commands, including waits, row misses and refresh, and define byte-control
+masking/RMW. The current controller uses write-single mode and has no byte-enable
+request port. The comparison prices candidate responses only: frozen scratch
+and 64-byte reference actors still have separate logical service. Price all
+scratch/reference/candidate/RGB/scanout traffic on one finite x16 schedule before
+using frame cycles to infer a hardware clock, 30 fps or complete under-10-ms
+latency. The Python controller-cost model makes the missing command work explicit;
+it is not integrated RTL timing. HUD decode/overlay and processor/ESP32 costs
+remain required gates. Compare bounded two-row overlap only after preserving
+this single-row control and implementing that service boundary.
+
 The [live canonical/write-ACK follow-up](cu66-v91l-live/README.md) joins the
 unchanged supported BR88 parser, entropy decoder, inverse transform and canonical
 reconstruction directly to tagged candidate writes, actual C2/HUD/seal hashing
@@ -21,12 +45,10 @@ entropy or negotiated fallback, shared memory/RGB/display service, actual ESP32
 transport and physical qualification remain open. Component cycles are neither
 sustained hardware 30 fps nor validated under-10-ms decoding.
 
-Next compare bounded **eight-byte tile-row candidate writes** against the frozen
-single-byte ACK control: 64,800 canonical row requests plus 5,280 aligned HUD
-requests are the structural count, each charged four x16 payload transfers and
-controller service. Preserve byte-exact hashing order, rollback and accepted
-burst ownership. These calculated request counts are not measured acceleration;
-qualify the full shared service before promotion.
+The [tile-row comparison](cu66-v91l-rows/README.md) now implements those 64,800
+canonical plus 5,280 HUD row requests with exact hashing and ACK ownership under
+declared candidate service. It does not implement the physical controller bridge
+or qualify shared memory bandwidth; those are the next promotion gates above.
 
 [V91l's validation partition](cu66-v91l/README.md) now qualifies real RTL C2
 Merkle roots, semantic-HUD hashes, frame seals and atomic three-bank commit/

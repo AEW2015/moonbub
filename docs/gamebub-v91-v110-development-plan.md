@@ -147,6 +147,27 @@ price real x16 payload/command service; no request-count calculation alone
 qualifies it as a speedup. V91m's
 30-Hz finite-service and the later physical goals remain unproven.
 
+The [eight-byte candidate row writer](cu66-v91l-rows/README.md) now compares
+one bounded row against the unchanged byte writer in separate static builds.
+It preserves live reconstruction and all validation/publication semantics;
+its current-source audit carries exact bank/cache/hash and request/ACK replay.
+Candidate requests are 70,080 versus 560,640/frame, with seven additional logical
+payload bytes and no row overlap. The declared candidate response service charges
+four versus one x16 payload transfers and the same per-request overhead rule.
+Two strict seeds pass 16 commits and 16,400 independently checked SHA jobs;
+FAST cycles reduce 36.64–38.56% and SLOW 55.65–57.51% under these declared rules.
+This is candidate scheduling evidence, not a shared physical memory result.
+
+**Before physical throughput claims:** implement the row-to-word bridge for the
+existing single-write controller, charge its per-word command waits, refresh and
+row transitions, and define byte masks/RMW for the control. The frozen scratch
+128-bit and reference 64-byte service actors are not themselves x16 controller
+schedules. Connect them, candidate traffic, RGB conversion and scanout to one
+finite arbiter. Retain the single-row control before measuring two-row overlap.
+The separate Python controller-FSM cost model is a prerequisite estimate, not
+frame latency. RTL HUD decode/overlay, native processor/ESP32 cost and the V91m
+continuous-cadence/full-path gates remain open.
+
 V91f is promoted for functional scheduling under its bounded ownership contract;
 physical resource fit is still unqualified. V91g is promoted only if measured
 integrated service improves while its ownership and resource contracts remain

@@ -90,9 +90,10 @@ See the [board overview](https://docs.gamebub.net/developing-cores/overview/),
 
 Implementation follow-up: the [V91l live write-ACK lane](../cu66-v91l-live/README.md)
 connects actual supported BR88 reconstruction to integrity/publication while
-retaining the native C++ HUD endpoint. The next bounded memory experiment is
-an eight-byte tile-row write coalescer, with explicit x16 transfer cost and
-preserved ACK/hash ownership. This is a local architecture proposal arising
+retaining the native C++ HUD endpoint. The [eight-byte tile-row comparison](../cu66-v91l-rows/README.md) now implements
+that bounded writer with explicit candidate x16 transfer cost and preserved
+ACK/hash ownership. Its physical single-word controller bridge and shared x16
+schedule remain open; a Python controller-FSM work model records their costs. This is a local architecture proposal arising
 from the implementation; it is not a new publication result or evidence of
 HEVC/AV1 superiority. Use its live simulation summary for measured cycle fences,
 and keep shared physical service and hardware goals unqualified.
