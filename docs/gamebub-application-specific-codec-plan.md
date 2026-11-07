@@ -2,6 +2,19 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+**V93 research lane: V93a–c software evidence qualified; promotion remains open.**
+The [prefix/suffix and small-group Rice experiment](cu66-v93/README.md) adds
+real EC93/CS93 bytes with independently decoded HY and SG controls. All 6,855
+component packets and 4,113 complete packets preserve exact intended outputs;
+1,710 independent grammar checks and 48 protocol/recovery checks pass.
+Uniform HY removes 41.30% of uniform AB's arithmetic decisions for 3.101% more
+complete bytes, with all 457 frames below 49,152 bytes. SG32 lowers plain bit
+reads but its group headers increase complete bytes; reject it as the default
+size policy on this corpus. Minimum bytes remain exactly the V92 result.
+The bounded work policy is a counter-based experiment, not calibrated latency;
+its extra metadata/traffic needs integrated costing before promotion. See
+[measured results](cu66-v93/results.md). V91l and V92d remain open.
+
 **V92 research lane: V92a–c software evidence now qualified; V92d open.**
 The [per-context entropy study](cu66-v92/README.md) emits actual EC92 alternatives
 for the four DC/AC streams in each plane, with an explicit CS92 frame profile.

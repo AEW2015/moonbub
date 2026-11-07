@@ -15,6 +15,18 @@ RTL for **7-series technology mapping, placement, routing and timing closure**.
 Freeze the selected codec before that phase so a physical implementation change
 can be compared against a stable function and workload.
 
+**V93 research update:** [V93a–c software evidence](cu66-v93/README.md) now covers
+fixed arithmetic-unary/plain-suffix coding, a fixed SG32 small-block Rice control,
+actual bytes, independent readers and 4,113 complete frame reconstructions.
+Uniform suffix bypass cuts arithmetic decisions 41.30% versus uniform AB at
+3.101% more bytes; minimum-byte selection adds no compression gain over V92.
+SG32's metadata outweighs its smaller plain payload. Retain HY as a conditional
+work-proxy candidate and reject SG32 as the default size policy for this corpus.
+**V93d product promotion remains open:** no mixed-method RTL, calibrated full
+memory/metadata cost, physical timing or hardware throughput is qualified.
+[Results](cu66-v93/results.md) keep diagnostic oversized controls separate from
+normal 49,152-byte admission. The V91/V92 integration and V100–V110 gates remain.
+
 **V92 research update:** [V92a–c software evidence](cu66-v92/README.md) now covers
 explicit EC92/CS92 framing, real per-context AB38/BR88 alternatives, independent
 Python/native coefficient parity, 1,828 complete native frame reconstructions
@@ -319,7 +331,7 @@ are V92a, V92b, V92c and V92d. The existing E1–E7 controls remain applicable.
 | Version | a | b | c | d / exit |
 |---|---|---|---|---|
 | **V92** finer entropy/group choices | **Research grammar qualified:** EC92/CS92 context boundaries, explicit selectors, resets, RAW and complete-frame bounds. | **Actual alternatives qualified:** 21,936 EC92 chunks, both encoders once per plane, all headers/CRCs charged. | **Software evidence qualified on retained corpus:** independent Python/native decode, 1,828 complete exact pixel/reference/HUD reconstructions, bounded selection versus exhaustive search and measured host preparation. | **Open:** select with integrated memory/latency costs; implement any promoted RTL receiver adapter and rerun complete-path goldens. See [V92 evidence](cu66-v92/README.md). |
-| **V93** prefix/suffix and adaptive Rice | Define arithmetic-prefix/raw-suffix syntax and small-block Rice/RLGR controls. | Implement finite escapes, RAW fallback and independent readers. | Compare complete bytes, context resets, decoder work and host cost on the same inputs. | Promote only a measured improvement; otherwise retain the control and negative result. |
+| **V93** prefix/suffix and adaptive Rice | **Specified:** EC93/CS93, fixed all-suffix bypass and 32-event small-block Rice control; no RLGR-conformance claim. | **Software qualified:** finite escapes/RAW, independent Python/native readers and all 256 selector patterns. | **Qualified on retained corpus:** complete-byte, reset/work/metadata and host-cost comparisons; 4,113 exact complete packets. | **Research decision recorded; product promotion open:** retain conditional HY work candidate, reject SG32 default size policy; no minimum-byte gain over V92. Require integrated RTL/memory/latency evidence before promotion. See [V93](cu66-v93/README.md). |
 | **V94** bounded ANS | Specify 2/4-state rANS/tANS, model IDs, tables, literals and initialization/recovery. | Implement host encoding and independent decode with table-inclusive packets. | Prototype RTL/table ports/state arithmetic and test adversarial boundaries. | Compare full-path bytes, cycles and resource/port budgets; select or reject. A fast entropy kernel alone is insufficient. |
 | **V95** application-specific palettes | Define exact 2/4/8-entry palettes, left/top runs and residual fallback. | Put bounded palette/search work on the PC; implement deterministic decoding. | Test UI/HUD, movement, noise and scene changes with complete reconstruction. | Select exact-lane wins. Keep quality-changing clustering in a separately negotiated, matched-quality experiment. |
 | **V96** reference and memory work | Inventory COPY/alias/constant lifetimes, traffic and display ownership. | Implement bounded copy, grouped bursts and scheduled constant generation. | Test actual addressed traffic, port/refresh/arbitration service and abort/reuse. | Merge qualified memory improvements into the complete frame path; no free generator, gather or cross-position alias. |

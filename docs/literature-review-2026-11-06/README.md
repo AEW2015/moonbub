@@ -10,6 +10,16 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V93 E2 follow-up: [fixed suffix bypass and small-block Rice](../cu66-v93/README.md)
+now have actual-byte and independent software evidence. Uniform HY removes
+41.30% of uniform AB's arithmetic decisions for 3.101% more complete bytes.
+SG32's lower plain-bit count loses after group headers; exact minimum bytes
+remain unchanged from V92. The all-suffix bypass rule and group size were fixed
+before observation; histograms are descriptive rather than a trained held-out
+policy. [Results](../cu66-v93/results.md) include complete-frame parity,
+recovery, cap failures and host costs. These experiments do not reproduce a
+published benchmark, qualify a mixed-method RTL path or establish FPGA speed.
+
 Follow-up experiment: [V92 E2 actual per-context choices](../cu66-v92/README.md)
 now has independent software evidence on the retained 457-source corpus.
 Minimum-byte coding saves only 2,560 complete bytes versus the frozen AB38
