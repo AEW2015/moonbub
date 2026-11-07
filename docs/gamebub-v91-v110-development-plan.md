@@ -168,32 +168,32 @@ The separate Python controller-FSM cost model is a prerequisite estimate, not
 frame latency. RTL HUD decode/overlay, native processor/ESP32 cost and the V91m
 continuous-cadence/full-path gates remain open.
 
-The [matched controller write-pipeline gate](cu66-v91l-writepipe/README.md)
-now preserves the frozen controller/bridge while comparing a four-word pipeline.
-At the same assumed 10-ns period, key candidate writes reduce from 2,562,150 to
-1,271,369 cycles, and delta writes from 2,561,984 to 1,271,364 (25.62 → 12.71 ms,
-about 2.015×). Both variants, both seeds, and 2-/7-ns unit corners pass; the
-2-ns modes additionally replay actual native key/delta bytes. The independent
-pin/ownership audit covers eight exact native bank images, 2,242,560 native
-physical word writes, 256 read-word captures and 32 rejected trace corruptions.
-No live decoder/shared-client or hardware qualification follows from this replay.
+The [timed tiled-memory and row-retention gate](cu66-v91l-tiled/README.md)
+now qualifies static raster/tile8×8 placement through the frozen actual
+controller. Key writes reduce from 1,271,369 to 937,045 cycles; delta from
+1,271,364 to 937,040 (12.71 → 9.37 ms at the same assumed 10-ns period).
+Native ACTs drop from about 42,450 to 1,786/frame. Eight layout/seed/read-delay
+modes, eight inverse native bank images, 2,242,560 native pin writes, 320 read
+words and 32 rejected corruptions pass the independent audit. These are writes
+of already decoded canonical/HUD bytes, not complete validated decoding.
 
-V91l's next controlled implementation work is physical tile8×8 translation and
-bounded next-row retention. The [joint address study](cu66-v91l-writepipe/layout-read-contract.md)
-checks actual writes/references and declared full-once converter reads. Tile8×8
-improves reference locality but independent gathers double conversion traffic;
-the separate [byte-exact cache model](cu66-v91l-writepipe/rowpair-cache.md)
-restores 32,400 conversion BL8 reads with a proposed 752 data bytes, excluding
-metadata and existing buffers. Actual chroma-prefill adaptation, reset/cancel/
-lease invalidation, timed arbitration and RTL fit remain unimplemented. The
-micro16×8 alternative adds 3,840 padding bytes and retains reference overfetch.
-None of these layout counts are frame time or a promoted RTL map.
+The new bounded row-retention RTL consumes the actual converter's source-derived
+prefill order with three plane contexts. It halves reads to 32,400/frame and
+preserves both full native canonical outputs. The allocation is 1,472 data bytes
+plus validity/tags/control, superseding the old 752-byte plane-ordered proposal.
+It uses a declared logical read service; neither the real SDRAM read path nor
+the actual RGB565 converter is joined. The derived vector and byte/line mapping
+are independently checked; do not treat component cycles as combined frame time.
 
-Join these candidates to the live decoder/controller/arbiter, byte RMW and HUD
-boundary, then V91m's fixed source-cadence workload. Sustained hardware 30 fps
-and complete validated decoding below 10 ms remain open. V100–V110 physical
-mapping, placement/routing, I/O/CDC timing and hardware gates are unchanged.
-The [earlier controller gate](cu66-v91l-sdram/README.md) stays frozen as control.
+V91l's next checkpoint is a physical BL8 read bridge, bank/generation lease
+wrapper and actual RGB565-converter join, checked against existing RGB goldens
+with cancellation and stalls. Then put the live decoder, validation/publication
+and all scratch/reference/candidate/hash/conversion/scanout clients on one
+finite physical controller. Preserve the tiled/raster and retained/gather
+controls. Byte RMW, RTL HUD semantics, mixed entropy and real ESP32 costs remain
+open before V91m's fixed source cadence. Sustained hardware 30 fps and complete
+validated decoding below 10 ms are not established. V100–V110 retain the exact
+Series-7 mapping, placement/routing, I/O/CDC timing and hardware gates.
 
 V91f is promoted for functional scheduling under its bounded ownership contract;
 physical resource fit is still unqualified. V91g is promoted only if measured

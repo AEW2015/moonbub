@@ -2,36 +2,35 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
-The [matched four-word write pipeline](cu66-v91l-writepipe/README.md) now
-reduces source-backed candidate-memory write replay from **25.62 ms to 12.71 ms**
-per native frame at the same modeled 100 MHz (about 2.015×). It keeps single-word
-writes and BL8 reads, accepts up to four same-open-row words, and fences ACKs
-through final physical idle recovery. Frozen controller/bridge control and
-candidate pass two seeds at both selected read-delay corners, with full native
-replay at 2 ns, 204 check entries, 256 read-word comparisons, eight exact native
-bank images and 2,242,560 reconciled native pin writes. These are writes of
-previously decoded bytes; **complete validated under-10-ms decoding and hardware
-30 fps remain open**. No current live codec/hash/publication/shared-client work
-runs inside this timing fence.
+The [timed tiled-write and retention RTL gate](cu66-v91l-tiled/README.md)
+now implements two previously Python-only memory optimizations. Tile8×8
+placement reduces native candidate writes from **12.71 to 9.37 ms/frame** at the
+same modeled 100 MHz (26.30% fewer cycles), preserving exact canonical/HUD bytes.
+Eight static layout/seed/read-delay modes pass 220 check entries, 320 read words,
+eight inverse bank images and 2,242,560 native pin writes. The frozen controller,
+raster bridge and pin model remain unchanged. The measured window is first
+accepted row → last physically drained response for already decoded data;
+**complete validated decoding below 10 ms and sustained hardware 30 fps remain
+open**.
 
-The parallel [read-aware layout study](cu66-v91l-writepipe/layout-read-contract.md)
-preserves the actual native write order and reference requests. Tile8×8 reduces
-ideal write ACTs over two frames from 82,478 to 1,096 and halves delta-reference
-BL8 reads, but doubles independent conversion reads. Micro16×8 retains reference
-overfetch and adds 3,840 padding bytes/bank. The new [next-row retention model](cu66-v91l-writepipe/rowpair-cache.md)
-removes tile8×8 conversion overfetch: 64,800 → 32,400 BL8 reads/frame, exact on
-both canonical goldens, with a proposed 752 data bytes excluding metadata and
-existing converter storage. Its derived sequential plane order differs from the
-real chroma-prefill order. Neither placement nor retention is promoted to RTL,
-and address counts are not latency results or HEVC/AV1 coding gains.
+The new retention-reader RTL accepts the existing converter's source-derived
+chroma-prefill/luma line order with separate Y/Cb/Cr contexts. It halves physical
+read requests from 64,800 to 32,400 per canonical frame. This needs **1,472 data
+bytes plus metadata**, replacing the earlier 752-byte monotonic-plane proposal.
+Both native canonical frames are exact under seeded response/ready stalls;
+finite-lease, generation, cancellation/drain, held-response and invalid-order
+behavior are checked. Its declared read-service actor is not the actual SDRAM
+controller, and the actual converter top is not joined yet. Component cycles
+cannot be combined with the write-replay fence into a whole-frame latency/FPS.
 
-Next implement timed tile8×8 translation and the bounded retention reader as
-static comparisons, preserving these controls. Then connect live supported
-reconstruction, validation/publication, scratch/reference/candidate/conversion
-and scanout to one finite physical service. Keep byte masking/RMW, RTL HUD
-semantics, entropy fallback, ESP32 costs and exact-device physical timing as
-explicit open gates. The [prior controller gate](cu66-v91l-sdram/README.md)
-remains the frozen scheduling baseline.
+Next implement the physical BL8 read bridge and join the retained reader to the
+frozen RGB565 converter with bank/generation leases and complete RGB goldens.
+Then connect live reconstruction, hash/validation/publication and every memory
+client to one finite physical service with display deadlines. Byte masking/RMW,
+RTL HUD semantics, mixed-entropy fallback, ESP32 execution and exact-device
+physical qualification remain explicit gates. Keep the [write-pipeline](cu66-v91l-writepipe/README.md)
+and [original controller](cu66-v91l-sdram/README.md) comparisons frozen. Codec
+syntax, rate/quality and HEVC/AV1 comparisons are unchanged.
 
 The [bounded eight-byte tile-row writer](cu66-v91l-rows/README.md) remains the
 qualified live-path scheduling control. Its static row mode preserves the live

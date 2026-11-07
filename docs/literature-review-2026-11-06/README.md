@@ -98,21 +98,21 @@ from the implementation; it is not a new publication result or evidence of
 HEVC/AV1 superiority. Use its live simulation summary for measured cycle fences,
 and keep shared physical service and hardware goals unqualified.
 
-The [matched write-scheduling follow-up](../cu66-v91l-writepipe/README.md)
-now measures about 25.62 → 12.71 ms of candidate-memory replay per native frame
-at the same modeled clock, with a frozen controller/bridge control and two-seed
-pin/ownership audit. This remains write-only simulation, not a complete decoder,
-shared-memory result or physical clock/FPS validation. Manufacturer-supported
-consecutive writes retain final recovery and unchanged BL8 reads.
+The [tiled-memory/retention follow-up](../cu66-v91l-tiled/README.md) now
+implements tile8×8 placement through the frozen real controller and qualifies
+native candidate-write replay at 12.71 → 9.37 ms under the same modeled clock.
+Complete inverse canonical/HUD images and actual pin ownership/command timing
+are checked. This is write-only replay, not live validated decode or hardware
+clock/FPS evidence.
 
-The parallel read-aware tile/microtile study confirms that write locality alone
-is insufficient: tile8×8 halves reference reads but doubles independent
-conversion reads. A separate exact Python next-row retention mechanism removes
-that conversion overfetch with a proposed 752 data bytes, excluding metadata
-and existing buffers. Its sequential plane schedule must be adapted to actual
-chroma prefill before RTL promotion. These are local architecture mechanisms
-inspired by memory locality, not new publication findings or evidence of
-HEVC/AV1 rate/quality superiority. The earlier codec comparisons are unchanged.
+A new three-plane retention reader also halves reads under the actual
+converter's source-derived chroma-prefill order, preserving both full native
+canonical outputs. It allocates 1,472 data bytes plus metadata; the earlier
+752-byte sequential-plane proposal is now a narrower control. Retention uses a
+logical read-service actor and has not yet joined actual SDRAM or the RGB565
+converter top. These implementation results are local memory-architecture
+mechanisms, not new publication findings, coding-efficiency gains or evidence
+of HEVC/AV1 superiority. The earlier rate/quality comparisons remain unchanged.
 
 ## Literature findings compared with V90
 
