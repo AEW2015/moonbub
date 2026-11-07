@@ -15,7 +15,23 @@ RTL for **7-series technology mapping, placement, routing and timing closure**.
 Freeze the selected codec before that phase so a physical implementation change
 can be compared against a stable function and workload.
 
-**V98 partial checkpoint: refreshed common-input controls.**
+**V99 RC1 research checkpoint: fresh input and an explicit RTL candidate.**
+The [V99 handoff](cu66-v99/README.md) now has 360 fresh CU66/GU66 candidates
+with exact unchanged native canonical/HUD/RGB565 parity and 3,948 atomic
+rejection trials. Actual CS88/all-BR88 packets also pass 360 native reconstructions
+and an independent 186,624,000-coefficient/C2 audit. The selected q16 research
+profile forces V91-compatible key0/Pgroup3 and QM87 run2/inherit6 metadata:
+all 120 frames in four complete short histories fit, max 36,119 bytes. q8 has
+one over-cap packet and is not the default. A direct fresh sender produces the
+same 120 packets plus 32 cross-key synthetic ACKs; the new-user RTL-facing
+key/P/late-CRC goldens are exported but have not been run through RTL.
+The [profile and measured costs](cu66-v99/results.md) freeze a research RC1,
+not product promotion. Python host packet preparation remains far above the
+33.33-ms frame period; native host acceleration, original held-out captures,
+ESP32/QSPI integration, full live RTL/HUD/C2/display, memory/ports and physical
+qualification remain open. V100–V110 keep their 7-series implementation focus.
+
+**V98 partial checkpoint: refreshed common-input controls (encoder gap closed by V99).**
 The [V98 comparison](cu66-v98/README.md) completes 52 software profile runs and
 1,560 encode/decode round trips on four short 720×480 sequences, including the
 new user-supplied combat video selected at 30 Hz. Thirteen unit tests and an
@@ -24,11 +40,11 @@ historical GM01 control use identical RGB inputs and canonical YUV420/RGB565
 arithmetic; bytes, output lag, emitted syntax, quality proxies and host timing
 are retained. [Results](cu66-v98/results.md) show no reason to promote GM01 or
 unconditional global motion. This does **not** measure the current CU66 gap:
-the actual current fresh-RGB encoder remains missing from this common-input
-lane. Independent raw captures, real HUD readability, longer held-out tails,
-complete-path integration and both physical goals remain open. V99 must close
-the fresh-input/current-receiver parity and earlier integration gates before
-freezing a supported codec; V100–V110 retain their physical implementation focus.
+the fresh-RGB encoder was missing from that common-input lane; V99 now supplies
+the actual CU66/CS88 path and independently checked pixels. Raw captures, real HUD readability, longer held-out tails,
+complete-path integration and both physical goals remain open. V99 closes that
+fresh-input parity gap; the earlier integration gates still precede product
+freeze. V100–V110 retain their physical implementation focus.
 
 **V97 partial checkpoint: compact transport and live native-Rust/RTL ingress.**
 The [V97 study](cu66-v97/README.md) adds explicit setup/profile/cap negotiation,
@@ -413,8 +429,8 @@ are V92a, V92b, V92c and V92d. The existing E1–E7 controls remain applicable.
 | **V95** application-specific palettes — **software checkpoint** | **Specified:** exact U8 pixel palettes, packed/TOP/LEFT/escape/RAW records, plane/frame-local reuse, CS95 and actual EC92 fallback. | **Implemented:** bounded six-profile host search, deterministic independent readers, 216 complete-plane tuples, direct candidate writes. | **Qualified on retained corpus:** 8,226 plane variants and 4,113 full native exact pixel/HUD reconstructions, malformed/recovery tests and byte-identical repeat. Predecoded targets; no coefficient-parity claim on palette tiles. | **Decision recorded; no promotion:** minimum-byte selection rejects palettes everywhere; work5/work15 trade +3.47%/+12.22% bytes for 2.15%/6.88% bypassed residual blocks. No calibrated latency, palette RTL or hardware proof. Keep lossy clustering separate. See [V95](cu66-v95/README.md). |
 | **V96** reference and memory work — **partial** | **Qualified retained inventory:** exact accepted-only 64/256-entry dictionaries, materialized copies, fixed aperture/addresses, full research descriptor cost and separate read/write fences. | **Standalone implemented:** one-tile COPY/CONST128/literal engine, grouped BL8 reads/row writes, scheduled generation and full-width leases; no alias. | **Component checkpoint:** 1,371 independent streams, 11,105,100 exact tiles, 2,601 timed-controller RTL checks and 34 behavioral lifecycle operations. No integrated display/whole-frame qualification. | **Open:** join supported syntax/materializer/constant consumers to reconstruction, C2/HUD/seal, publication and all shared display/scratch traffic; require lower full-path latency without underruns before promotion. See [V96](cu66-v96/README.md). |
 | **V97** Sunshine/ESP32/transport — **partial** | **Software checkpoint:** PC JPEG/preencoded framing measurements; explicit MB97 setup/profile/cap ACK and legacy control. No live Sunshine capture calibration. | **Portable components:** two aligned Rust stages, true-credit probes, exact logical DMA and commit-ACK fence; real bounded FIFO RTL. Production QSPI/ESP-IDF UDP adapter and target RAM/CPU service remain open. | **Native-host/RTL join qualified:** 23 Rust tests, three strict FFI tests, 138 wire cases and 11 interactive ingress transactions. No Renode/ESP32 instruction, Wi-Fi/RTOS or physical QSPI model. | **Open:** on-device capability/driver integration, UDP loss/pacing/mailbox and input/audio/UI contention; custom reference/publication recovery and hardware calibration. Ingress commit is not decoded/displayed FPS. See [V97](cu66-v97/README.md). |
-| **V98** common-input comparisons — **partial** | **Common corpus retained:** 120 selected frames/four sequences, new compressed gameplay at selected 30 Hz; 109 per-clip unique RGBs. **Open:** independent raw captures. | **Software controls qualified:** 52 HEVC/AV1/JPEG/historical-GM01 runs, shared color arithmetic and actual streams. **Open:** current CU66 fresh-RGB encoder and parity. | **Measured:** host frontend/backend costs, AU tails, emitted syntax, ROI/temporal pixel proxies and synthetic cut. **Open:** readability, held-out long-run tails and target capability. | **Research frontier/decision published:** no historical-GM01 promotion, no unconditional global motion. No current-CU66 gap, matched perceptual superiority or physical FPS claim. See [V98](cu66-v98/README.md). |
-| **V99** candidate freeze | Close V98 current-CU66 fresh-input/current-receiver parity and earlier full-path gates; choose one supported codec/profile plus a simpler fallback; list deferred tools. | Integrate promoted winners and run complete functional/recovery regressions on the broader original capture corpus. | Freeze sender/ESP32/FPGA interfaces, board/part/memory assumptions, goldens and measurement counters. | Deliver rebuildable source, grammar, tests, manifests and a hardware-test bundle; record remaining physical prerequisites before V100. |
+| **V98** common-input comparisons — **partial** | **Common corpus retained:** 120 selected frames/four sequences, new compressed gameplay at selected 30 Hz; 109 per-clip unique RGBs. **Open:** independent raw captures. | **Software controls qualified:** 52 HEVC/AV1/JPEG/historical-GM01 runs; actual fresh CU66/CS88 parity and same-input quality now supplied by V99. | **Measured:** host frontend/backend costs, AU tails, emitted syntax, ROI/temporal pixel proxies and synthetic cut. **Open:** readability, held-out long-run tails and target capability. | **Research frontier/decision published:** no historical-GM01 promotion or unconditional global motion. No matched perceptual superiority or physical FPS claim. See [V98](cu66-v98/README.md) and [V99](cu66-v99/README.md). |
+| **V99** candidate freeze — **research RC1, product gates open** | **Closed software gap:** fresh RGB→CU66 and independent native parity; select restricted CS88/all-BR88 q16 plus separate production JPEG fallback. | **Native research qualified:** 360 exact CS88 reconstructions, independent BR88/C2 audit, 120 byte-identical direct packets and 32 cross-key controls. Broader original captures, real-time host encoding and live full-path integration remain open. | **Profile/goldens/inventory frozen for research:** actual V91 mode/QM subset, complete cap, source/interface hashes, new key/P residual goldens. No fresh RTL run, ESP32 service or full-top memory/physical fit. | **Rebuildable research handoff delivered:** [V99](cu66-v99/README.md). Product freeze requires complete live RTL/HUD/C2/display, transport, held-out/service and physical prerequisites; V100 must inventory incomplete endpoints. |
 
 The minimum candidate must have an implemented sender/receiver path for every
 negotiated mode. If a mode is deferred, the encoder must avoid it through a

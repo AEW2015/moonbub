@@ -1,5 +1,9 @@
 # V98: common-input codec controls
 
+Follow-up: [V99](../cu66-v99/README.md) now supplies the missing actual fresh-RGB
+CU66/CS88 encoder and independent native pixel parity. The V98 measurements
+below remain the historical GM01/standard-codec checkpoint.
+
 V98 now has a reproducible software comparison: 52 profile runs and 1,560
 encode/decode round trips on four short 720×480 sequences. The supplied Mass
 Effect Legendary Edition video contributes a new 30-frame combat sample at

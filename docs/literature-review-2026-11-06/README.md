@@ -10,6 +10,16 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V99 E7-to-implementation follow-up: [fresh-input RC1](../cu66-v99/README.md)
+now generates actual CU66/CS88 from the retained RGB corpus, with independent
+native/pixel/BR88/C2 parity. The selected all-BR88 q16 candidate uses the actual
+V91 metadata subset; all120 selected frames fit the cap. Direct packet equality
+and cross-key controls are verified, with new RTL-facing goldens exported.
+[Measured results](../cu66-v99/results.md) still show a slow Python sender,
+not hardware 30 fps or under-10-ms FPGA decoding. This closes the fresh-encoder
+comparison gap, while original raw/perceptual/held-out and complete physical
+integration gates stay open. No published-codec superiority is inferred.
+
 V98 E7 follow-up: [common-input controls](../cu66-v98/README.md) now retain
 52 HEVC/AV1/JPEG/historical-GM01 software runs, 1,560 round trips and a new
 user-supplied 30-Hz selected combat sample. Actual bytes, shared color arithmetic,

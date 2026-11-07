@@ -2,6 +2,21 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-07
 
+**V99 research RC1: fresh input and an RTL-compatible packet subset.**
+The [V99 candidate](cu66-v99/README.md) selects restricted CS88/all-BR88 q16,
+with key map0/Pgroup3, QM87 run2/inherit6 and a complete 49,152-byte cap.
+Fresh CU66/GU66 and CS88 native parity each cover 360 frames; independent
+BR88/C2 auditing checks 186,624,000 coefficients. All four complete q16 cases
+fit (120 frames, maximum 36,119 bytes). The direct sender reproduces all 120
+packets exactly and adds 32 synthetic cross-key ACKs. A bounded new-source
+RTL-facing golden bundle is retained; it was not simulated in RTL here.
+[Results](cu66-v99/results.md) identify Python HUD encoding as a major host
+bottleneck. Original captures, native real-time sender, live ESP32/QSPI and
+complete RTL/HUD/C2/display integration, memory/ports and physical qualification
+remain open. The research profile is frozen; product promotion is not. Keep
+the existing JPEG/MSV1 image as a separate supported fallback and continue the
+V100–V110 mapping/P&R/timing phase with explicit incomplete endpoints.
+
 **V98 partial checkpoint: reproducible common-input controls.**
 The [V98 study](cu66-v98/README.md) measures 52 HEVC/AV1/JPEG/historical-GM01
 software runs, 1,560 encode/decode round trips and the new supplied combat
@@ -10,8 +25,8 @@ audit pass. The [frontier and host timing](cu66-v98/results.md) use shared
 RGB/YUV420/RGB565 arithmetic and actual complete bytes. Keep standard codecs
 as software anchors and JPEG as the existing intra control. The tested GM01
 points and unconditional global-motion option do not justify promotion.
-Current CU66 fresh-RGB encoding and receiver parity must enter this lane before
-a current-codec quality gap can be measured. Original raw gameplay, verified
+That V98 encoder gap is now closed by V99's fresh CU66/CS88 path and independent
+pixel audit. Original raw gameplay, verified
 HUD readability, calibrated long-run tails, complete-path decoder/display
 integration and physical 30 fps/under-10-ms decoding remain open. V99 candidate
 freeze is gated by that work; V100–V110 mapping/P&R/timing plans are unchanged.
