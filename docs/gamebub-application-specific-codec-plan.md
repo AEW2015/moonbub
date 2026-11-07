@@ -2,6 +2,31 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-07
 
+**V103 partial checkpoint: geometry control and parser mapping evidence.**
+[V103](cu66-v103/README.md) preserves the codec, 720×480 resolution, 49,152-byte
+cap and cycle schedule while isolating two geometry-function rewrites. Four
+paired lanes pass 288 case/profile runs and 304 directed checks. Focused RTL
+passes 32,768 reconstruction inputs and 130,920 admission inputs, with
+independent trace replays and a 19-check provenance audit. Reconstruction-only
+synthesis improves to 48,675 LUTs / WNS −11.596 ns; the smaller admission and
+combined variants regress synthesis timing and are not area-only promotions.
+[Physical comparisons](cu66-v103/vendor-comparison.md) and the recorded source
+selection govern the next study. The parser inventory and 1,548,910-comparison
+Python prefix model prepare a separate RTL experiment; parser-native gains
+remain unmeasured. [Control-state obligations](cu66-v103/next-control-architecture.md)
+cover reset/start, validated header entry, stalls, group jumps, epoch and
+physical response ownership before future cached/pipelined geometry changes.
+No new quality/compression or measured hardware-FPS gain is inferred. Parent
+clock/I/O signoff, whole decoder/transport/display integration, sustained
+hardware 30 fps and validated complete decoding below 10 ms remain open.
+
+The final [V103 source selection](../experiments/python-gamebub-v103/selection.json)
+retains V102: reconstruction-only routes with 48,179 LUTs / WNS −14.036 ns
+and combined with 47,740 / −17.586 ns, versus V102's 48,522 / −13.976 ns.
+Both route with zero routing errors, but the area savings provide no proven
+routed timing gain. Registered/precomputed control needs the documented
+state/owner proofs before the next arithmetic/pipeline iteration.
+
 **V102 partial checkpoint: representation-preserving RTL now fits and routes.**
 [V102](cu66-v102/README.md) isolates a BRAM-inference memory template and
 fixed-geometry predicate logic without changing 720×480, the 49,152-byte cap,

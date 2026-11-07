@@ -10,6 +10,26 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V103 implementation follow-up: [geometry and parser studies](../cu66-v103/README.md)
+retain exact component behavior across 288 paired case/profile runs and 304
+directed checks, with independent function probes and a source/provenance audit.
+Reconstruction-only synthesis improves LUT count/slack modestly; admission's
+full-domain arithmetic identity saves area but worsens setup timing. Matched
+routed comparisons decide the successor rather than a shorter expression.
+A separate aligned-window prefix model passes 1,548,910 Python comparisons
+and prepares a bounded parser RTL experiment; it is not native mapping or
+whole-parser proof. The next architecture plan records concrete state/owner
+obligations for cached coordinates and registered active-cell writes. These
+are implementation/model findings, not new HEVC/AV1 quality comparisons or
+hardware 30-fps/under-10-ms validation. E7/E6, clock/boundary/I/O and full-system
+qualification remain open.
+
+The final V103 routed A/B retains V102: reconstruction-only reduces LUTs to
+48,179 but has −14.036-ns WNS; combined reduces LUTs to 47,740 but has
+−17.586-ns WNS, versus V102's −13.976 ns. Both route without errors. This
+negative timing result strengthens the need to measure dependency depth and
+owner-safe pipelining, rather than infer a win from source operator count.
+
 V102 implementation follow-up: the [memory/predicate experiment](../cu66-v102/README.md)
 turns the literature's implementation focus into measured native results.
 Paired RTL traces and canonical bytes remain equal. Combined synthesis cuts

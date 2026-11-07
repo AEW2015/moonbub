@@ -1,0 +1,22 @@
+--- fpga/experiments/cu66-v102-memory/cs88_admission_v91i2a.sv
++++ fpga/experiments/cu66-v103-admission/cs88_admission_v91i2a.sv
+@@ -103,7 +103,18 @@
+         return p==0?32'd5400:32'd1350;
+     endfunction
+     function automatic logic [31:0] cell_index(input logic [1:0] p, input logic [31:0] t);
+-        return p==0?((t/90)/2)*45+(t%90)/2:t;
++        logic [25:0] rows;
++        logic [24:0] removed_rows;
++        logic [30:0] half_tile, offset;
++        begin
++            // Full unsigned 32-bit identity: cell = floor(t/2) - 45*ceil(floor(t/90)/2).
++            // Quotient <= 47,721,858; removed_rows <= 23,860,929. No tile-state narrowing.
++            rows=26'(t/32'd90);
++            removed_rows=rows[25:1]+25'(rows[0]);
++            half_tile=t[31:1];
++            offset=31'(removed_rows)*31'd45;
++            return p==0?{1'b0,(half_tile-offset)}:t;
++        end
+     endfunction
+     function automatic logic [31:0] visible_group(input logic [1:0] p, input logic [31:0] t);
+         logic [31:0] n;
