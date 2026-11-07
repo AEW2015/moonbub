@@ -8,6 +8,8 @@ for f in p.iterdir():
 for folder in ['reset01','xsim-full-synth01']:
  for f in(p/folder).glob('*'):
   if f.is_file()and f.suffix in ['.json','.log']:cp(f)
+for f in(b/'reset-mapping01').glob('*'):
+ if f.is_file()and f.suffix in ['.json','.log','.rpt','.tsv','.tcl']:cp(f,p.relative_to(root)/'reset-mapping01'/f.name)
 bundle=p.relative_to(root)/'board-source-v001'
 for n,h in json.loads((b/'source-freeze.json').read_text()).items():assert sha(b/'inputs'/n)==h;cp(b/'inputs'/n,bundle/'inputs'/n)
 for n in ['selection.json','source-freeze.json','synth.tcl','implementation.tcl','run-phase.py','synth-execution.json','implementation-execution.json','timing-summary.rpt','route-status.rpt','drc.rpt','bulk-port-gate.json']:

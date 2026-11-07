@@ -21,6 +21,17 @@ s=s.replace(needle,checks+'\n'+needle)
 s=s.replace("extra += 'set reset", "extra += 'set reset",1)
 needle="out.mkdir(exist_ok=False);";assert needle in s
 s=s.replace(needle,"extra += '\\nset c [get_cells -quiet core_reset_distribution]\\nif {[llength $c]!=1 || [get_property REF_NAME $c] ni {BUFG BUFGCTRL}} {error \"Missing reset global buffer\"}\\nreport_property $c -file [file join $out reset-buffer.rpt]\\n'\n"+needle)
+needle="out.mkdir(exist_ok=False);"
+coverage="""
+set rst_source [get_pins {joint_core_reset_reg[3]/C}]
+set rst_targets [get_pins -quiet -hier -filter {NAME =~ system_core/* && REF_PIN_NAME == R}]
+if {[llength $rst_source]!=1 || [llength $rst_targets]<100} {error "Reset coverage endpoints missing"}
+set rst_paths [get_timing_paths -from $rst_source -to $rst_targets -delay_type max -max_paths 16]
+if {[llength $rst_paths]<1} {error "Buffered reset paths are not timed"}
+foreach path $rst_paths {if {[get_property SLACK $path]<=0} {error "Buffered reset path violates setup"}}
+report_timing -from $rst_source -to $rst_targets -delay_type max -max_paths 16 -file [file join $out reset-distribution-timing.rpt]
+"""
+s=s.replace(needle,'extra += '+repr(coverage)+'\n'+needle)
 s=s.replace("Exact V026/V43", "Exact V027/V43")
 s=s.replace("Scalar CSR simulation platform and new ABI2 bulk/pins are separate scopes.","Scalar CSR simulation platform and new ABI2 bulk/pins are separate scopes. V027 additionally has the actual UNISIM reset-buffer test; no added reset stage or changed clock period/phase.")
 (p/'image-gates.py').write_text(s)
