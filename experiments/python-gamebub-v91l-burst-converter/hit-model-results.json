@@ -1,0 +1,215 @@
+{
+  "schema": "cu66-v91l-burst-hit-model-v1",
+  "status": "PASS_PYTHON_SOURCE_DERIVED_BYTE_EXACT",
+  "baseline_revision": "d57c0e47fba91032e2c94a78a09ed22a46679c46",
+  "source_sha256": {
+    "docs/cu66-v91l-readbridge/next-converter.md": "5da0876d9655d59da47046dbec71dfd6a1b300f79a4f49141893afbd8bfd16ad",
+    "fpga/experiments/cu66-v91k-cache/canonical_rgb565_cached.sv": "3c730f16a1307b854a643e5aa129abd0b5239d3dede5f46b7eca33df0c5a25b0",
+    "fpga/experiments/cu66-v91k-lines/canonical_line_reader.sv": "154ddcf9333dd96e368f51f90f9fef1c775a2fe2b20002fee7fe6f92d5a95e69",
+    "experiments/python-gamebub-v91l-tiled/prefill_model.py": "6036d1e124bda0c9d87830e49c06b71cb58c5b755b9ed202db172a3aee9eab5e",
+    "fpga/experiments/cu66-v91l-burst-converter/generate_converter.py": "f916f5c3740b73d141dd84d4db74b2b6978fd27b42bbc888cb575f3aed15bf56",
+    "fpga/experiments/cu66-v91l-burst-converter/canonical_rgb565_cached.sv": "ac4cfcffe3bd2afb6ffce41a635f9c2f038bfb2142e37a8fc3010361b167b904",
+    "fpga/experiments/cu66-v91l-burst-converter/canonical_line_reader.sv": "30e2b59acd864d200a256523957307d215bb9f12f69dcd631693514d4c8cb4dc",
+    "fpga/experiments/cu66-v91l-burst-converter/canonical_rgb565_lines.sv": "2e91f40e19f8773e0400dc7720e669d2972a489188622fef1e1a8881683ce07a",
+    "fpga/experiments/cu66-v91l-burst-converter/INTERFACE.md": "3a0908a594e7bcd9db7dfc1f8b4ef088b60b33ccfa5263e1e28505a144b6d5a4",
+    "fpga/experiments/cu66-v91l-burst-probe/tb_probe.cpp": "afa0dbefe637cfc29e7f264877765431288783dff37bd4a578153094abf9a4df",
+    "scripts/cu66-v91l-burst-probe/run_test.py": "a1d0bc67d31b6bcc693a31d38fc00054b0d00a8a278b40f0533c4faffb376cd8",
+    "fpga/experiments/cu66-v91l-burst-probe/results.json": "b8c448df49fe7392686d704d166c7a03dd0d70abe1fb57a1e9d64a48bbc6dd61",
+    "fpga/experiments/cu66-v91l-burst-probe/attempts/20261107T010622248917Z-1b333f54/results.json": "a2acf7e769fee41ee743ef11cbaa74c7ada31cb103f2228091d7749d80307d9b"
+  },
+  "generator_sha256": "eb5a0dd24fd90dbd424c9f1dba79d405b8ff8d7d5cc2e63b1ba97d5f71044d27",
+  "inputs_sha256": {
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/inputs/canonical_actual.tsv.gz": "03fab04d4273388cb1477c6db11c19486d7f0ad1ebc2e39b18fe6cc3508c0192",
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/inputs/edge_actual.tsv.gz": "e16db4767d65954a73890ffbbce323bc42a9ab078a3f82aaee7c8f3bedf17376"
+  },
+  "schedule": "canonical_rgb565_cached.sv CHECK_ROWS: fill each missing chroma row Cb then Cr, then request 720 Y bytes per output row; three independent plane tags, aligned 16-byte line",
+  "frame_bytes": 518400,
+  "source_consumer_byte_requests_per_frame": 518400,
+  "scalar_line_cache_counts_per_frame": {
+    "line_hits": 486000,
+    "line_misses": 32400,
+    "aligned_16_byte_requests": 32400,
+    "physical_payload_bytes": 518400
+  },
+  "direct_probe_counts_per_frame": {
+    "owned_line_hit_consumptions": 486000,
+    "miss_refills": 32400,
+    "aligned_16_byte_requests": 32400,
+    "physical_payload_bytes": 518400
+  },
+  "request_service_clock_estimate": {
+    "scalar_hit_timeline": "edge n: FILL_REQ/LUMA_REQ accepts byte request; edge n+1: FILL_WAIT/LUMA_WAIT consumes registered adapter response",
+    "direct_hit_timeline": "edge n: FILL_REQ/LUMA_REQ consumes matching ACK-owned line byte and advances",
+    "saved_request_service_clocks_per_hit": 1,
+    "saved_request_service_clocks_per_frame_estimate": 486000,
+    "estimate_scope": "nominal state-edge arithmetic only; excludes physical memory, RNG/stalls, lookup, conversion, output backpressure, full frame fence and interaction effects"
+  },
+  "line_storage": {
+    "existing_three_payload_slots_bytes": 48,
+    "additional_payload_storage_proposed": 0,
+    "note": "Candidate reuses the three existing per-plane line payloads; total implementation storage cannot be asserted without RTL/synthesis."
+  },
+  "generated_rtl_contract_review": {
+    "source_sha256_pinned_with_sources": true,
+    "probe_allowed_only_in": [
+      "FILL_REQ",
+      "LUMA_REQ"
+    ],
+    "reader_hit_requires": [
+      "active matching epoch",
+      "IDLE adapter",
+      "no pending physical read",
+      "no pending byte lease",
+      "no held byte response",
+      "valid matching plane line tag",
+      "in-range address"
+    ],
+    "line_valid_set_only_on_matching_active_physical_ack": true,
+    "start_cancel_reset_invalidate_line_valid": true,
+    "fill_hit_uses_existing_single_byte_enable_ram_write": true,
+    "misses_keep_existing_byte_lease_refill_path": true,
+    "expected_counters": {
+      "external_reads": 32400,
+      "external_responses": 32400,
+      "direct_consumes": 486000,
+      "canonical_consumed": 518400
+    },
+    "source_review_only_no_rtl_execution": true
+  },
+  "ownership_guard_model": {
+    "abstract_state_combinations_checked": 128,
+    "ack_installation_combinations_checked": 8,
+    "ack_install_requires_active_same_generation_uncanceled": true,
+    "line_valid_cleared_on": [
+      "start",
+      "cancel",
+      "generation_change"
+    ],
+    "hit_blocked_when": [
+      "adapter_busy",
+      "frame_inactive",
+      "line_not_ack_owned",
+      "old_byte_lease_pending",
+      "physical_read_pending",
+      "response_held",
+      "tag_or_plane_mismatch"
+    ],
+    "early_hit_before_matching_line_ack": "forbidden_by_valid_tag_installation_only_on_matching_ACK",
+    "scope": "bounded abstract ownership guard model; not RTL proof or implementation assertion"
+  },
+  "frames": {
+    "actual_001": {
+      "canonical_frame_sha256": "927e4b27b815228919275cdbd3cbdfcc8b7cbd0eae60749a3919e1754e5d6257",
+      "scalar_delivered_sha256": "b97593e58840fd57baf881d3ce85f510a46ae5fa0f24560a7dfa9bf66d7d150b",
+      "direct_probe_delivered_sha256": "b97593e58840fd57baf881d3ce85f510a46ae5fa0f24560a7dfa9bf66d7d150b",
+      "direct_probe_equals_scalar_byte_for_byte": true,
+      "scalar_line_cache": {
+        "byte_requests": 518400,
+        "line_hits": 486000,
+        "line_misses": 32400,
+        "line_misses_by_plane": {
+          "Y": 21600,
+          "Cb": 5400,
+          "Cr": 5400
+        },
+        "aligned_line_requests": 32400,
+        "physical_payload_bytes": 518400
+      },
+      "direct_probe": {
+        "owned_line_hit_consumptions": 486000,
+        "misses_using_existing_byte_lease_and_refill": 32400,
+        "aligned_line_requests": 32400,
+        "physical_payload_bytes": 518400
+      },
+      "edge_checks": {
+        "chroma_width_360_row_boundary_shared_aligned_line": {
+          "Cb": 239,
+          "Cr": 239,
+          "Cb_shared_aligned_line": 120,
+          "Cr_shared_aligned_line": 120,
+          "distinct_value_pairs": 214
+        },
+        "chroma_x359_included": true,
+        "chroma_row239_included": true
+      }
+    },
+    "actual_006": {
+      "canonical_frame_sha256": "37209129ec076f8d4ca1d0a9b269d1c5450a0e459f0d066dc5da119cec259628",
+      "scalar_delivered_sha256": "efc877edec196d4c4c2cf0384e5796e9d047171aeb3203b6da7a72970144f7a2",
+      "direct_probe_delivered_sha256": "efc877edec196d4c4c2cf0384e5796e9d047171aeb3203b6da7a72970144f7a2",
+      "direct_probe_equals_scalar_byte_for_byte": true,
+      "scalar_line_cache": {
+        "byte_requests": 518400,
+        "line_hits": 486000,
+        "line_misses": 32400,
+        "line_misses_by_plane": {
+          "Y": 21600,
+          "Cb": 5400,
+          "Cr": 5400
+        },
+        "aligned_line_requests": 32400,
+        "physical_payload_bytes": 518400
+      },
+      "direct_probe": {
+        "owned_line_hit_consumptions": 486000,
+        "misses_using_existing_byte_lease_and_refill": 32400,
+        "aligned_line_requests": 32400,
+        "physical_payload_bytes": 518400
+      },
+      "edge_checks": {
+        "chroma_width_360_row_boundary_shared_aligned_line": {
+          "Cb": 239,
+          "Cr": 239,
+          "Cb_shared_aligned_line": 120,
+          "Cr_shared_aligned_line": 120,
+          "distinct_value_pairs": 197
+        },
+        "chroma_x359_included": true,
+        "chroma_row239_included": true
+      }
+    },
+    "cache_edge_pattern": {
+      "canonical_frame_sha256": "257d7c5c9527d61344cce6f4d612c781d6ba6b5073fd47e3ac7a51f7ed267b74",
+      "scalar_delivered_sha256": "b1c01f50e8b9b6e82a54d3210ca2775bc1e03b4409c14df5369407a6aac3d739",
+      "direct_probe_delivered_sha256": "b1c01f50e8b9b6e82a54d3210ca2775bc1e03b4409c14df5369407a6aac3d739",
+      "direct_probe_equals_scalar_byte_for_byte": true,
+      "scalar_line_cache": {
+        "byte_requests": 518400,
+        "line_hits": 486000,
+        "line_misses": 32400,
+        "line_misses_by_plane": {
+          "Y": 21600,
+          "Cb": 5400,
+          "Cr": 5400
+        },
+        "aligned_line_requests": 32400,
+        "physical_payload_bytes": 518400
+      },
+      "direct_probe": {
+        "owned_line_hit_consumptions": 486000,
+        "misses_using_existing_byte_lease_and_refill": 32400,
+        "aligned_line_requests": 32400,
+        "physical_payload_bytes": 518400
+      },
+      "edge_checks": {
+        "chroma_width_360_row_boundary_shared_aligned_line": {
+          "Cb": 239,
+          "Cr": 239,
+          "Cb_shared_aligned_line": 120,
+          "Cr_shared_aligned_line": 120,
+          "distinct_value_pairs": 478
+        },
+        "chroma_x359_included": true,
+        "chroma_row239_included": true
+      }
+    }
+  },
+  "no_full_frame_latency_or_fps_claim": true,
+  "limitations": [
+    "Python source-derived accounting and bounded abstract guard checks only; no RTL, simulation, synthesis, routed timing, or physical SDRAM run.",
+    "486000 is a nominal request-service clock estimate from the source FSM edge sequence, not complete frame-fence savings.",
+    "Saved control clocks exclude memory service, randomized stalls, registered lookup, conversion arithmetic, output backpressure and overlap.",
+    "Candidate line ownership requires matching ACK, active generation, correct plane/tag and idle adapter/response state; these obligations are not implemented here."
+  ],
+  "access_order_sha256": "69c5411dea058354a4e842775c09b2f06d1ea1275ad4cdf3cd537e7dde73058f"
+}

@@ -107,12 +107,23 @@ under physical service: roughly 33.6 ms at the assumed 100 MHz. This exposes
 byte-consumer overhead and a marginal isolated 30-Hz budget; it establishes no
 hardware FPS or complete validated decode result.
 
-State/wait observations now motivate a controlled canonical-burst consumer
-comparison, preserving the scalar reference, RAM ports, arithmetic and tags.
-Native memory is preloaded before the tests, with live production, semantic HUD,
-validation/publication and common service still open. These are local
-implementation measurements, not new publication findings or HEVC/AV1 coding
-superiority. The earlier codec rate/quality comparisons are unchanged.
+The [direct owned-line comparison](../cu66-v91l-burst-converter/README.md)
+now removes external per-byte leases on 486,000 cache hits/frame, preserving
+32,400 physical BL8 reads and exact native base RGB. Timed conversion is about
+2.87M clocks (28.70 ms at assumed 100 MHz) versus the frozen scalar's 3.36M,
+roughly 14.6% fewer cycles. It reuses the existing 48-byte plane cache and
+unchanged registered chroma RAM/arithmetic, with no extra payload storage.
+Independent byte/RGB/pin checks and directed cache ownership/error tests retain
+source and artifact hashes. Physical timing of the new byte-selector path
+still needs 7-series implementation evidence.
+
+Native memory is preloaded before these component tests, with live production,
+semantic HUD, validation/publication and common service still open. Follow the
+[common-controller integration plan](../cu66-v91l-burst-converter/next-integration.md)
+before V91m's source-cadence gate. These are local implementation measurements,
+not new publication findings, coding gains or HEVC/AV1 superiority. Earlier
+codec rate/quality comparisons are unchanged; hardware 30 fps and complete
+validated decoding below 10 ms remain unqualified.
 
 ## Literature findings compared with V90
 

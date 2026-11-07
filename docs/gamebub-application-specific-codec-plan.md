@@ -11,27 +11,36 @@ are checked. Native retained canonical reads improve from 15.654 to 8.467–8.46
 ms at the modeled 100 MHz, with all bytes exact. These are read-consumer fences,
 not complete validated decode latency.
 
-The actual scalar converter is now included. Its matched logical-service
+The actual scalar converter is included. Its matched logical-service
 comparison improves 3.500M → 3.067M cycles (12.35–12.37%), with eight complete
-native base RGB outputs exact. The timed controller/base-RGB path is about
-**33.6 ms/frame at assumed 100 MHz**, slightly beyond the isolated 30-Hz budget
-before live decode and shared contention. This is useful bottleneck evidence;
-**hardware 30 fps and complete validated decoding below 10 ms remain open**.
-Native memory is directly preloaded outside the fences, and semantic HUD
-composition is not part of these base RGB goldens.
+native base RGB outputs exact. Its timed controller/base-RGB path is about
+33.6 ms/frame at assumed 100 MHz, slightly beyond the isolated 30-Hz budget.
+The [direct owned-line consumer](cu66-v91l-burst-converter/README.md) now removes
+486,000 redundant external byte leases per frame using the existing 48-byte
+plane-line payload. It preserves all 518,400 consumed canonical bytes, 32,400
+physical BL8 reads, registered chroma RAM/rounding and exact base RGB output.
+The matched timed comparison is about **28.70 ms versus 33.61–33.63 ms**
+(roughly 14.6% fewer cycles) at the same assumed 100 MHz. Exact ranges and
+pairings are in its independent audit and summary. No additional payload memory
+or new coding syntax is introduced; physical area/timing remains unqualified.
 
-Next compare [direct canonical-burst consumption](cu66-v91l-readbridge/next-converter.md)
-against this scalar control, guided by timed state/wait occupancy. Preserve
-native pixels, registered chroma RAM/rounding, finite tagged ownership and
-physical cancellation/drain while removing needless per-byte handshakes for
-already owned line data. Then join live reconstruction/writes, accepted-reference
-and scratch reads, hashing/publication and display consumption on one finite
-physical controller with measured deadlines and bank roles. Byte masking/RMW,
-all-RTL HUD semantics, mixed entropy or negotiated fallback, actual ESP32 costs
-and exact-device physical qualification remain gates before V91m/physical
-promotion. Preserve the [tiled-write](cu66-v91l-tiled/README.md) and prior
-controller controls. Codec syntax, rate/quality and HEVC/AV1 comparisons are
-unchanged by this memory/display integration.
+The Python model checks both native frames and a nonuniform edge fixture. The
+RTL campaign uses both static converters, two seeds and both selected tAC
+corners, with independent byte/RGB/pin replay and a separate cache-probe
+ownership/error/recovery test. This is isolated preloaded base RGB conversion,
+excluding semantic HUD, live reconstruction and shared traffic. **Hardware
+30 fps and complete validated decoding below 10 ms remain open.** Being inside
+a nominal component budget does not close either milestone.
+
+Next follow the [common-service integration plan](cu66-v91l-burst-converter/next-integration.md).
+Join live reconstruction/writes, accepted-reference and scratch reads,
+hashing/publication and display consumption on one finite physical controller
+with measured deadlines and bank roles. Byte masking/RMW, all-RTL HUD semantics,
+mixed entropy or negotiated fallback, actual ESP32 costs and exact-device
+physical qualification remain gates before V91m/physical promotion. Preserve the
+[tiled-write](cu66-v91l-tiled/README.md), frozen scalar base-RGB and direct-line
+controls. Codec rate/quality and HEVC/AV1 comparisons are unchanged by this
+memory/display integration.
 
 The [bounded eight-byte tile-row writer](cu66-v91l-rows/README.md) remains the
 qualified live-path scheduling control. Its static row mode preserves the live

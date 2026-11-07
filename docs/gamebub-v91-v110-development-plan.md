@@ -28,7 +28,7 @@ including the measured registered chroma-row-cache and aligned-line-reader
 comparisons. V91l now qualifies real RTL C2/HUD/seal hashing and atomic bank
 publication with a native C++ HUD endpoint. Its [live write-ACK follow-up](cu66-v91l-live/README.md)
 connects the actual BR88 reconstruction producer and accepted-bank delta
-reference. The [physical BL8/base-RGB read join](cu66-v91l-readbridge/README.md) now connects the actual display consumer to a timed controller with native preloaded memory. V91l remains partial until HUD and complete live shared-service integration close.** Mixed entropy,
+reference. The [physical BL8/base-RGB read join](cu66-v91l-readbridge/README.md) connects the actual display consumer to a timed controller with native preloaded memory. Its [direct owned-line follow-up](cu66-v91l-burst-converter/README.md) removes per-hit byte leases without adding payload memory. V91l remains partial until HUD and complete live shared-service integration close.** Mixed entropy,
 complete transactions, HUD/content validation and the monolithic memory/display
 join stay open; they do not require additional V91i subcheckpoints.
 The original unlettered V91 and published V91b/V91c/V91d retain their names.
@@ -73,7 +73,7 @@ list the selected features and deferred experiments.
 | **V91i** | **Admission, BR88 dispatch/placement and bounded refill overlap passed for the documented subset.** Preserve provisional mode/scales, exact dense tuples and real child ACK ownership. Mixed entropy and complete transaction integration remain open alongside later consumers. | [V91i2b evidence](cu66-v91i2b/README.md): two static configurations per seed, exact V91i2a disabled control, unchanged coefficients and 5.1656% FAST / 4.2342–4.2450% SLOW native-cycle reductions under the defined service rules. No further V91i subcheckpoint is required before V91j. |
 | **V91j — passed for BR88 residuals** | [Actual frame-to-residual integration](cu66-v91j/README.md): two bounded coefficient banks feed the unchanged V69 dequantizer and Q14 IDCT with frame/child/position ownership. | Independent exact signed20 DQ and signed24 residual goldens; two strict seeds, FAST/SLOW service, 48 boundary cases and active-math cancellation. Completion waits for the last accepted residual. No software transform substitutes for RTL; pixels/publication remain later gates. |
 | **V91k — passed for the BR88 base path** | [Canonical reconstruction and base RGB565 replay](cu66-v91k/README.md): actual modes/residuals, leased accepted references, COPY/hidden CONST128, add/clamp and native color conversion. | Two strict seeds, 12 complete successful rows each, exact source-backed canonical/base RGB565 bytes, finite reference/write/read service, abort/reset/owner drain and retries. The RGB consumer replays actual canonical memory from a separate RTL simulation; a monolithic controller, HUD and publication remain later gates. |
-| **V91l — partial; live canonical/validation and physical base-RGB read partitions** | [Real C2/HUD/seal RTL and atomic publication](cu66-v91l/README.md), followed by the [live BR88 reconstruction and tagged-write join](cu66-v91l-live/README.md). Native C++ HUD decode remains explicit. The [physical BL8/base-RGB read join](cu66-v91l-readbridge/README.md) now closes the display-consumer/controller boundary with preloaded native memory; the common live writer/reader service remains open. | Preserve the replay control's 28 committed rows and 28,700 checked hash jobs. The live lane adds two strict seeds, eight validated commits, 8,200 checked RTL SHA jobs and 37 directed entries per seed using actual accepted-bank references and captured RTL quantizer cache, finite write ACKs, rollback and safe presentation; full RTL HUD decode/overlay, shared memory/RGB/display service and physical qualification remain open. |
+| **V91l — partial; live canonical/validation and physical base-RGB read partitions** | [Real C2/HUD/seal RTL and atomic publication](cu66-v91l/README.md), followed by the [live BR88 reconstruction and tagged-write join](cu66-v91l-live/README.md). Native C++ HUD decode remains explicit. The [physical BL8/base-RGB read join](cu66-v91l-readbridge/README.md) now closes the display-consumer/controller boundary with preloaded native memory; the [direct owned-line follow-up](cu66-v91l-burst-converter/README.md) qualifies removal of per-hit byte leases, while the common live writer/reader service remains open. | Preserve the replay control's 28 committed rows and 28,700 checked hash jobs. The live lane adds two strict seeds, eight validated commits, 8,200 checked RTL SHA jobs and 37 directed entries per seed using actual accepted-bank references and captured RTL quantizer cache, finite write ACKs, rollback and safe presentation; full RTL HUD decode/overlay, shared memory/RGB/display service and physical qualification remain open. |
 | **V91m** | Run the complete functional frame path with finite transport, memory and display-consumer service models at 30-Hz source releases. | No hidden software pixel/HUD/publication endpoint in a claimed full-RTL pass; exact full frames, bounded queues, recovery and complete latency distributions. Simulation is still distinct from hardware 30 fps. |
 
 V91i is divided into three reviewable integration gates:
@@ -185,16 +185,24 @@ above an isolated 30-Hz budget, with no live/shared workload included. Full
 native RGB bytes and physical receipts are independently checked; actual clock,
 hardware cadence, semantic HUD and complete validated decode remain unqualified.
 
-The next V91l consumer comparison is direct consumption of canonical bursts,
-using measured state/wait occupancy to reduce scalar byte-lease overhead while
-preserving RAM ports, registered lookups, arithmetic and ownership. Then join
-live producer/writer, reference/scratch, hash/publication and display requests
+The [direct owned-line consumer](cu66-v91l-burst-converter/README.md) now
+implements that controlled comparison. External byte leases reduce 518,400 →
+32,400/frame while 486,000 direct consumes preserve the total canonical byte
+order. Physical reads remain 32,400/frame; the three existing 16-byte line slots
+are reused with zero extra payload. The same actual controller/timed-pin
+comparison is about 2.87M versus 3.36M cycles (roughly 14.6% fewer), with exact
+native RGB and separate ownership/error/recovery tests. This is inside the
+isolated 30-Hz budget at assumed 100 MHz, before live producer/shared traffic;
+it establishes no hardware cadence or complete-decode latency result. Exact
+matched values and limitations are in the linked audit/summary.
+
+Next [join live producer/writer, reference/scratch, hash/publication and display](cu66-v91l-burst-converter/next-integration.md)
 on one finite physical service with deadlines. Preserve the physical-write,
-scalar base-RGB, gather and retention controls. Byte RMW, all-RTL HUD, mixed
-entropy/fallback and ESP32 costs remain required before V91m's complete fixed
-source-cadence path. Hardware 30 fps and validated decoding below 10 ms remain
-open. V100–V110 retain exact 7-series mapping, placement/routing, I/O/CDC timing
-and hardware gates; this iteration does not promote the version to V91m.
+scalar base-RGB, direct-line, gather and retention controls. Byte RMW, all-RTL
+HUD, mixed entropy/fallback and ESP32 costs remain required before V91m's
+complete fixed source-cadence path. Hardware 30 fps and validated decoding below
+10 ms remain open. V100–V110 retain exact 7-series mapping, placement/routing,
+I/O/CDC timing and hardware gates; this iteration does not promote V91m.
 
 V91f is promoted for functional scheduling under its bounded ownership contract;
 physical resource fit is still unqualified. V91g is promoted only if measured
