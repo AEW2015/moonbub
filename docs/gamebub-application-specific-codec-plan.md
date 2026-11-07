@@ -32,15 +32,33 @@ excluding semantic HUD, live reconstruction and shared traffic. **Hardware
 30 fps and complete validated decoding below 10 ms remain open.** Being inside
 a nominal component budget does not close either milestone.
 
-Next follow the [common-service integration plan](cu66-v91l-burst-converter/next-integration.md).
-Join live reconstruction/writes, accepted-reference and scratch reads,
-hashing/publication and display consumption on one finite physical controller
-with measured deadlines and bank roles. Byte masking/RMW, all-RTL HUD semantics,
-mixed entropy or negotiated fallback, actual ESP32 costs and exact-device
-physical qualification remain gates before V91m/physical promotion. Preserve the
-[tiled-write](cu66-v91l-tiled/README.md), frozen scalar base-RGB and direct-line
-controls. Codec rate/quality and HEVC/AV1 comparisons are unchanged by this
-memory/display integration.
+The [live shared-controller follow-up](cu66-v91l-shared-service/README.md) now
+connects actual supported BR88 reconstruction to physical tiled candidate
+writes, RTL C2/HUD/seal validation and base RGB readback from the same timed
+pin-memory model. There is no canonical/pixel SDRAM preload. Four seed/corner
+configurations pass eight exact native RGB outputs and 8,200 independently
+recomputed RTL SHA digests. The shared arbiter passes 89 directed checks per
+corner and independent ownership/command/data replay; 20 deliberate checker
+corruptions are rejected.
+
+This first native schedule is serial: live start→commit is 27.68396 ms for the
+key and 25.05944–25.06029 ms for the delta, followed by about 29.04 ms of RGB,
+at assumed 100 MHz. Start→RGB closure is 54.09505–56.71928 ms. Even the observed
+packet-complete→commit window is 24.78248–27.30185 ms under the current partial
+service. These are measured simulation fences, not hardware latency, and they
+do not satisfy either product goal. Reference/scratch remain finite C++ actors;
+HUD semantic decode remains native C++ before start and base RGB excludes HUD.
+Directed contested traffic is not native concurrent decoding/display evidence.
+
+Next put reference/scratch requests on this controller and compare native
+bank-safe decode/display overlap against the serial control. Charge all clients
+and deadlines, preserve actual accepted-bank/qcache history and atomic
+publication, then close byte masking/RMW, all-RTL HUD and mixed entropy or a
+negotiated sender fallback. Actual ESP32 costs and exact-device physical
+qualification remain open before V91m/physical promotion. Preserve the
+[tiled-write](cu66-v91l-tiled/README.md), frozen scalar/direct display and new
+serial live-memory controls. Codec rate/quality and HEVC/AV1 comparisons are
+unchanged by this integration.
 
 The [bounded eight-byte tile-row writer](cu66-v91l-rows/README.md) remains the
 qualified live-path scheduling control. Its static row mode preserves the live

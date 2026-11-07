@@ -1,0 +1,129 @@
+{
+  "abstract_contract": {
+    "arbitration": "round-robin fair choice when both offers are present",
+    "cancel_reset": "preaccept cancellation produces no commands; pending cancellation suppresses unaccepted remainder and drains accepted work; held reply persists through reset until ACK",
+    "clients": [
+      "candidate-write",
+      "rgb-read"
+    ],
+    "identity": "failed/invalid identity is rejected before controller command issue",
+    "ownership": "one accepted transaction at a time; no grant switch before bridge-specific physical drain and caller response ACK",
+    "reads": "one BL8 read produces exactly eight x16 beats; then require two consecutive ctrl_idle samples before response",
+    "reply": "owner, bridge-native identity, error and completion fields remain stable while held",
+    "writes": "one logical 8-byte row is four x16 writes; drain accepted words, traverse WAIT_BUSY fence edge, observe ctrl_idle in WAIT_IDLE, then hold response until ACK"
+  },
+  "excluded_clients_or_work": [
+    "finite logical reference and scratch service",
+    "C++ HUD semantic endpoint"
+  ],
+  "limitations": [
+    "No RTL equivalence, simulation, or formal proof is performed by this model.",
+    "No real SDRAM command/response, pin timing, refresh, turnaround, row-miss, or backpressure service is modeled.",
+    "No finite closed shared budget, 30-fps result, or under-10-ms result is claimed.",
+    "The abstract fair arbiter and response protocol need validation against the integrated RTL interface.",
+    "Writer and reader identity tuples intentionally differ; root live-frame lease supplies their cross-client correlation.",
+    "A future ticket requirement beyond the writer's opaque token needs separate interface qualification."
+  ],
+  "scenario_checks": {
+    "bl8_drain_reply_ack": {
+      "beats": 8,
+      "owner_released_after_ack": true,
+      "response_held_cycles": 2,
+      "result": "PASS"
+    },
+    "cancel_reset_phases": {
+      "held_reply_ack_required": true,
+      "held_reply_immutable_across_reset_and_backpressure": true,
+      "pending_accepted_words_drained": 2,
+      "pending_remaining_words_issued": 0,
+      "preaccept_controller_commands": 0,
+      "result": "PASS"
+    },
+    "failed_identity_no_commands": {
+      "controller_commands": 0,
+      "held_error_response_until_ack": true,
+      "logical_owner_granted": true,
+      "owner_released_after_ack": true,
+      "reason": "writer epoch zero is invalid; opaque token zero is allowed",
+      "rejected_identity": {
+        "bank": 2,
+        "writer_epoch": 0,
+        "writer_token": 0
+      },
+      "result": "PASS"
+    },
+    "fair_choice_and_stable_owner": {
+      "candidate_write_words": 4,
+      "grant_order": [
+        "candidate",
+        "rgb"
+      ],
+      "held_reply_cycles": 3,
+      "owner_retained_until_reply_ack": true,
+      "result": "PASS",
+      "rgb_read_beats": 8,
+      "writer_drain": "WAIT_BUSY edge + observed ctrl_idle"
+    },
+    "reader_zero_generation_no_commands": {
+      "controller_commands": 0,
+      "held_error_response_until_ack": true,
+      "logical_owner_granted": true,
+      "owner_released_after_ack": true,
+      "rejected_identity": {
+        "bank": 1,
+        "epoch": 8,
+        "generation": 0
+      },
+      "result": "PASS"
+    },
+    "writer_zero_token_is_opaque_and_echoed": {
+      "controller_commands": 4,
+      "request_identity": [
+        17,
+        0,
+        2
+      ],
+      "response_identity": [
+        17,
+        0,
+        2
+      ],
+      "result": "PASS"
+    }
+  },
+  "schema": "gamebub-v91l-shared-service-ownership-v1",
+  "scope": "Finite logical ownership contract model; not RTL proof, not real pin service, and not a latency or closed shared-service budget.",
+  "source_pin": {
+    "baseline_commit": "298961c64ae947c01eeb55ea1b0815a3e87a3fdb",
+    "frozen_inputs": {
+      "fpga/experiments/cu66-v91l-readbridge/bl8_read_bridge.sv": "de000415b9222cb3c3d4233998ed120bf65d34b9c1b3c83493ddbec907d436db",
+      "fpga/experiments/cu66-v91l-rowpair/tile_rowpair_reader.sv": "77e0d3826b1fc3489e2de926b01465ba8ff849dbc813e37f6d9cdb9efb17fc0c",
+      "fpga/experiments/cu66-v91l-tiled/row_to_sdram.sv": "f5366cbfbe138e709353a0acfc7e24adcc7733f1dd10c8b6974f9d0d34bb60cb",
+      "fpga/experiments/cu66-v91l-writepipe/controller/moonshine_sdram.sv": "a43869515d2587e90356ebe90c6bee8c4f0428276034cf7de648d9650694abe1"
+    },
+    "head_sensitive": false,
+    "interface_identity_roles": {
+      "adapter_rule": "preserve each bridge's native identity; root live-frame lease correlates them; do not invent writer generation/ticket fields",
+      "rgb_reader": "nonzero epoch + nonzero generation + bank + byte address",
+      "writer": "nonzero epoch + opaque 32-bit token (zero allowed and echoed) + bank + byte address"
+    }
+  },
+  "status": "PASS",
+  "workload_accounting_only": {
+    "excludes": [
+      "reference reads",
+      "scratch reads",
+      "hash reads",
+      "refresh",
+      "commands",
+      "turnaround",
+      "response stalls"
+    ],
+    "frame_bytes": 560640,
+    "logical_8_byte_writes": 70080,
+    "physical_x16_write_words": 280320,
+    "rgb_bl8_reads": 32400,
+    "rgb_physical_x16_read_words": 259200,
+    "total_data_x16_words_per_frame": 539520
+  }
+}

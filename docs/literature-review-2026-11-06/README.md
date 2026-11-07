@@ -117,13 +117,25 @@ Independent byte/RGB/pin checks and directed cache ownership/error tests retain
 source and artifact hashes. Physical timing of the new byte-selector path
 still needs 7-series implementation evidence.
 
-Native memory is preloaded before these component tests, with live production,
-semantic HUD, validation/publication and common service still open. Follow the
-[common-controller integration plan](../cu66-v91l-burst-converter/next-integration.md)
-before V91m's source-cadence gate. These are local implementation measurements,
-not new publication findings, coding gains or HEVC/AV1 superiority. Earlier
-codec rate/quality comparisons are unchanged; hardware 30 fps and complete
-validated decoding below 10 ms remain unqualified.
+Native memory is preloaded in those isolated display controls. The following
+[live shared-controller experiment](../cu66-v91l-shared-service/README.md)
+now removes that preload for a serial supported BR88 reconstruction→physical
+candidate writes→RTL validation→same-memory base RGB run. Four configurations
+pass eight complete RGB outputs and all 8,200 actual RTL SHA digests; physical
+pin/command/ownership replay is independent of the native driver's verdict.
+
+Live start→commit is 25.06–27.68 ms, RGB about 29.04 ms, and serial closure
+54.10–56.72 ms at assumed 100 MHz. The observed packet-complete→commit window
+is 24.78–27.30 ms under the partial service. Reference/scratch still use finite
+logical endpoints, HUD semantic decode stays in native C++, and native overlap
+is unqualified. This is stronger integration evidence with exposed real costs,
+not a compression improvement or a result comparable to HEVC/AV1 coding speed.
+
+Next move reference/scratch onto the same controller and compare native overlap
+against this serial control before the complete V91m cadence gate. These are
+local implementation measurements, not new publication findings. Earlier codec
+rate/quality comparisons are unchanged; sustained hardware 30 fps and complete
+validated decoding below 10 ms remain open.
 
 ## Literature findings compared with V90
 
