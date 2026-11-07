@@ -1,6 +1,6 @@
 # V42 / V023 mailbox batching hardware: receiver PASS
 
-Two original KEY/P frames were accepted and presented with0rejects/underruns;42240HUDwords written and readback-verified. Same V023 BIT, fixtures, DYN1 and SDK; V42 ELFb7b947b1... verified. Windows final status2 receipt is pending its report. Source was reported as.47:63389, session12897668036887929759.
+Two original KEY/P frames were accepted and presented with0rejects/underruns;42240HUDwords written and readback-verified. Same V023 BIT, fixtures, DYN1 and SDK; V42 ELFb7b947b1... verified. Windows confirms both matching status2 replies, uploader exit0 and no timeout/status3/whole-run retry. This is user-relayed host evidence; the remote JSON is not locally accessible. Source was reported as.47:63389, session12897668036887929759.
 
 | Measurement | V41 scalar | V42 mailbox batch |
 |---|---:|---:|
