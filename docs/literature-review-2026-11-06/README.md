@@ -143,9 +143,19 @@ remains the selected key/delta pair.
 At assumed 100 MHz the reference-inclusive delta start→commit window is
 31.40 ms and subsequent RGB about 29.37 ms; serial closure is about 60.77 ms.
 These more complete internal-memory costs are not new codec bitrate/quality
-results or HEVC/AV1 coding speed comparisons. Scratch service and native HUD
-remain software endpoints. Next qualify physical scratch and native bank-safe
-overlap before the complete V91m cadence gate. These are local implementation
+results or HEVC/AV1 coding speed comparisons. That retained control excludes
+physical scratch and native HUD.
+
+The [physical packed-scratch extension](../cu66-v91l-scratch-service/README.md)
+now connects scratch to the same controller using a reserved bank-3 aperture.
+All four external memory endpoints are RTL clients. Full 128-bit lines cost
+eight x16 WRITE commands or one BL8 READ, with actual pin traffic and drain
+charged. Its [results](../cu66-v91l-scratch-service/results.md) retain the same
+source bytes, validation, reference and base RGB oracles. The Python contract
+checks aperture bounds/nonaliasing and payload assembly; the native RTL
+campaign measures scratch traffic rather than inferring it from the old C++
+endpoint. Next qualify bank-safe native decode/display overlap and full RTL
+HUD before the complete V91m cadence gate. These are local implementation
 measurements, not new publication findings. Hardware 30 fps and complete
 validated decoding below 10 ms remain open.
 

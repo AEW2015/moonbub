@@ -1,0 +1,75 @@
+{
+  "checks": [
+    "first and final aperture lines map within bank 3",
+    "bank 3 does not alias video banks 0 through 2",
+    "zero epoch, misaligned, negative, and out-of-range line starts rejected",
+    "block and per-band count limits match the packed-scratch allocation contract",
+    "16-byte little-endian line packing round-trips exactly",
+    "one 128-bit write carries eight x16 words across eight single-word WRITE commands",
+    "one 128-bit read returns eight x16 words from one BL8 READ command"
+  ],
+  "contract": {
+    "controller_commands_per_logical_transfer": {
+      "read": 1,
+      "write": 8
+    },
+    "line_bytes": 16,
+    "logical_address_bits": 18,
+    "logical_transfer_bytes": 16,
+    "max_aligned_line_start": 262128,
+    "nonaliasing_basis": "physical bank index 3 is distinct from video banks 0, 1, 2",
+    "physical_bank": 3,
+    "physical_word_address_final_line_first_word": 12713976,
+    "physical_word_address_first": 12582912,
+    "physical_word_address_last_inclusive_word": 12713983,
+    "pin_schedule_overhead": "not estimated; command/refresh/turnaround/arbitration/drain require service observations",
+    "scratch_bytes": 262144,
+    "video_banks": [
+      0,
+      1,
+      2
+    ],
+    "x16_words_per_128_bit_write": 8,
+    "x16_words_per_bl8_read": 8
+  },
+  "layout_examples": {
+    "coded_max_counts": {
+      "ac1": 16416,
+      "ac2": 180256,
+      "ac3": 180256,
+      "dc": 32,
+      "header0": 0,
+      "header1": 16,
+      "used_bytes": 262144
+    },
+    "raw_max_blocks": {
+      "header0": 0,
+      "header1": 16,
+      "raw": 32,
+      "used_bytes": 262048
+    }
+  },
+  "limitations": [
+    "128-bit scratch staging is a one-line transfer, not a 262144-byte on-chip memory claim",
+    "no native scratch request totals, cycle estimates, throughput, or performance gains are asserted"
+  ],
+  "native_scratch_observation": {
+    "campaign": "retained reference-live finite-scratch control only",
+    "current_independent_counts": "experiments/python-gamebub-v91l-scratch-service/summary.json",
+    "current_physical_campaign": "fpga/experiments/cu66-v91l-scratch-live/results.json",
+    "historical_control_only": true,
+    "reason": "reference-live results mark scratch_rtl and scratch_service_rtl false; its events contain no packed-scratch memory request/response records",
+    "request_count": null,
+    "status": "not captured"
+  },
+  "source_sha256": {
+    "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv": "d8a7a0077981715566888b9de1a7bf052a0a875258a3f26e20fb0358d56e4bf4",
+    "fpga/experiments/cu66-v91l-scratch-service/scratch_line_bridge.sv": "4d7c56c1314a7ea150de0f55b5a9f13d227897af66f107288201a833ac0e3650",
+    "fpga/experiments/cu66-v91l-scratch-service/scratch_sdram_timed.sv": "44e7243d14809f243245497bb845fbcda67fd8a8fb5daae5534cbcc83917624e",
+    "fpga/experiments/cu66-v91l-scratch-service/scratch_shared_timed.sv": "fcad7c658ddf358c83c4d16f54e7322acec9c03d5e10914863555f8658cbbea2",
+    "fpga/experiments/cu66-v91l-writepipe/controller/moonshine_sdram.sv": "a43869515d2587e90356ebe90c6bee8c4f0428276034cf7de648d9650694abe1",
+    "fpga/experiments/cu66-v91l-writepipe/sdram_pin_model.sv": "b6fa2ab67ce8c6918225444329eb8f323cc0d02134f5181b09fe7d6ba64d2bf5",
+    "model": "84bdeec89bc951e7601bd6c6bc3e2d57bdc6a9340d2c3f2fdac75b41b1e215cc"
+  },
+  "status": "PASS"
+}

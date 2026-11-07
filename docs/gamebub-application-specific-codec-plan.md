@@ -46,8 +46,9 @@ RTL SHA digests. The reference adapter and real-pin mux tests pass 1,920 check
 entries; independent replay rejects 28 deliberate corruptions. There is no
 canonical/pixel SDRAM preload. New reader payload is 64 bytes plus metadata,
 with no whole-design mapping/fit/timing claim. Candidate writes, reference reads
-and RGB are real controller clients; scratch and native HUD remain software
-endpoints. Native decode/display overlap remains unqualified.
+and RGB are real controller clients in that retained control; its scratch and
+native HUD endpoints remain software. The newer scratch-inclusive control below
+replaces the scratch endpoint. Native decode/display overlap remains unqualified.
 
 At assumed 100 MHz, key start→commit is 27.68396 ms and delta is
 31.39967–31.39980 ms, then RGB is about 29.37 ms. Serial start→RGB closure is
@@ -57,14 +58,29 @@ physical scratch/native HUD/full-system costs. These are simulated partial
 windows, not hardware latency or a completed 30-fps/under-10-ms result. Historical
 logical-reference timing is not a matched speedup denominator.
 
-Next move packed-scratch requests onto this controller, with an explicit safe
-aperture and real write grouping/read bursts/masks/drain. Then compare native
-bank-safe decode/display overlap against this reference-inclusive serial
-control. Preserve accepted-bank/qcache history and atomic publication; close
-all-RTL HUD and mixed entropy or negotiated fallback before V91m. Actual ESP32
-costs and exact-device physical qualification remain open. Codec bytes,
-resolution, quality and HEVC/AV1 rate/quality comparisons are unchanged by this
-memory-service work.
+The [physical packed-scratch extension](cu66-v91l-scratch-service/README.md)
+now moves the remaining 128-bit memory endpoint onto the same actual controller.
+It reserves a nonaliasing 256-KiB aperture in modeled SDRAM bank 3, preserves
+video banks 0–2 and issues eight single-word WRITEs or one BL8 READ per full
+16-byte line. Candidate writes, accepted-reference reads, scratch and display
+are now RTL memory clients; native HUD interpretation remains software.
+The same key/first-delta pair is checked with no canonical/pixel memory preload.
+See its [measured results](cu66-v91l-scratch-service/results.md) for the four-run
+cycle ranges and traffic totals, independent pin replay and exact SHA/RGB checks.
+These newly charged costs are not a codec speedup or HEVC/AV1 quality change.
+At assumed 100 MHz, delta start→commit is 33.460–33.465 ms, just over a
+33.333-ms frame slot; serial decode plus RGB is 58.691–63.152 ms.
+Decode/display overlap must be accompanied by reduced decode cost.
+
+Next compare native bank-safe decode/display overlap against this
+scratch-inclusive serial control, charging all contention, real consumer leases
+and publication/scanout drain. Keep the earlier finite-scratch control as a
+historical boundary. Preserve accepted-bank/qcache history and atomic
+publication; close all-RTL HUD and mixed entropy or negotiated fallback before
+V91m. Actual ESP32 costs and exact-device physical qualification remain open.
+Codec bytes, resolution, quality and HEVC/AV1 rate/quality comparisons are
+unchanged. Sustained hardware 30 fps and complete validated decoding strictly
+below 10 ms remain unproven.
 
 The [bounded eight-byte tile-row writer](cu66-v91l-rows/README.md) remains the
 qualified live-path scheduling control. Its static row mode preserves the live
