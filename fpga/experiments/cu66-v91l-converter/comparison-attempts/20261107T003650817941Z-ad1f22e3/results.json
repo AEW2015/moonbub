@@ -1,0 +1,603 @@
+{
+  "schema": "cu66-v91l-actual-rgb-converter-comparison-v1",
+  "status": "PASS_ACTUAL_RGB565_TILE_RETENTION_COMPARISON",
+  "source_revision": "b96944dd9897e2bf4e9ed2978bdbade79cdccb7b",
+  "source_sha256": {
+    "fpga/experiments/cu66-v91k-cache/canonical_rgb565_cached.sv": "3c730f16a1307b854a643e5aa129abd0b5239d3dede5f46b7eca33df0c5a25b0",
+    "fpga/experiments/cu66-v91k-lines/canonical_line_reader.sv": "154ddcf9333dd96e368f51f90f9fef1c775a2fe2b20002fee7fe6f92d5a95e69",
+    "fpga/experiments/cu66-v91k-lines/canonical_rgb565_lines.sv": "ba0c57234f5e850cbf88472c04fe3d5a75000d69c1982359077ca1f62db24881",
+    "fpga/experiments/cu66-v91l-rowpair/tile_rowpair_reader.sv": "77e0d3826b1fc3489e2de926b01465ba8ff849dbc813e37f6d9cdb9efb17fc0c",
+    "fpga/experiments/cu66-v91l-converter/canonical_rgb565_tiled.sv": "880b5cef5cfd9cb0bec868ab561df371381509e4e8947b3c275476381a3688d7",
+    "fpga/experiments/cu66-v91l-converter/tb_converter.cpp": "2f5fa102e18f2e68dbacc9a5a5fdaaf64487854b6643029b6be9cf4c14f4bbab",
+    "scripts/cu66-v91l-converter/run_comparison.py": "238536fabd6c54c20109637904a9f5f0cb6bcdfdef4a3199eed311a1c891cf04"
+  },
+  "inputs_sha256": {
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/inputs/canonical_actual.tsv.gz": "03fab04d4273388cb1477c6db11c19486d7f0ad1ebc2e39b18fe6cc3508c0192",
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/inputs/rgb_goldens.tsv.gz": "abe85556017a634b43711306763af93d39cbf3207b9547842edd0064c3e6547b",
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/results.json": "561f360d392e58a8191971274cb844707e373465f70d24807bac7c9d305e65db"
+  },
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--version"
+      ],
+      "log": "tool-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "g++",
+        "--version"
+      ],
+      "log": "compiler-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--cc",
+        "--exe",
+        "--build",
+        "--assert",
+        "-Wall",
+        "--timescale",
+        "1ns/1ps",
+        "-j",
+        "2",
+        "--top-module",
+        "canonical_rgb565_tiled",
+        "-GRETAIN_ROWS=1'b0",
+        "--Mdir",
+        "/build/v91l-converter-20261107T003650817941Z-ad1f22e3-independent",
+        "-CFLAGS",
+        "-std=c++20 -O2 -Wall -Wextra -Werror",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91k-cache/canonical_rgb565_cached.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91k-lines/canonical_line_reader.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91k-lines/canonical_rgb565_lines.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91l-rowpair/tile_rowpair_reader.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91l-converter/canonical_rgb565_tiled.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91l-converter/tb_converter.cpp"
+      ],
+      "log": "compile-independent.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-converter-20261107T003650817941Z-ad1f22e3-independent/Vcanonical_rgb565_tiled",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/canonical_actual.tsv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/rgb_goldens.tsv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/independent-912701/events.jsonl",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/independent-912701",
+        "912701",
+        "0"
+      ],
+      "log": "simulation-independent-912701.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-converter-20261107T003650817941Z-ad1f22e3-independent/Vcanonical_rgb565_tiled",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/canonical_actual.tsv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/rgb_goldens.tsv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/independent-912702/events.jsonl",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/independent-912702",
+        "912702",
+        "0"
+      ],
+      "log": "simulation-independent-912702.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--cc",
+        "--exe",
+        "--build",
+        "--assert",
+        "-Wall",
+        "--timescale",
+        "1ns/1ps",
+        "-j",
+        "2",
+        "--top-module",
+        "canonical_rgb565_tiled",
+        "-GRETAIN_ROWS=1'b1",
+        "--Mdir",
+        "/build/v91l-converter-20261107T003650817941Z-ad1f22e3-retained",
+        "-CFLAGS",
+        "-std=c++20 -O2 -Wall -Wextra -Werror",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91k-cache/canonical_rgb565_cached.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91k-lines/canonical_line_reader.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91k-lines/canonical_rgb565_lines.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91l-rowpair/tile_rowpair_reader.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91l-converter/canonical_rgb565_tiled.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/sources/fpga/experiments/cu66-v91l-converter/tb_converter.cpp"
+      ],
+      "log": "compile-retained.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-converter-20261107T003650817941Z-ad1f22e3-retained/Vcanonical_rgb565_tiled",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/canonical_actual.tsv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/rgb_goldens.tsv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/retained-912701/events.jsonl",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/retained-912701",
+        "912701",
+        "1"
+      ],
+      "log": "simulation-retained-912701.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-converter-20261107T003650817941Z-ad1f22e3-retained/Vcanonical_rgb565_tiled",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/canonical_actual.tsv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/rgb_goldens.tsv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/retained-912702/events.jsonl",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/comparison-attempts/20261107T003650817941Z-ad1f22e3/retained-912702",
+        "912702",
+        "1"
+      ],
+      "log": "simulation-retained-912702.log",
+      "exit_code": 0
+    }
+  ],
+  "modes": [
+    {
+      "variant": "independent",
+      "retain": 0,
+      "seed": 912701,
+      "status": "PASS_ACTUAL_RGB565_AND_JOINED_LEASE_DRAIN",
+      "event_log": "independent-912701/events.jsonl.gz",
+      "verdict": {
+        "type": "verdict",
+        "status": "TEST_PASS",
+        "seed": 912701,
+        "retain": 0,
+        "checks": 13,
+        "cycles": 7006856
+      },
+      "frames": [
+        {
+          "type": "frame",
+          "name": "actual_001",
+          "epoch": 500,
+          "generation": 600,
+          "bank": 0,
+          "pixels": 345600,
+          "bytes": 691200,
+          "logical_reads": 32400,
+          "physical_reads": 64800,
+          "start_cycle": 5909,
+          "first_pixel_cycle": 11595,
+          "last_pixel_cycle": 3506676,
+          "closed_cycle": 3506680,
+          "start_to_first_pixel": 5686,
+          "start_to_last_pixel": 3500767,
+          "start_to_closed": 3500771,
+          "held_pixel_cycles": 86847,
+          "physical_ready_stalls": 21648,
+          "output": "actual_001.rgb565.bin",
+          "output_sha256": "526f97c64f80323efabb8cbe9b512956b433020654f0231d0b1cbb2aef9a2cb6"
+        },
+        {
+          "type": "frame",
+          "name": "actual_006",
+          "epoch": 501,
+          "generation": 601,
+          "bank": 0,
+          "pixels": 345600,
+          "bytes": 691200,
+          "logical_reads": 32400,
+          "physical_reads": 64800,
+          "start_cycle": 3506683,
+          "first_pixel_cycle": 3512402,
+          "last_pixel_cycle": 7006849,
+          "closed_cycle": 7006853,
+          "start_to_first_pixel": 5719,
+          "start_to_last_pixel": 3500166,
+          "start_to_closed": 3500170,
+          "held_pixel_cycles": 86730,
+          "physical_ready_stalls": 21492,
+          "output": "actual_006.rgb565.bin",
+          "output_sha256": "17150ccab8639f9f457bb019b91605f35e2e69828c67da9f427b03849bee7602"
+        }
+      ],
+      "checks": [
+        "invalid_start_bank_epoch_generation_rejected",
+        "cancel_pending_drains_both_adapters",
+        "reset_pending_drains_both_adapters",
+        "cancel_unaccepted_physical_offer_closes_without_bus_owner",
+        "wrong_physical_generation_ignored_until_matching_return",
+        "physical_error_propagates_and_drains_line_and_byte_owners",
+        "cancel_on_matching_physical_return_edge",
+        "cancel_on_logical_line_response_edge",
+        "reset_on_matching_physical_return_edge",
+        "reset_on_logical_line_response_edge",
+        "held_rgb_pixel_stable_then_cancel_invalidates_output",
+        "actual_full_RGB565_actual_001",
+        "actual_full_RGB565_actual_006"
+      ]
+    },
+    {
+      "variant": "independent",
+      "retain": 0,
+      "seed": 912702,
+      "status": "PASS_ACTUAL_RGB565_AND_JOINED_LEASE_DRAIN",
+      "event_log": "independent-912702/events.jsonl.gz",
+      "verdict": {
+        "type": "verdict",
+        "status": "TEST_PASS",
+        "seed": 912702,
+        "retain": 0,
+        "checks": 13,
+        "cycles": 7007173
+      },
+      "frames": [
+        {
+          "type": "frame",
+          "name": "actual_001",
+          "epoch": 500,
+          "generation": 600,
+          "bank": 0,
+          "pixels": 345600,
+          "bytes": 691200,
+          "logical_reads": 32400,
+          "physical_reads": 64800,
+          "start_cycle": 5908,
+          "first_pixel_cycle": 11613,
+          "last_pixel_cycle": 3506400,
+          "closed_cycle": 3506404,
+          "start_to_first_pixel": 5705,
+          "start_to_last_pixel": 3500492,
+          "start_to_closed": 3500496,
+          "held_pixel_cycles": 86663,
+          "physical_ready_stalls": 21588,
+          "output": "actual_001.rgb565.bin",
+          "output_sha256": "526f97c64f80323efabb8cbe9b512956b433020654f0231d0b1cbb2aef9a2cb6"
+        },
+        {
+          "type": "frame",
+          "name": "actual_006",
+          "epoch": 501,
+          "generation": 601,
+          "bank": 0,
+          "pixels": 345600,
+          "bytes": 691200,
+          "logical_reads": 32400,
+          "physical_reads": 64800,
+          "start_cycle": 3506407,
+          "first_pixel_cycle": 3512078,
+          "last_pixel_cycle": 7007166,
+          "closed_cycle": 7007170,
+          "start_to_first_pixel": 5671,
+          "start_to_last_pixel": 3500759,
+          "start_to_closed": 3500763,
+          "held_pixel_cycles": 87166,
+          "physical_ready_stalls": 21566,
+          "output": "actual_006.rgb565.bin",
+          "output_sha256": "17150ccab8639f9f457bb019b91605f35e2e69828c67da9f427b03849bee7602"
+        }
+      ],
+      "checks": [
+        "invalid_start_bank_epoch_generation_rejected",
+        "cancel_pending_drains_both_adapters",
+        "reset_pending_drains_both_adapters",
+        "cancel_unaccepted_physical_offer_closes_without_bus_owner",
+        "wrong_physical_generation_ignored_until_matching_return",
+        "physical_error_propagates_and_drains_line_and_byte_owners",
+        "cancel_on_matching_physical_return_edge",
+        "cancel_on_logical_line_response_edge",
+        "reset_on_matching_physical_return_edge",
+        "reset_on_logical_line_response_edge",
+        "held_rgb_pixel_stable_then_cancel_invalidates_output",
+        "actual_full_RGB565_actual_001",
+        "actual_full_RGB565_actual_006"
+      ]
+    },
+    {
+      "variant": "retained",
+      "retain": 1,
+      "seed": 912701,
+      "status": "PASS_ACTUAL_RGB565_AND_JOINED_LEASE_DRAIN",
+      "event_log": "retained-912701/events.jsonl.gz",
+      "verdict": {
+        "type": "verdict",
+        "status": "TEST_PASS",
+        "seed": 912701,
+        "retain": 1,
+        "checks": 13,
+        "cycles": 6140467
+      },
+      "frames": [
+        {
+          "type": "frame",
+          "name": "actual_001",
+          "epoch": 500,
+          "generation": 600,
+          "bank": 0,
+          "pixels": 345600,
+          "bytes": 691200,
+          "logical_reads": 32400,
+          "physical_reads": 32400,
+          "start_cycle": 4717,
+          "first_pixel_cycle": 9199,
+          "last_pixel_cycle": 3072574,
+          "closed_cycle": 3072578,
+          "start_to_first_pixel": 4482,
+          "start_to_last_pixel": 3067857,
+          "start_to_closed": 3067861,
+          "held_pixel_cycles": 86584,
+          "physical_ready_stalls": 11029,
+          "output": "actual_001.rgb565.bin",
+          "output_sha256": "526f97c64f80323efabb8cbe9b512956b433020654f0231d0b1cbb2aef9a2cb6"
+        },
+        {
+          "type": "frame",
+          "name": "actual_006",
+          "epoch": 501,
+          "generation": 601,
+          "bank": 0,
+          "pixels": 345600,
+          "bytes": 691200,
+          "logical_reads": 32400,
+          "physical_reads": 32400,
+          "start_cycle": 3072581,
+          "first_pixel_cycle": 3077071,
+          "last_pixel_cycle": 6140460,
+          "closed_cycle": 6140464,
+          "start_to_first_pixel": 4490,
+          "start_to_last_pixel": 3067879,
+          "start_to_closed": 3067883,
+          "held_pixel_cycles": 86243,
+          "physical_ready_stalls": 10661,
+          "output": "actual_006.rgb565.bin",
+          "output_sha256": "17150ccab8639f9f457bb019b91605f35e2e69828c67da9f427b03849bee7602"
+        }
+      ],
+      "checks": [
+        "invalid_start_bank_epoch_generation_rejected",
+        "cancel_pending_drains_both_adapters",
+        "reset_pending_drains_both_adapters",
+        "cancel_unaccepted_physical_offer_closes_without_bus_owner",
+        "wrong_physical_generation_ignored_until_matching_return",
+        "physical_error_propagates_and_drains_line_and_byte_owners",
+        "cancel_on_matching_physical_return_edge",
+        "cancel_on_logical_line_response_edge",
+        "reset_on_matching_physical_return_edge",
+        "reset_on_logical_line_response_edge",
+        "held_rgb_pixel_stable_then_cancel_invalidates_output",
+        "actual_full_RGB565_actual_001",
+        "actual_full_RGB565_actual_006"
+      ]
+    },
+    {
+      "variant": "retained",
+      "retain": 1,
+      "seed": 912702,
+      "status": "PASS_ACTUAL_RGB565_AND_JOINED_LEASE_DRAIN",
+      "event_log": "retained-912702/events.jsonl.gz",
+      "verdict": {
+        "type": "verdict",
+        "status": "TEST_PASS",
+        "seed": 912702,
+        "retain": 1,
+        "checks": 13,
+        "cycles": 6139956
+      },
+      "frames": [
+        {
+          "type": "frame",
+          "name": "actual_001",
+          "epoch": 500,
+          "generation": 600,
+          "bank": 0,
+          "pixels": 345600,
+          "bytes": 691200,
+          "logical_reads": 32400,
+          "physical_reads": 32400,
+          "start_cycle": 4697,
+          "first_pixel_cycle": 9168,
+          "last_pixel_cycle": 3072021,
+          "closed_cycle": 3072025,
+          "start_to_first_pixel": 4471,
+          "start_to_last_pixel": 3067324,
+          "start_to_closed": 3067328,
+          "held_pixel_cycles": 85832,
+          "physical_ready_stalls": 11013,
+          "output": "actual_001.rgb565.bin",
+          "output_sha256": "526f97c64f80323efabb8cbe9b512956b433020654f0231d0b1cbb2aef9a2cb6"
+        },
+        {
+          "type": "frame",
+          "name": "actual_006",
+          "epoch": 501,
+          "generation": 601,
+          "bank": 0,
+          "pixels": 345600,
+          "bytes": 691200,
+          "logical_reads": 32400,
+          "physical_reads": 32400,
+          "start_cycle": 3072028,
+          "first_pixel_cycle": 3076497,
+          "last_pixel_cycle": 6139949,
+          "closed_cycle": 6139953,
+          "start_to_first_pixel": 4469,
+          "start_to_last_pixel": 3067921,
+          "start_to_closed": 3067925,
+          "held_pixel_cycles": 86349,
+          "physical_ready_stalls": 10676,
+          "output": "actual_006.rgb565.bin",
+          "output_sha256": "17150ccab8639f9f457bb019b91605f35e2e69828c67da9f427b03849bee7602"
+        }
+      ],
+      "checks": [
+        "invalid_start_bank_epoch_generation_rejected",
+        "cancel_pending_drains_both_adapters",
+        "reset_pending_drains_both_adapters",
+        "cancel_unaccepted_physical_offer_closes_without_bus_owner",
+        "wrong_physical_generation_ignored_until_matching_return",
+        "physical_error_propagates_and_drains_line_and_byte_owners",
+        "cancel_on_matching_physical_return_edge",
+        "cancel_on_logical_line_response_edge",
+        "reset_on_matching_physical_return_edge",
+        "reset_on_logical_line_response_edge",
+        "held_rgb_pixel_stable_then_cancel_invalidates_output",
+        "actual_full_RGB565_actual_001",
+        "actual_full_RGB565_actual_006"
+      ]
+    }
+  ],
+  "seeds": [
+    912701,
+    912702
+  ],
+  "service": "One tagged16B tile burst actor, eight payload plus1..5 wait cycles, seeded request-ready and RGB-output stalls. No SDRAM commands, refresh or shared arbiter.",
+  "actual_converter_rtl_join": true,
+  "physical_sdram_controller_join": false,
+  "shared_service_complete": false,
+  "physical_hardware_tested": false,
+  "sustained_hardware_30fps_proven": false,
+  "validated_full_frame_decode_under10ms_proven": false,
+  "input_expansions": [
+    {
+      "path": "canonical_actual.tsv",
+      "compressed_path": "inputs/canonical_actual.tsv.gz",
+      "compressed_sha256": "03fab04d4273388cb1477c6db11c19486d7f0ad1ebc2e39b18fe6cc3508c0192",
+      "raw_sha256": "a9f796047cc725a19e14dfae7bed75a57735e4c6d12def28ade7b98e99f8a861"
+    },
+    {
+      "path": "rgb_goldens.tsv",
+      "compressed_path": "inputs/rgb_goldens.tsv.gz",
+      "compressed_sha256": "abe85556017a634b43711306763af93d39cbf3207b9547842edd0064c3e6547b",
+      "raw_sha256": "e323225588a9f5bf68d2a252ac6333d8e2c0a1de42ee01d8abb20f87e9a74bb4"
+    }
+  ],
+  "rgb_goldens": {
+    "actual_001": "526f97c64f80323efabb8cbe9b512956b433020654f0231d0b1cbb2aef9a2cb6",
+    "actual_006": "17150ccab8639f9f457bb019b91605f35e2e69828c67da9f427b03849bee7602"
+  },
+  "comparisons": [
+    {
+      "seed": 912701,
+      "frame": "actual_001",
+      "independent_cycles": 3500771,
+      "retained_cycles": 3067861,
+      "independent_bursts": 64800,
+      "retained_bursts": 32400,
+      "cycle_reduction_percent": 12.36613306040298
+    },
+    {
+      "seed": 912701,
+      "frame": "actual_006",
+      "independent_cycles": 3500170,
+      "retained_cycles": 3067883,
+      "independent_bursts": 64800,
+      "retained_bursts": 32400,
+      "cycle_reduction_percent": 12.350457263504344
+    },
+    {
+      "seed": 912702,
+      "frame": "actual_001",
+      "independent_cycles": 3500496,
+      "retained_cycles": 3067328,
+      "independent_bursts": 64800,
+      "retained_bursts": 32400,
+      "cycle_reduction_percent": 12.374474931552557
+    },
+    {
+      "seed": 912702,
+      "frame": "actual_006",
+      "independent_cycles": 3500763,
+      "retained_cycles": 3067925,
+      "independent_bursts": 64800,
+      "retained_bursts": 32400,
+      "cycle_reduction_percent": 12.36410462519171
+    }
+  ],
+  "compressed_artifacts": {
+    "independent-912701/events.jsonl": {
+      "path": "independent-912701/events.jsonl.gz",
+      "gzip_sha256": "f7f62b695bc8943a9fbbb36a7c6964c22e81437024adf0fab5fde672ae0f369b",
+      "raw_sha256": "f7f96634bab18e3bb73f5f95bc10945cef7334e170819b2bc69c6ac5551e1ad2",
+      "rows": 390394
+    },
+    "independent-912702/events.jsonl": {
+      "path": "independent-912702/events.jsonl.gz",
+      "gzip_sha256": "8e98a90c2b685b1533603c50b850a83469238645945ace3924c4e4a142b659a9",
+      "raw_sha256": "a332aa21ea3f682e4f7f0f3a54c713a28cbe55b5bb56560ecfc839726587a9f9",
+      "rows": 390394
+    },
+    "retained-912701/events.jsonl": {
+      "path": "retained-912701/events.jsonl.gz",
+      "gzip_sha256": "ab5267e9a2a0f9552f98f2b9a98bf3ddc8124cce8329009be454f076ea757056",
+      "raw_sha256": "d8f6534824220b75475cb3b43df6fbb3ea558443fe13b3de7b593f4e0d97704d",
+      "rows": 260614
+    },
+    "retained-912702/events.jsonl": {
+      "path": "retained-912702/events.jsonl.gz",
+      "gzip_sha256": "d8c3b408096fa8cfa305d6d3d3509716e6366f87514a20436a3a88a8d80cb401",
+      "raw_sha256": "e9fe250ed7cbefe034bd418efb1063e7682ae221d07d9c2f7eb584c43b354bd6",
+      "rows": 260614
+    }
+  },
+  "wall_seconds": 19.673683940200135,
+  "artifacts_sha256": {
+    "compile-independent.log": "07d75946b3e4eb0abfa626e3745aab78ad4ece2c85e8f1858cc331c9286119d6",
+    "compile-retained.log": "199c393a5aad00fcb9cc37a518d9a54e647341371afe4c59abbafc7a02fdfa80",
+    "compiler-version.log": "59d1cbef41d4ae78d5063d525b7aa13d18dc0493ea00537efc19b2ee398cb5a8",
+    "independent-912701/actual_001.rgb565.bin": "526f97c64f80323efabb8cbe9b512956b433020654f0231d0b1cbb2aef9a2cb6",
+    "independent-912701/actual_006.rgb565.bin": "17150ccab8639f9f457bb019b91605f35e2e69828c67da9f427b03849bee7602",
+    "independent-912701/events.jsonl.gz": "f7f62b695bc8943a9fbbb36a7c6964c22e81437024adf0fab5fde672ae0f369b",
+    "independent-912702/actual_001.rgb565.bin": "526f97c64f80323efabb8cbe9b512956b433020654f0231d0b1cbb2aef9a2cb6",
+    "independent-912702/actual_006.rgb565.bin": "17150ccab8639f9f457bb019b91605f35e2e69828c67da9f427b03849bee7602",
+    "independent-912702/events.jsonl.gz": "8e98a90c2b685b1533603c50b850a83469238645945ace3924c4e4a142b659a9",
+    "inputs/canonical_actual.tsv.gz": "03fab04d4273388cb1477c6db11c19486d7f0ad1ebc2e39b18fe6cc3508c0192",
+    "inputs/results.json": "561f360d392e58a8191971274cb844707e373465f70d24807bac7c9d305e65db",
+    "inputs/rgb_goldens.tsv.gz": "abe85556017a634b43711306763af93d39cbf3207b9547842edd0064c3e6547b",
+    "retained-912701/actual_001.rgb565.bin": "526f97c64f80323efabb8cbe9b512956b433020654f0231d0b1cbb2aef9a2cb6",
+    "retained-912701/actual_006.rgb565.bin": "17150ccab8639f9f457bb019b91605f35e2e69828c67da9f427b03849bee7602",
+    "retained-912701/events.jsonl.gz": "ab5267e9a2a0f9552f98f2b9a98bf3ddc8124cce8329009be454f076ea757056",
+    "retained-912702/actual_001.rgb565.bin": "526f97c64f80323efabb8cbe9b512956b433020654f0231d0b1cbb2aef9a2cb6",
+    "retained-912702/actual_006.rgb565.bin": "17150ccab8639f9f457bb019b91605f35e2e69828c67da9f427b03849bee7602",
+    "retained-912702/events.jsonl.gz": "d8c3b408096fa8cfa305d6d3d3509716e6366f87514a20436a3a88a8d80cb401",
+    "simulation-independent-912701.log": "180de050de3e466c699826ef8c258f100eb1e4dad0b51e0c318d8788e95e4071",
+    "simulation-independent-912702.log": "e7e5e157b72645dae9f17c17adcf0779184a71eb3e9b3cc4bdcdc4ee7d329388",
+    "simulation-retained-912701.log": "86d7471b1faaf2b04d5d0ab3a6bc838d67d742cf119df2a33904df1b7884ec2f",
+    "simulation-retained-912702.log": "573088ba0cb47bc5afecbdfbf87d26baeaba2f59907b2bc0ec31cab13db2b520",
+    "sources/fpga/experiments/cu66-v91k-cache/canonical_rgb565_cached.sv": "3c730f16a1307b854a643e5aa129abd0b5239d3dede5f46b7eca33df0c5a25b0",
+    "sources/fpga/experiments/cu66-v91k-lines/canonical_line_reader.sv": "154ddcf9333dd96e368f51f90f9fef1c775a2fe2b20002fee7fe6f92d5a95e69",
+    "sources/fpga/experiments/cu66-v91k-lines/canonical_rgb565_lines.sv": "ba0c57234f5e850cbf88472c04fe3d5a75000d69c1982359077ca1f62db24881",
+    "sources/fpga/experiments/cu66-v91l-converter/canonical_rgb565_tiled.sv": "880b5cef5cfd9cb0bec868ab561df371381509e4e8947b3c275476381a3688d7",
+    "sources/fpga/experiments/cu66-v91l-converter/tb_converter.cpp": "2f5fa102e18f2e68dbacc9a5a5fdaaf64487854b6643029b6be9cf4c14f4bbab",
+    "sources/fpga/experiments/cu66-v91l-rowpair/tile_rowpair_reader.sv": "77e0d3826b1fc3489e2de926b01465ba8ff849dbc813e37f6d9cdb9efb17fc0c",
+    "sources/scripts/cu66-v91l-converter/run_comparison.py": "238536fabd6c54c20109637904a9f5f0cb6bcdfdef4a3199eed311a1c891cf04",
+    "tool-version.log": "26daf9ad1ba36ee1c20cab9a869d0a1fbb8117230c80c78ec2d8cf597f64c4a5"
+  }
+}

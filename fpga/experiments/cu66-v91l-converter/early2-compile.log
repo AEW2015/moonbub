@@ -1,0 +1,35 @@
+make: Entering directory '/build/v91l-converter-early2'
+g++  -I.  -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-overloaded-virtual -Wno-shadow -Wno-sign-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable     -std=c++20 -O2 -Wall -Wextra -Werror   -Os -c -o tb_converter.o /home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp
+g++ -Os  -I.  -MMD -I/usr/share/verilator/include -I/usr/share/verilator/include/vltstd -DVM_COVERAGE=0 -DVM_SC=0 -DVM_TRACE=0 -DVM_TRACE_FST=0 -DVM_TRACE_VCD=0 -faligned-new -fcf-protection=none -Wno-bool-operation -Wno-overloaded-virtual -Wno-shadow -Wno-sign-compare -Wno-uninitialized -Wno-unused-but-set-parameter -Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable     -std=c++20 -O2 -Wall -Wextra -Werror   -c -o verilated.o /usr/share/verilator/include/verilated.cpp
+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp: In function 'std::vector<Image> images(const std::string&, const std::string&)':
+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp:29:3: error: this 'for' clause does not guard... [-Werror=misleading-indentation]
+   29 |   for(uint32_t i=0;i<518400;i++)image.tiles[physical(i)]=image.canonical[i];out.push_back(std::move(image));
+      |   ^~~
+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp:29:77: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
+   29 |   for(uint32_t i=0;i<518400;i++)image.tiles[physical(i)]=image.canonical[i];out.push_back(std::move(image));
+      |                                                                             ^~~
+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp: In member function 'void Bench::tick()':
+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp:52:3: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+   52 |   if(held&&!kill)need(d.out_valid&&now==*held,"RGB pixel changed under backpressure");held=d.out_valid&&!d.out_ready&&!kill?std::optional<Pixel>(now):std::nullopt;
+      |   ^~
+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp:52:87: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   52 |   if(held&&!kill)need(d.out_valid&&now==*held,"RGB pixel changed under backpressure");held=d.out_valid&&!d.out_ready&&!kill?std::optional<Pixel>(now):std::nullopt;
+      |                                                                                       ^~~~
+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp:72:4: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+   72 |    if(!kill&&d.line_rsp_error==0)for(unsigned i=0;i<16;i++)need(uint8_t(d.line_rsp_data[i/4]>>((i%4)*8))==source[selected].canonical[d.line_rsp_addr+i],"joined canonical response data");line.reset();line_acks++;
+      |    ^~
+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp:72:187: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   72 |    if(!kill&&d.line_rsp_error==0)for(unsigned i=0;i<16;i++)need(uint8_t(d.line_rsp_data[i/4]>>((i%4)*8))==source[selected].canonical[d.line_rsp_addr+i],"joined canonical response data");line.reset();line_acks++;
+      |                                                                                                                                                                                           ^~~~
+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp:77:4: error: this 'if' clause does not guard... [-Werror=misleading-indentation]
+   77 |    if(pixels==0)first_pixel=cycle;if(pixels%720==0)row_first=cycle;last_pixel=cycle;actual.push_back(uint8_t(d.out_word));actual.push_back(uint8_t(d.out_word>>8));
+      |    ^~
+/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp:77:35: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+   77 |    if(pixels==0)first_pixel=cycle;if(pixels%720==0)row_first=cycle;last_pixel=cycle;actual.push_back(uint8_t(d.out_word));actual.push_back(uint8_t(d.out_word>>8));
+      |                                   ^~
+cc1plus: all warnings being treated as errors
+make: *** [Vcanonical_rgb565_tiled.mk:62: tb_converter.o] Error 1
+make: *** Waiting for unfinished jobs....
+make: Leaving directory '/build/v91l-converter-early2'
+%Error: make -C /build/v91l-converter-early2 -f Vcanonical_rgb565_tiled.mk -j 2 exited with 2
+%Error: Command Failed ulimit -s unlimited 2>/dev/null; exec /usr/bin/verilator_bin --cc --exe --build --assert -Wall --timescale 1ns/1ps -j 2 --top-module canonical_rgb565_tiled -GRETAIN_ROWS=1\'b1 --Mdir /build/v91l-converter-early2 -CFLAGS -std=c++20\ -O2\ -Wall\ -Wextra\ -Werror /home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91k-cache/canonical_rgb565_cached.sv /home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91k-lines/canonical_line_reader.sv /home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91k-lines/canonical_rgb565_lines.sv /home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-rowpair/tile_rowpair_reader.sv /home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/canonical_rgb565_tiled.sv /home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-converter/tb_converter.cpp

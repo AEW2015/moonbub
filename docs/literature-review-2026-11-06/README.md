@@ -98,21 +98,21 @@ from the implementation; it is not a new publication result or evidence of
 HEVC/AV1 superiority. Use its live simulation summary for measured cycle fences,
 and keep shared physical service and hardware goals unqualified.
 
-The [tiled-memory/retention follow-up](../cu66-v91l-tiled/README.md) now
-implements tile8×8 placement through the frozen real controller and qualifies
-native candidate-write replay at 12.71 → 9.37 ms under the same modeled clock.
-Complete inverse canonical/HUD images and actual pin ownership/command timing
-are checked. This is write-only replay, not live validated decode or hardware
-clock/FPS evidence.
+The [physical read/base-RGB integration](../cu66-v91l-readbridge/README.md)
+now joins retained canonical reads to the actual controller/timed pins and the
+frozen native base RGB565 converter. Exact canonical/RGB outputs and physical
+capture/drain receipts are checked. The isolated retained read consumer is about
+0.847M cycles, but the actual complete scalar display consumer is about 3.36M
+under physical service: roughly 33.6 ms at the assumed 100 MHz. This exposes
+byte-consumer overhead and a marginal isolated 30-Hz budget; it establishes no
+hardware FPS or complete validated decode result.
 
-A new three-plane retention reader also halves reads under the actual
-converter's source-derived chroma-prefill order, preserving both full native
-canonical outputs. It allocates 1,472 data bytes plus metadata; the earlier
-752-byte sequential-plane proposal is now a narrower control. Retention uses a
-logical read-service actor and has not yet joined actual SDRAM or the RGB565
-converter top. These implementation results are local memory-architecture
-mechanisms, not new publication findings, coding-efficiency gains or evidence
-of HEVC/AV1 superiority. The earlier rate/quality comparisons remain unchanged.
+State/wait observations now motivate a controlled canonical-burst consumer
+comparison, preserving the scalar reference, RAM ports, arithmetic and tags.
+Native memory is preloaded before the tests, with live production, semantic HUD,
+validation/publication and common service still open. These are local
+implementation measurements, not new publication findings or HEVC/AV1 coding
+superiority. The earlier codec rate/quality comparisons are unchanged.
 
 ## Literature findings compared with V90
 

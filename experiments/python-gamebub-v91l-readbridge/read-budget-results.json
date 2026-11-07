@@ -1,0 +1,110 @@
+{
+  "schema": "cu66-v91l-readbridge-work-v1",
+  "status": "PASS_SOURCE_DERIVED_COMMAND_WORK_MODEL",
+  "provenance": "Derived from the checked-in 32,400-entry client prefill vector and source-FSM/address mapping; not captured physical read events.",
+  "source_revision": "b96944dd9897e2bf4e9ed2978bdbade79cdccb7b",
+  "source_sha256": {
+    "fpga/experiments/cu66-v91l-writepipe/controller/moonshine_sdram.sv": "a43869515d2587e90356ebe90c6bee8c4f0428276034cf7de648d9650694abe1",
+    "docs/cu66-v91l-writepipe/timing-contract.md": "918f4f317354de7d8ec8399dd00e8457638af4699dc67831a1742565ead33e7a",
+    "experiments/python-gamebub-v91l-tiled/audit-models.json": "a9486bd79e231a037bf7c4a3f7a65b644babc40e09c534e2811c040b0e447e63",
+    "experiments/python-gamebub-v91l-tiled/prefill-results.json": "9b13b45adbd68cb1a22230d2dc87be9485f50d1bad60bca6986e171a6e09d722",
+    "experiments/python-gamebub-v91l-tiled/prefill_model.py": "6036d1e124bda0c9d87830e49c06b71cb58c5b755b9ed202db172a3aee9eab5e",
+    "experiments/python-gamebub-v91l-tiled/verify_models.py": "69f6b2c93a80b31ba5812c42926b7844445343c343ad8df542999682105ef63f",
+    "experiments/python-gamebub-v91l-tiled/vectors/prefill-lines.hex.gz": "dcf721977ebc03b445ff221efcc4349037c07840ce26bdfa717a023e270db14e",
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/inputs/canonical_actual.tsv.gz": "03fab04d4273388cb1477c6db11c19486d7f0ad1ebc2e39b18fe6cc3508c0192"
+  },
+  "generator_sha256": "94deef51aa790ab589fba2f559589c3bd920fd4b182d09c2dc37624db19257c8",
+  "vector": {
+    "path": "experiments/python-gamebub-v91l-tiled/vectors/prefill-lines.hex.gz",
+    "line_count": 32400,
+    "gzip_sha256": "dcf721977ebc03b445ff221efcc4349037c07840ce26bdfa717a023e270db14e",
+    "raw_sha256": "28cd3ab4c967db1bb0db75dbdff24df3d4aacefdd939f34c80a1e7c7f33899bb",
+    "request_semantics": "aligned logical canonical 16-byte client line misses in CHECK_ROWS chroma-prefill then raster-luma order"
+  },
+  "assumptions": {
+    "source_clock_ns": 10,
+    "logical_request_bytes": 16,
+    "physical_bl8_bytes": 16,
+    "controller_mode": "CAS3, BL8, x16, address in 16-bit words",
+    "controller_start": "IDLE after initialization; open rows initially closed",
+    "startup_phase": "idealized accounting phase with refresh_count=0; not the literal post-MRS controller count",
+    "request_offer": "next request continuously valid whenever source controller is IDLE",
+    "read_responses_per_bl8": 8,
+    "refresh_threshold_cycles": 750,
+    "hud_reads": 0,
+    "hud_in_vector": false
+  },
+  "frames": {
+    "actual_001": "byte-exact fixture verified in upstream verify_models.py",
+    "actual_006": "byte-exact fixture verified in upstream verify_models.py"
+  },
+  "scenarios": {
+    "raster_control": {
+      "physical_bl8_reads": 32400,
+      "useful_bytes": 518400,
+      "fetched_bytes": 518400,
+      "overfetch_bytes": 0,
+      "response_word_beats": 259200,
+      "row_activates": 1854,
+      "row_precharges": 1853,
+      "refresh_commands": 663,
+      "row_hits": 30546,
+      "row_conflicts": 1190,
+      "source_fsm_cycles_after_init": 508121,
+      "source_fsm_time_ns_at_10ns": 5081210,
+      "scope": "serialized always-ready read-only source-state replay; initial power-up/init excluded"
+    },
+    "tile_independent": {
+      "physical_bl8_reads": 64800,
+      "useful_bytes": 518400,
+      "fetched_bytes": 1036800,
+      "overfetch_bytes": 518400,
+      "response_word_beats": 518400,
+      "row_activates": 6420,
+      "row_precharges": 6419,
+      "refresh_commands": 1363,
+      "row_hits": 58380,
+      "row_conflicts": 5056,
+      "source_fsm_cycles_after_init": 1038349,
+      "source_fsm_time_ns_at_10ns": 10383490,
+      "scope": "serialized always-ready read-only source-state replay; initial power-up/init excluded"
+    },
+    "tile_retained": {
+      "physical_bl8_reads": 32400,
+      "useful_bytes": 518400,
+      "fetched_bytes": 518400,
+      "overfetch_bytes": 0,
+      "response_word_beats": 259200,
+      "row_activates": 3065,
+      "row_precharges": 3064,
+      "refresh_commands": 680,
+      "row_hits": 29335,
+      "row_conflicts": 2384,
+      "source_fsm_cycles_after_init": 517996,
+      "source_fsm_time_ns_at_10ns": 5179960,
+      "scope": "serialized always-ready read-only source-state replay; initial power-up/init excluded"
+    }
+  },
+  "interpretation": {
+    "command_counts": "Exact for this serialized event replay of the read-side FSM and these generated physical bursts.",
+    "timing": "State waits and BL8 response beats follow moonshine_sdram.sv; excludes initial 20,000-cycle power-up and two init refreshes.",
+    "refresh": "Every REFRESH_PRE/REFRESH command and all-bank precharge is modeled at the source threshold; threshold counter advances each source cycle.",
+    "no_full_frame_estimate": true,
+    "exclusions": [
+      "converter arithmetic",
+      "bridge/client scheduling or arbitration",
+      "hashes",
+      "scratch/shared traffic",
+      "board I/O and pin flight",
+      "initialization",
+      "HUD",
+      "write traffic"
+    ]
+  },
+  "limits": [
+    "This is a bounded prefill-work comparison, not an FPS/frame-time or complete-frame estimate.",
+    "The raster control assumes canonical raster physical byte placement; the tile scenarios use 8x8 tile-major mapping.",
+    "Retained fetch filter mirrors verify_models.cache; upstream verifier checks all 518,400 client bytes for actual_001 and actual_006.",
+    "Always-valid serialized source-FSM replay excludes any bridge backpressure, concurrent traffic, arbitration, or board effects."
+  ]
+}
