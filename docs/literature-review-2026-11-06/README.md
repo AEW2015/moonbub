@@ -10,6 +10,17 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V102 implementation follow-up: the [memory/predicate experiment](../cu66-v102/README.md)
+turns the literature's implementation focus into measured native results.
+Paired RTL traces and canonical bytes remain equal. Combined synthesis cuts
+LUTs 74,340→49,040 and LUT RAMs 22,286→3,854 while using 32 RAMB36 and 28 DSPs.
+The exact-device component now places/routes (72,867/72,867 routable nets,
+zero routing errors), but fails 100-MHz timing with routed WNS −13.976 ns.
+The next bottlenecks are measured tile/index/enable control cones; parent
+clock/boundary/I/O contracts and E7/E6 complete-path/shared-memory work remain
+open. These are new implementation measurements, not published-codec quality
+comparisons or achieved hardware 30-fps/under-10-ms results.
+
 V101 implementation follow-up: [constraints and scratch evidence](../cu66-v101/README.md)
 now include historical timing Tcl, reset/crossing provenance and explicit open
 board/controller obligations, with the comparison clock loaded before synthesis

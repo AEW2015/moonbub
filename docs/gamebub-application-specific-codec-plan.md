@@ -2,6 +2,21 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-07
 
+**V102 partial checkpoint: representation-preserving RTL now fits and routes.**
+[V102](cu66-v102/README.md) isolates a BRAM-inference memory template and
+fixed-geometry predicate logic without changing 720×480, the 49,152-byte cap,
+codec/profile, ports or behavioral schedule. Paired regressions pass 288
+case/profile runs and 304 directed checks; focused probes pass 19,072 clocked
+RAM cases and all 32,768 predicate inputs. Combined synthesis uses 49,040 LUTs
+versus V101's 74,340, and 3,854 LUT RAMs versus 22,286, with 32 RAMB36 and
+28 DSPs. Exact-device placement/routing completes: 48,522 LUTs and all
+72,867 routable nets routed with zero routing errors. Timing remains open:
+routed WNS −13.976 ns at the unchanged 10-ns target. Next optimize measured
+tile/index/enable cones with state-range and transaction equivalence proofs.
+Parent clock/boundary/I/O contracts, whole-path HUD/C2/display/ESP32 integration,
+sustained hardware 30 fps and validated under-10-ms decoding remain open.
+There is no new compression/quality improvement or measured hardware FPS.
+
 **V101 partial checkpoint: clock/reset obligations and a bounded RTL change.**
 [V101](cu66-v101/README.md) adds a source-backed constraints ledger and corrects
 the prepared OOC flow to load its comparison clock before synthesis. Historical

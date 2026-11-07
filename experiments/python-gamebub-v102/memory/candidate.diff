@@ -1,0 +1,31 @@
+--- fpga/experiments/cu66-v91i2/cs88_admission_v91i2a.sv
++++ fpga/experiments/cu66-v102-memory/cs88_admission_v91i2a.sv
+@@ -148,8 +148,17 @@
+     assign stage_read_data=ram_data;
+     assign debug_state=state;
+ 
++    // One registered, read-first packet RAM port. Selection retains stage priority.
++    logic memory_read_enable;
++    logic [15:0] memory_read_address;
++    assign memory_read_enable=stage_read_req || (replay_req && replay_ready);
++    assign memory_read_address=stage_read_req ? fetch_addr[15:0] : replay_addr[15:0];
+     always_ff @(posedge clk) begin
+         if(stage_write)memory[received[15:0]]<=in_data;
++        if(memory_read_enable)ram_data<=memory[memory_read_address];
++    end
++
++    always_ff @(posedge clk) begin
+         replay_rsp_valid<=replay_req&&replay_ready;
+         lookup_rsp_valid<=lookup_req&&state==FINISHED&&!reset&&!start&&!abort_packet;
+         if(cache_write&&!reset&&!start&&!abort_packet)scales[cache_index]<=cache_data;
+@@ -157,10 +166,8 @@
+             lookup_mode<=modes[lookup_tile];lookup_scale<=scales[lookup_cell];
+         end
+         if(stage_read_req)begin
+-            ram_data<=memory[fetch_addr[15:0]];
+             ram_addr<=fetch_addr;ram_epoch<=receipt_epoch;
+         end else if(replay_req&&replay_ready)begin
+-            ram_data<=memory[replay_addr[15:0]];
+             ram_addr<=replay_addr;ram_epoch<=receipt_epoch;
+         end
+         if(reset||start||abort_packet)begin
