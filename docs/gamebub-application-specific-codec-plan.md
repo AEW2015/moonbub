@@ -2,6 +2,19 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-07
 
+**V100 partial checkpoint: implementation evidence with explicit tool gates.**
+[V100](cu66-v100/README.md) now runs the fresh V99 q16 fixtures through unchanged
+RTL under two seeds. The standard-converted V91k component passes a separate
+paired regression: transcripts, cycles, stage events and canonical bytes match,
+and all 308 public ports are checked. Reconstruction leaf mapping repeats;
+complete generic mapping fails at a converted loop iterator. Exact Artix-7
+placement/routing is blocked by device support in Vivado 2025.2, while a second
+2026.1 installation fails during startup. These are reproducible prerequisites,
+not a qualified physical baseline. Keep 720×480, the frozen packet profile and
+the 30-fps/under-10-ms goals. [Next RTL work](cu66-v100/next-rtl-experiments.md)
+prioritizes synthesis compatibility and measured arithmetic/memory scheduling;
+complete HUD/C2/shared-display/ESP32 integration remains open.
+
 **V99 research RC1: fresh input and an RTL-compatible packet subset.**
 The [V99 candidate](cu66-v99/README.md) selects restricted CS88/all-BR88 q16,
 with key map0/Pgroup3, QM87 run2/inherit6 and a complete 49,152-byte cap.
@@ -9,7 +22,7 @@ Fresh CU66/GU66 and CS88 native parity each cover 360 frames; independent
 BR88/C2 auditing checks 186,624,000 coefficients. All four complete q16 cases
 fit (120 frames, maximum 36,119 bytes). The direct sender reproduces all 120
 packets exactly and adds 32 synthetic cross-key ACKs. A bounded new-source
-RTL-facing golden bundle is retained; it was not simulated in RTL here.
+RTL-facing golden bundle is retained; V100 now supplies its RTL execution.
 [Results](cu66-v99/results.md) identify Python HUD encoding as a major host
 bottleneck. Original captures, native real-time sender, live ESP32/QSPI and
 complete RTL/HUD/C2/display integration, memory/ports and physical qualification

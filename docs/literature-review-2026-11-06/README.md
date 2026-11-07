@@ -10,6 +10,15 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V100 implementation follow-up: the [frozen baseline](../cu66-v100/README.md)
+now has fresh-input component RTL parity and a two-seed original/converted
+V91k behavioral regression, including canonical bytes, cycles and public ports.
+Generic reconstruction leaf mapping repeats; full mapping and exact target
+placement/routing remain blocked at their separately recorded frontend/device
+prerequisites. This is new implementation-readiness evidence, not a new codec
+benchmark or confirmation of any published physical result. The E7 whole-path,
+E6 shared-memory and hardware 30-fps/under-10-ms gates stay open.
+
 V99 E7-to-implementation follow-up: [fresh-input RC1](../cu66-v99/README.md)
 now generates actual CU66/CS88 from the retained RGB corpus, with independent
 native/pixel/BR88/C2 parity. The selected all-BR88 q16 candidate uses the actual

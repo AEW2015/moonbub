@@ -1,0 +1,8 @@
+read_verilog -sv -noassert -defer converted.v
+hierarchy -check -top cu66_dequant
+proc
+write_json premap.json
+synth_xilinx -top cu66_dequant -family xc7 -noiopad -noclkbuf
+tee -o reports/mapped-stat.json stat -json -top cu66_dequant
+write_json mapped.json
+write_verilog -noattr mapped.v

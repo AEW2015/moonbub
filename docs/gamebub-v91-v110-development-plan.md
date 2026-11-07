@@ -15,6 +15,21 @@ RTL for **7-series technology mapping, placement, routing and timing closure**.
 Freeze the selected codec before that phase so a physical implementation change
 can be compared against a stable function and workload.
 
+**V100 partial implementation baseline: fresh RTL and checked conversion.**
+The [V100 checkpoint](cu66-v100/README.md) freezes unchanged component RTL,
+policy and the 100-MHz comparison-clock XDC. Fresh V99 q16 key/P/late-CRC
+fixtures now pass two-seed RTL checks, including 4,579,072 exact comparisons
+at each transform stage. A standard sv2v conversion passes 88 paired V91k
+pipeline runs and 84 directed checks, with identical cycle counters, events
+and canonical SRAM bytes; all 308 public ports are checked. Reconstruction
+leaf mapping repeats exactly, but full generic mapping stops on a converted
+loop-iterator frontend incompatibility. Vivado 2025.2 lacks the exact Artix-7
+part; an additional 2026.1 installation fails before its part query. Exact
+placement/routing, whole-candidate integration and the two hardware goals
+remain open. [Physical results](cu66-v100/physical-baseline.md) name successful
+leaf evidence and failed stages separately. Complete V100 physical gates when
+the tool prerequisite is restored; keep V101 changes against this baseline.
+
 **V99 RC1 research checkpoint: fresh input and an explicit RTL candidate.**
 The [V99 handoff](cu66-v99/README.md) now has 360 fresh CU66/GU66 candidates
 with exact unchanged native canonical/HUD/RGB565 parity and 3,948 atomic
@@ -24,7 +39,7 @@ profile forces V91-compatible key0/Pgroup3 and QM87 run2/inherit6 metadata:
 all 120 frames in four complete short histories fit, max 36,119 bytes. q8 has
 one over-cap packet and is not the default. A direct fresh sender produces the
 same 120 packets plus 32 cross-key synthetic ACKs; the new-user RTL-facing
-key/P/late-CRC goldens are exported but have not been run through RTL.
+key/P/late-CRC goldens were exported and are now exercised by V100 above.
 The [profile and measured costs](cu66-v99/results.md) freeze a research RC1,
 not product promotion. Python host packet preparation remains far above the
 33.33-ms frame period; native host acceleration, original held-out captures,
@@ -430,7 +445,7 @@ are V92a, V92b, V92c and V92d. The existing E1–E7 controls remain applicable.
 | **V96** reference and memory work — **partial** | **Qualified retained inventory:** exact accepted-only 64/256-entry dictionaries, materialized copies, fixed aperture/addresses, full research descriptor cost and separate read/write fences. | **Standalone implemented:** one-tile COPY/CONST128/literal engine, grouped BL8 reads/row writes, scheduled generation and full-width leases; no alias. | **Component checkpoint:** 1,371 independent streams, 11,105,100 exact tiles, 2,601 timed-controller RTL checks and 34 behavioral lifecycle operations. No integrated display/whole-frame qualification. | **Open:** join supported syntax/materializer/constant consumers to reconstruction, C2/HUD/seal, publication and all shared display/scratch traffic; require lower full-path latency without underruns before promotion. See [V96](cu66-v96/README.md). |
 | **V97** Sunshine/ESP32/transport — **partial** | **Software checkpoint:** PC JPEG/preencoded framing measurements; explicit MB97 setup/profile/cap ACK and legacy control. No live Sunshine capture calibration. | **Portable components:** two aligned Rust stages, true-credit probes, exact logical DMA and commit-ACK fence; real bounded FIFO RTL. Production QSPI/ESP-IDF UDP adapter and target RAM/CPU service remain open. | **Native-host/RTL join qualified:** 23 Rust tests, three strict FFI tests, 138 wire cases and 11 interactive ingress transactions. No Renode/ESP32 instruction, Wi-Fi/RTOS or physical QSPI model. | **Open:** on-device capability/driver integration, UDP loss/pacing/mailbox and input/audio/UI contention; custom reference/publication recovery and hardware calibration. Ingress commit is not decoded/displayed FPS. See [V97](cu66-v97/README.md). |
 | **V98** common-input comparisons — **partial** | **Common corpus retained:** 120 selected frames/four sequences, new compressed gameplay at selected 30 Hz; 109 per-clip unique RGBs. **Open:** independent raw captures. | **Software controls qualified:** 52 HEVC/AV1/JPEG/historical-GM01 runs; actual fresh CU66/CS88 parity and same-input quality now supplied by V99. | **Measured:** host frontend/backend costs, AU tails, emitted syntax, ROI/temporal pixel proxies and synthetic cut. **Open:** readability, held-out long-run tails and target capability. | **Research frontier/decision published:** no historical-GM01 promotion or unconditional global motion. No matched perceptual superiority or physical FPS claim. See [V98](cu66-v98/README.md) and [V99](cu66-v99/README.md). |
-| **V99** candidate freeze — **research RC1, product gates open** | **Closed software gap:** fresh RGB→CU66 and independent native parity; select restricted CS88/all-BR88 q16 plus separate production JPEG fallback. | **Native research qualified:** 360 exact CS88 reconstructions, independent BR88/C2 audit, 120 byte-identical direct packets and 32 cross-key controls. Broader original captures, real-time host encoding and live full-path integration remain open. | **Profile/goldens/inventory frozen for research:** actual V91 mode/QM subset, complete cap, source/interface hashes, new key/P residual goldens. No fresh RTL run, ESP32 service or full-top memory/physical fit. | **Rebuildable research handoff delivered:** [V99](cu66-v99/README.md). Product freeze requires complete live RTL/HUD/C2/display, transport, held-out/service and physical prerequisites; V100 must inventory incomplete endpoints. |
+| **V99** candidate freeze — **research RC1, product gates open** | **Closed software gap:** fresh RGB→CU66 and independent native parity; select restricted CS88/all-BR88 q16 plus separate production JPEG fallback. | **Native research qualified:** 360 exact CS88 reconstructions, independent BR88/C2 audit, 120 byte-identical direct packets and 32 cross-key controls. Broader original captures, real-time host encoding and live full-path integration remain open. | **Profile/goldens/inventory frozen for research:** actual V91 mode/QM subset, complete cap, source/interface hashes, new key/P residual goldens. Fresh RTL execution is supplied by V100; ESP32 service and full-top memory/physical fit remain open. | **Rebuildable research handoff delivered:** [V99](cu66-v99/README.md). Product freeze requires complete live RTL/HUD/C2/display, transport, held-out/service and physical prerequisites; V100 must inventory incomplete endpoints. |
 
 The minimum candidate must have an implemented sender/receiver path for every
 negotiated mode. If a mode is deferred, the encoder must avoid it through a
@@ -451,7 +466,7 @@ replace their target-part, constraints, signoff or evidence requirements.
 
 | Version | a | b | c | d / exit |
 |---|---|---|---|---|
-| **V100** reproducible baseline | Freeze exact part/board, tool version, source/XDC/IP/memory-init hashes and top. | Cleanly recreate and synthesize the complete candidate; inventory ports, clocks, resources and unfinished endpoints. | Establish baseline placement/routing and workload reports with valid constraints. | Repeat the baseline and publish reproducible reports/checkpoints; missing device/tool support remains a prerequisite, not a pass. |
+| **V100** reproducible baseline — **partial** | **Recorded:** source-backed exact part, tool versions, unchanged component source/include/policy/XDC hashes, public interfaces; physical board identity remains open. | **Measured:** fresh RTL and original/converted behavioral parity; repeatable reconstruction leaf mapping. **Open:** full component mapping and complete-candidate endpoints. | **Prepared, blocked:** exact Artix-7 placement/routing; no achieved clock or physical fit. Workload cycles and failures retained. | **Published:** [V100 baseline](cu66-v100/README.md), frozen recipe, independent audit, exact failure receipts. Physical repeatability and checkpoints remain required after tool support is restored. |
 | **V101** constraints/methodology | Inventory primary/generated clocks, domains and reset behavior. | Derive actual interface delays and clock relationships from the board/controller requirements. | Audit methodology/DRC, CDC, exceptions and unconstrained paths. | Close critical issues and justify every exception; no invented delays or blanket false paths. |
 | **V102** pipeline/control timing | Attribute long ready/credit, mux and arithmetic paths to measured cones. | Add bounded skid/register stages and trial justified retiming. | Recheck transactions, epochs, drain and stalls; compare cycle/queue effects. | Route matched A/B variants and retain the latency/resource/clock improvement. |
 | **V103** parser technology mapping | Isolate supported parser widths/lanes and diagnostic-counter costs. | Compare inferred LUT6/mux/carry implementations of prefix/refill/control logic. | Recheck every escape, boundary, malformed input and full-path workload. | Select from routed area/cycle/clock results; no assumption that a carry chain automatically wins. |

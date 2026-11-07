@@ -1,0 +1,625 @@
+
+ /----------------------------------------------------------------------------\
+ |                                                                            |
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |                                                                            |
+ |  Copyright (C) 2012 - 2020  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |                                                                            |
+ |  Permission to use, copy, modify, and/or distribute this software for any  |
+ |  purpose with or without fee is hereby granted, provided that the above    |
+ |  copyright notice and this permission notice appear in all copies.         |
+ |                                                                            |
+ |  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES  |
+ |  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF          |
+ |  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR   |
+ |  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES    |
+ |  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN     |
+ |  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF   |
+ |  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.            |
+ |                                                                            |
+ \----------------------------------------------------------------------------/
+
+ Yosys 0.33 (git sha1 2584903a060)
+
+
+-- Running command `read_verilog -sv -noassert converted.v; dump -o optimized-before.il; setparam -set B_SIGNED 0 t:$shl t:$shr t:$sshl t:$sshr; dump -o optimized-after.il; hierarchy -check -top cs88_pipeline_v91k; write_rtlil elaborated-full.il; tee -o reports/premap-stat.json stat -json -top cs88_pipeline_v91k' --
+
+1. Executing Verilog-2005 frontend: converted.v
+Parsing SystemVerilog input from `converted.v' to AST representation.
+Generating RTLIL representation for module `\br88_rice_elastic'.
+Generating RTLIL representation for module `\br88_context'.
+Generating RTLIL representation for module `\br88_packet_ingress'.
+Warning: Replacing memory \counts with list of registers. See converted.v:909
+Warning: Replacing memory \lengths with list of registers. See converted.v:908
+Generating RTLIL representation for module `\packed_scratch_v91g2'.
+Warning: Replacing memory \heads with list of registers. See converted.v:1955, converted.v:1921
+Warning: Replacing memory \starts with list of registers. See converted.v:1636
+Warning: Replacing memory \counts with list of registers. See converted.v:1632
+Generating RTLIL representation for module `\br88_packet_ingress_v91h'.
+Generating RTLIL representation for module `\br88_packet_ingress_sync_v91h'.
+Warning: Replacing memory \counts with list of registers. See converted.v:2722
+Warning: Replacing memory \lengths with list of registers. See converted.v:2721
+Generating RTLIL representation for module `\br88_pipeline_v91h'.
+Generating RTLIL representation for module `\cs88_admission_v91i2a'.
+Generating RTLIL representation for module `\byte_refill_queue_v91i2b'.
+Generating RTLIL representation for module `\cu66_inverse_stream_v91j'.
+Generating RTLIL representation for module `\cu66_dequant'.
+Warning: Replacing memory \products with list of registers. See converted.v:5346
+Warning: Replacing memory \q with list of registers. See converted.v:5346, converted.v:5345
+Warning: Replacing memory \scaled with list of registers. See converted.v:5345, converted.v:5340
+Generating RTLIL representation for module `\cu66_idct8x8'.
+Warning: Replacing memory \odd_sum with list of registers. See converted.v:5543
+Warning: Replacing memory \even_sum with list of registers. See converted.v:5542
+Warning: Replacing memory \products with list of registers. See converted.v:5541
+Warning: Replacing memory \next_odd with list of registers. See converted.v:5514
+Warning: Replacing memory \next_even with list of registers. See converted.v:5513
+Warning: Replacing memory \samples with list of registers. See converted.v:5504
+Generating RTLIL representation for module `\cu66_reconstruct_tile'.
+Warning: Replacing memory \combined with list of registers. See converted.v:5679
+Generating RTLIL representation for module `\cs88_coefficients_v91k'.
+Generating RTLIL representation for module `\cu66_reconstruct_stream_v91k'.
+Generating RTLIL representation for module `\cs88_pipeline_v91k'.
+Successfully finished Verilog frontend.
+
+2. Executing HIERARCHY pass (managing design hierarchy).
+
+2.1. Analyzing design hierarchy..
+Top module:  \cs88_pipeline_v91k
+Used module:     \cs88_coefficients_v91k
+Used module:         \byte_refill_queue_v91i2b
+Used module:         \br88_pipeline_v91h
+Used module:             \packed_scratch_v91g2
+Used module:             \br88_packet_ingress_v91h
+Used module:                 \br88_packet_ingress_sync_v91h
+Used module:                     \br88_context
+Used module:                         \br88_rice_elastic
+Used module:         \cs88_admission_v91i2a
+Used module:     \cu66_reconstruct_stream_v91k
+Used module:         \cu66_reconstruct_tile
+Used module:     \cu66_inverse_stream_v91j
+Used module:         \cu66_idct8x8
+Used module:         \cu66_dequant
+Parameter \MAX_PACKET_BYTES = 49152
+
+2.2. Executing AST frontend in derive mode using pre-parsed AST for module `\br88_packet_ingress_sync_v91h'.
+Parameter \MAX_PACKET_BYTES = 49152
+Generating RTLIL representation for module `$paramod\br88_packet_ingress_sync_v91h\MAX_PACKET_BYTES=s32'00000000000000001100000000000000'.
+Warning: Replacing memory \counts with list of registers. See converted.v:2722
+Warning: Replacing memory \lengths with list of registers. See converted.v:2721
+Parameter \SYNC_STAGING = 1
+
+2.3. Executing AST frontend in derive mode using pre-parsed AST for module `\br88_packet_ingress_v91h'.
+Parameter \SYNC_STAGING = 1
+Generating RTLIL representation for module `$paramod\br88_packet_ingress_v91h\SYNC_STAGING=s32'00000000000000000000000000000001'.
+Reprocessing module cu66_inverse_stream_v91j because instantiated module cu66_dequant has become available.
+Generating RTLIL representation for module `\cu66_inverse_stream_v91j'.
+Parameter \SYNC_STAGING = 1
+
+2.4. Executing AST frontend in derive mode using pre-parsed AST for module `\br88_pipeline_v91h'.
+Parameter \SYNC_STAGING = 1
+Generating RTLIL representation for module `$paramod\br88_pipeline_v91h\SYNC_STAGING=s32'00000000000000000000000000000001'.
+Parameter \REFILL_OVERLAP = 1
+
+2.5. Executing AST frontend in derive mode using pre-parsed AST for module `\cs88_coefficients_v91k'.
+Parameter \REFILL_OVERLAP = 1
+Generating RTLIL representation for module `$paramod\cs88_coefficients_v91k\REFILL_OVERLAP=s32'00000000000000000000000000000001'.
+
+2.6. Analyzing design hierarchy..
+Top module:  \cs88_pipeline_v91k
+Used module:     $paramod\cs88_coefficients_v91k\REFILL_OVERLAP=s32'00000000000000000000000000000001
+Used module:         \byte_refill_queue_v91i2b
+Used module:         \br88_pipeline_v91h
+Used module:             \packed_scratch_v91g2
+Used module:             $paramod\br88_packet_ingress_v91h\SYNC_STAGING=s32'00000000000000000000000000000001
+Used module:                 \br88_packet_ingress_sync_v91h
+Used module:                     \br88_context
+Used module:                         \br88_rice_elastic
+Used module:         \cs88_admission_v91i2a
+Used module:     \cu66_reconstruct_stream_v91k
+Used module:         \cu66_reconstruct_tile
+Used module:     \cu66_inverse_stream_v91j
+Used module:         \cu66_idct8x8
+Used module:         \cu66_dequant
+Parameter \MAX_PACKET_BYTES = 49152
+Found cached RTLIL representation for module `$paramod\br88_packet_ingress_sync_v91h\MAX_PACKET_BYTES=s32'00000000000000001100000000000000'.
+Parameter \SYNC_STAGING = 1
+Found cached RTLIL representation for module `$paramod\br88_pipeline_v91h\SYNC_STAGING=s32'00000000000000000000000000000001'.
+
+2.7. Analyzing design hierarchy..
+Top module:  \cs88_pipeline_v91k
+Used module:     $paramod\cs88_coefficients_v91k\REFILL_OVERLAP=s32'00000000000000000000000000000001
+Used module:         \byte_refill_queue_v91i2b
+Used module:         $paramod\br88_pipeline_v91h\SYNC_STAGING=s32'00000000000000000000000000000001
+Used module:             \packed_scratch_v91g2
+Used module:             \br88_packet_ingress_v91h
+Used module:                 $paramod\br88_packet_ingress_sync_v91h\MAX_PACKET_BYTES=s32'00000000000000001100000000000000
+Used module:                     \br88_context
+Used module:                         \br88_rice_elastic
+Used module:         \cs88_admission_v91i2a
+Used module:     \cu66_reconstruct_stream_v91k
+Used module:         \cu66_reconstruct_tile
+Used module:     \cu66_inverse_stream_v91j
+Used module:         \cu66_idct8x8
+Used module:         \cu66_dequant
+Parameter \SYNC_STAGING = 1
+Found cached RTLIL representation for module `$paramod\br88_packet_ingress_v91h\SYNC_STAGING=s32'00000000000000000000000000000001'.
+
+2.8. Analyzing design hierarchy..
+Top module:  \cs88_pipeline_v91k
+Used module:     $paramod\cs88_coefficients_v91k\REFILL_OVERLAP=s32'00000000000000000000000000000001
+Used module:         \byte_refill_queue_v91i2b
+Used module:         $paramod\br88_pipeline_v91h\SYNC_STAGING=s32'00000000000000000000000000000001
+Used module:             \packed_scratch_v91g2
+Used module:             $paramod\br88_packet_ingress_v91h\SYNC_STAGING=s32'00000000000000000000000000000001
+Used module:                 $paramod\br88_packet_ingress_sync_v91h\MAX_PACKET_BYTES=s32'00000000000000001100000000000000
+Used module:                     \br88_context
+Used module:                         \br88_rice_elastic
+Used module:         \cs88_admission_v91i2a
+Used module:     \cu66_reconstruct_stream_v91k
+Used module:         \cu66_reconstruct_tile
+Used module:     \cu66_inverse_stream_v91j
+Used module:         \cu66_idct8x8
+Used module:         \cu66_dequant
+
+2.9. Analyzing design hierarchy..
+Top module:  \cs88_pipeline_v91k
+Used module:     $paramod\cs88_coefficients_v91k\REFILL_OVERLAP=s32'00000000000000000000000000000001
+Used module:         \byte_refill_queue_v91i2b
+Used module:         $paramod\br88_pipeline_v91h\SYNC_STAGING=s32'00000000000000000000000000000001
+Used module:             \packed_scratch_v91g2
+Used module:             $paramod\br88_packet_ingress_v91h\SYNC_STAGING=s32'00000000000000000000000000000001
+Used module:                 $paramod\br88_packet_ingress_sync_v91h\MAX_PACKET_BYTES=s32'00000000000000001100000000000000
+Used module:                     \br88_context
+Used module:                         \br88_rice_elastic
+Used module:         \cs88_admission_v91i2a
+Used module:     \cu66_reconstruct_stream_v91k
+Used module:         \cu66_reconstruct_tile
+Used module:     \cu66_inverse_stream_v91j
+Used module:         \cu66_idct8x8
+Used module:         \cu66_dequant
+Removing unused module `\cs88_coefficients_v91k'.
+Removing unused module `\br88_pipeline_v91h'.
+Removing unused module `\br88_packet_ingress_sync_v91h'.
+Removing unused module `\br88_packet_ingress_v91h'.
+Removing unused module `\br88_packet_ingress'.
+Removed 5 unused modules.
+
+3. Executing RTLIL backend.
+Output filename: elaborated-full.il
+{
+   "creator": "Yosys 0.33 (git sha1 2584903a060)",
+   "invocation": "stat -json -top cs88_pipeline_v91k ",
+   "modules": {
+      "$paramod\\br88_packet_ingress_sync_v91h\\MAX_PACKET_BYTES=s32'00000000000000001100000000000000": {
+         "num_wires":         1788,
+         "num_wire_bits":     34531,
+         "num_pub_wires":     222,
+         "num_pub_wire_bits": 5360,
+         "num_memories":      6,
+         "num_memory_bits":   393904,
+         "num_processes":     4,
+         "num_cells":         420,
+         "num_cells_by_type": {
+            "$add": 36,
+            "$and": 1,
+            "$eq": 33,
+            "$ge": 4,
+            "$gt": 13,
+            "$le": 1,
+            "$logic_and": 45,
+            "$logic_not": 17,
+            "$logic_or": 34,
+            "$lt": 13,
+            "$memrd": 118,
+            "$mul": 8,
+            "$mux": 22,
+            "$ne": 31,
+            "$shr": 21,
+            "$sub": 12,
+            "$xor": 10,
+            "br88_context": 1
+         }
+      },
+      "$paramod\\br88_packet_ingress_v91h\\SYNC_STAGING=s32'00000000000000000000000000000001": {
+         "num_wires":         62,
+         "num_wire_bits":     1140,
+         "num_pub_wires":     62,
+         "num_pub_wire_bits": 1140,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     0,
+         "num_cells":         1,
+         "num_cells_by_type": {
+            "$paramod\\br88_packet_ingress_sync_v91h\\MAX_PACKET_BYTES=s32'00000000000000001100000000000000": 1
+         }
+      },
+      "$paramod\\br88_pipeline_v91h\\SYNC_STAGING=s32'00000000000000000000000000000001": {
+         "num_wires":         837,
+         "num_wire_bits":     105504,
+         "num_pub_wires":     227,
+         "num_pub_wire_bits": 9287,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     2,
+         "num_cells":         390,
+         "num_cells_by_type": {
+            "$add": 89,
+            "$and": 12,
+            "$eq": 25,
+            "$eqx": 22,
+            "$gt": 7,
+            "$logic_and": 81,
+            "$logic_not": 20,
+            "$logic_or": 10,
+            "$mul": 10,
+            "$ne": 6,
+            "$neg": 12,
+            "$not": 6,
+            "$or": 6,
+            "$paramod\\br88_packet_ingress_v91h\\SYNC_STAGING=s32'00000000000000000000000000000001": 1,
+            "$shift": 12,
+            "$shiftx": 4,
+            "$shl": 22,
+            "$shr": 22,
+            "$sub": 22,
+            "packed_scratch_v91g2": 1
+         }
+      },
+      "$paramod\\cs88_coefficients_v91k\\REFILL_OVERLAP=s32'00000000000000000000000000000001": {
+         "num_wires":         840,
+         "num_wire_bits":     20817,
+         "num_pub_wires":     362,
+         "num_pub_wire_bits": 12073,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     9,
+         "num_cells":         240,
+         "num_cells_by_type": {
+            "$add": 24,
+            "$div": 6,
+            "$eq": 35,
+            "$ge": 2,
+            "$gt": 1,
+            "$le": 1,
+            "$logic_and": 68,
+            "$logic_not": 32,
+            "$logic_or": 18,
+            "$lt": 3,
+            "$mod": 2,
+            "$mul": 6,
+            "$mux": 8,
+            "$ne": 22,
+            "$or": 1,
+            "$paramod\\br88_pipeline_v91h\\SYNC_STAGING=s32'00000000000000000000000000000001": 1,
+            "$shiftx": 4,
+            "$sub": 4,
+            "byte_refill_queue_v91i2b": 1,
+            "cs88_admission_v91i2a": 1
+         }
+      },
+      "\\br88_context": {
+         "num_wires":         446,
+         "num_wire_bits":     7978,
+         "num_pub_wires":     113,
+         "num_pub_wire_bits": 2300,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     2,
+         "num_cells":         149,
+         "num_cells_by_type": {
+            "$add": 19,
+            "$div": 3,
+            "$eq": 23,
+            "$ge": 1,
+            "$gt": 7,
+            "$logic_and": 26,
+            "$logic_not": 13,
+            "$logic_or": 16,
+            "$lt": 1,
+            "$mod": 6,
+            "$mul": 4,
+            "$mux": 10,
+            "$ne": 10,
+            "$neg": 1,
+            "$shiftx": 3,
+            "$shr": 2,
+            "$sub": 3,
+            "br88_rice_elastic": 1
+         }
+      },
+      "\\br88_rice_elastic": {
+         "num_wires":         807,
+         "num_wire_bits":     15567,
+         "num_pub_wires":     140,
+         "num_pub_wire_bits": 3222,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     2,
+         "num_cells":         283,
+         "num_cells_by_type": {
+            "$add": 31,
+            "$and": 3,
+            "$eq": 21,
+            "$ge": 2,
+            "$gt": 17,
+            "$le": 2,
+            "$logic_and": 59,
+            "$logic_not": 31,
+            "$logic_or": 7,
+            "$lt": 22,
+            "$mux": 16,
+            "$ne": 8,
+            "$or": 3,
+            "$shiftx": 15,
+            "$shl": 3,
+            "$shr": 4,
+            "$sub": 39
+         }
+      },
+      "\\byte_refill_queue_v91i2b": {
+         "num_wires":         215,
+         "num_wire_bits":     2169,
+         "num_pub_wires":     58,
+         "num_pub_wire_bits": 809,
+         "num_memories":      2,
+         "num_memory_bits":   18,
+         "num_processes":     1,
+         "num_cells":         69,
+         "num_cells_by_type": {
+            "$add": 13,
+            "$eq": 2,
+            "$gt": 2,
+            "$logic_and": 18,
+            "$logic_not": 13,
+            "$logic_or": 11,
+            "$lt": 2,
+            "$memrd": 2,
+            "$ne": 4,
+            "$sub": 2
+         }
+      },
+      "\\cs88_admission_v91i2a": {
+         "num_wires":         3380,
+         "num_wire_bits":     53505,
+         "num_pub_wires":     326,
+         "num_pub_wire_bits": 6428,
+         "num_memories":      6,
+         "num_memory_bits":   417322,
+         "num_processes":     1,
+         "num_cells":         1653,
+         "num_cells_by_type": {
+            "$add": 128,
+            "$and": 12,
+            "$div": 9,
+            "$eq": 97,
+            "$ge": 201,
+            "$gt": 11,
+            "$le": 202,
+            "$logic_and": 256,
+            "$logic_not": 49,
+            "$logic_or": 197,
+            "$lt": 25,
+            "$memrd": 189,
+            "$mod": 3,
+            "$mul": 17,
+            "$mux": 55,
+            "$ne": 67,
+            "$neg": 14,
+            "$not": 9,
+            "$or": 7,
+            "$shift": 14,
+            "$shiftx": 6,
+            "$shr": 32,
+            "$sub": 35,
+            "$xor": 18
+         }
+      },
+      "\\cs88_pipeline_v91k": {
+         "num_wires":         372,
+         "num_wire_bits":     14114,
+         "num_pub_wires":     317,
+         "num_pub_wire_bits": 14031,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     1,
+         "num_cells":         56,
+         "num_cells_by_type": {
+            "$eq": 1,
+            "$logic_and": 16,
+            "$logic_not": 12,
+            "$logic_or": 10,
+            "$mux": 2,
+            "$ne": 10,
+            "$or": 2,
+            "$paramod\\cs88_coefficients_v91k\\REFILL_OVERLAP=s32'00000000000000000000000000000001": 1,
+            "cu66_inverse_stream_v91j": 1,
+            "cu66_reconstruct_stream_v91k": 1
+         }
+      },
+      "\\cu66_dequant": {
+         "num_wires":         1157,
+         "num_wire_bits":     171471,
+         "num_pub_wires":     199,
+         "num_pub_wire_bits": 6572,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     2,
+         "num_cells":         402,
+         "num_cells_by_type": {
+            "$add": 41,
+            "$and": 16,
+            "$eq": 5,
+            "$gt": 72,
+            "$logic_and": 6,
+            "$logic_not": 4,
+            "$logic_or": 66,
+            "$lt": 64,
+            "$mul": 40,
+            "$mux": 8,
+            "$neg": 16,
+            "$not": 8,
+            "$or": 8,
+            "$shift": 16,
+            "$shiftx": 8,
+            "$shr": 8,
+            "$sub": 16
+         }
+      },
+      "\\cu66_idct8x8": {
+         "num_wires":         4706,
+         "num_wire_bits":     593601,
+         "num_pub_wires":     699,
+         "num_pub_wire_bits": 24306,
+         "num_memories":      1,
+         "num_memory_bits":   1536,
+         "num_processes":     2,
+         "num_cells":         992,
+         "num_cells_by_type": {
+            "$add": 276,
+            "$and": 32,
+            "$eq": 49,
+            "$gt": 64,
+            "$logic_and": 23,
+            "$logic_not": 4,
+            "$logic_or": 66,
+            "$lt": 64,
+            "$memrd": 8,
+            "$mul": 136,
+            "$mux": 3,
+            "$ne": 2,
+            "$neg": 32,
+            "$not": 16,
+            "$or": 16,
+            "$shift": 32,
+            "$shiftx": 16,
+            "$sshr": 97,
+            "$sub": 56
+         }
+      },
+      "\\cu66_inverse_stream_v91j": {
+         "num_wires":         763,
+         "num_wire_bits":     33223,
+         "num_pub_wires":     110,
+         "num_pub_wire_bits": 7007,
+         "num_memories":      9,
+         "num_memory_bits":   2328,
+         "num_processes":     7,
+         "num_cells":         274,
+         "num_cells_by_type": {
+            "$add": 26,
+            "$and": 4,
+            "$div": 3,
+            "$eq": 27,
+            "$ge": 1,
+            "$gt": 3,
+            "$logic_and": 42,
+            "$logic_not": 19,
+            "$logic_or": 27,
+            "$lt": 1,
+            "$memrd": 35,
+            "$mod": 1,
+            "$mul": 12,
+            "$mux": 2,
+            "$ne": 22,
+            "$neg": 8,
+            "$not": 4,
+            "$or": 4,
+            "$shift": 8,
+            "$shiftx": 5,
+            "$shl": 2,
+            "$sub": 16,
+            "cu66_dequant": 1,
+            "cu66_idct8x8": 1
+         }
+      },
+      "\\cu66_reconstruct_stream_v91k": {
+         "num_wires":         593,
+         "num_wire_bits":     57563,
+         "num_pub_wires":     155,
+         "num_pub_wire_bits": 6095,
+         "num_memories":      1,
+         "num_memory_bits":   48,
+         "num_processes":     15,
+         "num_cells":         218,
+         "num_cells_by_type": {
+            "$add": 22,
+            "$and": 2,
+            "$div": 7,
+            "$eq": 36,
+            "$ge": 8,
+            "$gt": 1,
+            "$logic_and": 48,
+            "$logic_not": 16,
+            "$logic_or": 28,
+            "$lt": 8,
+            "$memrd": 2,
+            "$mod": 3,
+            "$mul": 4,
+            "$mux": 9,
+            "$ne": 14,
+            "$neg": 2,
+            "$not": 1,
+            "$or": 1,
+            "$shift": 2,
+            "$shiftx": 1,
+            "$sub": 2,
+            "cu66_reconstruct_tile": 1
+         }
+      },
+      "\\cu66_reconstruct_tile": {
+         "num_wires":         447,
+         "num_wire_bits":     10000,
+         "num_pub_wires":     85,
+         "num_pub_wire_bits": 4333,
+         "num_memories":      0,
+         "num_memory_bits":   0,
+         "num_processes":     2,
+         "num_cells":         286,
+         "num_cells_by_type": {
+            "$add": 64,
+            "$gt": 64,
+            "$logic_and": 12,
+            "$logic_not": 9,
+            "$logic_or": 8,
+            "$lt": 64,
+            "$mux": 64,
+            "$ne": 1
+         }
+      },
+      "\\packed_scratch_v91g2": {
+         "num_wires":         26273,
+         "num_wire_bits":     480136,
+         "num_pub_wires":     2809,
+         "num_pub_wire_bits": 54973,
+         "num_memories":      7,
+         "num_memory_bits":   2952,
+         "num_processes":     13,
+         "num_cells":         5520,
+         "num_cells_by_type": {
+            "$add": 1256,
+            "$and": 33,
+            "$eq": 661,
+            "$ge": 610,
+            "$gt": 8,
+            "$le": 3,
+            "$logic_and": 737,
+            "$logic_not": 74,
+            "$logic_or": 64,
+            "$lt": 614,
+            "$memrd": 35,
+            "$mul": 637,
+            "$mux": 31,
+            "$ne": 41,
+            "$neg": 22,
+          ERROR: Found error in internal cell \cu66_inverse_stream_v91j.$shl$converted.v:0$41379 ($shl) at kernel/rtlil.cc:1034:
+  attribute \src "converted.v:0.0-0.0"
+  cell $shl $shl$converted.v:0$41379
+    parameter \A_SIGNED 1
+    parameter \A_WIDTH 16
+    parameter \B_SIGNED 1
+    parameter \B_WIDTH 32
+    parameter \Y_WIDTH 1024
+    connect \A \in_value
+    connect \B $add$converted.v:0$41378_Y
+    connect \Y $shl$converted.v:0$41379_Y
+  end

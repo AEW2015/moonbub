@@ -1,0 +1,8 @@
+read_verilog -sv -noassert -D SYNTHESIS -I snapshot/fpga/experiments/cu66-v69/inverse snapshot/fpga/experiments/cu66-v91/br88_rice_elastic.sv
+hierarchy -check -top br88_rice_elastic
+proc
+write_json elaborated-br88_rice_elastic.json
+synth_xilinx -top br88_rice_elastic -family xc7 -noiopad -noclkbuf
+tee -o reports/yosys-br88_rice_elastic-stat.json stat -json -top br88_rice_elastic
+write_json mapped-br88_rice_elastic.json
+write_verilog -noattr mapped-br88_rice_elastic.v

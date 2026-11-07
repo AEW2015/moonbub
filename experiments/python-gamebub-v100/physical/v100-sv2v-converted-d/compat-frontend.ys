@@ -1,0 +1,8 @@
+read_verilog -sv -noassert -noopt converted.v
+write_rtlil before-shift-normalization.il
+setparam -set B_SIGNED 0 t:$shl t:$shr t:$sshl t:$sshr
+write_rtlil after-shift-normalization.il
+hierarchy -check -top cs88_pipeline_v91k
+proc
+write_json elaborated-full.json
+tee -o reports/premap-stat.json stat -json -top cs88_pipeline_v91k

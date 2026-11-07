@@ -1,0 +1,263 @@
+// V91i2b bounded refill overlap; compile-time mode 0 retains V91i2a scheduling.
+module cs88_pipeline_v91k (
+    input logic clk, reset, start, abort_packet,
+    output logic out_valid,
+    input logic out_ready,
+    output logic [7:0] out_value,
+    output logic [31:0] out_epoch,out_fid,
+    output logic [1:0] out_plane,out_mode,
+    output logic [12:0] out_tile,
+    output logic [5:0] out_index,
+    output logic ref_req_valid,
+    input logic ref_req_ready,
+    output logic [31:0] ref_req_epoch,ref_req_fid,
+    output logic [63:0] ref_req_generation,
+    output logic [1:0] ref_req_plane,
+    output logic [12:0] ref_req_tile,
+    input logic ref_rsp_valid,
+    output logic ref_rsp_ready,
+    input logic [31:0] ref_rsp_epoch,ref_rsp_fid,
+    input logic [63:0] ref_rsp_generation,
+    input logic [1:0] ref_rsp_plane,
+    input logic [12:0] ref_rsp_tile,
+    input logic [511:0] ref_rsp_pixels,
+    input logic ref_rsp_error,
+    output logic reconstruct_busy,reconstruct_done,ref_pending,
+    output logic [7:0] reconstruct_error,
+    output logic [3:0] reconstruct_state,
+    output logic [63:0] count_reconstruct_modes,count_reconstruct_residuals,count_reconstruct_outputs,
+    output logic [63:0] count_ref_requests,count_ref_acks,count_copy_tiles,count_const_tiles,count_residual_tiles,
+    output logic [63:0] count_ref_discarded,count_reconstruct_output_stalls,count_reconstruct_ref_wait,
+    output logic reconstruct_lookup_req,reconstruct_lookup_ready,reconstruct_lookup_rsp,
+    output logic [12:0] reconstruct_lookup_tile,
+    output logic [10:0] reconstruct_lookup_cell,
+    output logic [1:0] reconstruct_lookup_mode,reconstruct_lookup_scale,
+    output logic admitted_ready,admitted_key,
+    output logic [31:0] admitted_fid,
+    output logic [63:0] admitted_generation,
+    output logic start_ready,
+    input logic cache_valid, cache_last,
+    output logic cache_ready, cache_complete,
+    input logic [1:0] cache_data,
+    input logic [31:0] cache_ref_fid,
+    input logic [63:0] cache_ref_generation,
+    output logic [7:0] cache_error,
+    input logic accepted_ref_valid, accepted_qcache_valid,
+    input logic [31:0] accepted_ref_fid,
+    input logic [63:0] accepted_ref_generation,
+    output logic [1:0] residual_plane,
+    output logic [12:0] residual_tile,
+    output logic [10:0] residual_qcell,
+    output logic [1:0] residual_qscale,
+    output logic [7:0] frame_state,
+    output logic [31:0] frame_fid,
+    output logic [31:0] core_starts, refill_bytes, blocked_starts,
+    output logic [31:0] current_child_epoch,
+    output logic [63:0] admission_reads,
+    output logic [31:0] replay_reads,
+    output logic [7:0] admission_error,
+    output logic frame_read_req, frame_read_rsp,
+    output logic [31:0] frame_read_addr, frame_rsp_addr, frame_rsp_epoch,
+    output logic [7:0] frame_read_data,
+    output logic [1:0] queue_count, queue_max_count, queue_max_owned,
+    output logic queue_pending, queue_active, queue_push, queue_pop, queue_stall,
+    output logic [31:0] queue_requests, queue_responses, queue_pops, queue_stalls,
+    output logic [31:0] queue_cancel_queued, queue_cancel_pending,
+
+    output logic [31:0] residual_child_epoch, residual_token,
+    output logic coefficient_valid, coefficient_ready, coefficient_done,
+    output logic [31:0] coefficient_epoch,
+    output logic [1:0] coefficient_plane, coefficient_qscale,
+    output logic [15:0] coefficient_block,
+    output logic [12:0] coefficient_tile,
+    output logic [10:0] coefficient_qcell,
+    output logic [5:0] coefficient_index,
+    output logic signed [15:0] coefficient_value,
+    output logic [7:0] coefficient_error, inverse_error,
+    output logic inverse_busy, inverse_done,
+    output logic [1:0] inverse_bank_state [0:1],
+    output logic inverse_fill_bank, inverse_math_bank,
+    output logic [2:0] inverse_math_state,
+    output logic [1:0] inverse_owned_banks, inverse_max_owned_banks,
+    output logic inverse_launch, inverse_dequant,
+    output logic [31:0] inverse_token, inverse_epoch, inverse_child_epoch,
+    output logic [1:0] inverse_plane, inverse_qscale,
+    output logic [15:0] inverse_block,
+    output logic [12:0] inverse_tile,
+    output logic [10:0] inverse_qcell,
+    output logic [1023:0] inverse_coefficients,
+    output logic [1279:0] inverse_dequantized,
+    output logic [63:0] inverse_count_inputs, inverse_count_tiles, inverse_count_launches,
+    output logic [63:0] inverse_count_dequant, inverse_count_outputs, inverse_count_completed_tiles,
+    output logic [63:0] inverse_count_input_stalls, inverse_count_output_stalls, inverse_count_cancelled_banks,
+
+    input logic [31:0] packet_bytes, epoch,
+    input logic serial_clear, write_overlap, read_prefetch, tile_overlap,
+    input logic in_valid,
+    output logic in_ready,
+    input logic [7:0] in_data,
+    input logic in_last,
+    output logic residual_valid,
+    output logic residual_ready,
+    output logic [15:0] residual_block,
+    output logic [5:0] residual_index,
+    output logic signed [23:0] residual_value,
+    output logic [31:0] residual_epoch,
+    output logic done,
+    output logic [7:0] error,
+    output logic busy, draining, scratch_sealed,
+    output logic [18:0] used_bytes,
+    output logic [63:0] count_cycles, count_input_bytes, count_dense,
+    output logic [63:0] count_reads, count_writes, count_dense_stall,
+    output logic mem_req_valid,
+    input logic mem_req_ready,
+    output logic mem_req_write,
+    output logic [17:0] mem_req_addr,
+    output logic [127:0] mem_req_data,
+    output logic [31:0] mem_req_epoch,
+    input logic mem_rsp_valid,
+    output logic mem_rsp_ready,
+    input logic [127:0] mem_rsp_data,
+    input logic [31:0] mem_rsp_epoch,
+    input logic mem_rsp_error,
+    output logic [3:0] packet_state,
+    output logic metadata_wait,
+    output logic dbg_running, dbg_allocation, dbg_seal_sent, dbg_packet_done,
+    output logic dbg_coef_valid, dbg_coef_ready,
+    output logic [1:0] dbg_coef_band,
+    output logic [15:0] dbg_coef_block,
+    output logic [5:0] dbg_coef_index,
+    output logic signed [15:0] dbg_coef_value,
+    output logic [31:0] dbg_coef_epoch,
+    output logic dbg_meta_valid, dbg_meta_ready, dbg_meta_raw,
+    output logic dbg_band_end_valid, dbg_band_end_ready,
+    output logic [1:0] dbg_band_end_band,
+    output logic dbg_seal_valid, dbg_seal_ready,
+    output logic [4:0] dbg_scratch_state, dbg_scratch_return_state,
+    output logic dbg_scratch_outstanding,
+    output logic dbg_prefetch_offer, dbg_prefetch_launch, dbg_prefetch_use,
+    output logic dbg_tile_mode, dbg_tile_preparing, dbg_prepare_bank, dbg_emit_bank,
+    output logic [1:0] dbg_bank_ready, dbg_bank_owned, dbg_emitter_state,
+    output logic [15:0] dbg_prepare_block,
+    output logic [15:0] dbg_bank_block [0:1],
+    output logic [31:0] dbg_bank_epoch [0:1],
+    output logic dbg_tile_prepare_start, dbg_tile_publish, dbg_tile_release,
+    output logic [63:0] count_emitter_state [0:3],
+    output logic [63:0] count_tile_starts, count_tile_publishes, count_tile_releases,
+    output logic [63:0] count_prepare_output_overlap, count_prepare_output_hold,
+    output logic [63:0] count_tile_read_output_overlap, count_tile_bank_wait, count_both_ready_wait, count_tile_prep_done_wait, count_output_valid,
+    output logic [63:0] count_publish_release_same_edge,
+    output logic [1:0] max_tile_owned, max_tile_ready,
+    output logic [63:0] count_prefetch_offers, count_prefetch_accepts, count_prefetch_acks,
+    output logic [63:0] count_prefetch_uses, count_dense_during_read_pending, count_prefetch_drain_wait,
+    output logic max_prefetch_offer,
+    output logic dbg_write_slot_valid, dbg_assembler_full, dbg_write_enqueue,
+    output logic [63:0] count_write_enqueues, count_write_accepts, count_write_acks, count_full_wait, count_packing_during_write_pending,
+    output logic max_write_slot,
+    output logic [1:0] max_owned_lines,
+    output logic [2:0] dbg_scratch_phase,
+    output logic [4:0] dbg_scratch_assembly_bytes,
+    output logic [3:0] dbg_scratch_cache_valid,
+    output logic [2:0] dbg_scratch_head_valid,
+    output logic [63:0] count_packet_state [0:15],
+    output logic [63:0] count_scratch_state [0:31],
+    output logic [63:0] count_coef_stall, count_metadata_wait, count_band_end_stall,
+    output logic [63:0] count_mem_req_stall, count_mem_pending, count_input_starved,
+    output logic [63:0] ts_first_input, ts_last_input, ts_metadata_accept,
+    output logic [63:0] ts_last_sparse_coef, ts_packet_done_observed,
+    output logic [63:0] ts_seal_accepted, ts_scratch_sealed_observed,
+    output logic [63:0] ts_first_dense, ts_last_dense, ts_integrated_done,
+    output logic [63:0] ts_first_coef_band [0:3], ts_last_coef_band [0:3], ts_band_end [0:3],
+    output logic [4:0] max_assembly_bytes,
+    output logic [2:0] max_cache_valid, max_head_valid,
+    output logic max_outstanding,
+    output logic stage_read_req, stage_read_rsp, stage_write, stage_pending, stage_context_active, stage_cancel, stage_word_valid, stage_word_ready,
+    output logic [31:0] stage_read_addr, stage_rsp_addr, stage_write_addr, stage_req_epoch, stage_rsp_epoch,
+    output logic [7:0] stage_read_data, stage_write_data,
+    output logic [5:0] stage_buffer_bytes, stage_buffer_highwater,
+    output logic [2:0] stage_purpose,
+    output logic [63:0] count_stage_reads, count_stage_responses, count_stage_writes,
+    output logic [63:0] count_stage_fetch_wait, count_stage_word_hold
+);
+// Verification adapter: only direct port wires and array unpacking.
+wire [3:0] flat_inverse_bank_state;
+assign inverse_bank_state[0] = flat_inverse_bank_state[2 +: 2];
+assign inverse_bank_state[1] = flat_inverse_bank_state[0 +: 2];
+wire [31:0] flat_dbg_bank_block;
+assign dbg_bank_block[0] = flat_dbg_bank_block[16 +: 16];
+assign dbg_bank_block[1] = flat_dbg_bank_block[0 +: 16];
+wire [63:0] flat_dbg_bank_epoch;
+assign dbg_bank_epoch[0] = flat_dbg_bank_epoch[32 +: 32];
+assign dbg_bank_epoch[1] = flat_dbg_bank_epoch[0 +: 32];
+wire [255:0] flat_count_emitter_state;
+assign count_emitter_state[0] = flat_count_emitter_state[192 +: 64];
+assign count_emitter_state[1] = flat_count_emitter_state[128 +: 64];
+assign count_emitter_state[2] = flat_count_emitter_state[64 +: 64];
+assign count_emitter_state[3] = flat_count_emitter_state[0 +: 64];
+wire [1023:0] flat_count_packet_state;
+assign count_packet_state[0] = flat_count_packet_state[960 +: 64];
+assign count_packet_state[1] = flat_count_packet_state[896 +: 64];
+assign count_packet_state[2] = flat_count_packet_state[832 +: 64];
+assign count_packet_state[3] = flat_count_packet_state[768 +: 64];
+assign count_packet_state[4] = flat_count_packet_state[704 +: 64];
+assign count_packet_state[5] = flat_count_packet_state[640 +: 64];
+assign count_packet_state[6] = flat_count_packet_state[576 +: 64];
+assign count_packet_state[7] = flat_count_packet_state[512 +: 64];
+assign count_packet_state[8] = flat_count_packet_state[448 +: 64];
+assign count_packet_state[9] = flat_count_packet_state[384 +: 64];
+assign count_packet_state[10] = flat_count_packet_state[320 +: 64];
+assign count_packet_state[11] = flat_count_packet_state[256 +: 64];
+assign count_packet_state[12] = flat_count_packet_state[192 +: 64];
+assign count_packet_state[13] = flat_count_packet_state[128 +: 64];
+assign count_packet_state[14] = flat_count_packet_state[64 +: 64];
+assign count_packet_state[15] = flat_count_packet_state[0 +: 64];
+wire [2047:0] flat_count_scratch_state;
+assign count_scratch_state[0] = flat_count_scratch_state[1984 +: 64];
+assign count_scratch_state[1] = flat_count_scratch_state[1920 +: 64];
+assign count_scratch_state[2] = flat_count_scratch_state[1856 +: 64];
+assign count_scratch_state[3] = flat_count_scratch_state[1792 +: 64];
+assign count_scratch_state[4] = flat_count_scratch_state[1728 +: 64];
+assign count_scratch_state[5] = flat_count_scratch_state[1664 +: 64];
+assign count_scratch_state[6] = flat_count_scratch_state[1600 +: 64];
+assign count_scratch_state[7] = flat_count_scratch_state[1536 +: 64];
+assign count_scratch_state[8] = flat_count_scratch_state[1472 +: 64];
+assign count_scratch_state[9] = flat_count_scratch_state[1408 +: 64];
+assign count_scratch_state[10] = flat_count_scratch_state[1344 +: 64];
+assign count_scratch_state[11] = flat_count_scratch_state[1280 +: 64];
+assign count_scratch_state[12] = flat_count_scratch_state[1216 +: 64];
+assign count_scratch_state[13] = flat_count_scratch_state[1152 +: 64];
+assign count_scratch_state[14] = flat_count_scratch_state[1088 +: 64];
+assign count_scratch_state[15] = flat_count_scratch_state[1024 +: 64];
+assign count_scratch_state[16] = flat_count_scratch_state[960 +: 64];
+assign count_scratch_state[17] = flat_count_scratch_state[896 +: 64];
+assign count_scratch_state[18] = flat_count_scratch_state[832 +: 64];
+assign count_scratch_state[19] = flat_count_scratch_state[768 +: 64];
+assign count_scratch_state[20] = flat_count_scratch_state[704 +: 64];
+assign count_scratch_state[21] = flat_count_scratch_state[640 +: 64];
+assign count_scratch_state[22] = flat_count_scratch_state[576 +: 64];
+assign count_scratch_state[23] = flat_count_scratch_state[512 +: 64];
+assign count_scratch_state[24] = flat_count_scratch_state[448 +: 64];
+assign count_scratch_state[25] = flat_count_scratch_state[384 +: 64];
+assign count_scratch_state[26] = flat_count_scratch_state[320 +: 64];
+assign count_scratch_state[27] = flat_count_scratch_state[256 +: 64];
+assign count_scratch_state[28] = flat_count_scratch_state[192 +: 64];
+assign count_scratch_state[29] = flat_count_scratch_state[128 +: 64];
+assign count_scratch_state[30] = flat_count_scratch_state[64 +: 64];
+assign count_scratch_state[31] = flat_count_scratch_state[0 +: 64];
+wire [255:0] flat_ts_first_coef_band;
+assign ts_first_coef_band[0] = flat_ts_first_coef_band[192 +: 64];
+assign ts_first_coef_band[1] = flat_ts_first_coef_band[128 +: 64];
+assign ts_first_coef_band[2] = flat_ts_first_coef_band[64 +: 64];
+assign ts_first_coef_band[3] = flat_ts_first_coef_band[0 +: 64];
+wire [255:0] flat_ts_last_coef_band;
+assign ts_last_coef_band[0] = flat_ts_last_coef_band[192 +: 64];
+assign ts_last_coef_band[1] = flat_ts_last_coef_band[128 +: 64];
+assign ts_last_coef_band[2] = flat_ts_last_coef_band[64 +: 64];
+assign ts_last_coef_band[3] = flat_ts_last_coef_band[0 +: 64];
+wire [255:0] flat_ts_band_end;
+assign ts_band_end[0] = flat_ts_band_end[192 +: 64];
+assign ts_band_end[1] = flat_ts_band_end[128 +: 64];
+assign ts_band_end[2] = flat_ts_band_end[64 +: 64];
+assign ts_band_end[3] = flat_ts_band_end[0 +: 64];
+cs88_pipeline_v91k_sv2v dut(.clk(clk),.reset(reset),.start(start),.abort_packet(abort_packet),.out_valid(out_valid),.out_ready(out_ready),.out_value(out_value),.out_epoch(out_epoch),.out_fid(out_fid),.out_plane(out_plane),.out_mode(out_mode),.out_tile(out_tile),.out_index(out_index),.ref_req_valid(ref_req_valid),.ref_req_ready(ref_req_ready),.ref_req_epoch(ref_req_epoch),.ref_req_fid(ref_req_fid),.ref_req_generation(ref_req_generation),.ref_req_plane(ref_req_plane),.ref_req_tile(ref_req_tile),.ref_rsp_valid(ref_rsp_valid),.ref_rsp_ready(ref_rsp_ready),.ref_rsp_epoch(ref_rsp_epoch),.ref_rsp_fid(ref_rsp_fid),.ref_rsp_generation(ref_rsp_generation),.ref_rsp_plane(ref_rsp_plane),.ref_rsp_tile(ref_rsp_tile),.ref_rsp_pixels(ref_rsp_pixels),.ref_rsp_error(ref_rsp_error),.reconstruct_busy(reconstruct_busy),.reconstruct_done(reconstruct_done),.ref_pending(ref_pending),.reconstruct_error(reconstruct_error),.reconstruct_state(reconstruct_state),.count_reconstruct_modes(count_reconstruct_modes),.count_reconstruct_residuals(count_reconstruct_residuals),.count_reconstruct_outputs(count_reconstruct_outputs),.count_ref_requests(count_ref_requests),.count_ref_acks(count_ref_acks),.count_copy_tiles(count_copy_tiles),.count_const_tiles(count_const_tiles),.count_residual_tiles(count_residual_tiles),.count_ref_discarded(count_ref_discarded),.count_reconstruct_output_stalls(count_reconstruct_output_stalls),.count_reconstruct_ref_wait(count_reconstruct_ref_wait),.reconstruct_lookup_req(reconstruct_lookup_req),.reconstruct_lookup_ready(reconstruct_lookup_ready),.reconstruct_lookup_rsp(reconstruct_lookup_rsp),.reconstruct_lookup_tile(reconstruct_lookup_tile),.reconstruct_lookup_cell(reconstruct_lookup_cell),.reconstruct_lookup_mode(reconstruct_lookup_mode),.reconstruct_lookup_scale(reconstruct_lookup_scale),.admitted_ready(admitted_ready),.admitted_key(admitted_key),.admitted_fid(admitted_fid),.admitted_generation(admitted_generation),.start_ready(start_ready),.cache_valid(cache_valid),.cache_last(cache_last),.cache_ready(cache_ready),.cache_complete(cache_complete),.cache_data(cache_data),.cache_ref_fid(cache_ref_fid),.cache_ref_generation(cache_ref_generation),.cache_error(cache_error),.accepted_ref_valid(accepted_ref_valid),.accepted_qcache_valid(accepted_qcache_valid),.accepted_ref_fid(accepted_ref_fid),.accepted_ref_generation(accepted_ref_generation),.residual_plane(residual_plane),.residual_tile(residual_tile),.residual_qcell(residual_qcell),.residual_qscale(residual_qscale),.frame_state(frame_state),.frame_fid(frame_fid),.core_starts(core_starts),.refill_bytes(refill_bytes),.blocked_starts(blocked_starts),.current_child_epoch(current_child_epoch),.admission_reads(admission_reads),.replay_reads(replay_reads),.admission_error(admission_error),.frame_read_req(frame_read_req),.frame_read_rsp(frame_read_rsp),.frame_read_addr(frame_read_addr),.frame_rsp_addr(frame_rsp_addr),.frame_rsp_epoch(frame_rsp_epoch),.frame_read_data(frame_read_data),.queue_count(queue_count),.queue_max_count(queue_max_count),.queue_max_owned(queue_max_owned),.queue_pending(queue_pending),.queue_active(queue_active),.queue_push(queue_push),.queue_pop(queue_pop),.queue_stall(queue_stall),.queue_requests(queue_requests),.queue_responses(queue_responses),.queue_pops(queue_pops),.queue_stalls(queue_stalls),.queue_cancel_queued(queue_cancel_queued),.queue_cancel_pending(queue_cancel_pending),.residual_child_epoch(residual_child_epoch),.residual_token(residual_token),.coefficient_valid(coefficient_valid),.coefficient_ready(coefficient_ready),.coefficient_done(coefficient_done),.coefficient_epoch(coefficient_epoch),.coefficient_plane(coefficient_plane),.coefficient_qscale(coefficient_qscale),.coefficient_block(coefficient_block),.coefficient_tile(coefficient_tile),.coefficient_qcell(coefficient_qcell),.coefficient_index(coefficient_index),.coefficient_value(coefficient_value),.coefficient_error(coefficient_error),.inverse_error(inverse_error),.inverse_busy(inverse_busy),.inverse_done(inverse_done),.inverse_bank_state(flat_inverse_bank_state),.inverse_fill_bank(inverse_fill_bank),.inverse_math_bank(inverse_math_bank),.inverse_math_state(inverse_math_state),.inverse_owned_banks(inverse_owned_banks),.inverse_max_owned_banks(inverse_max_owned_banks),.inverse_launch(inverse_launch),.inverse_dequant(inverse_dequant),.inverse_token(inverse_token),.inverse_epoch(inverse_epoch),.inverse_child_epoch(inverse_child_epoch),.inverse_plane(inverse_plane),.inverse_qscale(inverse_qscale),.inverse_block(inverse_block),.inverse_tile(inverse_tile),.inverse_qcell(inverse_qcell),.inverse_coefficients(inverse_coefficients),.inverse_dequantized(inverse_dequantized),.inverse_count_inputs(inverse_count_inputs),.inverse_count_tiles(inverse_count_tiles),.inverse_count_launches(inverse_count_launches),.inverse_count_dequant(inverse_count_dequant),.inverse_count_outputs(inverse_count_outputs),.inverse_count_completed_tiles(inverse_count_completed_tiles),.inverse_count_input_stalls(inverse_count_input_stalls),.inverse_count_output_stalls(inverse_count_output_stalls),.inverse_count_cancelled_banks(inverse_count_cancelled_banks),.packet_bytes(packet_bytes),.epoch(epoch),.serial_clear(serial_clear),.write_overlap(write_overlap),.read_prefetch(read_prefetch),.tile_overlap(tile_overlap),.in_valid(in_valid),.in_ready(in_ready),.in_data(in_data),.in_last(in_last),.residual_valid(residual_valid),.residual_ready(residual_ready),.residual_block(residual_block),.residual_index(residual_index),.residual_value(residual_value),.residual_epoch(residual_epoch),.done(done),.error(error),.busy(busy),.draining(draining),.scratch_sealed(scratch_sealed),.used_bytes(used_bytes),.count_cycles(count_cycles),.count_input_bytes(count_input_bytes),.count_dense(count_dense),.count_reads(count_reads),.count_writes(count_writes),.count_dense_stall(count_dense_stall),.mem_req_valid(mem_req_valid),.mem_req_ready(mem_req_ready),.mem_req_write(mem_req_write),.mem_req_addr(mem_req_addr),.mem_req_data(mem_req_data),.mem_req_epoch(mem_req_epoch),.mem_rsp_valid(mem_rsp_valid),.mem_rsp_ready(mem_rsp_ready),.mem_rsp_data(mem_rsp_data),.mem_rsp_epoch(mem_rsp_epoch),.mem_rsp_error(mem_rsp_error),.packet_state(packet_state),.metadata_wait(metadata_wait),.dbg_running(dbg_running),.dbg_allocation(dbg_allocation),.dbg_seal_sent(dbg_seal_sent),.dbg_packet_done(dbg_packet_done),.dbg_coef_valid(dbg_coef_valid),.dbg_coef_ready(dbg_coef_ready),.dbg_coef_band(dbg_coef_band),.dbg_coef_block(dbg_coef_block),.dbg_coef_index(dbg_coef_index),.dbg_coef_value(dbg_coef_value),.dbg_coef_epoch(dbg_coef_epoch),.dbg_meta_valid(dbg_meta_valid),.dbg_meta_ready(dbg_meta_ready),.dbg_meta_raw(dbg_meta_raw),.dbg_band_end_valid(dbg_band_end_valid),.dbg_band_end_ready(dbg_band_end_ready),.dbg_band_end_band(dbg_band_end_band),.dbg_seal_valid(dbg_seal_valid),.dbg_seal_ready(dbg_seal_ready),.dbg_scratch_state(dbg_scratch_state),.dbg_scratch_return_state(dbg_scratch_return_state),.dbg_scratch_outstanding(dbg_scratch_outstanding),.dbg_prefetch_offer(dbg_prefetch_offer),.dbg_prefetch_launch(dbg_prefetch_launch),.dbg_prefetch_use(dbg_prefetch_use),.dbg_tile_mode(dbg_tile_mode),.dbg_tile_preparing(dbg_tile_preparing),.dbg_prepare_bank(dbg_prepare_bank),.dbg_emit_bank(dbg_emit_bank),.dbg_bank_ready(dbg_bank_ready),.dbg_bank_owned(dbg_bank_owned),.dbg_emitter_state(dbg_emitter_state),.dbg_prepare_block(dbg_prepare_block),.dbg_bank_block(flat_dbg_bank_block),.dbg_bank_epoch(flat_dbg_bank_epoch),.dbg_tile_prepare_start(dbg_tile_prepare_start),.dbg_tile_publish(dbg_tile_publish),.dbg_tile_release(dbg_tile_release),.count_emitter_state(flat_count_emitter_state),.count_tile_starts(count_tile_starts),.count_tile_publishes(count_tile_publishes),.count_tile_releases(count_tile_releases),.count_prepare_output_overlap(count_prepare_output_overlap),.count_prepare_output_hold(count_prepare_output_hold),.count_tile_read_output_overlap(count_tile_read_output_overlap),.count_tile_bank_wait(count_tile_bank_wait),.count_both_ready_wait(count_both_ready_wait),.count_tile_prep_done_wait(count_tile_prep_done_wait),.count_output_valid(count_output_valid),.count_publish_release_same_edge(count_publish_release_same_edge),.max_tile_owned(max_tile_owned),.max_tile_ready(max_tile_ready),.count_prefetch_offers(count_prefetch_offers),.count_prefetch_accepts(count_prefetch_accepts),.count_prefetch_acks(count_prefetch_acks),.count_prefetch_uses(count_prefetch_uses),.count_dense_during_read_pending(count_dense_during_read_pending),.count_prefetch_drain_wait(count_prefetch_drain_wait),.max_prefetch_offer(max_prefetch_offer),.dbg_write_slot_valid(dbg_write_slot_valid),.dbg_assembler_full(dbg_assembler_full),.dbg_write_enqueue(dbg_write_enqueue),.count_write_enqueues(count_write_enqueues),.count_write_accepts(count_write_accepts),.count_write_acks(count_write_acks),.count_full_wait(count_full_wait),.count_packing_during_write_pending(count_packing_during_write_pending),.max_write_slot(max_write_slot),.max_owned_lines(max_owned_lines),.dbg_scratch_phase(dbg_scratch_phase),.dbg_scratch_assembly_bytes(dbg_scratch_assembly_bytes),.dbg_scratch_cache_valid(dbg_scratch_cache_valid),.dbg_scratch_head_valid(dbg_scratch_head_valid),.count_packet_state(flat_count_packet_state),.count_scratch_state(flat_count_scratch_state),.count_coef_stall(count_coef_stall),.count_metadata_wait(count_metadata_wait),.count_band_end_stall(count_band_end_stall),.count_mem_req_stall(count_mem_req_stall),.count_mem_pending(count_mem_pending),.count_input_starved(count_input_starved),.ts_first_input(ts_first_input),.ts_last_input(ts_last_input),.ts_metadata_accept(ts_metadata_accept),.ts_last_sparse_coef(ts_last_sparse_coef),.ts_packet_done_observed(ts_packet_done_observed),.ts_seal_accepted(ts_seal_accepted),.ts_scratch_sealed_observed(ts_scratch_sealed_observed),.ts_first_dense(ts_first_dense),.ts_last_dense(ts_last_dense),.ts_integrated_done(ts_integrated_done),.ts_first_coef_band(flat_ts_first_coef_band),.ts_last_coef_band(flat_ts_last_coef_band),.ts_band_end(flat_ts_band_end),.max_assembly_bytes(max_assembly_bytes),.max_cache_valid(max_cache_valid),.max_head_valid(max_head_valid),.max_outstanding(max_outstanding),.stage_read_req(stage_read_req),.stage_read_rsp(stage_read_rsp),.stage_write(stage_write),.stage_pending(stage_pending),.stage_context_active(stage_context_active),.stage_cancel(stage_cancel),.stage_word_valid(stage_word_valid),.stage_word_ready(stage_word_ready),.stage_read_addr(stage_read_addr),.stage_rsp_addr(stage_rsp_addr),.stage_write_addr(stage_write_addr),.stage_req_epoch(stage_req_epoch),.stage_rsp_epoch(stage_rsp_epoch),.stage_read_data(stage_read_data),.stage_write_data(stage_write_data),.stage_buffer_bytes(stage_buffer_bytes),.stage_buffer_highwater(stage_buffer_highwater),.stage_purpose(stage_purpose),.count_stage_reads(count_stage_reads),.count_stage_responses(count_stage_responses),.count_stage_writes(count_stage_writes),.count_stage_fetch_wait(count_stage_fetch_wait),.count_stage_word_hold(count_stage_word_hold));
+endmodule

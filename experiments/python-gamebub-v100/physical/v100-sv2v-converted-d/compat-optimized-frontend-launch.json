@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "docker",
+    "exec",
+    "-e",
+    "OMP_NUM_THREADS=1",
+    "-w",
+    "/build/v100-sv2v-converted-d",
+    "gamebub-cu66-v69-build",
+    "timeout",
+    "--kill-after=5s",
+    "120s",
+    "prlimit",
+    "--as=2684354560",
+    "/usr/bin/yosys",
+    "-T",
+    "-p",
+    "read_verilog -sv -noassert converted.v; dump -o optimized-before.il; setparam -set B_SIGNED 0 t:$shl t:$shr t:$sshl t:$sshr; dump -o optimized-after.il; hierarchy -check -top cs88_pipeline_v91k; write_rtlil elaborated-full.il; tee -o reports/premap-stat.json stat -json -top cs88_pipeline_v91k"
+  ],
+  "exit_code": 1,
+  "log": "compat-optimized-frontend.log",
+  "wall_seconds": 8.779834451153874,
+  "resource_gate": {
+    "utc": "2026-11-07T19:52:00.680507+00:00",
+    "mem_available_bytes": 25400446976,
+    "memory_full_psi_avg10": 0.0,
+    "minimum_available_bytes": 8589934592,
+    "maximum_full_psi_avg10_exclusive": 1.0,
+    "pass": true
+  }
+}

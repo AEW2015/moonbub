@@ -1,0 +1,11 @@
+read_verilog -sv -noassert -defer converted.v
+hierarchy -check -top cu66_idct8x8
+proc
+write_json premap.json
+synth_xilinx -top cu66_idct8x8 -family xc7 -noiopad -noclkbuf -run begin:coarse
+tee -o reports/dsp-stage-stat.json stat -json -top cu66_idct8x8
+write_json dsp-stage.json
+synth_xilinx -top cu66_idct8x8 -family xc7 -noiopad -noclkbuf -run coarse:
+tee -o reports/mapped-stat.json stat -json -top cu66_idct8x8
+write_json mapped.json
+write_verilog -noattr mapped.v
