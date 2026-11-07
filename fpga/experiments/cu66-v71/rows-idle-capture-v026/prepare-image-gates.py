@@ -29,6 +29,8 @@ if a.mode=='emit':
  assert post['netlist_sha256']==sha(parent/'bulk-funcsim.v')
 ''')
 
+# Redirect only the inherited V023 raster loop before adding V026's new loop.
+s=s.replace("d=r/('integration-'", "d=inherited/('integration-'")
 s=s.replace("cache='fpga/experiments", """
 subprocess.run([sys.executable,str(r/'check-proof-bindings.py')],check=True)
 proof=json.loads((r/'proof02/result.json').read_text());assert proof['status']=='PASS_EXACT_CONTROL_PROJECTION_AND_OWNED_PAYLOAD_INDUCTION'
@@ -47,7 +49,6 @@ cache='fpga/experiments""")
 
 s=s.replace("oracle_helper['verify'](r,", "oracle_helper['verify'](inherited,")
 s=s.replace("str(r/'check-components.py')", "str(inherited/'check-components.py')")
-s=s.replace("d=r/('integration-'", "d=inherited/('integration-'")
 s=s.replace('V023_NATIVE_LAB_IMAGE_V1','V026_NATIVE_LAB_IMAGE_V1').replace("USERID_USR_ACCESS='4459373b'", "USERID_USR_ACCESS='4459373e'")
 s=s.replace("=='4459373b'", "=='4459373e'").replace("'0x4459373b'", "'0x4459373e'")
 s=s.replace('moonbub-v023-lab.bit','moonbub-v026-lab.bit').replace('V023_LAB_BIT_EMITTED_NO_HARDWARE','V026_LAB_BIT_EMITTED_NO_HARDWARE').replace('V023_NATIVE_AUDIT_COMPLETE_NO_BIT','V026_NATIVE_AUDIT_COMPLETE_NO_BIT').replace("'v023-'+a.mode", "'v025-'+a.mode").replace('expected_identity=0x4459373b','expected_identity=0x4459373e')

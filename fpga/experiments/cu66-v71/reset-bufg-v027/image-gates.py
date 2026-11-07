@@ -42,7 +42,7 @@ row='fpga/experiments/cu66-v71/rows-idle-capture-v026/cu71_tile_rows.sv'
 assert proof['source_sha256']['cu71_tile_rows.sv']==sha(parent/'inputs'/row)
 assert json.loads((root/'fpga/experiments/cu66-v71/rows-idle-capture-v026/pair01/result.json').read_text())['status']=='PASS_OBSERVED_OLD_NEW_ROWS_AND_AUTHORITATIVE_PAYLOAD'
 for corner in ('fast','slow'):
- d=inherited/('integration-'+corner+'01');v=json.loads((d/'source-binding.json').read_text())
+ d=root/'fpga/experiments/cu66-v71/rows-idle-capture-v026'/('integration-'+corner+'01');v=json.loads((d/'source-binding.json').read_text())
  assert v['row_source']==row and v['row_sha256']==sha(parent/'inputs'/row)
  assert all(sha(Path(n))==h for n,h in v['files_sha256'].items())
  assert '/mnt/c/'+(d/'inputs'/row).as_posix()[3:] in v['compile_command'][-1]
