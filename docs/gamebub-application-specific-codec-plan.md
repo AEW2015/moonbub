@@ -32,33 +32,39 @@ excluding semantic HUD, live reconstruction and shared traffic. **Hardware
 30 fps and complete validated decoding below 10 ms remain open.** Being inside
 a nominal component budget does not close either milestone.
 
-The [live shared-controller follow-up](cu66-v91l-shared-service/README.md) now
-connects actual supported BR88 reconstruction to physical tiled candidate
-writes, RTL C2/HUD/seal validation and base RGB readback from the same timed
-pin-memory model. There is no canonical/pixel SDRAM preload. Four seed/corner
-configurations pass eight exact native RGB outputs and 8,200 independently
-recomputed RTL SHA digests. The shared arbiter passes 89 directed checks per
-corner and independent ownership/command/data replay; 20 deliberate checker
-corruptions are rejected.
+The [serial shared-controller control](cu66-v91l-shared-service/README.md)
+connects actual BR88 reconstruction, physical candidate writes, RTL validation
+and same-memory base RGB. Its [physical accepted-reference extension](cu66-v91l-reference-reader/README.md)
+now replaces the finite C++ reference responder with an RTL 64-byte tile reader
+on the same controller. Each delta performs 7,806 reference requests, 31,224
+physical BL8 reads and 249,792 additional x16 transfers. The source-derived
+Python model checks three actual deltas; native RTL uses the selected key/first
+delta pair. Full 64-bit reference identity and source-bank lifetime are retained.
 
-This first native schedule is serial: live start→commit is 27.68396 ms for the
-key and 25.05944–25.06029 ms for the delta, followed by about 29.04 ms of RGB,
-at assumed 100 MHz. Start→RGB closure is 54.09505–56.71928 ms. Even the observed
-packet-complete→commit window is 24.78248–27.30185 ms under the current partial
-service. These are measured simulation fences, not hardware latency, and they
-do not satisfy either product goal. Reference/scratch remain finite C++ actors;
-HUD semantic decode remains native C++ before start and base RGB excludes HUD.
-Directed contested traffic is not native concurrent decoding/display evidence.
+Four native seed/tAC configurations pass eight exact RGB outputs and all 8,200
+RTL SHA digests. The reference adapter and real-pin mux tests pass 1,920 check
+entries; independent replay rejects 28 deliberate corruptions. There is no
+canonical/pixel SDRAM preload. New reader payload is 64 bytes plus metadata,
+with no whole-design mapping/fit/timing claim. Candidate writes, reference reads
+and RGB are real controller clients; scratch and native HUD remain software
+endpoints. Native decode/display overlap remains unqualified.
 
-Next put reference/scratch requests on this controller and compare native
-bank-safe decode/display overlap against the serial control. Charge all clients
-and deadlines, preserve actual accepted-bank/qcache history and atomic
-publication, then close byte masking/RMW, all-RTL HUD and mixed entropy or a
-negotiated sender fallback. Actual ESP32 costs and exact-device physical
-qualification remain open before V91m/physical promotion. Preserve the
-[tiled-write](cu66-v91l-tiled/README.md), frozen scalar/direct display and new
-serial live-memory controls. Codec rate/quality and HEVC/AV1 comparisons are
-unchanged by this integration.
+At assumed 100 MHz, key start→commit is 27.68396 ms and delta is
+31.39967–31.39980 ms, then RGB is about 29.37 ms. Serial start→RGB closure is
+57.04772–60.76776 ms. The observed packet-complete→commit windows are
+27.30185 ms for the key and 31.12271–31.12284 ms for the delta, still excluding
+physical scratch/native HUD/full-system costs. These are simulated partial
+windows, not hardware latency or a completed 30-fps/under-10-ms result. Historical
+logical-reference timing is not a matched speedup denominator.
+
+Next move packed-scratch requests onto this controller, with an explicit safe
+aperture and real write grouping/read bursts/masks/drain. Then compare native
+bank-safe decode/display overlap against this reference-inclusive serial
+control. Preserve accepted-bank/qcache history and atomic publication; close
+all-RTL HUD and mixed entropy or negotiated fallback before V91m. Actual ESP32
+costs and exact-device physical qualification remain open. Codec bytes,
+resolution, quality and HEVC/AV1 rate/quality comparisons are unchanged by this
+memory-service work.
 
 The [bounded eight-byte tile-row writer](cu66-v91l-rows/README.md) remains the
 qualified live-path scheduling control. Its static row mode preserves the live

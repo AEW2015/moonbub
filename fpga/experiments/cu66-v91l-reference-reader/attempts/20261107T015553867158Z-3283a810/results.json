@@ -1,0 +1,239 @@
+{
+  "schema": "cu66-v91l-reference-reader-v1",
+  "status": "PASS_REFERENCE_READER_DIRECTED",
+  "source_revision": "380539d99164cc88b1b92b2620fcaca57ef2216c",
+  "source_sha256": {
+    "fpga/experiments/cu66-v91l-writepipe/controller/moonshine_sdram.sv": "a43869515d2587e90356ebe90c6bee8c4f0428276034cf7de648d9650694abe1",
+    "fpga/experiments/cu66-v91l-writepipe/sdram_pin_model.sv": "b6fa2ab67ce8c6918225444329eb8f323cc0d02134f5181b09fe7d6ba64d2bf5",
+    "fpga/experiments/cu66-v91l-tiled/row_to_sdram.sv": "f5366cbfbe138e709353a0acfc7e24adcc7733f1dd10c8b6974f9d0d34bb60cb",
+    "fpga/experiments/cu66-v91l-readbridge/bl8_read_bridge.sv": "de000415b9222cb3c3d4233998ed120bf65d34b9c1b3c83493ddbec907d436db",
+    "fpga/experiments/cu66-v91l-shared-service/shared_sdram_service.sv": "9b820b4de7e4a156acff60de078b7deb9311d1bcaa81c04684759a403dd43158",
+    "fpga/experiments/cu66-v91l-shared-service/shared_sdram_timed.sv": "ee53aa99773d01e78f2e35b6ffc9d7e2ea33b61dfa4703a56bb7a94a35a3ecb9",
+    "fpga/experiments/cu66-v91l-reference-reader/reference_tile_reader.sv": "b4d50c15cc57952aa20633d26691c07aef0924c8b6292a26ba41b71bfcd913d5",
+    "fpga/experiments/cu66-v91l-reference-reader/reader_client_mux.sv": "dd95c307680225894d1e91a9239c3cb4105b89dab96f034a7dafcdd293ebd9d7",
+    "fpga/experiments/cu66-v91l-reference-reader/reference_shared_timed.sv": "1990febcb3f454e95b0d2f6c1093a5ffd8bcf04f709398502e720d813f447bc9",
+    "fpga/experiments/cu66-v91l-reference-reader/tb_reference_unit.sv": "dad956354644ac7d65101c6c79017e26cde5a7ca554ee71a639328195b0f8947",
+    "fpga/experiments/cu66-v91l-reference-reader/tb_reference_timed.sv": "3a2bb9fe38e2174db0f92a7436eed05c80dbdc040758bdd0da1b3faed47cbfb1",
+    "fpga/experiments/cu66-v91l-reference-reader/README.md": "75f490e7570b04dbb92b559a10dfc92fd4dc117f3095012b94e70bced42f1070",
+    "fpga/experiments/cu66-v91l-reference-reader/interface.json": "8663068c772961614b79c37fe22c20d825eedee9b9d0aa9782ce96c523b17373",
+    "scripts/cu66-v91l-reference-reader/run.py": "c32366a088ed5bcd0080fd90454f6b14952934ab2191d2f8f5de5913b1c3f811"
+  },
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--version"
+      ],
+      "log": "tool-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "g++",
+        "--version"
+      ],
+      "log": "compiler-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--binary",
+        "--timing",
+        "--assert",
+        "-Wall",
+        "-DSIMULATION",
+        "--timescale",
+        "1ns/1ps",
+        "-j",
+        "2",
+        "--top-module",
+        "tb_reference_unit",
+        "--Mdir",
+        "/build/v91l-reference-reader-20261107T015553867158Z-3283a810-unit",
+        "-CFLAGS",
+        "-std=c++20 -O2 -Wall -Wextra -Werror",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-reference-reader/reference_tile_reader.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-reference-reader/tb_reference_unit.sv"
+      ],
+      "log": "compile-unit.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-reference-reader-20261107T015553867158Z-3283a810-unit/Vtb_reference_unit"
+      ],
+      "log": "simulation-unit.jsonl",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--binary",
+        "--timing",
+        "--assert",
+        "-Wall",
+        "-DSIMULATION",
+        "--timescale",
+        "1ns/1ps",
+        "-j",
+        "2",
+        "--top-module",
+        "tb_reference_timed",
+        "-GT_AC_NS=2.0",
+        "--Mdir",
+        "/build/v91l-reference-reader-20261107T015553867158Z-3283a810-timed2",
+        "-CFLAGS",
+        "-std=c++20 -O2 -Wall -Wextra -Werror",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-writepipe/controller/moonshine_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-writepipe/sdram_pin_model.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-tiled/row_to_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-readbridge/bl8_read_bridge.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-shared-service/shared_sdram_service.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-shared-service/shared_sdram_timed.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-reference-reader/reference_tile_reader.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-reference-reader/reader_client_mux.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-reference-reader/reference_shared_timed.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-reference-reader/tb_reference_timed.sv"
+      ],
+      "log": "compile-timed2.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-reference-reader-20261107T015553867158Z-3283a810-timed2/Vtb_reference_timed"
+      ],
+      "log": "simulation-timed2.jsonl",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--binary",
+        "--timing",
+        "--assert",
+        "-Wall",
+        "-DSIMULATION",
+        "--timescale",
+        "1ns/1ps",
+        "-j",
+        "2",
+        "--top-module",
+        "tb_reference_timed",
+        "-GT_AC_NS=7.0",
+        "--Mdir",
+        "/build/v91l-reference-reader-20261107T015553867158Z-3283a810-timed7",
+        "-CFLAGS",
+        "-std=c++20 -O2 -Wall -Wextra -Werror",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-writepipe/controller/moonshine_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-writepipe/sdram_pin_model.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-tiled/row_to_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-readbridge/bl8_read_bridge.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-shared-service/shared_sdram_service.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-shared-service/shared_sdram_timed.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-reference-reader/reference_tile_reader.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-reference-reader/reader_client_mux.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-reference-reader/reference_shared_timed.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-reference-reader/attempts/20261107T015553867158Z-3283a810/sources/fpga/experiments/cu66-v91l-reference-reader/tb_reference_timed.sv"
+      ],
+      "log": "compile-timed7.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-reference-reader-20261107T015553867158Z-3283a810-timed7/Vtb_reference_timed"
+      ],
+      "log": "simulation-timed7.jsonl",
+      "exit_code": 0
+    }
+  ],
+  "modes": [
+    {
+      "mode": "unit",
+      "t_ac_ns": null,
+      "status": "PASS",
+      "verdict": {
+        "type": "verdict",
+        "status": "TEST_PASS",
+        "checks": 698
+      },
+      "event_log": "simulation-unit.jsonl.gz"
+    },
+    {
+      "mode": "timed2",
+      "t_ac_ns": 2,
+      "status": "PASS",
+      "verdict": {
+        "type": "verdict",
+        "status": "TEST_PASS",
+        "checks": 611
+      },
+      "event_log": "simulation-timed2.jsonl.gz"
+    },
+    {
+      "mode": "timed7",
+      "t_ac_ns": 7,
+      "status": "PASS",
+      "verdict": {
+        "type": "verdict",
+        "status": "TEST_PASS",
+        "checks": 611
+      },
+      "event_log": "simulation-timed7.jsonl.gz"
+    }
+  ],
+  "backend": "Verilator 5.020 standalone timed RTL",
+  "physical_hardware_tested": false,
+  "native_preload": false,
+  "unit_seed_data_writes": true,
+  "new_payload_bytes": 64,
+  "wall_seconds": 33.21944140898995,
+  "artifacts_sha256": {
+    "compile-timed2.log": "bbd63ea41a2a8743693b8fdf7621b08e1ab5dca4eea4846e061e41c51418a0cf",
+    "compile-timed7.log": "1c5026d815f0664062b0ca462de08c1e71c5fc7b6701a8084059ae90ff4bd743",
+    "compile-unit.log": "d3ce1812af3b3cf60e204caff2b69cb418d0ffdabcf0b494321047b847a080d5",
+    "compiler-version.log": "59d1cbef41d4ae78d5063d525b7aa13d18dc0493ea00537efc19b2ee398cb5a8",
+    "simulation-timed2.jsonl.gz": "a5c9ff33807e859cbef104364291e6fcd93207965251ce083ba5a0fec1e59aaa",
+    "simulation-timed7.jsonl.gz": "a5c9ff33807e859cbef104364291e6fcd93207965251ce083ba5a0fec1e59aaa",
+    "simulation-unit.jsonl.gz": "847f5c546352597d7d160c5a9728f486c0d9a9b0eb8fa55a30846608df8ae797",
+    "sources/fpga/experiments/cu66-v91l-readbridge/bl8_read_bridge.sv": "de000415b9222cb3c3d4233998ed120bf65d34b9c1b3c83493ddbec907d436db",
+    "sources/fpga/experiments/cu66-v91l-reference-reader/README.md": "75f490e7570b04dbb92b559a10dfc92fd4dc117f3095012b94e70bced42f1070",
+    "sources/fpga/experiments/cu66-v91l-reference-reader/interface.json": "8663068c772961614b79c37fe22c20d825eedee9b9d0aa9782ce96c523b17373",
+    "sources/fpga/experiments/cu66-v91l-reference-reader/reader_client_mux.sv": "dd95c307680225894d1e91a9239c3cb4105b89dab96f034a7dafcdd293ebd9d7",
+    "sources/fpga/experiments/cu66-v91l-reference-reader/reference_shared_timed.sv": "1990febcb3f454e95b0d2f6c1093a5ffd8bcf04f709398502e720d813f447bc9",
+    "sources/fpga/experiments/cu66-v91l-reference-reader/reference_tile_reader.sv": "b4d50c15cc57952aa20633d26691c07aef0924c8b6292a26ba41b71bfcd913d5",
+    "sources/fpga/experiments/cu66-v91l-reference-reader/tb_reference_timed.sv": "3a2bb9fe38e2174db0f92a7436eed05c80dbdc040758bdd0da1b3faed47cbfb1",
+    "sources/fpga/experiments/cu66-v91l-reference-reader/tb_reference_unit.sv": "dad956354644ac7d65101c6c79017e26cde5a7ca554ee71a639328195b0f8947",
+    "sources/fpga/experiments/cu66-v91l-shared-service/shared_sdram_service.sv": "9b820b4de7e4a156acff60de078b7deb9311d1bcaa81c04684759a403dd43158",
+    "sources/fpga/experiments/cu66-v91l-shared-service/shared_sdram_timed.sv": "ee53aa99773d01e78f2e35b6ffc9d7e2ea33b61dfa4703a56bb7a94a35a3ecb9",
+    "sources/fpga/experiments/cu66-v91l-tiled/row_to_sdram.sv": "f5366cbfbe138e709353a0acfc7e24adcc7733f1dd10c8b6974f9d0d34bb60cb",
+    "sources/fpga/experiments/cu66-v91l-writepipe/controller/moonshine_sdram.sv": "a43869515d2587e90356ebe90c6bee8c4f0428276034cf7de648d9650694abe1",
+    "sources/fpga/experiments/cu66-v91l-writepipe/sdram_pin_model.sv": "b6fa2ab67ce8c6918225444329eb8f323cc0d02134f5181b09fe7d6ba64d2bf5",
+    "sources/scripts/cu66-v91l-reference-reader/run.py": "c32366a088ed5bcd0080fd90454f6b14952934ab2191d2f8f5de5913b1c3f811",
+    "tool-version.log": "26daf9ad1ba36ee1c20cab9a869d0a1fbb8117230c80c78ec2d8cf597f64c4a5"
+  }
+}

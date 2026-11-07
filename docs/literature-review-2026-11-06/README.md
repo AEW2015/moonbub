@@ -131,10 +131,22 @@ logical endpoints, HUD semantic decode stays in native C++, and native overlap
 is unqualified. This is stronger integration evidence with exposed real costs,
 not a compression improvement or a result comparable to HEVC/AV1 coding speed.
 
-Next move reference/scratch onto the same controller and compare native overlap
-against this serial control before the complete V91m cadence gate. These are
-local implementation measurements, not new publication findings. Earlier codec
-rate/quality comparisons are unchanged; sustained hardware 30 fps and complete
+The [physical reference extension](../cu66-v91l-reference-reader/README.md)
+now removes the logical reference actor: full64-tagged 64-byte tiles arrive
+through four actual BL8 reads from the accepted key bank. A delta needs
+7,806 tiles/31,224 reads/249,792 x16 words; 64 bytes of new reader payload are
+explicitly charged. Four native configurations retain exact RGB and all 8,200
+RTL SHA digests, with independent mux/descriptor/chunk/pin replay. The Python
+traffic/byte model also checks three actual delta cases; the native RTL corpus
+remains the selected key/delta pair.
+
+At assumed 100 MHz the reference-inclusive delta start→commit window is
+31.40 ms and subsequent RGB about 29.37 ms; serial closure is about 60.77 ms.
+These more complete internal-memory costs are not new codec bitrate/quality
+results or HEVC/AV1 coding speed comparisons. Scratch service and native HUD
+remain software endpoints. Next qualify physical scratch and native bank-safe
+overlap before the complete V91m cadence gate. These are local implementation
+measurements, not new publication findings. Hardware 30 fps and complete
 validated decoding below 10 ms remain open.
 
 ## Literature findings compared with V90
