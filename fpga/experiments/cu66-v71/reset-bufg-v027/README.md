@@ -1,0 +1,9 @@
+# V027 reset-distribution option
+
+V027 builds on V026's proved idle payload capture and the V025 bulk HUD engine. It adds one explicit BUFG after the existing four protected core-reset synchronizer stages. SPI/pixel reset synchronizers, consumer RTL, validity/token resets, clock frequencies/phases, pins and SDRAM budgets are unchanged. It does not add a reset pipeline stage. The V43 ESP32 image remains unchanged; ABI2/cap1f/HBU1 is the same, intended BIT USERID `4459373f`.
+
+The measured reason is V025's final 1 ps setup miss on a high-fanout reset path. A global buffer is a separate distribution option, not a timing exception or permission to program a failing image. [AMD's 7-series BUFG guide](https://docs.amd.com/r/2024.1-English/ug953-vivado-7series-libraries/BUFG) describes its use for resets and other high-fanout control nets.
+
+`reset01` executes the installed Vivado 2025.2 BUFG UNISIM model with the original four-stage sequence: 100 asynchronous assertions/releases and 1,416 comparisons pass, without an added logical cycle. This is a zero-delay functional check. Routed reset setup/hold, clock-resource legality and unwaived DRC remain mandatory. The V026 native raster/row proof subjects are byte-identical and inherited with explicit hashes; the physical buffer is outside that scalar CSR simulation platform.
+
+Current build `C:/mb70/dy71-v027-20261107-v001` is synthesizing. No BIT or physical test exists yet. Exact source and primitive-model hashes are in `derivation.json`, the build input freeze, and `reset01/result.json`. Hardware remains the last verified V42/V023 held endpoint; nothing here reprograms or releases it.
