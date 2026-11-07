@@ -4,10 +4,17 @@ p=Path(__file__).resolve().parent
 old=p.parent/'result-admission-system-v023'
 s=(old/'image-gates.py').read_text()
 s=s.replace("parent=root/'dy71-v023-20261106-v001'", "parent=root/'dy71-v025-20261107-v003'; inherited=root/'fpga/experiments/cu66-v71/result-admission-system-v023'")
+s=s.replace("assert build==parent.resolve(),'Only the exact frozen candidate build may be qualified'", "assert build in (parent.resolve(),(parent/'incremental01').resolve(),(parent/'postroute01').resolve(),(parent/'postroute02').resolve()),'Only frozen v003 named physical candidates may be qualified'")
 s=s.replace("runpy.run_path(str(r/'check-source-binding.py'),run_name='__main__')", "runpy.run_path(str(inherited/'check-source-binding.py'),run_name='__main__')\n"+'''
 # Inherit only unchanged decoder/system sources, never new control/pin behavior.
 oldfreeze=json.loads((root/'dy71-v023-20261106-v001/source-freeze.json').read_text())
 newfreeze=json.loads((parent/'source-freeze.json').read_text())
+subprocess.run([sys.executable,str(root/'fpga/experiments/cu66-v71/hud-bulk-v025/check-component-bindings.py'),'--build',str(build)],check=True)
+assert json.loads((build/'source-freeze.json').read_text())==newfreeze
+assert all(sha(build/'inputs'/n)==h for n,h in newfreeze.items())
+if build!=parent.resolve():
+ assert sha(build/'constrained.dcp')==sha(parent/'constrained.dcp'),'Different synthesis checkpoint'
+ assert sha(build/'bulk-funcsim.v')==sha(parent/'bulk-funcsim.v'),'Different simulated cell'
 added=set(newfreeze)-set(oldfreeze)
 expected_added={'fpga/experiments/cu66-v71/hud-bulk-v025/'+n for n in ['dy71_hud_bulk_v025.sv','dy71_local_control_bulk_v025.sv','cu71_bus_cdc_bulk_v025.sv','moonshine_top_dy71.sv']}
 assert added==expected_added,(added,expected_added)

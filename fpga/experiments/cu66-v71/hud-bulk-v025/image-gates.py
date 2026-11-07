@@ -3,12 +3,18 @@ from pathlib import Path
 import argparse,datetime,hashlib,importlib.util,json,os,re,runpy,shutil,subprocess,sys,time
 p=argparse.ArgumentParser();p.add_argument('--mode',choices=('audit','emit'),required=True);p.add_argument('--build',type=Path,required=True);p.add_argument('--audit',type=Path);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
 root=Path('C:/mb70');r=Path(__file__).resolve().parent;parent=root/'dy71-v025-20261107-v003'; inherited=root/'fpga/experiments/cu66-v71/result-admission-system-v023';build=a.build.resolve();out=a.out.resolve();sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
-assert build==parent.resolve(),'Only the exact frozen candidate build may be qualified'
+assert build in (parent.resolve(),(parent/'incremental01').resolve(),(parent/'postroute01').resolve(),(parent/'postroute02').resolve()),'Only frozen v003 named physical candidates may be qualified'
 runpy.run_path(str(inherited/'check-source-binding.py'),run_name='__main__')
 
 # Inherit only unchanged decoder/system sources, never new control/pin behavior.
 oldfreeze=json.loads((root/'dy71-v023-20261106-v001/source-freeze.json').read_text())
 newfreeze=json.loads((parent/'source-freeze.json').read_text())
+subprocess.run([sys.executable,str(root/'fpga/experiments/cu66-v71/hud-bulk-v025/check-component-bindings.py'),'--build',str(build)],check=True)
+assert json.loads((build/'source-freeze.json').read_text())==newfreeze
+assert all(sha(build/'inputs'/n)==h for n,h in newfreeze.items())
+if build!=parent.resolve():
+ assert sha(build/'constrained.dcp')==sha(parent/'constrained.dcp'),'Different synthesis checkpoint'
+ assert sha(build/'bulk-funcsim.v')==sha(parent/'bulk-funcsim.v'),'Different simulated cell'
 added=set(newfreeze)-set(oldfreeze)
 expected_added={'fpga/experiments/cu66-v71/hud-bulk-v025/'+n for n in ['dy71_hud_bulk_v025.sv','dy71_local_control_bulk_v025.sv','cu71_bus_cdc_bulk_v025.sv','moonshine_top_dy71.sv']}
 assert added==expected_added,(added,expected_added)
