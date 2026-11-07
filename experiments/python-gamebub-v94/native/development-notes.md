@@ -1,0 +1,15 @@
+# EC94 native checkpoint
+
+`codec.hpp` implements an independent bounded byte-rANS encoder and decoder using the stated equations with `L = 1 << 23`. It does not import or copy an rANS implementation. Frozen AB38 and BR88 remain imported from the existing native implementations. Coefficient order, signed mapping, run/level event grammar, and whole-context Rice parameter search are frozen.
+
+Alternative indices are AB=0, BR=1, followed by `(lanes, scale)` values `(2,8), (2,9), (2,10), (4,8), (4,9), (4,10)`. The packet selector stores 0/1/2/3 for AB/BR/two lanes/four lanes. Scale lives in each context descriptor. `Choices` selects actual alternatives per context; ties choose the lower alternative index. `assemble(prepared, selector, scale)` also exposes every one of the 256 method selectors at a representative scale for tests.
+
+Observed category counts are normalized by reserving one count for each positive category, proportionally allocating the remaining mass with integer floors, then allocating remaining units by decreasing fractional remainder and increasing category on ties. An empty model is uniform. Each packet pays for all inline 16-entry frequency tables, descriptor bytes, lane states, renormalization bytes, and literal bytes. The model ID is CRC32 of the exact little-endian table bytes; mode 1 and every unknown table mode are rejected. There is no cache promise.
+
+Each reverse encoded field uses lane `field_index % lanes`. Final lane states are written in lane order, followed by the reverse of the emitted byte vector. Decoder initialization checks states in `[L, 2^31)`; renormalization consumes at most two bytes per symbol; all lanes must terminate at `L`. Exact ANS extent, literal extent, literal zero padding, table sums and ID, symbol counts, coefficient ranges, event bounds, header bindings and CRC are validated. RAW fallback is conservative for all nine packets if either frozen encoder discards its context streams.
+
+The collector performs all eight alternatives even when they are discarded, assembles and hashes all nine actual packets, independently decodes all nine natively, and emits counters from those decoders. The finite Python campaign decodes all eight homogeneous alternatives independently and verifies that the local candidate reuses exactly the minimum actual context bytes. Source SHA256 pins, snapshots, strict container compilation, fixture tests, process results, failed attempts, and measured `getrusage` memory are retained.
+
+This is partial V94: tANS, fixed trained models, cached model references, physical FPGA timing, ESP32 timing, and frame publication are outside the implemented checkpoint.
+
+Development failures were retained in `attempts/development-initial`: strict compilation caught one pessimistic compiler warning in an adversarial test and two collector adaptation mistakes. An arbitrary initial-state bit flip proved unsuitable as a malformed-stream test because it can produce a different valid sequence; explicit invalid range and nonterminal state cases are used instead.

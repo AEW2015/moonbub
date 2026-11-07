@@ -10,6 +10,19 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V94 E3 follow-up: [bounded inline byte-rANS](../cu66-v94/README.md) now has
+two/four-state, precision-8/9/10 packets and a real RTL category kernel. All
+model/state overhead is charged. Rate-aware parameter tuning improves the local
+minimum by only eleven complete bytes across the retained 457 sources; this
+does not justify default promotion. A cap-tail tradeoff remains: tuned uniform
+rANS fits all sources while uniform BR exceeds the cap once, at higher mean
+bytes. [Results](../cu66-v94/results.md) separate native full-frame parity from
+partial RTL evidence. Actual tANS, calibration-only fixed models, acknowledged
+caches and integrated physical timing remain open; this is not a reproduction
+of the referenced FSE/tANS benchmark or an FPGA throughput result.
+The no-refill RTL follow-up saves 17.93% of matched kernel clocks on selected
+actual-source contexts; it retains the staged control pending physical timing.
+
 V93 E2 follow-up: [fixed suffix bypass and small-block Rice](../cu66-v93/README.md)
 now have actual-byte and independent software evidence. Uniform HY removes
 41.30% of uniform AB's arithmetic decisions for 3.101% more complete bytes.

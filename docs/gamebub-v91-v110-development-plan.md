@@ -15,6 +15,21 @@ RTL for **7-series technology mapping, placement, routing and timing closure**.
 Freeze the selected codec before that phase so a physical implementation change
 can be compared against a stable function and workload.
 
+**V94 partial checkpoint:** [table-inclusive byte-rANS](cu66-v94/README.md)
+now has actual two/four-state, precision-8/9/10 packets, independent readers,
+5,484 complete native reconstructions and a real RTL category/state kernel.
+Rate-aware Rice-parameter tuning yields only eleven fewer complete bytes than
+the earlier local minimum; no default-codec promotion is justified. The kernel
+passes exact state/cursor checks and a reproduced/repaired cancel-edge race,
+but does not parse complete packets or reconstruct/publish frames. tANS, fixed
+calibration-only models and acknowledged cache modes remain unimplemented;
+integrated physical cycles, ports, fit and both hardware milestones remain open.
+[Results and exclusions](cu66-v94/results.md) retain those gates explicitly.
+The isolated no-refill bypass saves 17.93% of matched kernel clocks on 19
+actual-source context encodings; the 55-vector aggregate saves 21.67%.
+This is functional cycle evidence with a potential critical-path tradeoff,
+not routed frequency or complete-frame latency. Keep the staged control.
+
 **V93 research update:** [V93a–c software evidence](cu66-v93/README.md) now covers
 fixed arithmetic-unary/plain-suffix coding, a fixed SG32 small-block Rice control,
 actual bytes, independent readers and 4,113 complete frame reconstructions.
@@ -332,7 +347,7 @@ are V92a, V92b, V92c and V92d. The existing E1–E7 controls remain applicable.
 |---|---|---|---|---|
 | **V92** finer entropy/group choices | **Research grammar qualified:** EC92/CS92 context boundaries, explicit selectors, resets, RAW and complete-frame bounds. | **Actual alternatives qualified:** 21,936 EC92 chunks, both encoders once per plane, all headers/CRCs charged. | **Software evidence qualified on retained corpus:** independent Python/native decode, 1,828 complete exact pixel/reference/HUD reconstructions, bounded selection versus exhaustive search and measured host preparation. | **Open:** select with integrated memory/latency costs; implement any promoted RTL receiver adapter and rerun complete-path goldens. See [V92 evidence](cu66-v92/README.md). |
 | **V93** prefix/suffix and adaptive Rice | **Specified:** EC93/CS93, fixed all-suffix bypass and 32-event small-block Rice control; no RLGR-conformance claim. | **Software qualified:** finite escapes/RAW, independent Python/native readers and all 256 selector patterns. | **Qualified on retained corpus:** complete-byte, reset/work/metadata and host-cost comparisons; 4,113 exact complete packets. | **Research decision recorded; product promotion open:** retain conditional HY work candidate, reject SG32 default size policy; no minimum-byte gain over V92. Require integrated RTL/memory/latency evidence before promotion. See [V93](cu66-v93/README.md). |
-| **V94** bounded ANS | Specify 2/4-state rANS/tANS, model IDs, tables, literals and initialization/recovery. | Implement host encoding and independent decode with table-inclusive packets. | Prototype RTL/table ports/state arithmetic and test adversarial boundaries. | Compare full-path bytes, cycles and resource/port budgets; select or reject. A fast entropy kernel alone is insufficient. |
+| **V94** bounded ANS — **partial** | **Inline rANS scope specified:** 2/4 states, precision 8/9/10, frequency-block CRC identity, literals and terminal/reset bounds. tANS/fixed/cache profiles remain open; unsupported modes reject. | **Inline byte-rANS software qualified:** actual model-inclusive packets, independent readers, bounded host preparation, rate-aware k search and 5,484 exact native frames. | **Symbol-kernel checkpoint passes:** actual CDF lookup/update/refill RTL, two stall seeds, malformed/abort/cancel-edge recovery and independent state/cursor goldens. Packet/literal/frame integration, tANS and physical table-port mapping remain open. | **Not promoted:** local compression gain is eleven bytes on this corpus. Complete mixed-method cycles, memory/display service, routed resources/ports and hardware qualification remain open. See [V94](cu66-v94/README.md). |
 | **V95** application-specific palettes | Define exact 2/4/8-entry palettes, left/top runs and residual fallback. | Put bounded palette/search work on the PC; implement deterministic decoding. | Test UI/HUD, movement, noise and scene changes with complete reconstruction. | Select exact-lane wins. Keep quality-changing clustering in a separately negotiated, matched-quality experiment. |
 | **V96** reference and memory work | Inventory COPY/alias/constant lifetimes, traffic and display ownership. | Implement bounded copy, grouped bursts and scheduled constant generation. | Test actual addressed traffic, port/refresh/arbitration service and abort/reuse. | Merge qualified memory improvements into the complete frame path; no free generator, gather or cross-position alias. |
 | **V97** Sunshine/ESP32/transport | Instrument actual host preparation and negotiate supported profiles/limits. | Integrate bounded ESP32 forwarding, aligned QSPI/DMA transfers and credits, with CPU/RAM budgets. | Exercise firmware and RTL together using supported emulation where available; explicitly label behavioral substitutes and missing ESP32/Wi-Fi fidelity. | Qualify loss/retry/reconnect, input/audio/UI contention and stale-frame/reference recovery; calibrate against hardware when available. |

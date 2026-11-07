@@ -1,0 +1,119 @@
+{
+  "schema": "cu66-v94-rans-symbol-rtl-v1",
+  "status": "FAIL",
+  "source_sha256": {
+    "scripts/cu66-v94/run_rtl.py": "ce7e725425d410972bc03570eed87c93287a86a4c7882854ad1937105567a0ab",
+    "fpga/experiments/cu66-v94-rans/rans_symbol.sv": "5918e7c02e64042288d9bd8cf12d43660b77fb6f3219225f56e260c864df6c31",
+    "fpga/experiments/cu66-v94-rans/tb_rans.cpp": "3595c929b408fd28bb93decd8736986ba4ef581ac3a9561d22b19d8204e9dbcc",
+    "experiments/python-gamebub-v94/rtl-vectors/attempts/20261107T053414964233Z-9e8c7a2f/manifest.json": "018b795c52ee68ffc6176c34d98e064c07405168a229811a57fc1dbc96f65d62",
+    "experiments/python-gamebub-v94/rtl-vectors/attempts/20261107T053414964233Z-9e8c7a2f/vectors.bin": "39b60a0bc51fb3cf62089bee29ebfb5c92cb549afec8c9a1fa3bb65ed17423a3"
+  },
+  "vector_report": "experiments/python-gamebub-v94/rtl-vectors/attempts/20261107T053414964233Z-9e8c7a2f/manifest.json",
+  "vector_report_sha256": "018b795c52ee68ffc6176c34d98e064c07405168a229811a57fc1dbc96f65d62",
+  "backend": "standalone Verilator; no Vivado simulator integration or vendor primitives",
+  "scope": [
+    "Real RTL CDF lookup, multiply/update, byte renormalization, state interleaving and held symbol output.",
+    "Configurable scale8/9/10, states2/4, models1/2; inline model parsing/CRC/literals/coefficient/pixel/HUD/frame publication are outside the RTL boundary.",
+    "One physical FSM. More interleaved states do not imply parallel symbols per clock.",
+    "Clock-edge counts are not achieved FPGA frequency, routed timing or complete decode latency."
+  ],
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--version"
+      ],
+      "log": "verilator-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "g++",
+        "--version"
+      ],
+      "log": "compiler-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--cc",
+        "--exe",
+        "--build",
+        "--trace",
+        "--assert",
+        "-Wall",
+        "--top-module",
+        "rans_symbol",
+        "--Mdir",
+        "/build/v94-rans-20261107T054408310450Z-b1fa37ff",
+        "-j",
+        "2",
+        "-CFLAGS",
+        "-std=c++20 -O2 -Wall -Wextra -Werror",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v94-rans/attempts/20261107T054408310450Z-b1fa37ff/sources/fpga/experiments/cu66-v94-rans/rans_symbol.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v94-rans/attempts/20261107T054408310450Z-b1fa37ff/sources/fpga/experiments/cu66-v94-rans/tb_rans.cpp"
+      ],
+      "log": "compile.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "cp",
+        "gamebub-cu66-v69-build:/build/v94-rans-20261107T054408310450Z-b1fa37ff/Vrans_symbol",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v94-rans/attempts/20261107T054408310450Z-b1fa37ff/simulation.bin"
+      ],
+      "log": "copy.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "120",
+        "/build/v94-rans-20261107T054408310450Z-b1fa37ff/Vrans_symbol",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v94-rans/attempts/20261107T054408310450Z-b1fa37ff/sources/experiments/python-gamebub-v94/rtl-vectors/attempts/20261107T053414964233Z-9e8c7a2f/vectors.bin",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v94-rans/attempts/20261107T054408310450Z-b1fa37ff/wave"
+      ],
+      "log": "simulation.jsonl",
+      "exit_code": 1
+    }
+  ],
+  "hardware_tested": false,
+  "full_frame_RTL": false,
+  "physical_30fps_proven": false,
+  "validated_under10ms_proven": false,
+  "logical_model_payload_bits": 704,
+  "logical_lane_state_bits": 128,
+  "asserted_coverage": "C++ self-checking transaction/state/cursor scoreboards; no formal or line/toggle coverage claim",
+  "failure": "AssertionError((['docker', 'exec', 'gamebub-cu66-v69-build', 'timeout', '120', '/build/v94-rans-20261107T054408310450Z-b1fa37ff/Vrans_symbol', '/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v94-rans/attempts/20261107T054408310450Z-b1fa37ff/sources/experiments/python-gamebub-v94/rtl-vectors/attempts/20261107T053414964233Z-9e8c7a2f/vectors.bin', '/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v94-rans/attempts/20261107T054408310450Z-b1fa37ff/wave'], PosixPath('/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v94-rans/attempts/20261107T054408310450Z-b1fa37ff/simulation.jsonl')))",
+  "wall_seconds": 3.978879533940926,
+  "artifacts_sha256": {
+    "simulation.jsonl": "da89d6a21a86fb2af2dc220368f0e914a2b39a138ff0beaa772cebac6464c612",
+    "wave-recovery.vcd": "43552f45ad0872cfe912d838619ef3a1d29f513b6104ffe0c28494c8e2cea90e",
+    "compile.log": "3aa7d8c00e53639bece5dccd9c4579998bada402e6e32202c86585ba7855837c",
+    "wave-mode0.vcd": "91acec390919f2b52eda350cf2a264362132111749b6890c89a6a0a1c20e42b9",
+    "wave-mode1.vcd": "a3745c72c05935421d6f1957340816de2b5eb13e9982c9cdf4bad19f74e6923f",
+    "simulation.bin": "5ae5788efc54819aa4fcdd591b826e8809ab39fe78a891696ce70026fb8204f7",
+    "verilator-version.log": "26daf9ad1ba36ee1c20cab9a869d0a1fbb8117230c80c78ec2d8cf597f64c4a5",
+    "compiler-version.log": "59d1cbef41d4ae78d5063d525b7aa13d18dc0493ea00537efc19b2ee398cb5a8",
+    "copy.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sources/fpga/experiments/cu66-v94-rans/tb_rans.cpp": "3595c929b408fd28bb93decd8736986ba4ef581ac3a9561d22b19d8204e9dbcc",
+    "sources/fpga/experiments/cu66-v94-rans/rans_symbol.sv": "5918e7c02e64042288d9bd8cf12d43660b77fb6f3219225f56e260c864df6c31",
+    "sources/experiments/python-gamebub-v94/rtl-vectors/attempts/20261107T053414964233Z-9e8c7a2f/vectors.bin": "39b60a0bc51fb3cf62089bee29ebfb5c92cb549afec8c9a1fa3bb65ed17423a3",
+    "sources/experiments/python-gamebub-v94/rtl-vectors/attempts/20261107T053414964233Z-9e8c7a2f/manifest.json": "018b795c52ee68ffc6176c34d98e064c07405168a229811a57fc1dbc96f65d62",
+    "sources/scripts/cu66-v94/run_rtl.py": "ce7e725425d410972bc03570eed87c93287a86a4c7882854ad1937105567a0ab"
+  }
+}

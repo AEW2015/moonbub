@@ -2,6 +2,26 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+**V94 is active and partial: inline byte-rANS and an RTL symbol kernel qualify.**
+The [bounded-rANS study](cu66-v94/README.md) tests two/four interleaved states
+with precision 8/9/10, transmitted frequency models, independent readers and
+5,484 complete native frame reconstructions. A separate rANS-rate Rice-parameter
+search improves the local minimum by only eleven bytes across 457 sources;
+retain the current control. Uniform tuned rANS fits every target-cap source
+but averages more bytes than BR, whose largest source exceeds the cap.
+The real RTL kernel checks 203,019 category/state/cursor outputs, including the
+optimized winning context, with input/output stalls and cancellation/retry.
+A same-edge cancel handshake defect was reproduced and repaired. This is an
+entropy-kernel boundary, not complete FPGA frame decoding. tANS, calibration-only
+fixed models, acknowledged caches, integrated memory/display costs and routed
+qualification remain open. See [measured results](cu66-v94/results.md).
+
+The separate no-refill bypass reduces matched kernel clocks by 17.93% on the
+19 actual-source context encodings (21.67% on the combined synthetic/actual
+55-vector set). It preserves exact state/cursors and recovery. The extra
+normalization check can lengthen the multiply/update critical path; retain the
+staged control until routed clock/resource results are available.
+
 **V93 research lane: V93a–c software evidence qualified; promotion remains open.**
 The [prefix/suffix and small-group Rice experiment](cu66-v93/README.md) adds
 real EC93/CS93 bytes with independently decoded HY and SG controls. All 6,855
