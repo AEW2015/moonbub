@@ -1,0 +1,75 @@
+--- fpga/experiments/cu66-v102-predicate/cu66_reconstruct_stream_v91k.sv
++++ fpga/experiments/cu66-v104-control/cu66_reconstruct_stream_v91k.sv
+@@ -56,6 +56,9 @@
+     logic [63:0] snapshot_ref_generation;
+     logic [1:0] plane,mode,scale;
+     logic [12:0] tile;
++    logic [10:0] cached_cell;
++    logic [6:0] y_column;
++    logic y_odd_row;
+     logic [5:0] fill_index,emit_index;
+     logic [15:0] residual_block [0:2];
+     logic [31:0] residual_child,residual_token;
+@@ -92,7 +95,7 @@
+     assign busy=running||ref_pending;
+     assign hidden=safe_hidden(plane,tile);
+     assign tile_id=32'(plane==0?0:plane==1?5400:6750)+32'(tile);
+-    assign lookup_tile=13'(tile_id);assign lookup_cell=quant_cell(plane,tile);
++    assign lookup_tile=13'(tile_id);assign lookup_cell=cached_cell;
+     assign lookup_req=running&&state==MODE_REQ&&!kill;
+     assign in_ready=running&&state==RESIDUAL&&!kill;
+     assign out_valid=running&&state==EMIT&&math_out_valid&&!math_out_error&&!kill;
+@@ -131,6 +134,7 @@
+         if(reset||cancel||start)begin
+             running<=start&&!reset&&!cancel;done<=0;error<=0;state<=start?WAIT_ADMISSION:IDLE;
+             plane<=0;tile<=0;mode<=0;scale<=0;fill_index<=0;emit_index<=0;
++            cached_cell<=0;y_column<=0;y_odd_row<=0;
+             residual<=0;reference_pixels<=0;residual_child<=0;residual_token<=0;
+             residual_block[0]<=0;residual_block[1]<=0;residual_block[2]<=0;
+             discard_ref<=1;
+@@ -171,7 +175,7 @@
+                     end
+                     RESIDUAL:if(in_valid&&in_ready)begin
+                         if(in_epoch!=frame_epoch||in_plane!=plane||in_tile!=tile||in_index!=fill_index||
+-                           in_qcell!=quant_cell(plane,tile)||in_qscale!=scale||in_block!=residual_block[plane]||
++                           in_qcell!=cached_cell||in_qscale!=scale||in_block!=residual_block[plane]||
+                            in_child_epoch==0||in_token==0||(fill_index!=0&&(in_child_epoch!=residual_child||in_token!=residual_token)))fail(4);
+                         else begin
+                             residual[int'(fill_index)*24+:24]<=in_value;count_residuals<=count_residuals+1;
+@@ -196,10 +200,21 @@
+                         if(emit_index==63)begin
+                             emit_index<=0;
+                             if(tile+1==(plane==0?13'd5400:13'd1350))begin
+-                                tile<=0;
++                                tile<=0;cached_cell<=0;y_column<=0;y_odd_row<=0;
+                                 if(plane==2)state<=WAIT_DONE;
+                                 else begin plane<=plane+1;state<=MODE_REQ;end
+-                            end else begin tile<=tile+1;state<=MODE_REQ;end
++                            end else begin
++                                tile<=tile+1;state<=MODE_REQ;
++                                if(plane==0)begin
++                                    if(y_column==7'd89)begin
++                                        y_column<=0;y_odd_row<=!y_odd_row;
++                                        cached_cell<=y_odd_row?cached_cell+11'd1:cached_cell-11'd44;
++                                    end else begin
++                                        y_column<=y_column+7'd1;
++                                        if(y_column[0])cached_cell<=cached_cell+11'd1;
++                                    end
++                                end else cached_cell<=cached_cell+11'd1;
++                            end
+                         end else emit_index<=emit_index+1;
+                     end
+                     WAIT_DONE:if(input_done&&!ref_pending)begin running<=0;done<=1;state<=IDLE;end
+@@ -210,6 +225,12 @@
+     end
+ `ifndef SYNTHESIS
+     always_ff @(posedge clk)if(owner_initialized&&!reset&&!cancel&&!start)begin
++        assert(cached_cell==quant_cell(plane,tile))else $fatal(1,"cached reconstruction cell diverged");
++        assert(plane<=2 && tile<(plane==0?13'd5400:13'd1350))else $fatal(1,"reconstruction coordinate range");
++        if(plane==0)begin
++            assert(y_column==7'(32'(tile)%90))else $fatal(1,"cached Y column diverged");
++            assert(y_odd_row==1'((32'(tile)/90)%2))else $fatal(1,"cached Y row parity diverged");
++        end
+         if(running&&state==MATH_SEND&&math_in_ready&&!snapshot_key&&mode!=1)
+             assert(math_ref_ready)else $fatal(1,"reconstruction reference handshake missing");
+         if(done)assert(!running&&!ref_pending&&count_outputs==64'd518400)else $fatal(1,"canonical completion before full output/drain");

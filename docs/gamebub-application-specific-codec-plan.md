@@ -2,6 +2,31 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-07
 
+**V104 partial checkpoint: registered control and measured DSP absorption.**
+[V104](cu66-v104/README.md) caches reconstruction coordinates and prefetches
+dequantizer products within the existing cycle schedule. Focused clocked RTL
+passes 3,024,861 edges; four paired lanes pass 288 case/profile runs and 304
+directed checks, preserving actual canonical bytes and cycle/event traces.
+The source audit passes 22/22 checks. All eight dequantizer DSPs absorb PREGs
+in native synthesis, with eight local DSPs; changed IDCT mapping increases the
+whole component from 28 to 29 DSPs. Isolated synthesis and physical results
+are distinct; [routed comparisons](cu66-v104/vendor-comparison.md) and the
+recorded selection decide the next-study source, with resource costs explicit.
+A separate 137,343-transition admission-coordinate model prepares a bounded
+control/memory experiment but does not prove actual admission reachability.
+The codec/profile, resolution, packet cap and tested public schedule remain
+frozen. Real parent clock/I/O, complete HUD/C2/transport/display integration,
+sustained hardware 30 fps and validated under-10-ms decoding remain open.
+
+The final V104 physical comparison retains V102: cached control uses 47,588
+LUTs / WNS −14.750 ns; combined uses 48,868 LUTs, 29 DSPs / −13.978 ns, versus
+V102's 48,522 / −13.976 ns. Both route without errors, and all eight
+dequantizer PREGs survive in the combined route. That register-mapping result
+preserves cycle behavior but establishes no global clock/FPS improvement;
+the 2-ps combined/V102 routed-WNS difference is a single-run observation.
+Admission indexing remains the measured bottleneck for the next state/memory
+experiment; actual owner/reachability proof must precede its bounded cache.
+
 **V103 partial checkpoint: geometry control and parser mapping evidence.**
 [V103](cu66-v103/README.md) preserves the codec, 720×480 resolution, 49,152-byte
 cap and cycle schedule while isolating two geometry-function rewrites. Four

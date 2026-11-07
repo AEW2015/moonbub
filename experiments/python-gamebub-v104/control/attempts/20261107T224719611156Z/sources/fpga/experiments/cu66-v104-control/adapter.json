@@ -1,0 +1,7 @@
+{
+  "extra_ports": ",\n    output logic [1:0] verify_plane,\n    output logic [12:0] verify_tile,\n    output logic [5:0] verify_fill_index,verify_emit_index,\n    output logic [10:0] verify_cell,\n    output logic [6:0] verify_y_column,\n    output logic verify_y_odd_row\n);",
+  "assignments": {
+    "original": "    assign verify_plane=plane;assign verify_tile=tile;\n    assign verify_fill_index=fill_index;assign verify_emit_index=emit_index;\n    assign verify_cell=quant_cell(plane,tile);\n    assign verify_y_column=plane==0?7'(32'(tile)%90):7'd0;\n    assign verify_y_odd_row=plane==0?1'((32'(tile)/90)%2):1'b0;\n",
+    "candidate": "    assign verify_plane=plane;assign verify_tile=tile;\n    assign verify_fill_index=fill_index;assign verify_emit_index=emit_index;\n    assign verify_cell=cached_cell;\n    assign verify_y_column=y_column;assign verify_y_odd_row=y_odd_row;\n"
+  }
+}

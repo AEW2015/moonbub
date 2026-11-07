@@ -10,6 +10,26 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V104 implementation follow-up: [registered control and product prefetch](../cu66-v104/README.md)
+now have clocked component parity (3,024,861 focused edges, 288 paired
+case/profile runs and 304 directed checks). Native synthesis confirms all
+eight dequantizer DSPs absorb PREGs while their local count stays eight;
+global IDCT mapping increases the whole component to 29 DSPs. This directly
+measures inference rather than assuming register absorption from source.
+Physical A/B, resource headroom and unchanged full-frame cycles still govern
+selection; no frame-rate or power gain follows from PREG use alone. The
+137,343-transition admission-coordinate model is conditional arithmetic and
+proposed owner gating, not actual protocol or RTL proof. E7/E6, parent clock/
+I/O, hardware 30-fps/under-10-ms and whole-system integration remain open;
+this adds no HEVC/AV1 quality or bitrate comparison.
+
+Final V104 routing retains V102: cached control saves area but has −14.750-ns
+WNS, while combined keeps eight dequantizer PREGs at 48,868 LUTs / 29 DSPs and
+−13.978-ns WNS. Its 2-ps difference from V102's −13.976 ns does not establish
+a routed speed gain in one run. Both route without errors. This separates
+successful register inference from system timing and directs the next study
+to the still-dominant admission/index and memory-service paths.
+
 V103 implementation follow-up: [geometry and parser studies](../cu66-v103/README.md)
 retain exact component behavior across 288 paired case/profile runs and 304
 directed checks, with independent function probes and a source/provenance audit.

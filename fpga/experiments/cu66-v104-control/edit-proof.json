@@ -1,0 +1,45 @@
+{
+  "baseline_revision": "1d0a702a758787522723ac52ff44a1bf220c39d1",
+  "candidate": "fpga/experiments/cu66-v104-control/cu66_reconstruct_stream_v91k.sv",
+  "candidate_sha256": "445e1b96fc931cf1a8a6cabbf7f111a199197264eb8ab35f9dde871ab010ecb8",
+  "edits": [
+    {
+      "after": "    logic [12:0] tile;\n    logic [10:0] cached_cell;\n    logic [6:0] y_column;\n    logic y_odd_row;",
+      "before": "    logic [12:0] tile;",
+      "occurrences": 1
+    },
+    {
+      "after": "assign lookup_cell=cached_cell;",
+      "before": "assign lookup_cell=quant_cell(plane,tile);",
+      "occurrences": 1
+    },
+    {
+      "after": "in_qcell!=cached_cell",
+      "before": "in_qcell!=quant_cell(plane,tile)",
+      "occurrences": 1
+    },
+    {
+      "after": "            plane<=0;tile<=0;mode<=0;scale<=0;fill_index<=0;emit_index<=0;\n            cached_cell<=0;y_column<=0;y_odd_row<=0;",
+      "before": "            plane<=0;tile<=0;mode<=0;scale<=0;fill_index<=0;emit_index<=0;",
+      "occurrences": 1
+    },
+    {
+      "after": "                                tile<=0;cached_cell<=0;y_column<=0;y_odd_row<=0;\n                                if(plane==2)",
+      "before": "                                tile<=0;\n                                if(plane==2)",
+      "occurrences": 1
+    },
+    {
+      "after": "                            end else begin\n                                tile<=tile+1;state<=MODE_REQ;\n                                if(plane==0)begin\n                                    if(y_column==7'd89)begin\n                                        y_column<=0;y_odd_row<=!y_odd_row;\n                                        cached_cell<=y_odd_row?cached_cell+11'd1:cached_cell-11'd44;\n                                    end else begin\n                                        y_column<=y_column+7'd1;\n                                        if(y_column[0])cached_cell<=cached_cell+11'd1;\n                                    end\n                                end else cached_cell<=cached_cell+11'd1;\n                            end",
+      "before": "                            end else begin tile<=tile+1;state<=MODE_REQ;end",
+      "occurrences": 1
+    },
+    {
+      "after": "    always_ff @(posedge clk)if(owner_initialized&&!reset&&!cancel&&!start)begin\n        assert(cached_cell==quant_cell(plane,tile))else $fatal(1,\"cached reconstruction cell diverged\");\n        assert(plane<=2 && tile<(plane==0?13'd5400:13'd1350))else $fatal(1,\"reconstruction coordinate range\");\n        if(plane==0)begin\n            assert(y_column==7'(32'(tile)%90))else $fatal(1,\"cached Y column diverged\");\n            assert(y_odd_row==1'((32'(tile)/90)%2))else $fatal(1,\"cached Y row parity diverged\");\n        end",
+      "before": "    always_ff @(posedge clk)if(owner_initialized&&!reset&&!cancel&&!start)begin",
+      "occurrences": 1
+    }
+  ],
+  "original": "fpga/experiments/cu66-v102-predicate/cu66_reconstruct_stream_v91k.sv",
+  "schema": "v104-control-exact-edit-proof-v1",
+  "scope": "Reapply these seven exact edits to the committed selected V102 source to recover the complete production candidate; all other code unchanged."
+}
