@@ -1,6 +1,6 @@
 """Hash current deliverables without equating evidence presence to hardware readiness."""
 from pathlib import Path
-import hashlib,json
+import hashlib,json,runpy
 root=Path('C:/mb70');p=Path(__file__).resolve().parent;b=root/'dy71-v025-20261107-v003';fw=root/'firmware/experiments/v43-dy71-bulk-hud-20261107'
 arts=[]
 def add(role,f):
@@ -14,15 +14,30 @@ for folder in ['functional04','pins05','legacy05','xsim-vendor04','xsim-boundary
   if f.suffix in ['.json','.log']:add('functional_evidence',f)
 for f in fw.joinpath('release-bulk-hud-v002').glob('*'):add('esp32_image',f)
 for f in ['synth-execution.json','implementation-execution.json','timing-summary.rpt','route-status.rpt','drc.rpt','routed.dcp','bulk-port-gate.json']:add('implementation_evidence',b/f)
+timing_helper=runpy.run_path(str(root/'scripts/cu66-v71/image_dy71_candidate.py'))
+candidates=[]
+for name in ['dy71-v025-20261107-v003','dy71-v025-20261107-v003/postroute01','dy71-v025-20261107-v003/postroute02','dy71-v026-20261107-v001','dy71-v027-20261107-v001']:
+ candidate=root/name
+ report=candidate/'timing-summary.rpt'
+ row=dict(build=name,status='incomplete',hardware_tested=False)
+ if report.is_file():
+  add('candidate_timing',report)
+  try:
+   row['metrics']=timing_helper['timing_metrics'](report.read_text())
+   row['status']='pass'
+  except (AssertionError,ValueError) as error:
+   row['status']='fail'
+   row['reason']=str(error)
+ candidates.append(row)
 checks={
  'rtl_component':dict(status='pass',evidence=(p/'functional04/result.json').relative_to(root).as_posix()),
  'pin_control_cdc':dict(status='pass' if (p/'pins05/result.json').is_file() else 'incomplete',evidence=(p/'pins05/result.json').relative_to(root).as_posix()),
  'legacy_csr':dict(status='pass' if (p/'legacy05/result.json').is_file() else 'incomplete',evidence=(p/'legacy05/result.json').relative_to(root).as_posix()),
  'full_synth_cell':dict(status='pass' if (p/'xsim-full-synth02/result.json').is_file() else 'incomplete',evidence=(p/'xsim-full-synth02/result.json').relative_to(root).as_posix()),
- 'routed_timing':dict(status='incomplete',evidence=(b/'timing-summary.rpt').relative_to(root).as_posix()),
+ 'routed_timing':dict(status=candidates[0]['status'],evidence=(b/'timing-summary.rpt').relative_to(root).as_posix()),
  'native_audit_and_image':dict(status='incomplete'),
  'exact_candidate_hardware':dict(status='incomplete'),
  'continuous_unique_30fps':dict(status='incomplete'),
 }
-(p/'development-manifest.json').write_text(json.dumps(dict(overall='INCOMPLETE',artifacts=arts,checks=checks,c_check_handoff='UNAVAILABLE_MANUAL_HASH_INTEGRITY_ONLY',physical_baseline='V42/V023 endpoint held; no hardware mutations during this development',scope='Passing files are executed evidence; timing/image/hardware are separate mandatory gates.'),indent=2)+'\n')
+(p/'development-manifest.json').write_text(json.dumps(dict(overall='INCOMPLETE',artifacts=arts,checks=checks,candidates=candidates,c_check_handoff='UNAVAILABLE_MANUAL_HASH_INTEGRITY_ONLY',physical_baseline='V42/V023 endpoint held; no hardware mutations during this development',scope='Passing files are executed evidence; timing/image/hardware are separate mandatory gates.'),indent=2)+'\n')
 print('INCOMPLETE_MANIFEST_WRITTEN',len(arts),'artifacts')

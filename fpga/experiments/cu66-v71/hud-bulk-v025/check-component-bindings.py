@@ -20,7 +20,9 @@ for frame in json.loads((p/'native-gold/result.json').read_text())['frames']:
  words=(p/'native-gold'/('words'+str(frame['frame'])+'.hex')).read_text().split();raw=b''.join(int(w,16).to_bytes(2,'little')for w in words)
  assert len(raw)==frame['bytes'] and hashlib.sha256(raw).hexdigest()==frame['sha256'] and format(zlib.crc32(raw),'08x')==frame['crc32']
 # Full-build export is identical in named physical cleanup children.
-if 'dy71-v026-'in str(b):
+if 'dy71-v027-'in str(b):
+ q=p.parent/'reset-bufg-v027/xsim-full-synth01'
+elif 'dy71-v026-'in str(b):
  q=p.parent/'rows-idle-capture-v026/xsim-full-synth01'
 else:q=p/'xsim-full-synth02'
 x=json.loads((q/'result.json').read_text());assert x['status']=='PASS_XSIM_POST_SYNTH_BULK_NATIVE_WORDS' and x['netlist_sha256']==sha(b/'bulk-funcsim.v')
