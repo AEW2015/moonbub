@@ -1,0 +1,47 @@
+#include "codec.hpp"
+#include <fstream>
+#include <iostream>
+#include <random>
+#include <filesystem>
+using namespace cu66;
+static unsigned checks=0,rejections=0;
+static void check(bool value,const char *message) {need(value,message);++checks;}
+static void reject(Bytes bytes,unsigned blocks) {
+  bool failed=false;try {cu92::decode(bytes,blocks);}catch(const std::exception &) {failed=true;}
+  check(failed,"EC92 malformed accepted");++rejections;
+}
+static void crc(Bytes &bytes) {bytes.resize(bytes.size()-4);cu85::put32(bytes,crc32(bytes));}
+static void write(const std::filesystem::path &path,const Bytes &bytes) {
+  std::ofstream file(path,std::ios::binary);file.write(reinterpret_cast<const char*>(bytes.data()),std::streamsize(bytes.size()));need(bool(file),"fixture write");
+}
+int main(int argc,char **argv) {try {
+  need(argc==2,"fixture output directory required");std::filesystem::path directory(argv[1]);std::filesystem::create_directories(directory);
+  std::ofstream manifest(directory/"manifest.json");manifest<<"{\"schema\":\"ec92-native-fixtures-v1\",\"fixtures\":[";bool first=true;
+  std::mt19937 random(920062);unsigned families=0;
+  for(unsigned family=0;family<5;++family) {
+    unsigned blocks=family==3?1:16;std::vector<int16_t> values(blocks*64);
+    for(size_t i=0;i<values.size();++i) {
+      if(family==1&&i%11==0)values[i]=int16_t((int(i)%5-2)*1024);
+      if(family==2&&random()%17==0)values[i]=int16_t(int(random()%41)-20);
+      if(family==3||family==4)values[i]=int16_t(int(random()%4097)-2048);
+    }
+    const auto prepared=cu92::prepare(values);Bytes packed;for(auto value:values)cu85::put16(packed,uint16_t(value));
+    for(unsigned mask=0;mask<16;++mask) {
+      auto packet=cu92::assemble(prepared,mask);cu92::DecodeStats stats;check(cu92::decode_ec92(packet,blocks,1,&stats)==values,"EC92 fixture parity");
+      std::string name="family"+std::to_string(family)+"-mask"+std::to_string(mask)+".ec92";write(directory/name,packet);
+      if(!first)manifest<<',';
+      first=false;
+      manifest<<"{\"path\":\""<<name<<"\",\"blocks\":"<<blocks<<",\"requested_mask\":"<<mask<<",\"wire_mask\":"<<unsigned(packet[6])<<",\"raw\":"<<(packet[5]?"true":"false")<<",\"coefficient_sha256\":\""<<hex(sha256(packed))<<"\",\"sha256\":\""<<hex(sha256(packet))<<"\"}";
+      auto bad=packet;bad[6]|=16;crc(bad);reject(bad,blocks);bad=packet;bad[7]=1;crc(bad);reject(bad,blocks);
+      bad=packet;bad[14]=1;crc(bad);reject(bad,blocks);bad=packet;bad[5]=2;crc(bad);reject(bad,blocks);
+      bad=packet;bad[0]='X';crc(bad);reject(bad,blocks);bad=packet;bad[4]=2;crc(bad);reject(bad,blocks);
+      bad=packet;bad[8]^=1;crc(bad);reject(bad,blocks);bad=packet;bad[16]^=1;crc(bad);reject(bad,blocks);
+      bad=packet;bad.back()^=1;reject(bad,blocks);bad=packet;bad.push_back(0);reject(bad,blocks);
+      for(size_t cut=0;cut<std::min(size_t(48),packet.size());++cut)reject(Bytes(packet.begin(),packet.begin()+std::ptrdiff_t(cut)),blocks);
+      if(packet[5]) {bad=packet;bad[6]=1;crc(bad);reject(bad,blocks);}
+    }
+    ++families;
+  }
+  manifest<<"]}\n";need(bool(manifest),"manifest write");
+  std::cout<<"{\"status\":\"PASS\",\"families\":"<<families<<",\"fixtures\":80,\"checks\":"<<checks<<",\"rejections\":"<<rejections<<"}\n";return 0;
+}catch(const std::exception &error) {std::cerr<<"EC92_TEST_FAIL "<<error.what()<<'\n';return 1;}}

@@ -2,6 +2,21 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+**V92 research lane: V92a–c software evidence now qualified; V92d open.**
+The [per-context entropy study](cu66-v92/README.md) emits actual EC92 alternatives
+for the four DC/AC streams in each plane, with an explicit CS92 frame profile.
+All 21,936 candidates across 457 sources pass native coefficient checks;
+independent Python verifies every distinct stream and its recombination.
+All 1,828 selected complete packets preserve exact pixels, references, HUD,
+RGB565, roots and seals. The bounded selector matches 1,871,872 exhaustive
+combinations. At the same 15% byte allowance, context selection reduces remaining
+adaptive decisions 1,444,956 → 464,660 while using 31,453 more complete bytes
+over the corpus. This is a work/byte tradeoff, not a measured FPGA speedup.
+Minimum-byte coding saves only 2,560 complete bytes versus the old AB38 control.
+Host preparation is measured, including discarded candidates; full integrated
+costing and the mixed-context RTL receiver remain V92d gates. See
+[results and limitations](cu66-v92/results.md). The V91 control below is retained.
+
 **Current checkpoint: V91l remains partial.** The
 [bounded reference-tile grant experiment](cu66-v91l-tile-grant/README.md)
 retains exact source bytes and display leases while granting up to four

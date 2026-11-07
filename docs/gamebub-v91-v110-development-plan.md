@@ -15,6 +15,18 @@ RTL for **7-series technology mapping, placement, routing and timing closure**.
 Freeze the selected codec before that phase so a physical implementation change
 can be compared against a stable function and workload.
 
+**V92 research update:** [V92a–c software evidence](cu66-v92/README.md) now covers
+explicit EC92/CS92 framing, real per-context AB38/BR88 alternatives, independent
+Python/native coefficient parity, 1,828 complete native frame reconstructions
+and measured bounded host preparation on the 457-source corpus. Selection
+matches all 4,096 combinations per frame. Under the same 15% allowance, remaining
+adaptive decisions fall 1,444,956 → 464,660 for 31,453 additional complete bytes.
+This does not advance V91l or qualify mixed entropy in RTL. **V92d remains open**
+for integrated shared-memory/latency costs, the promoted receiver adapter and
+complete-path goldens. [Measured results](cu66-v92/results.md) retain the small
+compression gain and host-only timing limitations. Keep the V100–V110 physical
+implementation phase and both hardware milestones unchanged.
+
 ## Lettered execution path from V91d
 
 This section is the concrete next-work sequence. **V91e observability and V91f
@@ -306,7 +318,7 @@ are V92a, V92b, V92c and V92d. The existing E1–E7 controls remain applicable.
 
 | Version | a | b | c | d / exit |
 |---|---|---|---|---|
-| **V92** finer entropy/group choices | Specify context/group boundaries, framing, reset semantics and budgets. | Emit actual AB38/BR88 alternatives with all tags/headers included. | Independent Python/native decode and exact pixel/reference/HUD parity; measure bounded host preparation. | Select with integrated memory/latency costs; implement any promoted receiver adapter and rerun complete-path goldens. |
+| **V92** finer entropy/group choices | **Research grammar qualified:** EC92/CS92 context boundaries, explicit selectors, resets, RAW and complete-frame bounds. | **Actual alternatives qualified:** 21,936 EC92 chunks, both encoders once per plane, all headers/CRCs charged. | **Software evidence qualified on retained corpus:** independent Python/native decode, 1,828 complete exact pixel/reference/HUD reconstructions, bounded selection versus exhaustive search and measured host preparation. | **Open:** select with integrated memory/latency costs; implement any promoted RTL receiver adapter and rerun complete-path goldens. See [V92 evidence](cu66-v92/README.md). |
 | **V93** prefix/suffix and adaptive Rice | Define arithmetic-prefix/raw-suffix syntax and small-block Rice/RLGR controls. | Implement finite escapes, RAW fallback and independent readers. | Compare complete bytes, context resets, decoder work and host cost on the same inputs. | Promote only a measured improvement; otherwise retain the control and negative result. |
 | **V94** bounded ANS | Specify 2/4-state rANS/tANS, model IDs, tables, literals and initialization/recovery. | Implement host encoding and independent decode with table-inclusive packets. | Prototype RTL/table ports/state arithmetic and test adversarial boundaries. | Compare full-path bytes, cycles and resource/port budgets; select or reject. A fast entropy kernel alone is insufficient. |
 | **V95** application-specific palettes | Define exact 2/4/8-entry palettes, left/top runs and residual fallback. | Put bounded palette/search work on the PC; implement deterministic decoding. | Test UI/HUD, movement, noise and scene changes with complete reconstruction. | Select exact-lane wins. Keep quality-changing clustering in a separately negotiated, matched-quality experiment. |

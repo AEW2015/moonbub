@@ -10,6 +10,17 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+Follow-up experiment: [V92 E2 actual per-context choices](../cu66-v92/README.md)
+now has independent software evidence on the retained 457-source corpus.
+Minimum-byte coding saves only 2,560 complete bytes versus the frozen AB38
+control. At the same 15% byte allowance, finer selection reduces remaining
+adaptive decisions by 980,296 versus whole-plane choices, using 31,453 more
+bytes. The byte/work result supports further integrated costing, not a claim
+of faster FPGA decoding or improved picture quality. Mixed-context RTL, physical
+memory service and V92d promotion remain open; the original literature findings
+and their reported benchmark scope are unchanged. See the
+[measured results](../cu66-v92/results.md).
+
 The strongest next experiment is **a word-oriented BR88 parser coupled to a
 decoder-cost-aware host policy**. For better compression, compare a small-table
 interleaved ANS candidate and a prefix/suffix hybrid against the current
