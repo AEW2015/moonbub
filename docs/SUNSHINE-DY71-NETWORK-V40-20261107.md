@@ -1,3 +1,9 @@
+## V41 follow-up: physical SRAM admission
+
+V40 installed and connected to.157, then cleanly refused its140000-byte guard with118116free/largest37888, before any FPGA writes. No START or network payload transmission occurred.
+
+[V41 receiver fix](../firmware/experiments/v41-dy71-memory-reserve-20261107/README.md) is built/packaged and host-tested, installation pending. It caps the native arena at98304 and checks actual internal heap before each native allocation against8192reserve. Initial free-heap admission is114688 with largest24576. Forced physical-low-memory rejection is tested. Runtime stack/heap and actual network KEY/P remain untested. Same V023,16KiB worker and exact DYN1 wire/KEY/P/uploader. Windows can keep its pinned5e4013ec uploader ready and stopped; no refetch is required to send.
+
 # Sunshine / DY71 next integration gate
 
 V40 implements an explicit two-frame CU66 network lab endpoint for the color-verified V023 FPGA. It is built and tested offline, not installed. No live Windows CU66 encoder or production network agreement is established.

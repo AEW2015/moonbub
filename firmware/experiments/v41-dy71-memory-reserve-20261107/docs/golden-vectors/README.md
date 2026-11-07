@@ -1,0 +1,1 @@
+DYN1 v1 golden vectors: original KEY frame0, session7, submission timestamp11, offset0, payload1024; stored-prefix reply next1024/status0. CRC32 includes the complete header and data payload. These are network bytes, not fixture length-prefixed streams.
