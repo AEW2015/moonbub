@@ -1,0 +1,61 @@
+import { Icons } from "../../icons.slint";
+
+export component ListBox {
+    // The backend owns the confirmed selection. Assigning this locally would
+    // break its binding and hide later resets or failed hardware updates.
+    in property <int> index;
+    in property <[string]> choices;
+    in property <bool> selected;
+
+    private property <length> item-height: i-area.viewport-height / choices.length;
+
+    callback on-changed(int);
+
+    HorizontalLayout {
+        spacing: 2px;
+
+        Image {
+            source: Icons.left-caret;
+            visible: selected && index > 0;
+            colorize: #333;
+        }
+
+        i-area := Flickable {
+            viewport-y: -root.item-height * root.index;
+            viewport-height: i-items.min-height;
+            height: item-height;
+            width: i-items.min-width;
+
+            i-items := VerticalLayout {
+                width: self.min-width;
+                for choice[i] in root.choices: child-items := Text {
+                    text: choice;
+                    horizontal-alignment: right;
+                }
+            }
+        }
+
+        Image {
+            source: Icons.right-caret;
+            visible: selected && index < choices.length - 1;
+            colorize: #333;
+        }
+    }
+
+    if selected: FocusScope {
+        init => {
+            self.focus();
+        }
+        key-pressed(event) => {
+            if event.text == Key.LeftArrow {
+                on-changed(max(root.index - 1, 0));
+                return accept;
+            }
+            if event.text == Key.RightArrow {
+                on-changed(min(root.index + 1, root.choices.length - 1));
+                return accept;
+            }
+            reject
+        }
+    }
+}
