@@ -1,0 +1,32 @@
+{
+  "schema": "v101-scratch-only-change-v1",
+  "status": "PASS_SINGLE_APPROVED_SPAN",
+  "baseline_commit": "e8bb1c9cc3cec6775cf128c8fd538a56f022575f",
+  "original": {
+    "path": "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv",
+    "sha256": "d8a7a0077981715566888b9de1a7bf052a0a875258a3f26e20fb0358d56e4bf4"
+  },
+  "candidate": {
+    "path": "fpga/experiments/cu66-v101-scratch/packed_scratch_v91g2.sv",
+    "sha256": "ba0f184ae2f1a70b550208fa36535457c5115398a12a5f25ec7707426c5ee142"
+  },
+  "original_span": {
+    "first_line": 231,
+    "last_line": 238,
+    "text": "                for(integer b=1;b<=3;b=b+1) begin\n                    candidate_word_address=starts[b]+cursors[b]*4;\n                    if(!candidate_valid && cursors[b]<counts[b] &&\n                       (!cache_valid[b] || cache_address[b]!=18'(candidate_word_address & 32'hfffffff0))) begin\n                        candidate_valid=1; candidate_segment=2'(b);\n                        candidate_address=18'(candidate_word_address & 32'hfffffff0);\n                    end\n                end\n",
+    "sha256": "5755f668192d059dd7e88f4c13bbbd5d17016dbaef0e3c3f8141d5e88c18440f"
+  },
+  "candidate_span": {
+    "first_line": 231,
+    "last_line": 249,
+    "text": "                // Fixed DC/band1/band2/band3 priority; preserve final band3 word address.\n                candidate_word_address=starts[1]+cursors[1]*4;\n                if(!candidate_valid && cursors[1]<counts[1] &&\n                   (!cache_valid[1] || cache_address[1]!=18'(candidate_word_address & 32'hfffffff0))) begin\n                    candidate_valid=1; candidate_segment=2'd1;\n                    candidate_address=18'(candidate_word_address & 32'hfffffff0);\n                end\n                candidate_word_address=starts[2]+cursors[2]*4;\n                if(!candidate_valid && cursors[2]<counts[2] &&\n                   (!cache_valid[2] || cache_address[2]!=18'(candidate_word_address & 32'hfffffff0))) begin\n                    candidate_valid=1; candidate_segment=2'd2;\n                    candidate_address=18'(candidate_word_address & 32'hfffffff0);\n                end\n                candidate_word_address=starts[3]+cursors[3]*4;\n                if(!candidate_valid && cursors[3]<counts[3] &&\n                   (!cache_valid[3] || cache_address[3]!=18'(candidate_word_address & 32'hfffffff0))) begin\n                    candidate_valid=1; candidate_segment=2'd3;\n                    candidate_address=18'(candidate_word_address & 32'hfffffff0);\n                end\n",
+    "sha256": "3cecc83b2af769a37fe6693a9260594573a15bb3efb34468ab7f06cdb2f7d178"
+  },
+  "equal_prefix_sha256": "9ff196cf993cda4695efc2cbb804814a4d5d5b9072ef5cc1aa2a555555b35070",
+  "equal_suffix_sha256": "f797dff2b464aa2e24e367a231b52a94f6c0d794b79fcbbecc0c042ad5c0f0d2",
+  "source_outside_span_unchanged": true,
+  "module_header_and_ports_unchanged": true,
+  "ordering": "DC then band1 then band2 then band3; retained !candidate_valid short-circuit gating",
+  "word_address_contract": "32bit expression recomputed at each priority slot and remains band3 expression at end of normal EMIT branch; cast18bit after line alignment",
+  "new_state_or_interface": false
+}

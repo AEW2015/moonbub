@@ -2,6 +2,23 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-07
 
+**V101 partial checkpoint: clock/reset obligations and a bounded RTL change.**
+[V101](cu66-v101/README.md) adds a source-backed constraints ledger and corrects
+the prepared OOC flow to load its comparison clock before synthesis. Historical
+timing Tcl and provisional external budgets are now included; ten actual
+timing obligations remain open. The isolated scratch priority-loop change
+preserves the frozen codec/profile and passes 112 paired case/profile runs,
+136 directed checks and 43,068 focused combinational RTL cases plus independent
+trace replay. Cycles and canonical bytes remain equal. A different converted
+zigzag iterator still blocks old Yosys process lowering, while native Vivado
+2026.1 now synthesizes the original component. Its measured baseline uses
+74,340 LUTs and placement stops on distributed-RAM capacity: 22,286 needed,
+19,000 compatible sites. Synthesized WNS is −16.629 ns at 10 ns. The new
+container/license setup is reproducible; device-fit, timing and integration
+remain open. Prioritize an admission-memory read-template experiment and the
+measured reconstruction predicate/divider cone in V102. No routed clock,
+compression improvement or hardware-FPS gain is inferred.
+
 **V100 partial checkpoint: implementation evidence with explicit tool gates.**
 [V100](cu66-v100/README.md) now runs the fresh V99 q16 fixtures through unchanged
 RTL under two seeds. The standard-converted V91k component passes a separate

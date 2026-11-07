@@ -10,6 +10,20 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V101 implementation follow-up: [constraints and scratch evidence](../cu66-v101/README.md)
+now include historical timing Tcl, reset/crossing provenance and explicit open
+board/controller obligations, with the comparison clock loaded before synthesis
+in the prepared flow. The priority-loop candidate preserves actual component
+outputs and cycles across paired regressions and independent focused-trace
+replay. Old Yosys still fails on a different converted function iterator. These
+results now include native Vivado 2026.1 component synthesis and measured
+capacity/timing blockers: 22,286 distributed-RAM LUTs versus 19,000 compatible
+sites, with −16.629-ns synthesis WNS at 10 ns. Placement did not run. This
+prioritizes the admission-memory read architecture and fixed-geometry control
+predicates while leaving E7/E6 whole-path, memory-service, timing and hardware
+qualification open. It adds no new codec quality, compression or
+published-benchmark comparison.
+
 V100 implementation follow-up: the [frozen baseline](../cu66-v100/README.md)
 now has fresh-input component RTL parity and a two-seed original/converted
 V91k behavioral regression, including canonical bytes, cycles and public ports.

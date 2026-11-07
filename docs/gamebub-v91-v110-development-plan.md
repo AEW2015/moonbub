@@ -15,6 +15,26 @@ RTL for **7-series technology mapping, placement, routing and timing closure**.
 Freeze the selected codec before that phase so a physical implementation change
 can be compared against a stable function and workload.
 
+**V101 partial checkpoint: source timing audit and verified scratch candidate.**
+The [V101 handoff](cu66-v101/README.md) inventories 308 public ports, 29
+single-clock source processes, seven historical board clock roles, eight timing
+files and four flow hooks. Seven static checks pass; ten actual interface/
+physical timing obligations remain open. The prepared OOC recipe now loads
+the unchanged 10-ns comparison clock before synthesis. An isolated priority-loop
+candidate passes 112 paired case/profile runs and 136 directed checks, with
+identical baseline/candidate cycles and actual canonical bytes, plus 43,068
+focused combinational RTL cases and independent trace replay. Yosys process
+lowering still fails at a different zigzag-function iterator; the original
+RTL now synthesizes in native Vivado 2026.1. The new licensed container restores
+the exact target and produces the first native component DCP: 74,340 LUTs,
+34,985 FFs, 16 RAMB36 and 28 DSP blocks. Placement stops at `UTLZ-1`: 22,286
+distributed-RAM LUTs exceed 19,000 compatible sites. Synthesized WNS is
+−16.629 ns at the unchanged 10-ns target; there is no placed/routed clock.
+V101 board-delay derivation and methodology closure, routing and both hardware
+goals remain open. Bring the admission-memory fit prerequisite forward into
+V102, alongside the measured long reconstruction control cone; keep broader
+DSP and memory-service experiments in their dedicated phases.
+
 **V100 partial implementation baseline: fresh RTL and checked conversion.**
 The [V100 checkpoint](cu66-v100/README.md) freezes unchanged component RTL,
 policy and the 100-MHz comparison-clock XDC. Fresh V99 q16 key/P/late-CRC
@@ -467,8 +487,8 @@ replace their target-part, constraints, signoff or evidence requirements.
 | Version | a | b | c | d / exit |
 |---|---|---|---|---|
 | **V100** reproducible baseline — **partial** | **Recorded:** source-backed exact part, tool versions, unchanged component source/include/policy/XDC hashes, public interfaces; physical board identity remains open. | **Measured:** fresh RTL and original/converted behavioral parity; repeatable reconstruction leaf mapping. **Open:** full component mapping and complete-candidate endpoints. | **Prepared, blocked:** exact Artix-7 placement/routing; no achieved clock or physical fit. Workload cycles and failures retained. | **Published:** [V100 baseline](cu66-v100/README.md), frozen recipe, independent audit, exact failure receipts. Physical repeatability and checkpoints remain required after tool support is restored. |
-| **V101** constraints/methodology | Inventory primary/generated clocks, domains and reset behavior. | Derive actual interface delays and clock relationships from the board/controller requirements. | Audit methodology/DRC, CDC, exceptions and unconstrained paths. | Close critical issues and justify every exception; no invented delays or blanket false paths. |
-| **V102** pipeline/control timing | Attribute long ready/credit, mux and arithmetic paths to measured cones. | Add bounded skid/register stages and trial justified retiming. | Recheck transactions, epochs, drain and stalls; compare cycle/queue effects. | Route matched A/B variants and retain the latency/resource/clock improvement. |
+| **V101** constraints/methodology — **partial** | **Source audit passed:** 308 ports, 29 clocked processes, seven board clock roles, reset/crossing families, eight timing files and four flow hooks pinned. | **Native synthesis passed:** exact 2026.1 target, comparison clock before synthesis and source-bound DCP. **Open:** ten timing obligations and provisional board budgets. | **Measured:** native methodology/DRC/CDC, timing and exception reports. **Blocked:** pre-placement LUT RAM over-capacity; synthesis WNS −16.629 ns, I/O contracts and findings unresolved. | **Published:** [V101](cu66-v101/README.md), native component resources/reports, paired scratch-candidate regressions, reproducible runtime and fit failure. No waiver or invented timing cut; route and physical signoff remain open. |
+| **V102** pipeline/control timing | **First restore fit:** test an explicit single-read admission-memory template against V101's measured LUT RAM blocker. Attribute the 49-level reconstruction control path to actual source predicates. | Compare fixed-geometry `safe_hidden` interval logic against runtime division, then add bounded skid/register stages or justified retiming only where still needed. | Recheck all plane/tile values, memory collision/read-first behavior, transactions, epochs, counters, drain and stalls; compare cycle/queue effects independently per variant. | Repeat native resources and timing; route matched A/B variants only after the memory fits. Preserve dedicated V105 whole-system memory/service work and do not hide fit errors or relax the target. |
 | **V103** parser technology mapping | Isolate supported parser widths/lanes and diagnostic-counter costs. | Compare inferred LUT6/mux/carry implementations of prefix/refill/control logic. | Recheck every escape, boundary, malformed input and full-path workload. | Select from routed area/cycle/clock results; no assumption that a carry chain automatically wins. |
 | **V104** DSP48E1 arithmetic | Freeze bit widths, signedness, overflow and rounding proofs. | Compare DSP pipelines, symmetry, sharing and parallel transform lanes. | Confirm netlist primitive/register absorption and bit-true stall/epoch alignment. | Route and select using complete service cost, DSP/resources and achieved clock. |
 | **V105** memory mapping/locality | Inventory every memory's depth/width, ports, latency and collision policy. | Map suitable packet/coefficient/table/line storage to RAMB18/36, LUTRAM or SRL structures. | Replay with implemented read latency, real arbitration/refresh and display consumers. | Prove whole-device memory fit and service bounds; remove accidental large register muxes without changing semantics. |

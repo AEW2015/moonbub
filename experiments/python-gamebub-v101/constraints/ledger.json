@@ -1,0 +1,3689 @@
+{
+  "actual_vendor_build": {
+    "receipt": "experiments/python-gamebub-v101/constraints/2026-build/results.json",
+    "sha256": "1dbba586e8130fc2fdf53cc6048eeb7035cad7c796a385826338cc6c46ca7666",
+    "status": "SYNTHESIS_PASSED_PLACEMENT_RESOURCE_BLOCKED"
+  },
+  "auditor": {
+    "path": "scripts/cu66-v101/constraints.py",
+    "sha256": "6a313a6ad8835ac6974359fd3fb335dcd376b77d7fcedce44f6cd7457ba0b1e7"
+  },
+  "baseline": "e8bb1c9cc3cec6775cf128c8fd538a56f022575f",
+  "board": {
+    "active_build_evidence": [
+      {
+        "line": 16,
+        "path": "fpga/scripts/build_final.tcl",
+        "text": "source [file join $here timing-reviewed.tcl]"
+      }
+    ],
+    "active_historical_constraint_source_set": [
+      "fpga/evidence/lcd_pins_rev4.xdc",
+      "fpga/evidence/sdram_pins_rev4.xdc",
+      "fpga/scripts/buttons.xdc",
+      "fpga/scripts/platform.xdc",
+      "fpga/scripts/timing-reviewed.tcl"
+    ],
+    "clocks": [
+      {
+        "evidence": [
+          {
+            "line": 7,
+            "path": "fpga/evidence/lcd_pins_rev4.xdc",
+            "text": "create_clock -name clk_50mhz -period 20.000 [get_ports clk_50mhz]"
+          }
+        ],
+        "frequency_hz": 50000000,
+        "kind": "primary",
+        "name": "clk50",
+        "period_ns": 20.0,
+        "source": "clk_50mhz"
+      },
+      {
+        "evidence": [
+          {
+            "line": 16,
+            "path": "fpga/rtl/moonshine_top.sv",
+            "text": "PLLE2_BASE #(.CLKIN1_PERIOD(20.0),.CLKFBOUT_MULT(20),.DIVCLK_DIVIDE(1),.CLKOUT0_DIVIDE(5),.CLKOUT1_DIVIDE(10),.CLKOUT2_DIVIDE(10),.CLKOUT2_PHASE(279.0))"
+          }
+        ],
+        "frequency_hz": 200000000,
+        "kind": "PLL derived",
+        "name": "clk200",
+        "period_ns": 5.0,
+        "source": "service_pll.CLKOUT0"
+      },
+      {
+        "evidence": [
+          {
+            "line": 16,
+            "path": "fpga/rtl/moonshine_top.sv",
+            "text": "PLLE2_BASE #(.CLKIN1_PERIOD(20.0),.CLKFBOUT_MULT(20),.DIVCLK_DIVIDE(1),.CLKOUT0_DIVIDE(5),.CLKOUT1_DIVIDE(10),.CLKOUT2_DIVIDE(10),.CLKOUT2_PHASE(279.0))"
+          }
+        ],
+        "frequency_hz": 100000000,
+        "kind": "PLL derived",
+        "name": "clk100",
+        "period_ns": 10.0,
+        "source": "service_pll.CLKOUT1"
+      },
+      {
+        "evidence": [
+          {
+            "line": 16,
+            "path": "fpga/rtl/moonshine_top.sv",
+            "text": "PLLE2_BASE #(.CLKIN1_PERIOD(20.0),.CLKFBOUT_MULT(20),.DIVCLK_DIVIDE(1),.CLKOUT0_DIVIDE(5),.CLKOUT1_DIVIDE(10),.CLKOUT2_DIVIDE(10),.CLKOUT2_PHASE(279.0))"
+          }
+        ],
+        "frequency_hz": 100000000,
+        "kind": "PLL derived",
+        "name": "read_clk100",
+        "period_ns": 10.0,
+        "phase_degrees": 279.0,
+        "phase_ns": 7.75,
+        "source": "service_pll.CLKOUT2"
+      },
+      {
+        "evidence": [
+          {
+            "line": 21,
+            "path": "fpga/rtl/moonshine_top.sv",
+            "text": "MMCME2_BASE #(.CLKIN1_PERIOD(20.0),.CLKFBOUT_MULT_F(56.375),.DIVCLK_DIVIDE(3),.CLKOUT0_DIVIDE_F(32.0))"
+          }
+        ],
+        "frequency_hz": 29361979.166666668,
+        "frequency_hz_rational": {
+          "denominator": 96000,
+          "numerator": 2818750000000
+        },
+        "kind": "MMCM derived",
+        "name": "pclk",
+        "period_ns": 34.05764966740576,
+        "source": "panel_mmcm.CLKOUT0"
+      },
+      {
+        "kind": "forwarded output",
+        "name": "sdram_forwarded",
+        "port": "sdram_clk",
+        "relationship": "inverted clk100; historical timing source defines generated clock",
+        "source": "memory/controller/forward_clock/C"
+      },
+      {
+        "kind": "forwarded output",
+        "name": "lcd_forwarded",
+        "port": "lcd_dotclk",
+        "relationship": "inverted pclk; historical timing source defines generated clock",
+        "source": "dotclock/C"
+      }
+    ],
+    "crossings": [
+      {
+        "destination": "clk100",
+        "kind": "async FIFO Gray pointers, read/ACK mailbox and overflow Gray",
+        "rtl": [
+          "fpga/rtl/moonshine_bus_cdc.sv",
+          "fpga/rtl/moonshine_top.sv"
+        ],
+        "source": "clk200"
+      },
+      {
+        "destination": "pclk",
+        "kind": "dual-clock line banks/tokens/status and underrun Gray return",
+        "rtl": [
+          "fpga/rtl/moonshine_lcd.sv"
+        ],
+        "source": "clk100"
+      },
+      {
+        "destination": "pclk",
+        "kind": "overlay RAM/control boundary",
+        "rtl": [
+          "fpga/rtl/esp32_overlay.sv"
+        ],
+        "source": "clk200"
+      },
+      {
+        "destination": "read_clk100 then negedge clk100",
+        "kind": "phased capture/retime, related clocks",
+        "rtl": [
+          "fpga/rtl/moonshine_sdram.sv"
+        ],
+        "source": "SDRAM DQ"
+      }
+    ],
+    "existing_image": "JPEG/MSV1; not integrated custom CS88",
+    "relationship": "Primary and PLL/MMCM generated clocks share clk50; no asynchronous clock grouping is inferred by this audit.",
+    "resets": [
+      {
+        "assertion": "asynchronous on falling locked",
+        "chains": [
+          "rst200",
+          "rst100"
+        ],
+        "evidence": [
+          {
+            "line": 25,
+            "path": "fpga/rtl/moonshine_top.sv",
+            "text": "always @(posedge clk200 or negedge locked)if(!locked)rst200<=15;else rst200<={rst200[2:0],1'b0};"
+          },
+          {
+            "line": 26,
+            "path": "fpga/rtl/moonshine_top.sv",
+            "text": "always @(posedge clk100 or negedge locked)if(!locked)rst100<=15;else rst100<={rst100[2:0],1'b0};"
+          },
+          {
+            "line": 49,
+            "path": "fpga/rtl/moonshine_top.sv",
+            "text": "always @(posedge clk100)begin"
+          }
+        ],
+        "release": "four receiving rising edges",
+        "source": "service_pll.LOCKED"
+      },
+      {
+        "assertion": "asynchronous on falling plocked",
+        "chains": [
+          "rstpixel"
+        ],
+        "evidence": [
+          {
+            "line": 27,
+            "path": "fpga/rtl/moonshine_top.sv",
+            "text": "always @(posedge pclk or negedge plocked)if(!plocked)rstpixel<=15;else rstpixel<={rstpixel[2:0],1'b0};"
+          }
+        ],
+        "release": "four receiving rising edges",
+        "source": "panel_mmcm.LOCKED"
+      },
+      {
+        "assertion": "dq_capture and dq_retime have no explicit reset; consumer/controller reset gates their use",
+        "chains": [],
+        "evidence": [
+          {
+            "line": 30,
+            "path": "fpga/rtl/moonshine_sdram.sv",
+            "text": "always @(posedge read_clk)dq_capture<=dq_input;"
+          }
+        ],
+        "source": "read_clk100 capture"
+      }
+    ],
+    "sampled_async_input": {
+      "destination": "endpoint.sck_sync in clk200",
+      "is_fabric_clock_in_reviewed_RTL": false,
+      "name": "mcu_spi_clk"
+    },
+    "source": "fpga/rtl/moonshine_top.sv"
+  },
+  "component": {
+    "clock": {
+      "achieved": false,
+      "kind": "comparison target only",
+      "name": "clk",
+      "period_ns": 10.0
+    },
+    "external_delays_qualified": false,
+    "generated_clocks": [],
+    "input_port_count": 37,
+    "output_port_count": 271,
+    "port_count": 308,
+    "ports": [
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "clk",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "reset",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "start",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "abort_packet",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "out_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "out_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "out_value",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "out_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "out_fid",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "out_plane",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "out_mode",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "out_tile",
+        "packed_width": 13,
+        "signed": false,
+        "total_bits": 13,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "out_index",
+        "packed_width": 6,
+        "signed": false,
+        "total_bits": 6,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ref_req_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "ref_req_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ref_req_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ref_req_fid",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ref_req_generation",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ref_req_plane",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ref_req_tile",
+        "packed_width": 13,
+        "signed": false,
+        "total_bits": 13,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "ref_rsp_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ref_rsp_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "ref_rsp_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "ref_rsp_fid",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "ref_rsp_generation",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "ref_rsp_plane",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "ref_rsp_tile",
+        "packed_width": 13,
+        "signed": false,
+        "total_bits": 13,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "ref_rsp_pixels",
+        "packed_width": 512,
+        "signed": false,
+        "total_bits": 512,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "ref_rsp_error",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_busy",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_done",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ref_pending",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_error",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_state",
+        "packed_width": 4,
+        "signed": false,
+        "total_bits": 4,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_reconstruct_modes",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_reconstruct_residuals",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_reconstruct_outputs",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_ref_requests",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_ref_acks",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_copy_tiles",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_const_tiles",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_residual_tiles",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_ref_discarded",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_reconstruct_output_stalls",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_reconstruct_ref_wait",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_lookup_req",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_lookup_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_lookup_rsp",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_lookup_tile",
+        "packed_width": 13,
+        "signed": false,
+        "total_bits": 13,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_lookup_cell",
+        "packed_width": 11,
+        "signed": false,
+        "total_bits": 11,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_lookup_mode",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "reconstruct_lookup_scale",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "admitted_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "admitted_key",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "admitted_fid",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "admitted_generation",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "start_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "cache_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "cache_last",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "cache_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "cache_complete",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "cache_data",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "cache_ref_fid",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "cache_ref_generation",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "cache_error",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "accepted_ref_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "accepted_qcache_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "accepted_ref_fid",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "accepted_ref_generation",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_plane",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_tile",
+        "packed_width": 13,
+        "signed": false,
+        "total_bits": 13,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_qcell",
+        "packed_width": 11,
+        "signed": false,
+        "total_bits": 11,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_qscale",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "frame_state",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "frame_fid",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "core_starts",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "refill_bytes",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "blocked_starts",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "current_child_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "admission_reads",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "replay_reads",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "admission_error",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "frame_read_req",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "frame_read_rsp",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "frame_read_addr",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "frame_rsp_addr",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "frame_rsp_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "frame_read_data",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_count",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_max_count",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_max_owned",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_pending",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_active",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_push",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_pop",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_stall",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_requests",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_responses",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_pops",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_stalls",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_cancel_queued",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "queue_cancel_pending",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_child_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_token",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_done",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_plane",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_qscale",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_block",
+        "packed_width": 16,
+        "signed": false,
+        "total_bits": 16,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_tile",
+        "packed_width": 13,
+        "signed": false,
+        "total_bits": 13,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_qcell",
+        "packed_width": 11,
+        "signed": false,
+        "total_bits": 11,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_index",
+        "packed_width": 6,
+        "signed": false,
+        "total_bits": 6,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_value",
+        "packed_width": 16,
+        "signed": true,
+        "total_bits": 16,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "coefficient_error",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_error",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_busy",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_done",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 2,
+        "name": "inverse_bank_state",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 4,
+        "unpacked_range": [
+          0,
+          1
+        ]
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_fill_bank",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_math_bank",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_math_state",
+        "packed_width": 3,
+        "signed": false,
+        "total_bits": 3,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_owned_banks",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_max_owned_banks",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_launch",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_dequant",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_token",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_child_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_plane",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_qscale",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_block",
+        "packed_width": 16,
+        "signed": false,
+        "total_bits": 16,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_tile",
+        "packed_width": 13,
+        "signed": false,
+        "total_bits": 13,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_qcell",
+        "packed_width": 11,
+        "signed": false,
+        "total_bits": 11,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_coefficients",
+        "packed_width": 1024,
+        "signed": false,
+        "total_bits": 1024,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_dequantized",
+        "packed_width": 1280,
+        "signed": false,
+        "total_bits": 1280,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_count_inputs",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_count_tiles",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_count_launches",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_count_dequant",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_count_outputs",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_count_completed_tiles",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_count_input_stalls",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_count_output_stalls",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "inverse_count_cancelled_banks",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "packet_bytes",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "serial_clear",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "write_overlap",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "read_prefetch",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "tile_overlap",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "in_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "in_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "in_data",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "in_last",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_block",
+        "packed_width": 16,
+        "signed": false,
+        "total_bits": 16,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_index",
+        "packed_width": 6,
+        "signed": false,
+        "total_bits": 6,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_value",
+        "packed_width": 24,
+        "signed": true,
+        "total_bits": 24,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "residual_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "done",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "error",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "busy",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "draining",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "scratch_sealed",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "used_bytes",
+        "packed_width": 19,
+        "signed": false,
+        "total_bits": 19,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_cycles",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_input_bytes",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_dense",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_reads",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_writes",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_dense_stall",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "mem_req_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "mem_req_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "mem_req_write",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "mem_req_addr",
+        "packed_width": 18,
+        "signed": false,
+        "total_bits": 18,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "mem_req_data",
+        "packed_width": 128,
+        "signed": false,
+        "total_bits": 128,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "mem_req_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "mem_rsp_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "mem_rsp_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "mem_rsp_data",
+        "packed_width": 128,
+        "signed": false,
+        "total_bits": 128,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "mem_rsp_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "input",
+        "elements": 1,
+        "name": "mem_rsp_error",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "packet_state",
+        "packed_width": 4,
+        "signed": false,
+        "total_bits": 4,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "metadata_wait",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_running",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_allocation",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_seal_sent",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_packet_done",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_coef_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_coef_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_coef_band",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_coef_block",
+        "packed_width": 16,
+        "signed": false,
+        "total_bits": 16,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_coef_index",
+        "packed_width": 6,
+        "signed": false,
+        "total_bits": 6,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_coef_value",
+        "packed_width": 16,
+        "signed": true,
+        "total_bits": 16,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_coef_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_meta_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_meta_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_meta_raw",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_band_end_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_band_end_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_band_end_band",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_seal_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_seal_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_scratch_state",
+        "packed_width": 5,
+        "signed": false,
+        "total_bits": 5,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_scratch_return_state",
+        "packed_width": 5,
+        "signed": false,
+        "total_bits": 5,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_scratch_outstanding",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_prefetch_offer",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_prefetch_launch",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_prefetch_use",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_tile_mode",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_tile_preparing",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_prepare_bank",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_emit_bank",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_bank_ready",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_bank_owned",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_emitter_state",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_prepare_block",
+        "packed_width": 16,
+        "signed": false,
+        "total_bits": 16,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 2,
+        "name": "dbg_bank_block",
+        "packed_width": 16,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": [
+          0,
+          1
+        ]
+      },
+      {
+        "direction": "output",
+        "elements": 2,
+        "name": "dbg_bank_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": [
+          0,
+          1
+        ]
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_tile_prepare_start",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_tile_publish",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_tile_release",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 4,
+        "name": "count_emitter_state",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 256,
+        "unpacked_range": [
+          0,
+          3
+        ]
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_tile_starts",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_tile_publishes",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_tile_releases",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_prepare_output_overlap",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_prepare_output_hold",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_tile_read_output_overlap",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_tile_bank_wait",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_both_ready_wait",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_tile_prep_done_wait",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_output_valid",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_publish_release_same_edge",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "max_tile_owned",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "max_tile_ready",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_prefetch_offers",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_prefetch_accepts",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_prefetch_acks",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_prefetch_uses",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_dense_during_read_pending",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_prefetch_drain_wait",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "max_prefetch_offer",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_write_slot_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_assembler_full",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_write_enqueue",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_write_enqueues",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_write_accepts",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_write_acks",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_full_wait",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_packing_during_write_pending",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "max_write_slot",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "max_owned_lines",
+        "packed_width": 2,
+        "signed": false,
+        "total_bits": 2,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_scratch_phase",
+        "packed_width": 3,
+        "signed": false,
+        "total_bits": 3,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_scratch_assembly_bytes",
+        "packed_width": 5,
+        "signed": false,
+        "total_bits": 5,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_scratch_cache_valid",
+        "packed_width": 4,
+        "signed": false,
+        "total_bits": 4,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "dbg_scratch_head_valid",
+        "packed_width": 3,
+        "signed": false,
+        "total_bits": 3,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 16,
+        "name": "count_packet_state",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 1024,
+        "unpacked_range": [
+          0,
+          15
+        ]
+      },
+      {
+        "direction": "output",
+        "elements": 32,
+        "name": "count_scratch_state",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 2048,
+        "unpacked_range": [
+          0,
+          31
+        ]
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_coef_stall",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_metadata_wait",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_band_end_stall",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_mem_req_stall",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_mem_pending",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_input_starved",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ts_first_input",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ts_last_input",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ts_metadata_accept",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ts_last_sparse_coef",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ts_packet_done_observed",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ts_seal_accepted",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ts_scratch_sealed_observed",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ts_first_dense",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ts_last_dense",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "ts_integrated_done",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 4,
+        "name": "ts_first_coef_band",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 256,
+        "unpacked_range": [
+          0,
+          3
+        ]
+      },
+      {
+        "direction": "output",
+        "elements": 4,
+        "name": "ts_last_coef_band",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 256,
+        "unpacked_range": [
+          0,
+          3
+        ]
+      },
+      {
+        "direction": "output",
+        "elements": 4,
+        "name": "ts_band_end",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 256,
+        "unpacked_range": [
+          0,
+          3
+        ]
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "max_assembly_bytes",
+        "packed_width": 5,
+        "signed": false,
+        "total_bits": 5,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "max_cache_valid",
+        "packed_width": 3,
+        "signed": false,
+        "total_bits": 3,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "max_head_valid",
+        "packed_width": 3,
+        "signed": false,
+        "total_bits": 3,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "max_outstanding",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_read_req",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_read_rsp",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_write",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_pending",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_context_active",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_cancel",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_word_valid",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_word_ready",
+        "packed_width": 1,
+        "signed": false,
+        "total_bits": 1,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_read_addr",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_rsp_addr",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_write_addr",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_req_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_rsp_epoch",
+        "packed_width": 32,
+        "signed": false,
+        "total_bits": 32,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_read_data",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_write_data",
+        "packed_width": 8,
+        "signed": false,
+        "total_bits": 8,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_buffer_bytes",
+        "packed_width": 6,
+        "signed": false,
+        "total_bits": 6,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_buffer_highwater",
+        "packed_width": 6,
+        "signed": false,
+        "total_bits": 6,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "stage_purpose",
+        "packed_width": 3,
+        "signed": false,
+        "total_bits": 3,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_stage_reads",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_stage_responses",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_stage_writes",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_stage_fetch_wait",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      },
+      {
+        "direction": "output",
+        "elements": 1,
+        "name": "count_stage_word_hold",
+        "packed_width": 64,
+        "signed": false,
+        "total_bits": 64,
+        "unpacked_range": null
+      }
+    ],
+    "reset_contract": "All selected clocked source processes are posedge clk. Reset/cancel/start controls are sampled synchronously; assertion processes are included in the static event inventory. No reset synchronizer or asynchronous input contract is provided by this OOC top.",
+    "reset_evidence": [
+      {
+        "line": 197,
+        "path": "fpga/experiments/cu66-v91k/cs88_pipeline_v91k.sv",
+        "text": "if(reset||abort_packet||accepted_start)begin inverse_fault_ack<=0;reconstruction_fault_ack<=0;end"
+      }
+    ],
+    "sensitivity_events": [
+      {
+        "event_expression": "posedge clk",
+        "line": 90,
+        "path": "fpga/experiments/cu66-v91/br88_rice_elastic.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 168,
+        "path": "fpga/experiments/cu66-v91/br88_rice_elastic.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 95,
+        "path": "fpga/experiments/cu66-v91b/br88_context.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 155,
+        "path": "fpga/experiments/cu66-v91b/br88_context.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 134,
+        "path": "fpga/experiments/cu66-v91d/br88_packet_ingress.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 222,
+        "path": "fpga/experiments/cu66-v91d/br88_packet_ingress.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 262,
+        "path": "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 154,
+        "path": "fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 182,
+        "path": "fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 309,
+        "path": "fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 211,
+        "path": "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 315,
+        "path": "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 341,
+        "path": "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 151,
+        "path": "fpga/experiments/cu66-v91i2/cs88_admission_v91i2a.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 46,
+        "path": "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 89,
+        "path": "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 124,
+        "path": "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 194,
+        "path": "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 47,
+        "path": "fpga/experiments/cu66-v69/inverse/cu66_dequant.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 91,
+        "path": "fpga/experiments/cu66-v69/inverse/cu66_idct8x8.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 31,
+        "path": "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 235,
+        "path": "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 291,
+        "path": "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 312,
+        "path": "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 397,
+        "path": "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 120,
+        "path": "fpga/experiments/cu66-v91k/cu66_reconstruct_stream_v91k.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 129,
+        "path": "fpga/experiments/cu66-v91k/cu66_reconstruct_stream_v91k.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 211,
+        "path": "fpga/experiments/cu66-v91k/cu66_reconstruct_stream_v91k.sv"
+      },
+      {
+        "event_expression": "posedge clk",
+        "line": 196,
+        "path": "fpga/experiments/cu66-v91k/cs88_pipeline_v91k.sv"
+      }
+    ],
+    "source": "fpga/experiments/cu66-v91k/cs88_pipeline_v91k.sv",
+    "top": "cs88_pipeline_v91k"
+  },
+  "gates": {
+    "board_IO_delays_qualified": false,
+    "complete_validated_decode_under10ms": false,
+    "exact_part_synthesis": true,
+    "exact_part_tool_available": true,
+    "hardware_30fps": false,
+    "methodology_DRC_CDC_signoff": false,
+    "placed_and_routed": false,
+    "source_inventory_pass": true
+  },
+  "historical_SCM_timing_changes": [],
+  "historical_flow_hooks": [
+    {
+      "constraint_source": "fpga/scripts/timing.tcl",
+      "evidence": [
+        {
+          "line": 15,
+          "path": "fpga/scripts/build.tcl",
+          "text": "source [file join $here timing.tcl]"
+        }
+      ],
+      "path": "fpga/scripts/build.tcl",
+      "sha256": "eccb62d536a9ced6f90cbf7b4bc49f4b1f379ea0ac95b6482175bac295b717e9"
+    },
+    {
+      "constraint_source": "fpga/scripts/timing-reviewed.tcl",
+      "evidence": [
+        {
+          "line": 16,
+          "path": "fpga/scripts/build_final.tcl",
+          "text": "source [file join $here timing-reviewed.tcl]"
+        }
+      ],
+      "path": "fpga/scripts/build_final.tcl",
+      "sha256": "600c112a9e48949b4d3d17042f4caa8063c73c4853853ad78c640f19c11f7bbc"
+    },
+    {
+      "constraint_source": "fpga/scripts/timing-reviewed.tcl",
+      "evidence": [
+        {
+          "line": 8,
+          "path": "fpga/scripts/resume_impl.tcl",
+          "text": "source [file join $here timing-reviewed.tcl]"
+        }
+      ],
+      "path": "fpga/scripts/resume_impl.tcl",
+      "sha256": "ac9608882343e7a4aba52b602470a69559e8d5f77d015bb38e1c6ff2ac0a42ce"
+    },
+    {
+      "constraint_source": "Inherited exact v3 routed checkpoint; not a new XDC import",
+      "evidence": [
+        {
+          "line": 6,
+          "path": "fpga/scripts/close_timing.tcl",
+          "text": "open_checkpoint [file join $root attempts v3-routed moonshine_routed.dcp]"
+        }
+      ],
+      "path": "fpga/scripts/close_timing.tcl",
+      "sha256": "d4a56e569aa7dafc5a6da637073aa4effdbb84a34fe4ef64444c8acdfd6d9bca"
+    }
+  ],
+  "historical_timing_sources": [
+    {
+      "commands": [
+        {
+          "command": "set_false_path",
+          "line": 16,
+          "text": "set_false_path -from [get_ports btn_*] -to [get_cells -hierarchical -filter {NAME =~ *button_meta_reg*}]"
+        }
+      ],
+      "path": "fpga/evidence/button_pins_rev4.xdc",
+      "scope": "Historical source statements; not elaborated object coverage or current candidate constraints",
+      "sha256": "f2a1359e23332ae447cddd19c4d4b6183b4f5037244eec0cac7acb32c26bf36a"
+    },
+    {
+      "commands": [
+        {
+          "command": "create_clock",
+          "line": 7,
+          "text": "create_clock -name clk_50mhz -period 20.000 [get_ports clk_50mhz]"
+        }
+      ],
+      "path": "fpga/evidence/lcd_pins_rev4.xdc",
+      "scope": "Historical source statements; not elaborated object coverage or current candidate constraints",
+      "sha256": "e5ac4f3c8e1e55726920b297e1a451b1b6427b94b9d16ff1d414da90a97103a3"
+    },
+    {
+      "commands": [],
+      "path": "fpga/evidence/sdram_pins_rev4.xdc",
+      "scope": "Historical source statements; not elaborated object coverage or current candidate constraints",
+      "sha256": "48844ee5f87ed0a6ff75c188bc604e04c38b1967957f8dbecff88bdac64c1084"
+    },
+    {
+      "commands": [],
+      "path": "fpga/scripts/buttons.xdc",
+      "scope": "Historical source statements; not elaborated object coverage or current candidate constraints",
+      "sha256": "6a2aba27f5f90ca9877450e053809f6151a95b4fc893c35cd95a0e5549c834d7"
+    },
+    {
+      "commands": [],
+      "path": "fpga/scripts/platform.xdc",
+      "scope": "Historical source statements; not elaborated object coverage or current candidate constraints",
+      "sha256": "b5501b177fb48e3c82cd6a633f6184976e02b17a297bece914d5f7fe18f02905"
+    },
+    {
+      "commands": [
+        {
+          "command": "create_generated_clock",
+          "line": 2,
+          "text": "create_generated_clock -name sdram_forwarded -source [get_pins memory/controller/forward_clock/C] -divide_by 1 -invert [get_ports sdram_clk]"
+        },
+        {
+          "command": "set_output_delay",
+          "line": 6,
+          "text": "set_output_delay -clock sdram_forwarded -max 2.0 $outputs"
+        },
+        {
+          "command": "set_output_delay",
+          "line": 7,
+          "text": "set_output_delay -clock sdram_forwarded -min -1.3 $outputs"
+        },
+        {
+          "command": "set_input_delay",
+          "line": 8,
+          "text": "set_input_delay -clock sdram_forwarded -max 7.0 [get_ports {sdram_dq[*]}]"
+        },
+        {
+          "command": "set_input_delay",
+          "line": 9,
+          "text": "set_input_delay -clock sdram_forwarded -min 2.0 [get_ports {sdram_dq[*]}]"
+        },
+        {
+          "command": "create_generated_clock",
+          "line": 10,
+          "text": "create_generated_clock -name lcd_forwarded -source [get_pins dotclock/C] -divide_by 1 -invert [get_ports lcd_dotclk]"
+        },
+        {
+          "command": "set_output_delay",
+          "line": 12,
+          "text": "set_output_delay -clock lcd_forwarded -max 2.0 [get_ports {lcd_hsync lcd_vsync lcd_data_en lcd_data_r[*] lcd_data_g[*] lcd_data_b[*]}]"
+        },
+        {
+          "command": "set_output_delay",
+          "line": 13,
+          "text": "set_output_delay -clock lcd_forwarded -min -1.0 [get_ports {lcd_hsync lcd_vsync lcd_data_en lcd_data_r[*] lcd_data_g[*] lcd_data_b[*]}]"
+        },
+        {
+          "command": "set_false_path",
+          "line": 16,
+          "text": "set_false_path -to [get_pins -of_objects $endpoint_meta -filter {REF_PIN_NAME == D}]"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 17,
+          "text": "set_max_delay -datapath_only 10.0 -from [all_registers -clock_pins] -to [get_ports {mcu_spi_d[*] mcu_irq_n}]"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 18,
+          "text": "set_max_delay -datapath_only 10.0 -from [get_ports mcu_spi_cs_n] -to [get_ports {mcu_spi_d[*]}]"
+        },
+        {
+          "command": "set_false_path",
+          "line": 22,
+          "text": "set_false_path -to [get_pins -of_objects $sync0 -filter {REF_PIN_NAME == D}]"
+        },
+        {
+          "command": "set_false_path",
+          "line": 24,
+          "text": "set_false_path -to [get_pins -of_objects $rst -filter {REF_PIN_NAME == PRE || REF_PIN_NAME == CLR}]"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 26,
+          "text": "set_max_delay -datapath_only 10.0 -from [get_cells -hier -regexp {bridge/read_address_reg.*}] -to [get_cells -hier -regexp {bridge/latched_address_reg.*}]"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 27,
+          "text": "set_max_delay -datapath_only 10.0 -from [get_cells -hier -regexp {bridge/response_reg.*}] -to [get_cells -hier -regexp {bridge/spi_rdata_reg.*}]"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 28,
+          "text": "set_max_delay -datapath_only 10.0 -from [get_cells -hier -regexp {lcd/request_line[01]_reg.*}] -to [get_cells -hier -regexp {lcd/line_req_address_reg.*}]"
+        }
+      ],
+      "path": "fpga/scripts/timing.tcl",
+      "scope": "Historical source statements; not elaborated object coverage or current candidate constraints",
+      "sha256": "7b23c4afa64837d1ba1a5434652fa0a567d303932e2dee501d621b9bc742dda8"
+    },
+    {
+      "commands": [
+        {
+          "command": "create_generated_clock",
+          "line": 3,
+          "text": "create_generated_clock -name sdram_forwarded -source [get_pins memory/controller/forward_clock/C] -divide_by 1 -invert [get_ports sdram_clk]"
+        },
+        {
+          "command": "set_output_delay",
+          "line": 7,
+          "text": "set_output_delay -clock sdram_forwarded -max 2.0 $outputs"
+        },
+        {
+          "command": "set_output_delay",
+          "line": 8,
+          "text": "set_output_delay -clock sdram_forwarded -min -1.3 $outputs"
+        },
+        {
+          "command": "set_input_delay",
+          "line": 9,
+          "text": "set_input_delay -clock sdram_forwarded -max 7.0 [get_ports {sdram_dq[*]}]"
+        },
+        {
+          "command": "set_input_delay",
+          "line": 10,
+          "text": "set_input_delay -clock sdram_forwarded -min 2.0 [get_ports {sdram_dq[*]}]"
+        },
+        {
+          "command": "set_false_path",
+          "line": 28,
+          "text": "set_false_path -fall_from $sdr_command_clock -through $sdr_q -to [get_ports {sdram_dq[*]}]"
+        },
+        {
+          "command": "create_generated_clock",
+          "line": 30,
+          "text": "create_generated_clock -name lcd_forwarded -source [get_pins dotclock/C] -divide_by 1 -invert [get_ports lcd_dotclk]"
+        },
+        {
+          "command": "set_output_delay",
+          "line": 31,
+          "text": "set_output_delay -clock lcd_forwarded -max 2.0 [get_ports {lcd_hsync lcd_vsync lcd_data_en lcd_data_r[*] lcd_data_g[*] lcd_data_b[*]}]"
+        },
+        {
+          "command": "set_output_delay",
+          "line": 32,
+          "text": "set_output_delay -clock lcd_forwarded -min -1.0 [get_ports {lcd_hsync lcd_vsync lcd_data_en lcd_data_r[*] lcd_data_g[*] lcd_data_b[*]}]"
+        },
+        {
+          "command": "set_false_path",
+          "line": 42,
+          "text": "set_false_path -to [get_pins -of_objects $cells -filter {REF_PIN_NAME == D}]"
+        },
+        {
+          "command": "set_multicycle_path",
+          "line": 61,
+          "text": "set_multicycle_path 2 -setup -from [get_ports {sdram_dq[*]}] -to [get_pins -of_objects $receive_cells -filter {REF_PIN_NAME == D}]"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 69,
+          "text": "set_max_delay -datapath_only 10.0 -from [all_registers -clock_pins] -to [get_ports {mcu_spi_d[*] mcu_irq_n}]"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 70,
+          "text": "set_max_delay -datapath_only 10.0 -from [get_ports mcu_spi_cs_n] -to [get_ports {mcu_spi_d[*]}]"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 81,
+          "text": "set_max_delay -datapath_only 10.0 -from $read_source_clock -to $rg1"
+        },
+        {
+          "command": "set_bus_skew",
+          "line": 82,
+          "text": "set_bus_skew 10.0 -from [all_registers -clock $read_source_clock] -to $rg1"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 87,
+          "text": "set_max_delay -datapath_only 5.0 -from $write_source_clock -to $wg1"
+        },
+        {
+          "command": "set_bus_skew",
+          "line": 88,
+          "text": "set_bus_skew 5.0 -from [all_registers -clock $write_source_clock] -to $wg1"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 90,
+          "text": "set_max_delay -datapath_only 5.0 -from $write_source_clock -to $transport_meta"
+        },
+        {
+          "command": "set_bus_skew",
+          "line": 91,
+          "text": "set_bus_skew 5.0 -from [all_registers -clock $write_source_clock] -to $transport_meta"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 94,
+          "text": "set_max_delay -datapath_only 34.0 -from $ugray -to $usync"
+        },
+        {
+          "command": "set_bus_skew",
+          "line": 95,
+          "text": "set_bus_skew 34.0 -from $ugray -to $usync"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 100,
+          "text": "set_max_delay -datapath_only 10.0 -from $read_address -to $latched_address"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 103,
+          "text": "set_max_delay -datapath_only 10.0 -from $response -to $spi_rdata"
+        },
+        {
+          "command": "set_max_delay",
+          "line": 106,
+          "text": "set_max_delay -datapath_only 10.0 -from $request_lines -to $line_address"
+        },
+        {
+          "command": "set_false_path",
+          "line": 109,
+          "text": "set_false_path -to [get_pins -of_objects $reset_cells -filter {REF_PIN_NAME == PRE || REF_PIN_NAME == CLR}]"
+        }
+      ],
+      "path": "fpga/scripts/timing-reviewed.tcl",
+      "scope": "Historical source statements; not elaborated object coverage or current candidate constraints",
+      "sha256": "376ddf38edfd817758b8893765fcdfb4a5f94d35baf18659a56a7cf69b2fdf49"
+    },
+    {
+      "commands": [
+        {
+          "command": "create_clock",
+          "line": 4,
+          "text": "create_clock -name component_clk -period 10.000 [get_ports clk]"
+        }
+      ],
+      "path": "fpga/experiments/cu66-v100-baseline/component.xdc",
+      "scope": "Historical source statements; not elaborated object coverage or current candidate constraints",
+      "sha256": "a83ac18d704585c8dc9b8a61b661ed92f728bedb3cfe2917e9d4b8bcaef55e09"
+    }
+  ],
+  "limits": [
+    "Source event/constraint counts are not instantiated register, CDC path or vendor-violation counts.",
+    "Historical board constraints are inventory only, not applied to the OOC candidate.",
+    "No measured board requirements, exception waivers, mapped netlist or timing signoff is manufactured."
+  ],
+  "recipe_sha256": {
+    "fpga/experiments/cu66-v101-constraints/METHODOLOGY_RESOLUTION_REPORT.md": "4ca0414c5b838938e2e37931b36529b88bb2c82eb4579556ab8c11205e09e798",
+    "fpga/experiments/cu66-v101-constraints/component.xdc": "cc048b5204da111eb8d6660dc4950a8b5f3b85939c69d4085f6b6c9da678c44c",
+    "fpga/experiments/cu66-v101-constraints/query.tcl": "6311936f9aa71974e93f439ae1478b9c8defd925fcdd461bd19ba379b1086b10",
+    "fpga/experiments/cu66-v101-constraints/report.tcl": "4c31d81d30ff82bb7002b7f108d14e91c27fb9548ffeacef6035dc6495fd5305",
+    "fpga/experiments/cu66-v101-constraints/run.tcl": "ef534b23bb5774fc098d662e91d63732ec540e4128fe243bfa31c989aca52178",
+    "fpga/experiments/cu66-v101-constraints/run_vivado2026.py": "20ecfe2cd89115298bf5d5f7db7278c03e7b186f60d7711e04235670e3b3fb6e"
+  },
+  "schema": "v101-constraints-source-audit-v1",
+  "selected_2026_preflight": {
+    "actual_tool_version": "2026.1",
+    "exact_target_count": 1,
+    "part_query_complete": true,
+    "receipt": "experiments/python-gamebub-v101/constraints/2026/results.json",
+    "sha256": "d26e0dc7b4c622f44294af455930c1022e817ab0cec5db4ac01b8f43ca0e99b0",
+    "status": "EXACT_TARGET_AVAILABLE"
+  },
+  "source_sha256": {
+    "experiments/python-gamebub-v99/profile.json": "8e17b24afbefe32ca00b2606ee80a3a70dd06e9050e76d50c9698fd524e735be",
+    "fpga/evidence/button_pins_rev4.xdc": "f2a1359e23332ae447cddd19c4d4b6183b4f5037244eec0cac7acb32c26bf36a",
+    "fpga/evidence/lcd_pins_rev4.xdc": "e5ac4f3c8e1e55726920b297e1a451b1b6427b94b9d16ff1d414da90a97103a3",
+    "fpga/evidence/sdram_pins_rev4.xdc": "48844ee5f87ed0a6ff75c188bc604e04c38b1967957f8dbecff88bdac64c1084",
+    "fpga/experiments/cu66-v100-baseline/component.xdc": "a83ac18d704585c8dc9b8a61b661ed92f728bedb3cfe2917e9d4b8bcaef55e09",
+    "fpga/experiments/cu66-v100-baseline/frozen-inputs.json": "5d827aaf31872adf61243d5ae7eb380d96b541beb074941f28a1ed66d22920d3",
+    "fpga/experiments/cu66-v100-baseline/policy.json": "fe8308384939529e3b04c217116bcc92c3fa1daa09c857361332c38e22446132",
+    "fpga/experiments/cu66-v69/inverse/cu66_dequant.sv": "1ce06c26460a63b69ca9d742edb04ee9654827f883212c4bfe71293e0ed71084",
+    "fpga/experiments/cu66-v69/inverse/cu66_idct8x8.sv": "251d4c11d762f6a040c1934d9dca9d80e6187f470a90b7261c63d06d1f3c310c",
+    "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh": "e0d5ae446155c1e295e0add487a30fec9c765cbafc0fabb15d248285ed22dca7",
+    "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv": "3eb9fbc02732f06b05f68499a5c03d48c00f24f7621db6cb318fc13f07c40d64",
+    "fpga/experiments/cu66-v91/br88_rice_elastic.sv": "f10846002fc007d4e5c25133fa425aa34ea492ff2738aeedd6aa5de7252acd47",
+    "fpga/experiments/cu66-v91b/br88_context.sv": "f0f603245090478b773bc6abba15a128e12aff764840a43df8429d361553fc72",
+    "fpga/experiments/cu66-v91d/br88_packet_ingress.sv": "3c1cb5d93802dfcece9b003dec151152ab9a59be9d4972cf46023b9e9002eaba",
+    "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv": "d8a7a0077981715566888b9de1a7bf052a0a875258a3f26e20fb0358d56e4bf4",
+    "fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv": "771447e0f7516448f47ea1e47f56474e424662a8bbe2b3c32a1f489d2d2b2b27",
+    "fpga/experiments/cu66-v91h/br88_packet_ingress_v91h.sv": "1dece92fc0472d44c68cde62868f5f9d2b251575ca042a0d460c9e80a3501d11",
+    "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv": "7511f6bee4aeb1d78b9751ac493854a2c926519da4efcfa940619009b92f3ed8",
+    "fpga/experiments/cu66-v91i2/cs88_admission_v91i2a.sv": "9c26be0c1fd8ec996c2bc94a97468b5f29a25b98f97f2a6e80b29be470a8243c",
+    "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv": "af78e9d263fcdaa5ccc0d13f370aa994f46e2feb198c54c9775122c02d07a505",
+    "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv": "277e4ea7018a9463c505be09112309de936e8b28b9aada7908994c087595dd08",
+    "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv": "a394aaf3feda60919f082e6578170fa2b2490899b1e19eed650829b45c113fc7",
+    "fpga/experiments/cu66-v91k/cs88_pipeline_v91k.sv": "a128717c65741aec03ef55adeddf86aed2149be20c45d1a85e1c9c1c301b42c3",
+    "fpga/experiments/cu66-v91k/cu66_reconstruct_stream_v91k.sv": "e2b37687ea1a4e2456be29be599927044134b272a3907770ffd21927aed99545",
+    "fpga/rtl/esp32_overlay.sv": "19a63f9a99784def9d6f454f717eda10a311738d1bc32a16c44e70e5d6ba2ec5",
+    "fpga/rtl/moonshine_bus_cdc.sv": "8c2d0dd4608e7ac0e157a8e3495c63fef4f37d6c05c105dc53e362d8bd6c96d9",
+    "fpga/rtl/moonshine_lcd.sv": "f6ef8c7476860c4ccc0cda18f86a1a22c267521f81f9a21f71b4b9c153e9fb27",
+    "fpga/rtl/moonshine_memory.sv": "19c89965c0df2aff6b250ff06860519fc9a067c1afcb2e3723ae398386482d99",
+    "fpga/rtl/moonshine_qspi_endpoint.sv": "1b47f424da33b678b3811e091f481a2bdab3fad9c43a8edd6b70817853f9bb13",
+    "fpga/rtl/moonshine_sdram.sv": "f1c3bfd6e41b0f2cae0a68e4bf37155a5914d2993dc27d22b9a052d3e9b0f26f",
+    "fpga/rtl/moonshine_top.sv": "0475af1af47d1bdc59945e63e785aac5804acbc2f0956afe314150dbfce551be",
+    "fpga/scripts/build.tcl": "eccb62d536a9ced6f90cbf7b4bc49f4b1f379ea0ac95b6482175bac295b717e9",
+    "fpga/scripts/build_final.tcl": "600c112a9e48949b4d3d17042f4caa8063c73c4853853ad78c640f19c11f7bbc",
+    "fpga/scripts/buttons.xdc": "6a2aba27f5f90ca9877450e053809f6151a95b4fc893c35cd95a0e5549c834d7",
+    "fpga/scripts/close_timing.tcl": "d4a56e569aa7dafc5a6da637073aa4effdbb84a34fe4ef64444c8acdfd6d9bca",
+    "fpga/scripts/platform.xdc": "b5501b177fb48e3c82cd6a633f6184976e02b17a297bece914d5f7fe18f02905",
+    "fpga/scripts/resume_impl.tcl": "ac9608882343e7a4aba52b602470a69559e8d5f77d015bb38e1c6ff2ac0a42ce",
+    "fpga/scripts/timing-reviewed.tcl": "376ddf38edfd817758b8893765fcdfb4a5f94d35baf18659a56a7cf69b2fdf49",
+    "fpga/scripts/timing.tcl": "7b23c4afa64837d1ba1a5434652fa0a567d303932e2dee501d621b9bc742dda8"
+  },
+  "static_checks": [
+    {
+      "count": 17,
+      "name": "frozen_rtl_hashes",
+      "pass": true
+    },
+    {
+      "count": 29,
+      "name": "all_selected_clocked_event_expressions_posedge_clk",
+      "pass": true
+    },
+    {
+      "count": 308,
+      "name": "all_308_public_port_names_in_declared_order",
+      "pass": true
+    },
+    {
+      "name": "comparison_clock_loaded_before_synthesis",
+      "pass": true
+    },
+    {
+      "name": "no_invented_external_delays_or_exceptions",
+      "pass": true
+    },
+    {
+      "name": "only_single_component_clock_definition",
+      "pass": true
+    },
+    {
+      "count": 12,
+      "name": "historical_constraints_and_flows_unchanged_vs_v100",
+      "pass": true
+    }
+  ],
+  "status": "PASS_SOURCE_AUDIT_SIGNOFF_OPEN",
+  "timing_obligations": [
+    {
+      "id": "OOC_EXTERNAL",
+      "required": "Bind each input/output arrival/required time and external register/service to clk; ready/valid is a functional contract, not an I/O timing constraint.",
+      "scope": "307 non-clock public ports",
+      "status": "OPEN"
+    },
+    {
+      "id": "OOC_RESET",
+      "required": "Drive controls synchronously to clk or add a proven boundary; pulse widths, reset release, accepted-owner drain and stale-response cancellation must remain valid.",
+      "scope": "reset, abort_packet, start and child cancellation",
+      "status": "OPEN_INTEGRATION"
+    },
+    {
+      "id": "BOARD_OSCILLATOR",
+      "required": "Confirm board revision/part, oscillator tolerance/jitter and actual generated clocks; retain relationships from common primary clock, not blanket asynchronous groups.",
+      "status": "OPEN_PHYSICAL"
+    },
+    {
+      "id": "SDRAM_IO",
+      "required": "Confirm fitted memory timing/PVT/board flight and skew for min/max IO, 279-degree capture, previous-beat setup and strong hold. Historical 2.0/-1.3 output and 7.0/2.0 input ns are explicitly provisional.",
+      "status": "OPEN_PHYSICAL"
+    },
+    {
+      "id": "LCD_IO",
+      "required": "Confirm panel/board min/max setup, hold and skew. Historical 2.0/-1.0 ns output values are not established requirements for new hardware.",
+      "status": "OPEN_PHYSICAL"
+    },
+    {
+      "id": "QSPI_IO",
+      "required": "Confirm ESP32 launch/sample edges, device delays, PCB skew, bidirectional OE turnaround and sampling aperture. SCK is sampled data in clk200 RTL, not an internal fabric clock.",
+      "status": "OPEN_PHYSICAL"
+    },
+    {
+      "id": "FIFO_GRAY",
+      "required": "Validate actual first-stage endpoint matches and Gray max-delay/bus-skew constraints; never cut following recovery stages.",
+      "status": "OPEN_NETLIST"
+    },
+    {
+      "id": "MAILBOX_CDC",
+      "required": "Prove held payload until ACK, toggle synchronizers, reset coherency and destination capture including LCD line/overlay stores.",
+      "status": "OPEN_NETLIST"
+    },
+    {
+      "id": "NETLIST_METHOD",
+      "required": "Review and resolve the retained synthesis methodology/DRC/timing findings, restore device fit, qualify actual I/O contracts, then collect placement/routing and complete-top CDC/exception evidence. Native component synthesis and its reports already exist.",
+      "status": "OPEN_SYNTHESIS_RESOURCE_BLOCKED"
+    },
+    {
+      "id": "FULL_CUSTOM_TOP",
+      "required": "Join actual custom HUD/C2/publication/shared-memory/display/transport and board clocks; current top is an OOC component, existing board image is JPEG/MSV1.",
+      "status": "OPEN"
+    }
+  ],
+  "tool_preflight": {
+    "part_query_complete": true,
+    "receipt": "experiments/python-gamebub-v101/constraints/tool-preflight.json",
+    "sha256": "e31504ba2a86ae777f0b25ca82586679ea5ddc4a5d10780903009af86c675a3f",
+    "status": "EXACT_PART_UNAVAILABLE",
+    "values": {
+      "INSTALLED_PART_COUNT": "504",
+      "SERIES7_COUNT": "0",
+      "TARGET_COUNT": "0",
+      "VERSION": "2025.2"
+    }
+  }
+}
