@@ -10,6 +10,18 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V98 E7 follow-up: [common-input controls](../cu66-v98/README.md) now retain
+52 HEVC/AV1/JPEG/historical-GM01 software runs, 1,560 round trips and a new
+user-supplied 30-Hz selected combat sample. Actual bytes, shared color arithmetic,
+emitted syntax, host costs and ROI/temporal pixel proxies have an independent
+6,459-check integrity/arithmetic audit. [Results](../cu66-v98/results.md) do not
+justify promoting the historical custom or unconditional global motion.
+All game sources are precompressed, and the current CU66 fresh-RGB encoder is
+not in this lane; those facts leave the raw/current-codec gap open. No new
+literature benchmark reproduction, perceptual superiority, target FPS or FPGA
+latency result is inferred. Longer original captures, current encoder/receiver
+parity and earlier complete-path gates precede V99 freeze.
+
 V97 transport follow-up: [bounded compact transport and live native-Rust/RTL](../cu66-v97/README.md)
 now exercise actual FIFO credit/ACK feedback and explicit capability negotiation.
 An independent 469-row comparison measures 3.528% fewer IPv4/UDP bytes including

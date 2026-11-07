@@ -1,6 +1,20 @@
 # Game Bub application-specific codec: selected direction and gates
 
-## Active roadmap after V90 and the literature review — 2026-11-06
+## Active roadmap after V90 and the literature review — 2026-11-07
+
+**V98 partial checkpoint: reproducible common-input controls.**
+The [V98 study](cu66-v98/README.md) measures 52 HEVC/AV1/JPEG/historical-GM01
+software runs, 1,560 encode/decode round trips and the new supplied combat
+sample selected at 30 Hz. Thirteen unit tests and an independent 6,459-check
+audit pass. The [frontier and host timing](cu66-v98/results.md) use shared
+RGB/YUV420/RGB565 arithmetic and actual complete bytes. Keep standard codecs
+as software anchors and JPEG as the existing intra control. The tested GM01
+points and unconditional global-motion option do not justify promotion.
+Current CU66 fresh-RGB encoding and receiver parity must enter this lane before
+a current-codec quality gap can be measured. Original raw gameplay, verified
+HUD readability, calibrated long-run tails, complete-path decoder/display
+integration and physical 30 fps/under-10-ms decoding remain open. V99 candidate
+freeze is gated by that work; V100–V110 mapping/P&R/timing plans are unchanged.
 
 **V97 partial checkpoint: compact transport and live native-Rust/RTL ingress.**
 The [V97 study](cu66-v97/README.md) adds explicit setup/profile/cap negotiation,
