@@ -1,0 +1,62 @@
+set_param general.maxThreads 1
+set out [file normalize [lindex $argv 0]]
+set root [file join $out inputs]
+create_project -in_memory -part xc7a100tcsg324-1 dy71_board
+set_property include_dirs [list [file join $root fpga/experiments/cu66-v70/memory] [file join $root fpga/experiments/cu66-v69/packet] [file join $root fpga/experiments/cu66-v69/inverse]] [current_fileset]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/result-admission-system-v023/cu71_system_final_v023.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/metadata-baseline-v022/cu71_receiver_final_v022.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/direct-system/grouped-v001/source/cu71_tile_memory_direct.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/bridge-cache-special-v021/cu71_word_bridge_cache_v021.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/metadata-baseline-v022/cu71_memory_system_cache_v022.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/direct-system/grouped-v001/source/moonshine_sdram_burst.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/packet-rx-staging-v001/cu71_packet_rxstage_v001.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v69/banks/cu66_frame_bank_control.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/metadata-baseline-v022/cu71_base_metadata_v022.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/direct-system/scatter-validpipe-v001/cu71_expand_validpipe_v001.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/dequant-validpipe/cu71_dequant_validpipe.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/inverse-inputstage-v001/cu71_idct_inputstage_v001.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/inverse-reset/cu71_reconstruct_resetlight.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/metadata-registers-v021/cu71_ab38_decoder_metadata_v021.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/rows/cu71_tile_rows.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/board-schedule-v015/cu71_rows_sha256_schedule_v015.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/hash-schedule-precsa-v004/cu71_sha256_schedule_precsa_v004.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/result-admission-system-v023/cu71_direct_prepare_admission_v023.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/result-admission-system-v023/cu71_direct_scanout_admission_v023.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/direct-display/cu71_cache_dma.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/chroma-fullword-v018/cu71_direct_cache_fullword_v018.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/direct-display/cu71_yuv_pixel_pipe.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/direct-display/cdc/cu71_lcd_lines_syncsafe.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/hud-bulk-v025/dy71_hud_bulk_v025.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/hud-bulk-v025/dy71_local_control_bulk_v025.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/staging-timing/safety-v002/cu71_packet_staging_safe.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/direct-system/packet-arbiter-cut-v001/cu71_packet_arbiter_cut_v001.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/direct-system/syncsafe-math-v002/board-source-v003/moonshine_qspi_endpoint.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/hud-bulk-v025/cu71_bus_cdc_bulk_v025.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/hud-bulk-v025/moonshine_top_dy71.sv]
+read_xdc [file join $root fpga/experiments/cu66-v71/direct-system/syncsafe-math-v002/board-source-v004/constraints/lcd_pins_rev4.xdc]
+read_xdc [file join $root fpga/experiments/cu66-v71/direct-system/syncsafe-math-v002/board-source-v004/constraints/sdram_pins_rev4.xdc]
+read_xdc [file join $root fpga/experiments/cu66-v71/direct-system/syncsafe-math-v002/board-source-v004/constraints/buttons.xdc]
+read_xdc [file join $root fpga/experiments/cu66-v71/direct-system/syncsafe-math-v002/board-source-v004/constraints/platform.xdc]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/lcd-output-v014/cu71_lcd_observer_v014.sv]
+read_verilog -sv [file join $root fpga/experiments/cu66-v71/timing-local-v019/cu71_balanced_identity_v019.sv]
+synth_design -top moonshine_top_dy71 -part xc7a100tcsg324-1
+set_param general.maxThreads 4
+write_checkpoint -force [file join $out synthesized.dcp]
+report_utilization -hierarchical -file [file join $out synthesized-utilization.rpt]
+report_clocks -file [file join $out synthesized-clocks.rpt]
+source [file join $root fpga/experiments/cu66-v71/direct-system/syncsafe-math-v002/board-source-v004/constraints/timing-dy71-reviewed.tcl]
+source [file join $root fpga/experiments/cu66-v71/lcd-output-v014/observer-cdc.tcl]
+write_checkpoint -force [file join $out constrained.dcp]
+report_exceptions -coverage -file [file join $out exceptions-postsynth.rpt]
+report_cdc -details -file [file join $out cdc-postsynth.rpt]
+check_timing -verbose -file [file join $out check-timing-postsynth.rpt]
+set f [open [file join $out observer-registers.tsv] w]
+foreach expression {{lcd_observer/snapshot_pixel_reg*} {lcd_observer/snapshot_mem_reg*} {lcd_observer/rgb_out_reg*}} {
+ foreach c [get_cells -quiet -hier -filter "NAME =~ $expression"] {puts $f "$c\t[get_property REF_NAME $c]"}
+}
+close $f
+puts V025_SYNTHESIS_CONSTRAINTS_COMPLETE_NO_BIT
+write_verilog -cell [get_cells system_core/scanout/cache] -mode funcsim [file join $out cache-funcsim.v]
+write_verilog -cell [get_cells control_plane/bulk] -mode funcsim [file join $out bulk-funcsim.v]
+close_design
+

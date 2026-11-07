@@ -1,0 +1,9 @@
+﻿from pathlib import Path
+import os,subprocess,json,hashlib,shutil
+p=Path('C:/mb70/firmware/experiments/v43-dy71-bulk-hud-20261107');e=p/'evidence/package-v002';release=p/'release-bulk-hud-v002';u=Path.home();py=u/'.espressif/python_env/idf5.4_py3.11_env/Scripts/python.exe';commands=[('elf2image',[str(py),'-m','esptool','--chip','esp32s3','elf2image','--flash_mode','dio','--flash_freq','80m','--flash_size','8MB','--output',str(release/'moonshine-rev4.bin'),str(release/'moonshine-rev4.elf')]),('image-info',[str(py),'-m','esptool','--chip','esp32s3','image_info',str(release/'moonshine-rev4.bin')]),('uf2',[str(py),str(p/'tools/make_gamebub_uf2.py'),str(release/'moonshine-rev4.bin'),str(release/'moonshine-rev4.uf2')]),('parser-build',[str(u/'.cargo/bin/rustc.exe'),'+stable','--edition=2021',str(p/'tools/verify_uf2.rs'),'-o',str(e/'verify-uf2.exe')]),('parser-check',[str(e/'verify-uf2.exe'),str(release/'moonshine-rev4.uf2'),str(release/'moonshine-rev4.bin')]),('memory-budget',[str(py),str(p/'tools/check_memory_budget.py'),'--sdkconfig',str(e/'compiled-sdkconfig.h'),'--elf',str(release/'moonshine-rev4.elf'),'--size-tool',str(u/'.espressif/tools/xtensa-esp-elf/esp-14.2.0_20250730/xtensa-esp-elf/bin/xtensa-esp32s3-elf-size.exe')])];rows=[]
+for label,cmd in commands:
+ with(e/f'{label}.log').open('x') as f:r=subprocess.run(cmd,stdout=f,stderr=subprocess.STDOUT)
+ rows.append(dict(label=label,cmd=cmd,returncode=r.returncode));(e/'packaging.json').write_text(json.dumps(rows,indent=2));print(label,r.returncode,flush=True)
+ if r.returncode:print((e/f'{label}.log').read_text());raise SystemExit(1)
+(release/'hashes.json').write_text(json.dumps({f.name:hashlib.sha256(f.read_bytes()).hexdigest() for f in release.iterdir() if f.is_file()},indent=2))
+parent=Path('C:/mb70/firmware/experiments/v39-lcd-observer-20261106/evidence/compiled-sdkconfig.h');print('sdkconfig_identical_to_v39',parent.read_bytes()==(e/'compiled-sdkconfig.h').read_bytes())

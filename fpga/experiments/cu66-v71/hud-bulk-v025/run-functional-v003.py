@@ -1,0 +1,9 @@
+﻿from pathlib import Path
+import subprocess,os,json,hashlib
+p=Path('C:/mb70/fpga/experiments/cu66-v71/hud-bulk-v025');e=p/'functional03';e.mkdir();env=dict(os.environ,PATH='C:/msys64/ucrt64/bin;'+os.environ['PATH']);inc=Path('C:/mb70/fpga/experiments/cu66-v70/memory');rows=[]
+for top,tb,params,success in [('tb_hud_bulk_v025','tb_hud_bulk_v025.sv',[],'HUD_BULK_PASS'),('tb_native_bulk_v025','tb_native_bulk_v025.sv',[],'NATIVE_BULK_PASS'),('tb_native_bulk_v025','tb_native_bulk_v025.sv',['-Ptb_native_bulk_v025.CORRUPT=1'],'native readback mismatch')]:
+ label=top+('-corrupt'if params else'');exe=e/(label+'.vvp');cmd=['C:/msys64/ucrt64/bin/iverilog.exe','-g2012','-I'+str(inc),'-s',top]+params+['-o',str(exe),str(p/'dy71_hud_bulk_v025.sv'),str(p/tb)];q=subprocess.run(cmd,env=env,capture_output=True,text=True);(e/(label+'-compile.log')).write_text(q.stdout+q.stderr);assert q.returncode==0,q.stderr
+ q=subprocess.run(['C:/msys64/ucrt64/bin/vvp.exe',str(exe)],env=env,capture_output=True,text=True,timeout=180);(e/(label+'-run.log')).write_text(q.stdout+q.stderr);print(label,q.returncode,q.stdout[-900:],flush=True);assert success in q.stdout;assert (q.returncode!=0)==bool(params);rows.append(dict(top=top,parameters=params,returncode=q.returncode,expected_failure=bool(params)))
+(e/'result.json').write_text(json.dumps(dict(status='PASS_CURRENT_BULK_ENGINE_AND_REAL_NATIVE_WORDS',runs=rows,source_sha256={x:hashlib.sha256((p/x).read_bytes()).hexdigest()for x in ['dy71_hud_bulk_v025.sv','tb_hud_bulk_v025.sv','tb_native_bulk_v025.sv']},scope='Component AUX model, actual native HU output words; not whole decoder/SDRAM or physical playback'),indent=2))
+f=p/'run-pin-tests.py';s=f.read_text().replace("e=p/'pins01'","e=p/'pins03'");(p/'run-pin-tests-v003.py').write_text(s)
+f=p/'run-mapping.py';(p/'run-mapping-v003.py').write_text(f.read_text().replace("o=p/'mapping01'","o=p/'mapping03'"))

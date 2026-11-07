@@ -1,0 +1,10 @@
+﻿from pathlib import Path
+import json,subprocess,hashlib,os
+p=Path('C:/mb70/fpga/experiments/cu66-v71/hud-bulk-v025');e=p/'legacy04';e.mkdir();parent=Path('C:/mb70/dy71-v023-20261106-v001');sel=json.loads((parent/'selection.json').read_text());names=['dy71_local_control_balanced_v019.sv','cu71_bus_cdc_split.sv','cu71_balanced_identity_v019.sv','cu71_packet_staging_safe.sv','cu71_packet_arbiter_cut_v001.sv'];src=[parent/'inputs'/x for x in sel['sources']if Path(x).name in names]+[p/x for x in ['dy71_hud_bulk_v025.sv','dy71_local_control_bulk_v025.sv','cu71_bus_cdc_bulk_v025.sv','tb_bulk_legacy_pair.sv']];inc=parent/'inputs/fpga/experiments/cu66-v70/memory';env=dict(os.environ,PATH='C:/msys64/ucrt64/bin;'+os.environ['PATH']);rows=[]
+for phase in ['0.0','2.3']:
+ label='phase'+phase;exe=e/(label+'.vvp');cmds=[['C:/msys64/ucrt64/bin/iverilog.exe','-g2012','-I'+str(inc),'-y','C:/Xilinx/2025.2/Vivado/data/verilog/src/unisims','-s','tb_bulk_legacy_pair','-s','glbl','-Ptb_bulk_legacy_pair.PHASE='+phase,'-o',str(exe)]+[str(f)for f in src]+['C:/Xilinx/2025.2/Vivado/data/verilog/src/glbl.v'],['C:/msys64/ucrt64/bin/vvp.exe',str(exe)]]
+ for name,cmd in zip(['compile','run'],cmds):
+  q=subprocess.run(cmd,env=env,capture_output=True,text=True,timeout=180);(e/(label+'-'+name+'.log')).write_text(q.stdout+q.stderr);rows.append(dict(label=label+'-'+name,cmd=cmd,returncode=q.returncode));(e/'execution.json').write_text(json.dumps(rows,indent=2));print(label,name,q.returncode,q.stdout[-600:],flush=True)
+  if q.returncode:print(q.stderr);raise SystemExit(1)
+ assert 'BULK_LEGACY_SEMANTIC_PAIR_PASS'in(e/(label+'-run.log')).read_text()
+(e/'result.json').write_text(json.dumps(dict(status='PASS_LEGACY_CSR_READS_AND_ORDERED_WRITES',cases=2,source_sha256={str(f):hashlib.sha256(f.read_bytes()).hexdigest()for f in src},declared_changes=['ABI2/cap1f','HBU signature600/version604','one additional synchronous-read settling cycle'],scope='Actual legacy/current control and CDC, full4096-byte read sweep plus queue overflow/order/reset; protocol-completion comparison, not cycle equivalence or full decoder/physical test'),indent=2))
