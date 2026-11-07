@@ -10,6 +10,19 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V95 E5 follow-up: [exact pixel palettes](../cu66-v95/README.md) now have
+bounded own/reused palettes, TOP/LEFT runs, escapes, RAW and actual residual
+fallback. Independent readers and 4,113 complete native frames preserve exact
+canonical/HUD/display commitments. No minimum-byte gain appears on the retained
+457 sources. Work5/work15 bypass 2.15%/6.88% of active residual blocks for
+3.47%/12.22% extra complete bytes; no measured decode speed follows from that
+proxy. Retain the control and require integrated memory/latency evidence before
+promotion. [Results](../cu66-v95/results.md) are a new custom experiment inspired
+by screen-content tools, not an HEVC/AV1 palette-mode reproduction. Original
+coefficients are preserved only on fallback tiles; the exactness contract for
+palette tiles is their reconstructed pixels. Lossy clustering and broader raw
+captures remain deferred.
+
 V94 E3 follow-up: [bounded inline byte-rANS](../cu66-v94/README.md) now has
 two/four-state, precision-8/9/10 packets and a real RTL category kernel. All
 model/state overhead is charged. Rate-aware parameter tuning improves the local

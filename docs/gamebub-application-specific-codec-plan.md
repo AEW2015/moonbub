@@ -2,7 +2,23 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
-**V94 is active and partial: inline byte-rANS and an RTL symbol kernel qualify.**
+**V95a–c exact-palette software checkpoint qualified; no rate promotion.**
+The [V95 pixel-palette study](cu66-v95/README.md) checks 8,226 plane variants,
+2,542,828 independently decoded records and 4,113 complete native frames.
+Canonical/reference pixels, HUD, RGB565, roots and seals remain exact; palette
+tiles bypass coefficient reconstruction, so original-coefficient parity is not
+claimed for those tiles. Minimum bytes remain 7,781,939 across 457 sources and
+select no palettes. Work5/work15 bypass 2.15%/6.88% of active residual blocks for
+3.47%/12.22% more complete bytes, with every selected frame below 49,152 bytes.
+These are uncalibrated work/traffic tradeoffs. Keep the control; no palette RTL
+or hardware milestone is qualified. Median diagnostic host preparation is
+63.15 ms, excluding target generation. V95d's research decision is recorded;
+product promotion, lossy clustering and wider-corpus validation remain open.
+[Results](cu66-v95/results.md) retain the limits. Proceed to V96 actual addressed
+reference/constant/display-memory service accounting, preserving the V91l,
+V92d and V94 full-path gates and V100–V110 physical implementation focus.
+
+**V94 remains partial: inline byte-rANS and an RTL symbol kernel qualify.**
 The [bounded-rANS study](cu66-v94/README.md) tests two/four interleaved states
 with precision 8/9/10, transmitted frequency models, independent readers and
 5,484 complete native frame reconstructions. A separate rANS-rate Rice-parameter

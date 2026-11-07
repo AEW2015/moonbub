@@ -1,0 +1,27 @@
+#include "codec.hpp"
+#include <chrono>
+#include <iostream>
+#include <sys/resource.h>
+using namespace cu95;
+using Clock=std::chrono::steady_clock;
+static bool read32(uint32_t &v) {char b[4];std::cin.read(b,4);if(!std::cin.gcount())return false;need(std::cin.gcount()==4,"helper framing");v=0;for(unsigned i=0;i<4;++i)v|=uint32_t(uint8_t(b[i]))<<(8*i);return true;}
+static void write32(unsigned v) {for(unsigned i=0;i<4;++i)std::cout.put(char(v>>(8*i)));}
+static uint64_t elapsed(Clock::time_point t) {return uint64_t(std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-t).count());}
+template<class T>static void json_array(const T &a) {std::cout<<'[';bool first=true;for(auto v:a) {if(!first)std::cout<<',';first=false;std::cout<<v;}std::cout<<']';}
+struct Variant {Bytes packet;std::vector<unsigned> positions;std::array<unsigned,5> kinds{};unsigned blocks=0,mask=0;bool raw=false;cu92::DecodeStats stats;std::string coeff_sha,pixel_sha;uint64_t search_ns=0,encode_ns=0,verify_ns=0;};
+int main() {try {uint32_t blocks,length,plane_tiles;while(read32(blocks)) {
+  need(read32(length)&&read32(plane_tiles)&&blocks>=1&&blocks<=5400&&plane_tiles<=5400&&blocks<=plane_tiles&&length>=46&&length<=46+128*blocks,"helper bounds");Bytes source(length);std::cin.read(reinterpret_cast<char*>(source.data()),length);need(size_t(std::cin.gcount())==length,"helper AB truncation");
+  std::vector<unsigned> active;std::vector<Bytes> tiles;for(unsigned i=0;i<blocks;++i) {char pos[2];std::cin.read(pos,2);need(std::cin.gcount()==2,"helper pos truncation");unsigned p=uint8_t(pos[0])+256*unsigned(uint8_t(pos[1]));need(p<plane_tiles&&(!i||active.back()<p),"helper active order");active.push_back(p);Bytes t(64);std::cin.read(reinterpret_cast<char*>(t.data()),64);need(std::cin.gcount()==64,"helper tile truncation");tiles.push_back(t);}
+  auto start=Clock::now();auto values=decode_ab38(source,blocks,1);uint64_t decode_ns=elapsed(start);std::array<Variant,6> variants;
+  const unsigned caps[6]={0,2,4,8,8,8},thresholds[6]={0,16,24,40,40,64};
+  for(unsigned profile=0;profile<6;++profile) {auto &v=variants[profile];start=Clock::now();std::vector<Bytes> records;Bytes previous,palette_pixels;std::vector<int16_t> remaining;
+    for(unsigned i=0;i<blocks;++i) {bool chosen=false;if(profile) {auto choice=choose(tiles[i],caps[profile],profile>=4,previous);if(choice.record.size()+4<=thresholds[profile]) {chosen=true;v.positions.push_back(active[i]);++v.kinds[choice.record[0]];records.push_back(choice.record);previous=choice.next;palette_pixels.insert(palette_pixels.end(),tiles[i].begin(),tiles[i].end());}}
+      if(!chosen)remaining.insert(remaining.end(),values.begin()+i*64,values.begin()+(i+1)*64);
+    }v.search_ns=elapsed(start);v.blocks=unsigned(remaining.size()/64);start=Clock::now();Bytes entropy;
+    if(v.blocks) {auto prepared=cu92::prepare(remaining);need(profile||prepared.ab.packet==source,"control frozen AB exact reencode");unsigned mask=0;for(unsigned c=0;c<4;++c)if(prepared.br_streams[c].size()<prepared.ab_streams[c].size())mask|=1u<<c;entropy=cu92::assemble(prepared,mask);v.mask=entropy[6];v.raw=bool(entropy[5]);}
+    be32(v.packet,unsigned(records.size()));for(unsigned i=0;i<records.size();++i) {be16(v.packet,v.positions[i]);be16(v.packet,unsigned(records[i].size()));v.packet.insert(v.packet.end(),records[i].begin(),records[i].end());}be32(v.packet,v.blocks);be32(v.packet,unsigned(entropy.size()));v.packet.insert(v.packet.end(),entropy.begin(),entropy.end());v.encode_ns=elapsed(start);
+    start=Clock::now();auto decoded=decode_plane(v.packet,active,plane_tiles);need(decoded.coefficients==remaining&&decoded.positions==v.positions,"native complement verification");for(unsigned i=0;i<decoded.positions.size();++i) {unsigned at=unsigned(std::lower_bound(active.begin(),active.end(),decoded.positions[i])-active.begin());need(decoded.pixels[i]==tiles[at],"native canonical pixel verification");}v.stats=decoded.stats;Bytes coeff;for(auto x:remaining)cu85::put16(coeff,uint16_t(x));v.coeff_sha=hex(sha256(coeff));v.pixel_sha=hex(sha256(palette_pixels));v.verify_ns=elapsed(start);
+  }
+  std::cout<<"{\"blocks\":"<<blocks<<",\"old_bytes\":"<<source.size()<<",\"source_decode_ns\":"<<decode_ns<<",\"profiles\":[";
+  for(unsigned p=0;p<6;++p) {auto &v=variants[p];if(p)std::cout<<',';std::cout<<"{\"profile\":"<<p<<",\"pal_positions\":";json_array(v.positions);std::cout<<",\"record_kind_counts\":";json_array(v.kinds);std::cout<<",\"avoided_tiles\":"<<v.positions.size()<<",\"residual_blocks\":"<<v.blocks<<",\"wire_mask\":"<<v.mask<<",\"raw\":"<<(v.raw?"true":"false")<<",\"bytes\":"<<v.packet.size()<<",\"sha256\":\""<<hex(sha256(v.packet))<<"\",\"residual_coeff_sha256\":\""<<v.coeff_sha<<"\",\"palette_pixel_sha256\":\""<<v.pixel_sha<<"\",\"search_ns\":"<<v.search_ns<<",\"encode_ns\":"<<v.encode_ns<<",\"validate_ns\":"<<v.verify_ns<<",\"ab_decisions\":";json_array(v.stats.ab_decisions);std::cout<<",\"ab_renorm\":";json_array(v.stats.ab_renorm);std::cout<<",\"br_bits\":";json_array(v.stats.br_bits);std::cout<<'}';}std::cout<<"]}"<<std::endl;for(const auto &v:variants) {write32(unsigned(v.packet.size()));std::cout.write(reinterpret_cast<const char*>(v.packet.data()),std::streamsize(v.packet.size()));}std::cout.flush();
+}struct rusage usage{};need(getrusage(RUSAGE_SELF,&usage)==0,"RSS query");std::cerr<<"PA95_NATIVE_PEAK_RSS_KIB "<<usage.ru_maxrss<<'\n';return 0;}catch(const std::exception &e) {std::cerr<<"PA95_HELPER_FAIL "<<e.what()<<'\n';return 1;}}
