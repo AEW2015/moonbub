@@ -6,8 +6,8 @@ Receiver completed2accepted/2presented,0rejected/0underruns,42240HUDwords writte
 
 HUD write phases12.787878/12.801608s; readback phases12.153101/12.239923s. Combined49.982510s out of58.043306s. These software-controlled intervals include CSR/QSPI/lock waits and are not isolated SDRAM throughput or decoder-only timing. This identifies scalar HUD transport/readback as the next measured optimization target. Native HU CPU0.303841/0.210627s remains an additional future latency limit.
 
-Fresh camera shows the held expected game scene and HUD; no filters/controls changed. This is not exact full-frame pixel verification or a sustained/interactive/30fps test. Windows final status2 receipt still awaits its report.
+Fresh camera shows the held expected game scene and HUD; no filters/controls changed. This is not exact full-frame pixel verification or a sustained/interactive/30fps test. Windows reports both matching status2 replies in session17522181616841232893, source.47:55896: KEY0/24758bytes and P1/ref0/18873bytes. Uploader exit0; no timeout/status3/whole-run retry. This is user-relayed host evidence; its remote JSON is not locally accessible.
 
 The final native endpoint and maintenance lease are intentionally retained. Do not force release, repeat USB~, reload FPGA or restore another core underneath them. A normal cold boot is needed before a later image switch. Source/report data are in NETWORK-RESULT.json; raw USB and original camera image remain local.
 
-[Structured measurements](V41-DYN1-FIRST-KEY-P-20261107.json). Raw USB and camera artifacts are retained in the local receiver evidence directory; their source data are not published here.
+[Structured measurements](V41-DYN1-FIRST-KEY-P-20261107.json). Raw USB and camera artifacts remain local.
