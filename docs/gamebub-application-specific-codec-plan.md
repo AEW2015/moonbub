@@ -2,6 +2,21 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+**V97 partial checkpoint: compact transport and live native-Rust/RTL ingress.**
+The [V97 study](cu66-v97/README.md) adds explicit setup/profile/cap negotiation,
+12-byte fragments, two aligned Rust staging slots, tokenized FIFO queries,
+logical-length DMA and a separate ingress commit-ACK fence. Native Rust passes
+23 tests and 138 shared wire cases; three strict C-ABI tests also pass. The
+interactive gateway/RTL join completes 11 ingress transactions with exact bytes
+and malformed-frame recovery; the combined regression passes 4,423,970 checks.
+An independent 469-row header audit measures 3.528% fewer IPv4/UDP bytes after
+setup overhead. [Results](cu66-v97/results.md) separate host preparation from
+RF/device performance. The production worker remains MSV1, custom profiles are
+opaque research only, and native-host execution does not emulate ESP32/Wi-Fi.
+Production QSPI/UDP integration, Sunshine capture/service calibration and V97d
+hardware/input/audio/UI gates remain open. Earlier full decoder/display gates
+and V100–V110 physical qualification remain unchanged.
+
 **V96 partial checkpoint: exact reference inventory and standalone materialization.**
 The [V96 study](cu66-v96/README.md) independently verifies 1,371 research streams
 and 11,105,100 canonical tile outputs across 457 retained sources. Bounded

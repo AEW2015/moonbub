@@ -10,6 +10,15 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V97 transport follow-up: [bounded compact transport and live native-Rust/RTL](../cu66-v97/README.md)
+now exercise actual FIFO credit/ACK feedback and explicit capability negotiation.
+An independent 469-row comparison measures 3.528% fewer IPv4/UDP bytes including
+setup; body bytes/quality are unchanged. Native and RTL recovery tests do not
+establish ESP32 CPU/Wi-Fi/QSPI service or complete decoder throughput. Production
+worker/driver integration, target memory telemetry and hardware calibration
+remain open. [Results](../cu66-v97/results.md) distinguish ingress completion,
+opaque custom-profile testing and native-host substitutes from decoded output.
+
 V96 E6 follow-up: [bounded materialized copies and constant service](../cu66-v96/README.md)
 now have an exact accepted-reference inventory and standalone timed-controller
 RTL evidence. 64/256-entry dictionaries expose 2.76%/4.68% of active residual

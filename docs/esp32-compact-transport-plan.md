@@ -1,8 +1,17 @@
 # ESP32 compact streaming transport notes
 
-Status: proposed protocol/firmware work, not implemented or flashed.
-The existing JPEG/MSV1 transport and frozen codec/hardware handoffs remain
-available. The RTL inverse-transform experiment is a separate work item.
+Status: [V97 portable software and native-Rust/RTL checkpoint](cu66-v97/README.md)
+implemented and tested; production UDP/QSPI integration and flashing remain
+open. The deployed worker still uses JPEG/MSV1 and the frozen handoffs remain
+available. The new exported Rust module is not selected by that worker. The
+inverse-transform/complete decoder path remains a separate integration item.
+
+V97 now specifies actual 40-byte setup/ACK and 12+16-byte data framing, bounded
+two-stage forwarding, tokenized true-FIFO observations and ingress commit-ACK
+fences. The live native/RTL join uses a synchronous parallel test adapter,
+not ESP32 instruction execution or physical QSPI. Its independent header audit
+charges setup and reports 3.528% fewer IPv4/UDP bytes for the tested set.
+[Results and limitations](cu66-v97/results.md) retain the device-calibration gates.
 
 ## Verified current behavior
 

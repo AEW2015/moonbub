@@ -1,5 +1,7 @@
 //! Experimental standalone MSV1 source. Sunshine pairing/video are not implemented.
 pub mod protocol;
+// Portable V97 candidate; the network worker below continues to use MSV1.
+pub mod protocol97;
 use crate::device::{
     drivers::fpga::{FpgaSpiWordSize, SpiCommand},
     Device,
