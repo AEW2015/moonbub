@@ -154,8 +154,22 @@ charged. Its [results](../cu66-v91l-scratch-service/results.md) retain the same
 source bytes, validation, reference and base RGB oracles. The Python contract
 checks aperture bounds/nonaliasing and payload assembly; the native RTL
 campaign measures scratch traffic rather than inferring it from the old C++
-endpoint. Next qualify bank-safe native decode/display overlap and full RTL
-HUD before the complete V91m cadence gate. These are local implementation
+endpoint. The [native overlap experiment](../cu66-v91l-overlap/README.md) now measures
+key RGB alongside delta decoding with an immutable display-source lease and
+actual publication drain. Four natural modes are separated from a directed
+final-pixel hold; the [results](../cu66-v91l-overlap/results.md) report
+measured pair completion and contention costs. Lower pair completion time
+comes with increased delta decode latency, so this is not 30-fps cadence
+proof or new HEVC/AV1 coding performance. Next compare a bounded scheduling,
+reference-reuse or prefetch change using these measurements, then close full
+RTL HUD and the complete V91m cadence gate.
+The natural pair interval is 18.89% lower (121.85 → 98.83 ms at assumed
+100 MHz), but delta commit latency rises to about 40.12 ms. Actual pin
+ACTIVATE commands increase 66.11% in one matched case, with unchanged
+READ/WRITE counts and repeated bank-0 row activation. This is evidence to
+investigate bounded tile-granularity read grants/locality; it is not a new
+publication result, codec quality improvement or complete latency attribution.
+ These are local implementation
 measurements, not new publication findings. Hardware 30 fps and complete
 validated decoding below 10 ms remain open.
 

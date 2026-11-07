@@ -1,0 +1,109 @@
+{
+  "baseline": "4309c7a8b6c24f577b305cd11b124391aded4112",
+  "checks": {
+    "accepted_reference_change_does_not_release_active_key_rgb_source": "PASS",
+    "cancel_error_held_response_cases": [
+      {
+        "accepted_before_cancel": 0,
+        "consumer_ack_required_and_seen": true,
+        "descriptor_changed_while_response_held": false,
+        "drained_before_error_response": 0,
+        "held_response_cycles": 2,
+        "issued_commands": 0,
+        "response_immutable": true,
+        "stale_descriptor_ack_rejected": false
+      },
+      {
+        "accepted_before_cancel": 2,
+        "consumer_ack_required_and_seen": true,
+        "descriptor_changed_while_response_held": true,
+        "drained_before_error_response": 2,
+        "held_response_cycles": 4,
+        "issued_commands": 2,
+        "response_immutable": true,
+        "stale_descriptor_ack_rejected": true
+      }
+    ],
+    "candidate_blocked_by_source_lease": true,
+    "candidate_cannot_reuse_active_rgb_source_even_after_consumer_release_until_physical_drain": "PASS",
+    "delta_uses_bank1_while_key_rgb_and_reference_hold_bank0": "PASS",
+    "front_swap_requires_vblank_and_scanout_drain": "PASS",
+    "publication_requires_physical_writer_drain": "PASS",
+    "writer_drain_gate": true
+  },
+  "input_sha256": {
+    "scratch_audit": "f9b170379133f3d266b2fdd1cd4af6f4023d3fd8bbe12a817a5c10f29556f8da",
+    "scratch_readme": "7c28c4cb794a60232adafae4833421f48f265e7daedf5edbc956f08ba7dceb18",
+    "scratch_results": "8018d7787a440fc1e155aa8503906139465885014e9e682870835edc77242053",
+    "scratch_summary": "83a7f97aa222ce543bd7bc8d1f738e1b41d3845883ba7fd9a90fd610157f7d39"
+  },
+  "limitations": [
+    "Lease, cancel and stale-descriptor behavior is an abstract software contract model, not an RTL/hardware result.",
+    "Traffic counts and stage intervals come from the retained two-source physical scratch campaign; no new contention was simulated.",
+    "Ideal overlap arithmetic assumes zero shared-memory contention and is a lower bound, not predicted simulation time.",
+    "Delta decode alone exceeds 33.333 ms; overlap alone cannot establish 30 fps."
+  ],
+  "schema": "python-gamebub-v91l-overlap-model-v1",
+  "source_derived_traffic_counts": {
+    "delta": {
+      "scratch_controller_commands": 27819,
+      "scratch_read_lines": 3091,
+      "scratch_write_lines": 3091
+    },
+    "key": {
+      "scratch_controller_commands": 35442,
+      "scratch_read_lines": 3938,
+      "scratch_write_lines": 3938
+    },
+    "rgb_each": {
+      "bytes": 691200,
+      "logical_reads": 32400,
+      "physical_reads": 32400,
+      "pixels": 345600
+    }
+  },
+  "source_sha256": {
+    "fpga/experiments/cu66-v69/banks/cu66_frame_bank_control.sv": "e5ddf84dcb03e30d8f2a07db51445ea4922dfee904d0e934324bd6562a6bb318",
+    "fpga/experiments/cu66-v91l-readbridge/bl8_read_bridge.sv": "de000415b9222cb3c3d4233998ed120bf65d34b9c1b3c83493ddbec907d436db",
+    "fpga/experiments/cu66-v91l-scratch-service/scratch_line_bridge.sv": "4d7c56c1314a7ea150de0f55b5a9f13d227897af66f107288201a833ac0e3650",
+    "fpga/experiments/cu66-v91l/cs88_validate_publish_v91l.sv": "fab62dcdbcb9a2594917eac0eaf09a9eda1df8879e799ce38833ca678069d143"
+  },
+  "status": "PASS_ABSTRACT_BANK_LEASES_AND_IDEAL_OVERLAP_BOUNDS",
+  "timing": {
+    "30_fps_established": false,
+    "basis": "source-measured isolated stage intervals; ideal zero-contention schedule arithmetic only",
+    "delta_decode_alone_exceeds_frame_slot": true,
+    "delta_decode_alone_ms_interval": [
+      33.46038,
+      33.46534
+    ],
+    "frame_slot_ms_at_30_hz": 33.333333333333336,
+    "ideal_overlap_is_lower_bound_not_prediction": true,
+    "ideal_overlap_total_ms_interval": [
+      92.14716999999999,
+      92.16175
+    ],
+    "serial_total_ms_interval": [
+      121.83353,
+      121.85847
+    ],
+    "stages_ms": {
+      "delta_decode": [
+        33.46038,
+        33.46534
+      ],
+      "delta_rgb": [
+        29.68215,
+        29.69177
+      ],
+      "key_decode": [
+        29.00464,
+        29.00464
+      ],
+      "key_rgb": [
+        29.68636,
+        29.69672
+      ]
+    }
+  }
+}

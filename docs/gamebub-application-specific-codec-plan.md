@@ -2,6 +2,16 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+**Current checkpoint: V91l remains partial.** The
+[native shared-memory overlap control](cu66-v91l-overlap/README.md) passes
+four natural modes plus a separate directed lease hold, preserving ten exact
+RGB outputs and 10,250 checked RTL SHA jobs across two native source images.
+The measured pair interval improves 18.89% (121.85 → 98.83 ms at assumed
+100 MHz), while competing display reads increase delta decode to 40.12 ms.
+The next experiment is bounded memory scheduling/locality, not a claim of
+30-fps source cadence or complete under-10-ms decoding. All-RTL HUD,
+ESP32/transport and exact-device physical/hardware gates remain open.
+
 The [physical BL8/base-RGB join](cu66-v91l-readbridge/README.md) advances
 **V91l**, with a tagged read bridge, real controller/timed pins, the retained
 canonical reader and the actual frozen base RGB565 converter. The bridge drains
@@ -72,10 +82,21 @@ At assumed 100 MHz, delta start→commit is 33.460–33.465 ms, just over a
 33.333-ms frame slot; serial decode plus RGB is 58.691–63.152 ms.
 Decode/display overlap must be accompanied by reduced decode cost.
 
-Next compare native bank-safe decode/display overlap against this
-scratch-inclusive serial control, charging all contention, real consumer leases
-and publication/scanout drain. Keep the earlier finite-scratch control as a
-historical boundary. Preserve accepted-bank/qcache history and atomic
+The [native decode/display overlap follow-up](cu66-v91l-overlap/README.md)
+now runs the accepted key RGB consumer while decoding the next delta through
+this same controller. An immutable source lease gates candidate aliases and
+real publication drain. Four natural seed/tAC runs are separate from a fifth
+directed final-pixel hold across delta commit. Its
+[measured results](cu66-v91l-overlap/results.md) compare actual two-source
+completion intervals, contended decode latency and exact source outputs.
+A shorter pair interval does not prove 30-fps cadence: competing display
+traffic increases delta decode time. The lease adds control/metadata, no frame
+payload memory. Full native HUD and physical qualification remain open.
+
+Next use the measured contention to select one bounded arbitration,
+reference-reuse or prefetch change, preserving this natural overlap control
+and the scratch-inclusive serial control. Keep the earlier finite-scratch
+control as a historical boundary. Preserve accepted-bank/qcache history and atomic
 publication; close all-RTL HUD and mixed entropy or negotiated fallback before
 V91m. Actual ESP32 costs and exact-device physical qualification remain open.
 Codec bytes, resolution, quality and HEVC/AV1 rate/quality comparisons are

@@ -1,0 +1,47 @@
+{
+  "schema": "cu66-v91l-scratch-live-contract-v1",
+  "top": "scratch_live",
+  "logical_scratch": {
+    "request": "mem_req_valid && mem_req_ready",
+    "response": "mem_rsp_valid && mem_rsp_ready",
+    "address_bits": 18,
+    "data_bits": 128,
+    "epoch_bits": 32,
+    "extent_bytes": 262144,
+    "alignment_bytes": 16,
+    "writes": "full 16B only; no implicit masks or RMW",
+    "physical_aperture_word_base": "0xc00000",
+    "physical_bank": 3,
+    "video_banks": [
+      0,
+      1,
+      2
+    ],
+    "reads": "one BL8 of eight 16-bit words",
+    "writes_per_request": "eight separately accepted 16-bit WRITE commands",
+    "inflight": 1,
+    "mirror": "updated only on actual successful physical write ACK; never drives ready, response or pixels"
+  },
+  "receipts": [
+    "scratch_live_req",
+    "scratch_live_rsp",
+    "scratch_frame"
+  ],
+  "frozen_control": "fpga/experiments/cu66-v91l-reference-live",
+  "native_cases": [
+    "actual_001",
+    "actual_006"
+  ],
+  "seeds": [
+    912901,
+    912902
+  ],
+  "t_ac_ns": [
+    2,
+    7
+  ],
+  "serial_commit_then_rgb": true,
+  "all_external_memory_actors_removed": true,
+  "full_rtl_hud": false,
+  "hardware_30fps_proven": false
+}
