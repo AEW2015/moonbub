@@ -1,0 +1,45 @@
+{
+  "scope": "Development lint preflight diagnostics; successful full directed campaigns are retained separately.",
+  "diagnostics_are_causal_summaries": true,
+  "preimages_reconstructed_from_recorded_deterministic_edits": true,
+  "source_preimages_not_compilation_inputs": true,
+  "attempts": [
+    {
+      "stage": "environment preflight",
+      "command": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--lint-only",
+        "--timing",
+        "--assert",
+        "-Wall",
+        "-DSIMULATION",
+        "--top-module",
+        "tile_reader_mux",
+        "fpga/experiments/cu66-v91l-tile-grant/tile_reader_mux.sv"
+      ],
+      "exit_code": 1,
+      "first_causal_message": "Cannot find file containing module: fpga/experiments/cu66-v91l-tile-grant/tile_reader_mux.sv",
+      "fix": "Use absolute mounted workspace path; container exec working directory differs from host task directory."
+    },
+    {
+      "stage": "RTL syntax",
+      "exit_code": 1,
+      "first_causal_message": "Too many digits for 32 bit number: 32'hffffffff?32",
+      "fix": "Separate the hex literal and ternary token with whitespace.",
+      "source_preimage": "syntax-preimage.sv",
+      "source_sha256": "f7b153ea4b577946314618506e8180bfd620c8b3dc8658b99a6b41d36b914072"
+    },
+    {
+      "stage": "strict RTL width warning",
+      "exit_code": 1,
+      "first_causal_message": "Bits of signal are not used: group_base[5:0]",
+      "fix": "Retain only the 13-bit tile index used by the continuation predicate.",
+      "source_preimage": "unused-width-preimage.sv",
+      "source_sha256": "8870cde7c678fe34b6d05919bd78a2ea6372a00b6882aa3edcf7b8908b2eb9cf"
+    }
+  ],
+  "verified_resolution": "Strict warning/assertion-enabled full unit builds pass for REF_LINES1 and4; no warning waiver."
+}

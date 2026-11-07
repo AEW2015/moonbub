@@ -251,14 +251,25 @@ Natural pair completion improves from 121.852–121.867 ms to
 start→commit is 40.118–40.127 ms. A matched actual-pin comparison shows
 ACTIVATE commands rising from 28,571 to 47,459 with the same READ/WRITE
 counts; bank 0 accounts for 18,000 extra activations without new unique rows.
-Prioritize a bounded read-grant/locality experiment (for example a complete
-64-byte reference tile versus interleaved 16-byte chunks), preserving display
-fairness, all source leases and measured contention. Command counts identify
-a candidate, not an attributed latency prediction or a guaranteed winner.
+The [bounded tile-grant experiment](cu66-v91l-tile-grant/README.md) now
+compares those four reference chunks in one source turn, with eight idle-gap
+clocks and early yield on error/cancel/mismatch. A one-line configuration
+matches the frozen mux cycle by cycle. Directed tests pass 2,056 entries and
+18 corrupted policy traces are rejected; five native modes retain all exact
+RGB, physical memory, SHA and publication checks. Pair completion improves to
+97.043–97.051 ms, delta start→commit to 38.328–38.341 ms, while key RGB
+slows to 36.865–36.866 ms at assumed 100 MHz. In the matched seed912901/tAC2
+case ACTIVATE falls 47,459 → 36,713 with unchanged READ/WRITE counts. This
+policy also changes read credits up to4:1 reference/display, so it does not
+isolate locality's contribution. Compare balanced credit/service next, keeping
+this experimental option and the per-line control rather than promoting a
+throughput-only winner. Neither frame cadence nor hardware latency closes.
 
 
-Next qualify one measured bounded scheduling, reference-reuse or prefetch
-change against both retained natural overlap and all-memory serial controls.
+
+Next qualify balanced bounded read service against both tile-grant and
+per-line controls, separating locality from changed credit weighting. Retain
+the natural overlap and all-memory serial controls.
 Price wait/occupancy, contention and publication/source-bank lifetimes.
 All-RTL HUD, mixed entropy/fallback and measured ESP32 costs remain required
 before V91m's full fixed source-cadence path. V100–V110 retain exact 7-series

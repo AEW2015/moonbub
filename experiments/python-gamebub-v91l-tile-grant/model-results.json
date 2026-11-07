@@ -1,0 +1,244 @@
+{
+  "baseline": "4d6872f428beb902498d2cee4c509e643cd5aa78",
+  "baseline_locality_observation": {
+    "bank0_extra_activate_matches_report": true,
+    "interpretation": "locality is an experiment hypothesis; these counters do not establish that row changes caused the measured interval",
+    "overlap_bank0_extra_activate_commands": 18000,
+    "overlap_bank0_unique_activated_rows": 548
+  },
+  "checks": {
+    "address_geometry": {
+      "all_chunks_within_19bit_address_and_plane_bounds": true,
+      "all_four_chunks_within_one_1024B_row": true,
+      "all_tiles_64B_aligned": true,
+      "exclusive_maximum_tile_end": 518400,
+      "maximum_tile_base": 518336,
+      "minimum_tile_base": 0,
+      "physical_chunks_checked": 32400,
+      "plane_bases": [
+        0,
+        345600,
+        432000
+      ],
+      "plane_bytes": [
+        345600,
+        86400,
+        86400
+      ],
+      "tiles_checked": 8100
+    },
+    "bounded_gap_and_grant": {
+      "bounded_interchunk_gap_cycles": 8,
+      "cancel_error_and_timeout_terminate_tile_after_accepted_drain": true,
+      "display_eligible_immediately_after_fourth_chunk": true,
+      "gap_counts_only_reserved_idle_without_reference_offer": true,
+      "gap_does_not_count_bridge_ready_or_response_backpressure": true,
+      "malformed_case": {
+        "chunks_before_descriptor_change": 2
+      },
+      "malformed_next_descriptor_terminates_tile_after_accepted_drain": true,
+      "max_reference_bytes_per_grant": 64,
+      "max_reference_chunks_per_grant": 4,
+      "timeout_case": {
+        "chunks_before_timeout": 1,
+        "gap_cycles": 8
+      },
+      "timeout_is_a_policy_bound_not_a_predicted_latency": true
+    },
+    "physical_tag_widths_and_banks": {
+      "bank_three_rejected": true,
+      "epoch_bits": 32,
+      "epoch_zero_rejected": true,
+      "maximum_epoch_preserved": 4294967295,
+      "physical_ticket_bits": 32,
+      "ticket_zero_skipped": true,
+      "valid_source_banks": [
+        0,
+        1,
+        2
+      ]
+    },
+    "response_ownership": {
+      "accepted_reply_held_across_wrong_id_tags_and_descriptor_changes": true,
+      "accepted_reply_not_released_before_drain_and_ack": true,
+      "cancel_drains_accepted_work_before_error_reply": true,
+      "held_reply_cycles": 5,
+      "immutable_error_response_cycles": 3,
+      "wrong_id_tag_rejected": true
+    },
+    "same_tile_continuation_gate": {
+      "correct_continuation_accepted": true,
+      "mismatches_rejected": {
+        "bank_change": true,
+        "epoch_change": true,
+        "noncontiguous_address": true,
+        "ticket_change": true
+      },
+      "requires_exact_next_16B_address": true,
+      "requires_next_nonzero_32bit_physical_ticket": true,
+      "requires_same_epoch_bank_and_tile": true
+    },
+    "ticket_wrap_skips_zero": {
+      "completed_ticket": 4294967295,
+      "next_ticket": 1,
+      "pre_wrap_ticket": 4294967295,
+      "wrap_skips_zero": true
+    }
+  },
+  "performance_claims": {
+    "full_functional_fpga_qualification": false,
+    "hardware_qualified": false,
+    "speedup_implied": false,
+    "timing_simulated": false
+  },
+  "policy": {
+    "arbiter_tie_reset_matches_display_first": true,
+    "candidate": "one reference grant covers at most four contiguous 16B commands for one 64B tile",
+    "candidate_mux_has_payload_memory": false,
+    "display_service_point": "display becomes eligible after the fourth reference chunk, or sooner on malformed descriptor, cancel, physical error, or bounded-gap timeout after accepted work drains",
+    "legacy": "round robin per accepted 16B physical reference command",
+    "max_gap_cycles": 8,
+    "parameter_1_matches_legacy_contract": true
+  },
+  "policy_schedules": {
+    "candidate_one_tile_per_grant": {
+      "display_chunks_completed": 12,
+      "display_grant_after_each_reference_grant": true,
+      "display_work_is_served_without_reference_starvation": true,
+      "grant_count": 15,
+      "grant_prefix": [
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 4,
+          "owner": "reference"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 4,
+          "owner": "reference"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 4,
+          "owner": "reference"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        }
+      ],
+      "max_reference_chunks_before_display_opportunity": 4,
+      "policy": "tile64",
+      "reference_chunks_completed": 12,
+      "reference_tiles_completed": 3,
+      "timing_cycles_modeled": false
+    },
+    "legacy_per_16B_rr": {
+      "display_chunks_completed": 12,
+      "display_grant_after_each_reference_grant": true,
+      "display_work_is_served_without_reference_starvation": true,
+      "grant_count": 24,
+      "grant_prefix": [
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "reference"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "reference"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "reference"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "reference"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "reference"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "display"
+        },
+        {
+          "chunks16B": 1,
+          "owner": "reference"
+        }
+      ],
+      "max_reference_chunks_before_display_opportunity": 1,
+      "policy": "legacy16",
+      "reference_chunks_completed": 12,
+      "reference_tiles_completed": 3,
+      "timing_cycles_modeled": false
+    }
+  },
+  "schema": "python-gamebub-v91l-tile-grant-model-v1",
+  "source_sha256": {
+    "candidate_mux_rtl": "5217f0964290ec91ae22297a5c2f31cbe1b6388ea2fe0478c361dfe39213c5a2",
+    "legacy_mux_rtl": "dd95c307680225894d1e91a9239c3cb4105b89dab96f034a7dafcdd293ebd9d7",
+    "overlap_readme": "e805d4209058372f1ae22e8a75eebc29de842943538061116b6f09a2d0590418",
+    "overlap_results": "e9d6858d300f8fd26fc1d62e9f2662b3bd9b93cb7616659a996f90d14e2ab2d0",
+    "overlap_summary": "bc74c839eff76b666843475a8a55ae39bcb0ac266659626caeed5ed9745ca963",
+    "pin_traffic": "4eb20a4c6600631e0b9ed331192518c030737b4ce210daa8132e0b6628d85f95",
+    "tile_reader_rtl": "b4d50c15cc57952aa20633d26691c07aef0924c8b6292a26ba41b71bfcd913d5"
+  },
+  "status": "PASS_TILE_GRANT_CONTRACT_MODEL",
+  "unchanged_traffic_counts": {
+    "bl8_read_count": 31224,
+    "pixel_or_codec_traffic_changed": false,
+    "reference_physical_16B_chunks": 31224,
+    "reference_tiles": 7806
+  }
+}

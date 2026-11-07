@@ -1,0 +1,81 @@
+{
+  "schema": "cu66-v91l-tile-grant-live-contract-v1",
+  "top": "tile_grant_live",
+  "logical_scratch": {
+    "request": "mem_req_valid && mem_req_ready",
+    "response": "mem_rsp_valid && mem_rsp_ready",
+    "address_bits": 18,
+    "data_bits": 128,
+    "epoch_bits": 32,
+    "extent_bytes": 262144,
+    "alignment_bytes": 16,
+    "writes": "full 16B only; no implicit masks or RMW",
+    "physical_aperture_word_base": "0xc00000",
+    "physical_bank": 3,
+    "video_banks": [
+      0,
+      1,
+      2
+    ],
+    "reads": "one BL8 of eight 16-bit words",
+    "writes_per_request": "eight separately accepted 16-bit WRITE commands",
+    "inflight": 1,
+    "mirror": "updated only on actual successful physical write ACK; never drives ready, response or pixels"
+  },
+  "receipts": [
+    "scratch_live_req",
+    "scratch_live_rsp",
+    "scratch_frame",
+    "rgb_start",
+    "rgb_frame",
+    "reference_frame",
+    "overlap_summary",
+    "publication_wait_actual_display"
+  ],
+  "frozen_control": "fpga/experiments/cu66-v91l-overlap-live",
+  "native_cases": [
+    "actual_001",
+    "actual_006"
+  ],
+  "seeds": [
+    912901,
+    912902
+  ],
+  "t_ac_ns": [
+    2,
+    7
+  ],
+  "serial_commit_then_rgb": false,
+  "all_external_memory_actors_removed": true,
+  "full_rtl_hud": false,
+  "hardware_30fps_proven": false,
+  "display_lease": {
+    "module": "display_overlap_lease",
+    "source": "validated accepted descriptor captured at actual RGB engine start; ID/bank/epoch/full generation remain immutable",
+    "start_preconditions": [
+      "key is actually front/presented and pending empty before key display",
+      "source candidate and scratch completed before its display start",
+      "no already accepted aliasing candidate physical write"
+    ],
+    "new_candidate_handshake": "request valid and ready both gated by display_candidate_allowed",
+    "publication_drain": "external hint AND actual consumer lease/engine/display reader/physical reader drain",
+    "first_rgb": "key overlaps next native delta decoder",
+    "last_rgb": "delta drained after key lease closure",
+    "full64_generation": "explicit reject if RGB32 cannot represent the accepted generation; no truncation",
+    "guard": "separate seed912901/tAC2 finite last-pixel hold through deltaCOMMIT+17clocks; excluded from performance"
+  },
+  "pin_receipts": {
+    "ordered_files": "mode.pin_logs",
+    "boundary": "newline-aligned at approximately 128MiB uncompressed",
+    "integrity": "whole-stream raw SHA256 plus per-chunk raw and compressed SHA256"
+  },
+  "policy": {
+    "change": "bounded reference tile grants; otherwise frozen native workload and one physical controller",
+    "reference_lines_per_tile": 4,
+    "line_bytes": 16,
+    "tile_bytes": 64,
+    "display_fairness": "one display opportunity after at most one reference tile; finite inter-line gap wait",
+    "qualification": "Contract only; selected results.json and independent audit determine qualification."
+  },
+  "frozen_cpp_workload": "Exact frozen overlap bench except Verilator top typename; no PRNG, scheduling, guard, pixel, hash or input changes."
+}

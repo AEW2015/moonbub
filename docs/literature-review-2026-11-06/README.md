@@ -169,6 +169,16 @@ ACTIVATE commands increase 66.11% in one matched case, with unchanged
 READ/WRITE counts and repeated bank-0 row activation. This is evidence to
 investigate bounded tile-granularity read grants/locality; it is not a new
 publication result, codec quality improvement or complete latency attribution.
+The [bounded reference-tile grant follow-up](../cu66-v91l-tile-grant/README.md)
+now tests that hypothesis with unchanged codec bytes and native C++ workload.
+Pair completion decreases a further 1.807–1.810% to 97.043–97.051 ms at
+assumed 100 MHz, and delta commit to 38.328–38.341 ms; key RGB is slower at
+36.865–36.866 ms. A matched pin trace reduces ACTIVATE from 47,459 to
+36,713 with unchanged READ/WRITE counts. Up to4:1 reference/display credit
+weighting also changes, so balanced-service controls are the next experiment.
+These are new local implementation measurements, not new literature findings,
+HEVC/AV1 coding comparisons, fixed-cadence or hardware performance claims.
+
  These are local implementation
 measurements, not new publication findings. Hardware 30 fps and complete
 validated decoding below 10 ms remain open.

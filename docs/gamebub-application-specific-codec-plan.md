@@ -3,13 +3,25 @@
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
 **Current checkpoint: V91l remains partial.** The
+[bounded reference-tile grant experiment](cu66-v91l-tile-grant/README.md)
+retains exact source bytes and display leases while granting up to four
+contiguous 16-byte reference chunks per tile. Five modes preserve ten exact
+RGB outputs and 10,250 checked SHA jobs; directed tests pass 2,056 entries
+with 18 corrupted policy receipts rejected. Natural pair completion improves
+98.832–98.837 → 97.043–97.051 ms, and delta commit 40.118–40.127 →
+38.328–38.341 ms at assumed 100 MHz. Key RGB slows to 36.865–36.866 ms.
+This changes read-credit weighting as well as locality; retain it as an
+experimental tradeoff and compare balanced service before product selection.
+Hardware 30 fps and complete under-10-ms decoding remain open.
+
+The preceding native overlap checkpoint remains the control. The
 [native shared-memory overlap control](cu66-v91l-overlap/README.md) passes
 four natural modes plus a separate directed lease hold, preserving ten exact
 RGB outputs and 10,250 checked RTL SHA jobs across two native source images.
 The measured pair interval improves 18.89% (121.85 → 98.83 ms at assumed
 100 MHz), while competing display reads increase delta decode to 40.12 ms.
-The next experiment is bounded memory scheduling/locality, not a claim of
-30-fps source cadence or complete under-10-ms decoding. All-RTL HUD,
+The tile-grant experiment above now measures bounded scheduling/locality;
+fixed-source cadence and complete latency remain unqualified. All-RTL HUD,
 ESP32/transport and exact-device physical/hardware gates remain open.
 
 The [physical BL8/base-RGB join](cu66-v91l-readbridge/README.md) advances
@@ -93,9 +105,9 @@ A shorter pair interval does not prove 30-fps cadence: competing display
 traffic increases delta decode time. The lease adds control/metadata, no frame
 payload memory. Full native HUD and physical qualification remain open.
 
-Next use the measured contention to select one bounded arbitration,
-reference-reuse or prefetch change, preserving this natural overlap control
-and the scratch-inclusive serial control. Keep the earlier finite-scratch
+Next compare balanced read service against the bounded tile grant and
+per-line controls, separating credit weighting from locality. Preserve the
+natural overlap and scratch-inclusive serial controls. Keep the earlier finite-scratch
 control as a historical boundary. Preserve accepted-bank/qcache history and atomic
 publication; close all-RTL HUD and mixed entropy or negotiated fallback before
 V91m. Actual ESP32 costs and exact-device physical qualification remain open.
