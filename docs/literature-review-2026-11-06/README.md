@@ -92,19 +92,27 @@ Implementation follow-up: the [V91l live write-ACK lane](../cu66-v91l-live/READM
 connects actual supported BR88 reconstruction to integrity/publication while
 retaining the native C++ HUD endpoint. The [eight-byte tile-row comparison](../cu66-v91l-rows/README.md) now implements
 that bounded writer with explicit candidate x16 transfer cost and preserved
-ACK/hash ownership. Its physical single-word controller bridge and shared x16
-schedule remain open; a Python controller-FSM work model records their costs. This is a local architecture proposal arising
+ACK/hash ownership. The standalone physical controller bridge is qualified
+below; joining that service to this live path and all x16 clients remains open. This is a local architecture proposal arising
 from the implementation; it is not a new publication result or evidence of
 HEVC/AV1 superiority. Use its live simulation summary for measured cycle fences,
 and keep shared physical service and hardware goals unqualified.
 
-The next implementation checkpoint is now the [real controller row gate](../cu66-v91l-sdram/README.md):
-timed pin simulation of the existing write-single/BL8 command algorithm exposes
-about 25.62 ms of write-only replay per native frame under the modeled clock.
-The accompanying tile/microtile placement study is byte-exact write-locality
-research, not an RTL speedup or new publication result. It motivates checking
-physical layout and command scheduling jointly with reference and scanout reads.
-It does not update the earlier codec rate/quality or HEVC/AV1 comparisons.
+The [matched write-scheduling follow-up](../cu66-v91l-writepipe/README.md)
+now measures about 25.62 → 12.71 ms of candidate-memory replay per native frame
+at the same modeled clock, with a frozen controller/bridge control and two-seed
+pin/ownership audit. This remains write-only simulation, not a complete decoder,
+shared-memory result or physical clock/FPS validation. Manufacturer-supported
+consecutive writes retain final recovery and unchanged BL8 reads.
+
+The parallel read-aware tile/microtile study confirms that write locality alone
+is insufficient: tile8×8 halves reference reads but doubles independent
+conversion reads. A separate exact Python next-row retention mechanism removes
+that conversion overfetch with a proposed 752 data bytes, excluding metadata
+and existing buffers. Its sequential plane schedule must be adapted to actual
+chroma prefill before RTL promotion. These are local architecture mechanisms
+inspired by memory locality, not new publication findings or evidence of
+HEVC/AV1 rate/quality superiority. The earlier codec comparisons are unchanged.
 
 ## Literature findings compared with V90
 

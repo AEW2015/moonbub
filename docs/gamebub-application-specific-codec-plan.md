@@ -2,28 +2,39 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
-The [real SDRAM-controller row gate](cu66-v91l-sdram/README.md) now qualifies
-four actual x16 word writes per row, controller waits/refresh, BL8 read timing,
-cancellation drain and held completions under timed pin simulation. Two seeds
-replay 280,320 native requests total and independently check 1,121,280 native
-pin writes and four complete bank images. The write-only first-request → last-
-response fences are about **25.62 ms/frame at the modeled 100 MHz**. This is
-standalone replay of previously decoded bytes, not a current live-codec,
-cryptographic publication, shared-memory or hardware-throughput result.
+The [matched four-word write pipeline](cu66-v91l-writepipe/README.md) now
+reduces source-backed candidate-memory write replay from **25.62 ms to 12.71 ms**
+per native frame at the same modeled 100 MHz (about 2.015×). It keeps single-word
+writes and BL8 reads, accepts up to four same-open-row words, and fences ACKs
+through final physical idle recovery. Frozen controller/bridge control and
+candidate pass two seeds at both selected read-delay corners, with full native
+replay at 2 ns, 204 check entries, 256 read-word comparisons, eight exact native
+bank images and 2,242,560 reconciled native pin writes. These are writes of
+previously decoded bytes; **complete validated under-10-ms decoding and hardware
+30 fps remain open**. No current live codec/hash/publication/shared-client work
+runs inside this timing fence.
 
-The gate makes the next bottleneck concrete: per-word waits and raster row
-changes. A separate byte-exact write-locality study counts 82,478 ideal ACTs for
-raster placement versus 1,096 for 8×8 tile-major or 1,104 for 16×8 microtiles over
-two frames; refresh and command time are excluded. The microtile proposal adds
-3,840 padding bytes/bank. Neither changes current RTL. Compare their real
-reference/conversion/display reads and qualify faster legal word-command or
-burst scheduling before promotion. Keep the qualified controller/bridge as the
-control, then connect all clients and the live decoder to one finite service.
-Byte RMW, HUD decode/overlay, ESP32 costs and the physical 30-fps/<10-ms goals
-remain open.
+The parallel [read-aware layout study](cu66-v91l-writepipe/layout-read-contract.md)
+preserves the actual native write order and reference requests. Tile8×8 reduces
+ideal write ACTs over two frames from 82,478 to 1,096 and halves delta-reference
+BL8 reads, but doubles independent conversion reads. Micro16×8 retains reference
+overfetch and adds 3,840 padding bytes/bank. The new [next-row retention model](cu66-v91l-writepipe/rowpair-cache.md)
+removes tile8×8 conversion overfetch: 64,800 → 32,400 BL8 reads/frame, exact on
+both canonical goldens, with a proposed 752 data bytes excluding metadata and
+existing converter storage. Its derived sequential plane order differs from the
+real chroma-prefill order. Neither placement nor retention is promoted to RTL,
+and address counts are not latency results or HEVC/AV1 coding gains.
 
-The [bounded eight-byte tile-row writer](cu66-v91l-rows/README.md) is the next
-controlled implementation comparison. Its static row mode preserves the live
+Next implement timed tile8×8 translation and the bounded retention reader as
+static comparisons, preserving these controls. Then connect live supported
+reconstruction, validation/publication, scratch/reference/candidate/conversion
+and scanout to one finite physical service. Keep byte masking/RMW, RTL HUD
+semantics, entropy fallback, ESP32 costs and exact-device physical timing as
+explicit open gates. The [prior controller gate](cu66-v91l-sdram/README.md)
+remains the frozen scheduling baseline.
+
+The [bounded eight-byte tile-row writer](cu66-v91l-rows/README.md) remains the
+qualified live-path scheduling control. Its static row mode preserves the live
 key/delta canonical/HUD bytes, accepted-bank references, captured quantizer cache,
 all C2 hashes and publication behavior. Candidate requests reduce from 560,640
 to 70,080/frame; declared x16 candidate payload transfers reduce from 560,640
@@ -67,8 +78,8 @@ sustained hardware 30 fps nor validated under-10-ms decoding.
 
 The [tile-row comparison](cu66-v91l-rows/README.md) now implements those 64,800
 canonical plus 5,280 HUD row requests with exact hashing and ACK ownership under
-declared candidate service. It does not implement the physical controller bridge
-or qualify shared memory bandwidth; those are the next promotion gates above.
+declared candidate service. That live lane has not yet joined the separately
+qualified physical bridge or a shared controller; those promotion gates remain.
 
 [V91l's validation partition](cu66-v91l/README.md) now qualifies real RTL C2
 Merkle roots, semantic-HUD hashes, frame seals and atomic three-bank commit/

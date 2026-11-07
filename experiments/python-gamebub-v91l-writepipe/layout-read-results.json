@@ -1,0 +1,391 @@
+{
+  "schema": "cu66-v91l-layout-reads-v1",
+  "status": "PASS_EXACT_GATHER_BOUNDED_WORKLOAD_MODEL",
+  "source_revision": "78162802af92f3a99773683aaf4929159e50a63b",
+  "source_sha256": {
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/inputs/canonical_actual.tsv.gz": "03fab04d4273388cb1477c6db11c19486d7f0ad1ebc2e39b18fe6cc3508c0192",
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/results.json": "561f360d392e58a8191971274cb844707e373465f70d24807bac7c9d305e65db",
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/lines-events.jsonl.gz": "0de27522773e69346969f65eff586e697e519c9877bee46b68825f9adbcbcf3b",
+    "fpga/experiments/cu66-v91l-rows/comparison-attempts/20261106T231139409747Z-2dd7b637/results.json": "73286b38fb62dc667213d143005a4315a9cf661c96b19677e02310dccf261704",
+    "fpga/experiments/cu66-v91l-rows/comparison-attempts/20261106T231139409747Z-2dd7b637/events-rows.jsonl.gz": "452ee8985214764997f26727292e2c478a70b904ed5e462a2522ad245fc471ed",
+    "fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/results.json": "d6cd5401abdd95924d04b155d8536db95f03c97dedf4306a59968a9719b157aa",
+    "fpga/experiments/cu66-v91l-sdram/controller-attempts/20261106T233802043081Z-250d4c4c/inputs/native-rows.hex.gz": "e1cbb0fca032fe8e5685a875cc15494b5ad90c4f930fa57f32a111a084dd3cbe",
+    "scripts/cu66-v79/layout_study.py": "9f8b98491a10319c2b1a52de569b9c5dad18af26999803fa9b78d6b1834ce08f",
+    "docs/cu66-v91k-lines/read-contract.md": "f7d209fb84f4fff7c4f74252af669686c177ed413a3e7081c90bed68889a0803",
+    "docs/cu66-v91l-rows/write-contract.md": "b19be769e61f8364c1d7dec4d9f3cd6a87cde392403c41e6684dd033d6fd69f0",
+    "docs/cu66-v91l-sdram/controller-contract.md": "5c03076ddb9fd1bff42f744b18acdff45083c593c8590352521dec821b1b6030",
+    "fpga/experiments/cu66-v91k-lines/canonical_line_reader.sv": "154ddcf9333dd96e368f51f90f9fef1c775a2fe2b20002fee7fe6f92d5a95e69",
+    "fpga/experiments/cu66-v91k-lines/canonical_rgb565_lines.sv": "ba0c57234f5e850cbf88472c04fe3d5a75000d69c1982359077ca1f62db24881",
+    "fpga/experiments/cu66-v91k-lines/tb_lines.cpp": "9d7156f1ec31e5ff95c1e6eb2442f4e60a0d4c3acdf5f89f8e9df188fd3cb1a0",
+    "experiments/python-gamebub-v91l-writepipe/layout_reads.py": "eb9019ef4b3a50f839b902f5e18728e09d0178b1aa01d2cd1683782b2f36257b"
+  },
+  "provenance": {
+    "canonical_corpus_frames": [
+      "actual_001",
+      "actual_006"
+    ],
+    "canonical_corpus_count": 2,
+    "canonical_reads": "DERIVED_FULL_CANONICAL_ORDERED_16_BYTE_LINES_PER_FRAME",
+    "lines_per_frame": 32400,
+    "full_frame_reads_per_frame": true,
+    "reference_trace": "ACTUAL reference_request events for actual_006, memory_profile 0; repeated events retained; one per requested 64-byte tile",
+    "reference_tiles_per_frame": 7806,
+    "candidate_write_fixture": "ACTUAL v91l-sdram native-rows.hex.gz packed 160-bit rows streamed in captured order; bank and source byte address decoded per row, canonical offsets remapped per candidate layout and HUD rebased after padded allocation",
+    "candidate_write_rows": 140160,
+    "row_bytes": 8,
+    "canonical_hud_rows_per_frame": 70080
+  },
+  "scheduling": {
+    "serialized_phase_order": [
+      "candidate_writes_two_frame_fixture",
+      "delta_reference_tiles_one_frame",
+      "canonical_converter_fullframe_one_frame"
+    ],
+    "row_state_continues_between_phases": true,
+    "controller_row_bytes": 1024,
+    "meaning": "Address-only ACT/conflict/hit counts for this declared serial schedule; no controller timing, arbitration, or latency."
+  },
+  "limits": [
+    "Physical BL8 is an aligned 16-byte burst. Each logical read independently deduplicates bursts; no cross-request cache reuse is credited.",
+    "Overfetch is fetched bytes minus useful logical bytes (16 per converter request or 64 per reference tile); writes report 8-byte payload rows and four x16 word writes each.",
+    "Converter gather bound uses one 16-byte physical response scratch plus one 16-byte logical output buffer (32 total); reference-tile reads use 64-byte output plus 16-byte scratch (80 total). Byte/control registers are excluded.",
+    "Writes, reference reads and converter reads are separate phase totals in one synthetic serialized address order.",
+    "The two canonical fixture frames prove byte exactness only for actual_001 and actual_006; corpus size remains two.",
+    "No joint arbiter, refresh, controller latency, FPS, bandwidth, frame deadline, or hardware claim is modeled."
+  ],
+  "layouts": [
+    {
+      "layout": "raster",
+      "plane_offsets": [
+        0,
+        345600,
+        432000
+      ],
+      "plane_spans": [
+        345600,
+        86400,
+        86400
+      ],
+      "canonical_bytes": 518400,
+      "hud_bytes": 42240,
+      "allocation_bytes": 560640,
+      "mapping_reference_check": {
+        "reference_logical_requests": 7806,
+        "reference_logical_bytes": 499584,
+        "max_bl8_bursts_per_reference_tile": 8,
+        "reference_output_buffer_bytes": 64,
+        "reference_physical_response_scratch_bytes": 16,
+        "reference_gather_storage_bound_bytes": 80,
+        "reference_byte_exact": "PASS_ALL_REQUESTS_MATCH_PRIOR_ACCEPTED_CANONICAL",
+        "inactive_padding_bytes": 0,
+        "hud_region_start": 518400,
+        "hud_region_bytes": 42240,
+        "hud_bounds": "PASS_AFTER_CANONICAL_ALLOCATION",
+        "mapping": "PASS_INJECTIVE_PLANE_SPANS_CHROMA_EDGES_PADDING_HUD_BOUNDS"
+      },
+      "gather_per_frame": [
+        {
+          "requests_per_frame": 32400,
+          "logical_bytes_per_frame": 518400,
+          "physical_bl8_bursts": 32400,
+          "physical_bytes": 518400,
+          "overfetch_bytes": 0,
+          "max_bl8_bursts_per_logical_request": 1,
+          "max_unique_burst_payload_per_request": 16,
+          "max_physical_response_scratch_bytes": 16,
+          "logical_output_buffer_bytes": 16,
+          "gather_storage_bound_bytes": 32,
+          "byte_exact_frames": 1,
+          "check": "PASS_EXACT_ALL_LOGICAL_BYTES"
+        },
+        {
+          "requests_per_frame": 32400,
+          "logical_bytes_per_frame": 518400,
+          "physical_bl8_bursts": 32400,
+          "physical_bytes": 518400,
+          "overfetch_bytes": 0,
+          "max_bl8_bursts_per_logical_request": 1,
+          "max_unique_burst_payload_per_request": 16,
+          "max_physical_response_scratch_bytes": 16,
+          "logical_output_buffer_bytes": 16,
+          "gather_storage_bound_bytes": 32,
+          "byte_exact_frames": 1,
+          "check": "PASS_EXACT_ALL_LOGICAL_BYTES"
+        }
+      ],
+      "row_transitions": {
+        "candidate_writes_two_frame_fixture": {
+          "logical_requests": 140160,
+          "physical_request_or_burst_count": 140160,
+          "read_bl8_bursts": 0,
+          "useful_bytes": 1121280,
+          "physical_read_bytes": 0,
+          "overfetch_bytes": 0,
+          "eight_byte_write_rows": 140160,
+          "x16_write_words": 560640,
+          "row_activations": 82478,
+          "row_conflicts": 82476,
+          "row_hits": 57682,
+          "banks_touched": [
+            0,
+            1
+          ]
+        },
+        "delta_reference_tiles_one_frame": {
+          "logical_requests": 7806,
+          "physical_request_or_burst_count": 62448,
+          "read_bl8_bursts": 62448,
+          "useful_bytes": 499584,
+          "physical_read_bytes": 999168,
+          "overfetch_bytes": 499584,
+          "eight_byte_write_rows": 0,
+          "x16_write_words": 0,
+          "row_activations": 39555,
+          "row_conflicts": 39555,
+          "row_hits": 22893,
+          "banks_touched": [
+            0
+          ]
+        },
+        "canonical_converter_fullframe_one_frame": {
+          "logical_requests": 32400,
+          "physical_request_or_burst_count": 32400,
+          "read_bl8_bursts": 32400,
+          "useful_bytes": 518400,
+          "physical_read_bytes": 518400,
+          "overfetch_bytes": 0,
+          "eight_byte_write_rows": 0,
+          "x16_write_words": 0,
+          "row_activations": 507,
+          "row_conflicts": 507,
+          "row_hits": 31893,
+          "banks_touched": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "layout": "tile8x8",
+      "plane_offsets": [
+        0,
+        345600,
+        432000
+      ],
+      "plane_spans": [
+        345600,
+        86400,
+        86400
+      ],
+      "canonical_bytes": 518400,
+      "hud_bytes": 42240,
+      "allocation_bytes": 560640,
+      "mapping_reference_check": {
+        "reference_logical_requests": 7806,
+        "reference_logical_bytes": 499584,
+        "max_bl8_bursts_per_reference_tile": 4,
+        "reference_output_buffer_bytes": 64,
+        "reference_physical_response_scratch_bytes": 16,
+        "reference_gather_storage_bound_bytes": 80,
+        "reference_byte_exact": "PASS_ALL_REQUESTS_MATCH_PRIOR_ACCEPTED_CANONICAL",
+        "inactive_padding_bytes": 0,
+        "hud_region_start": 518400,
+        "hud_region_bytes": 42240,
+        "hud_bounds": "PASS_AFTER_CANONICAL_ALLOCATION",
+        "mapping": "PASS_INJECTIVE_PLANE_SPANS_CHROMA_EDGES_PADDING_HUD_BOUNDS"
+      },
+      "gather_per_frame": [
+        {
+          "requests_per_frame": 32400,
+          "logical_bytes_per_frame": 518400,
+          "physical_bl8_bursts": 64800,
+          "physical_bytes": 1036800,
+          "overfetch_bytes": 518400,
+          "max_bl8_bursts_per_logical_request": 2,
+          "max_unique_burst_payload_per_request": 32,
+          "max_physical_response_scratch_bytes": 16,
+          "logical_output_buffer_bytes": 16,
+          "gather_storage_bound_bytes": 32,
+          "byte_exact_frames": 1,
+          "check": "PASS_EXACT_ALL_LOGICAL_BYTES"
+        },
+        {
+          "requests_per_frame": 32400,
+          "logical_bytes_per_frame": 518400,
+          "physical_bl8_bursts": 64800,
+          "physical_bytes": 1036800,
+          "overfetch_bytes": 518400,
+          "max_bl8_bursts_per_logical_request": 2,
+          "max_unique_burst_payload_per_request": 32,
+          "max_physical_response_scratch_bytes": 16,
+          "logical_output_buffer_bytes": 16,
+          "gather_storage_bound_bytes": 32,
+          "byte_exact_frames": 1,
+          "check": "PASS_EXACT_ALL_LOGICAL_BYTES"
+        }
+      ],
+      "row_transitions": {
+        "candidate_writes_two_frame_fixture": {
+          "logical_requests": 140160,
+          "physical_request_or_burst_count": 140160,
+          "read_bl8_bursts": 0,
+          "useful_bytes": 1121280,
+          "physical_read_bytes": 0,
+          "overfetch_bytes": 0,
+          "eight_byte_write_rows": 140160,
+          "x16_write_words": 560640,
+          "row_activations": 1096,
+          "row_conflicts": 1094,
+          "row_hits": 139064,
+          "banks_touched": [
+            0,
+            1
+          ]
+        },
+        "delta_reference_tiles_one_frame": {
+          "logical_requests": 7806,
+          "physical_request_or_burst_count": 31224,
+          "read_bl8_bursts": 31224,
+          "useful_bytes": 499584,
+          "physical_read_bytes": 499584,
+          "overfetch_bytes": 0,
+          "eight_byte_write_rows": 0,
+          "x16_write_words": 0,
+          "row_activations": 500,
+          "row_conflicts": 500,
+          "row_hits": 30724,
+          "banks_touched": [
+            0
+          ]
+        },
+        "canonical_converter_fullframe_one_frame": {
+          "logical_requests": 32400,
+          "physical_request_or_burst_count": 64800,
+          "read_bl8_bursts": 64800,
+          "useful_bytes": 518400,
+          "physical_read_bytes": 1036800,
+          "overfetch_bytes": 518400,
+          "eight_byte_write_rows": 0,
+          "x16_write_words": 0,
+          "row_activations": 5264,
+          "row_conflicts": 5264,
+          "row_hits": 59536,
+          "banks_touched": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "layout": "micro16x8",
+      "plane_offsets": [
+        0,
+        345600,
+        433920
+      ],
+      "plane_spans": [
+        345600,
+        88320,
+        88320
+      ],
+      "canonical_bytes": 522240,
+      "hud_bytes": 42240,
+      "allocation_bytes": 564480,
+      "mapping_reference_check": {
+        "reference_logical_requests": 7806,
+        "reference_logical_bytes": 499584,
+        "max_bl8_bursts_per_reference_tile": 8,
+        "reference_output_buffer_bytes": 64,
+        "reference_physical_response_scratch_bytes": 16,
+        "reference_gather_storage_bound_bytes": 80,
+        "reference_byte_exact": "PASS_ALL_REQUESTS_MATCH_PRIOR_ACCEPTED_CANONICAL",
+        "inactive_padding_bytes": 3840,
+        "hud_region_start": 522240,
+        "hud_region_bytes": 42240,
+        "hud_bounds": "PASS_AFTER_CANONICAL_ALLOCATION",
+        "mapping": "PASS_INJECTIVE_PLANE_SPANS_CHROMA_EDGES_PADDING_HUD_BOUNDS"
+      },
+      "gather_per_frame": [
+        {
+          "requests_per_frame": 32400,
+          "logical_bytes_per_frame": 518400,
+          "physical_bl8_bursts": 37920,
+          "physical_bytes": 606720,
+          "overfetch_bytes": 88320,
+          "max_bl8_bursts_per_logical_request": 2,
+          "max_unique_burst_payload_per_request": 32,
+          "max_physical_response_scratch_bytes": 16,
+          "logical_output_buffer_bytes": 16,
+          "gather_storage_bound_bytes": 32,
+          "byte_exact_frames": 1,
+          "check": "PASS_EXACT_ALL_LOGICAL_BYTES"
+        },
+        {
+          "requests_per_frame": 32400,
+          "logical_bytes_per_frame": 518400,
+          "physical_bl8_bursts": 37920,
+          "physical_bytes": 606720,
+          "overfetch_bytes": 88320,
+          "max_bl8_bursts_per_logical_request": 2,
+          "max_unique_burst_payload_per_request": 32,
+          "max_physical_response_scratch_bytes": 16,
+          "logical_output_buffer_bytes": 16,
+          "gather_storage_bound_bytes": 32,
+          "byte_exact_frames": 1,
+          "check": "PASS_EXACT_ALL_LOGICAL_BYTES"
+        }
+      ],
+      "row_transitions": {
+        "candidate_writes_two_frame_fixture": {
+          "logical_requests": 140160,
+          "physical_request_or_burst_count": 140160,
+          "read_bl8_bursts": 0,
+          "useful_bytes": 1121280,
+          "physical_read_bytes": 0,
+          "overfetch_bytes": 0,
+          "eight_byte_write_rows": 140160,
+          "x16_write_words": 560640,
+          "row_activations": 1104,
+          "row_conflicts": 1102,
+          "row_hits": 139056,
+          "banks_touched": [
+            0,
+            1
+          ]
+        },
+        "delta_reference_tiles_one_frame": {
+          "logical_requests": 7806,
+          "physical_request_or_burst_count": 62448,
+          "read_bl8_bursts": 62448,
+          "useful_bytes": 499584,
+          "physical_read_bytes": 999168,
+          "overfetch_bytes": 499584,
+          "eight_byte_write_rows": 0,
+          "x16_write_words": 0,
+          "row_activations": 504,
+          "row_conflicts": 504,
+          "row_hits": 61944,
+          "banks_touched": [
+            0
+          ]
+        },
+        "canonical_converter_fullframe_one_frame": {
+          "logical_requests": 32400,
+          "physical_request_or_burst_count": 37920,
+          "read_bl8_bursts": 37920,
+          "useful_bytes": 518400,
+          "physical_read_bytes": 606720,
+          "overfetch_bytes": 88320,
+          "eight_byte_write_rows": 0,
+          "x16_write_words": 0,
+          "row_activations": 5263,
+          "row_conflicts": 5263,
+          "row_hits": 32657,
+          "banks_touched": [
+            1
+          ]
+        }
+      }
+    }
+  ]
+}

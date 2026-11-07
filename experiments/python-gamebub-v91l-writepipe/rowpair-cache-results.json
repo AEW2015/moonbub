@@ -1,0 +1,74 @@
+{
+  "schema": "cu66-v91l-tile-rowpair-cache-v1",
+  "status": "PASS_PYTHON_EXACT_ROWPAIR_GATHER",
+  "source_revision": "78162802af92f3a99773683aaf4929159e50a63b",
+  "source_sha256": {
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/inputs/canonical_actual.tsv.gz": "03fab04d4273388cb1477c6db11c19486d7f0ad1ebc2e39b18fe6cc3508c0192",
+    "fpga/experiments/cu66-v91k-lines/comparison-attempts/20261106T223415479309Z-7a2603de/results.json": "561f360d392e58a8191971274cb844707e373465f70d24807bac7c9d305e65db",
+    "experiments/python-gamebub-v91l-writepipe/rowpair_cache.py": "38e9df00c96e6860f55d8e71b0cf324649b0e46d70d63309a4ef8ae0425e24fa"
+  },
+  "geometry": "720x480 Y + two360x240 chroma planes; canonical518400bytes; no HUD/scanout",
+  "schedule": "DERIVED monotonic aligned16byte canonical requests; independent of actual converter request order",
+  "frames": {
+    "actual_001": {
+      "check": "PASS_BYTE_EXACT_ORDERED_BL8_GATHER",
+      "logical_requests": 32400,
+      "useful_bytes": 518400,
+      "physical_bl8_bursts": 32400,
+      "physical_read_bytes": 518400,
+      "overfetch_bytes": 0,
+      "unique_physical_bursts": 32400,
+      "no_refetch": true,
+      "maximum_pending_data_bytes": 728,
+      "per_plane_maximum_pending_data_bytes": [
+        728,
+        368,
+        368
+      ],
+      "maximum_new_bursts_per_16byte_request": 2,
+      "maximum_future_rows_retained": 1,
+      "address_only_row_activations": 2352,
+      "sha256": "927e4b27b815228919275cdbd3cbdfcc8b7cbd0eae60749a3919e1754e5d6257"
+    },
+    "actual_006": {
+      "check": "PASS_BYTE_EXACT_ORDERED_BL8_GATHER",
+      "logical_requests": 32400,
+      "useful_bytes": 518400,
+      "physical_bl8_bursts": 32400,
+      "physical_read_bytes": 518400,
+      "overfetch_bytes": 0,
+      "unique_physical_bursts": 32400,
+      "no_refetch": true,
+      "maximum_pending_data_bytes": 728,
+      "per_plane_maximum_pending_data_bytes": [
+        728,
+        368,
+        368
+      ],
+      "maximum_new_bursts_per_16byte_request": 2,
+      "maximum_future_rows_retained": 1,
+      "address_only_row_activations": 2352,
+      "sha256": "37209129ec076f8d4ca1d0a9b269d1c5450a0e459f0d066dc5da119cec259628"
+    }
+  },
+  "proposed_data_storage": {
+    "next_row_ram_bytes": 720,
+    "physical_burst_scratch_bytes": 16,
+    "logical_response_bytes": 16,
+    "total_data_bytes": 752,
+    "metadata_included": false
+  },
+  "contract": [
+    "Only sequential canonical plane/row order with an immutable leased bank.",
+    "Each physical BL8 contains two eight-byte rows; retain unused next-row bytes.",
+    "Requests and output are16bytes; physical reads are aligned16byte BL8.",
+    "Invalidate pending data/tags on bank generation/epoch changes, cancel and reset.",
+    "Next-row cache, read arbiter and invalidation are not implemented in RTL.",
+    "Dictionary, inverse array, full frame and fetched set are Python test-oracle storage, not FPGA architecture."
+  ],
+  "limitations": [
+    "No refresh, arbitration, controller latency, target timing/fit, random order, or concurrent consumer claim.",
+    "This schedule differs from converter chroma-prefill order; integrate per-plane caches/scheduling before promotion.",
+    "No current hardware throughput, decoder latency, ESP32 or HEVC/AV1 rate/quality result."
+  ]
+}

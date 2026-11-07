@@ -168,23 +168,32 @@ The separate Python controller-FSM cost model is a prerequisite estimate, not
 frame latency. RTL HUD decode/overlay, native processor/ESP32 cost and the V91m
 continuous-cadence/full-path gates remain open.
 
-The [actual controller row-to-word gate](cu66-v91l-sdram/README.md) now passes
-two seeds with timed SDRAM pins: full native key/delta candidate replay at the
-2-ns data-delay corner and unit tests at both 2/7-ns corners. The controller's
-command algorithm is retained with four explicit strict-lint edits, checked
-against the original by bounded Icarus trace identity. Four complete native bank
-images and 1,121,280 native physical word writes are independently checked. This
-is standalone write replay, not the current live decoder/shared-controller join.
+The [matched controller write-pipeline gate](cu66-v91l-writepipe/README.md)
+now preserves the frozen controller/bridge while comparing a four-word pipeline.
+At the same assumed 10-ns period, key candidate writes reduce from 2,562,150 to
+1,271,369 cycles, and delta writes from 2,561,984 to 1,271,364 (25.62 → 12.71 ms,
+about 2.015×). Both variants, both seeds, and 2-/7-ns unit corners pass; the
+2-ns modes additionally replay actual native key/delta bytes. The independent
+pin/ownership audit covers eight exact native bank images, 2,242,560 native
+physical word writes, 256 read-word captures and 32 rejected trace corruptions.
+No live decoder/shared-client or hardware qualification follows from this replay.
 
-The measured simulation write fences are 2,561,979 key / 2,562,092 delta clocks
-(about 25.62 ms at the modeled 10 ns period), before other frame work. Next qualify
-write-command scheduling and data placement against the real part constraints.
-The write-only Python locality comparison is raster 82,478 ideal ACTs versus
-tile8x8 1,096 / micro16x8 1,104 over two frames; it excludes refresh/command cost,
-and micro16x8 adds 3,840 padding bytes. No layout is promoted until reference,
-conversion and display traffic are also modeled and checked. Complete the live
-controller/arbiter, byte RMW and HUD boundary, then V91m's source-cadence workload;
-V100–V110 physical mapping/timing/hardware gates remain unchanged.
+V91l's next controlled implementation work is physical tile8×8 translation and
+bounded next-row retention. The [joint address study](cu66-v91l-writepipe/layout-read-contract.md)
+checks actual writes/references and declared full-once converter reads. Tile8×8
+improves reference locality but independent gathers double conversion traffic;
+the separate [byte-exact cache model](cu66-v91l-writepipe/rowpair-cache.md)
+restores 32,400 conversion BL8 reads with a proposed 752 data bytes, excluding
+metadata and existing buffers. Actual chroma-prefill adaptation, reset/cancel/
+lease invalidation, timed arbitration and RTL fit remain unimplemented. The
+micro16×8 alternative adds 3,840 padding bytes and retains reference overfetch.
+None of these layout counts are frame time or a promoted RTL map.
+
+Join these candidates to the live decoder/controller/arbiter, byte RMW and HUD
+boundary, then V91m's fixed source-cadence workload. Sustained hardware 30 fps
+and complete validated decoding below 10 ms remain open. V100–V110 physical
+mapping, placement/routing, I/O/CDC timing and hardware gates are unchanged.
+The [earlier controller gate](cu66-v91l-sdram/README.md) stays frozen as control.
 
 V91f is promoted for functional scheduling under its bounded ownership contract;
 physical resource fit is still unqualified. V91g is promoted only if measured

@@ -1,0 +1,121 @@
+{
+  "schema": "cu66-v91l-writepipe-comparison-v1",
+  "status": "FAIL",
+  "source_revision": "78162802af92f3a99773683aaf4929159e50a63b",
+  "source_sha256": {
+    "fpga/experiments/cu66-v91l-sdram/controller/moonshine_sdram.sv": "9ecadf0e42bd0c35267e09d4c3b6df632d663d2096f93a80805b78528d2c6d4f",
+    "fpga/experiments/cu66-v91l-sdram/row_to_sdram.sv": "f5d887dae1937e057999c9280a66674a7debbce86d191dd9f398949a2f24186c",
+    "fpga/experiments/cu66-v91l-writepipe/controller/moonshine_sdram.sv": "a43869515d2587e90356ebe90c6bee8c4f0428276034cf7de648d9650694abe1",
+    "fpga/experiments/cu66-v91l-writepipe/row_to_sdram.sv": "4062c13366335d2bd1844da04762c4c43ad6eade760676d2d410b6847a69dd0d",
+    "fpga/experiments/cu66-v91l-writepipe/sdram_pin_model.sv": "b6fa2ab67ce8c6918225444329eb8f323cc0d02134f5181b09fe7d6ba64d2bf5",
+    "fpga/experiments/cu66-v91l-writepipe/tb_controller.sv": "05bee2b16b57739d80c5a95867dc9deee03db356f3de2f5afdb7ae41242468b7",
+    "scripts/cu66-v91l-writepipe/run_comparison.py": "3ca873c64876f4029ccc09d954ed44ec82e6af343a745d1efacbd718a51df70b"
+  },
+  "inputs_sha256": {},
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--version"
+      ],
+      "log": "tool-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "g++",
+        "--version"
+      ],
+      "log": "compiler-version.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "verilator",
+        "--binary",
+        "--timing",
+        "--assert",
+        "-Wall",
+        "-DSIMULATION",
+        "-j",
+        "2",
+        "--top-module",
+        "tb_controller",
+        "-GT_AC_NS=2.0",
+        "--Mdir",
+        "/build/v91l-writepipe-20261107T000059979101Z-6be1218d-control-tac2",
+        "-CFLAGS",
+        "-std=c++20 -O2 -Wall -Wextra -Werror",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-writepipe/attempts/20261107T000059979101Z-6be1218d/sources/fpga/experiments/cu66-v91l-sdram/controller/moonshine_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-writepipe/attempts/20261107T000059979101Z-6be1218d/sources/fpga/experiments/cu66-v91l-sdram/row_to_sdram.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-writepipe/attempts/20261107T000059979101Z-6be1218d/sources/fpga/experiments/cu66-v91l-writepipe/sdram_pin_model.sv",
+        "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-writepipe/attempts/20261107T000059979101Z-6be1218d/sources/fpga/experiments/cu66-v91l-writepipe/tb_controller.sv"
+      ],
+      "log": "compile-control-tac2.log",
+      "exit_code": 0
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "gamebub-cu66-v69-build",
+        "/build/v91l-writepipe-20261107T000059979101Z-6be1218d-control-tac2/Vtb_controller",
+        "+SEED=912301"
+      ],
+      "log": "simulation-control-912301-tac2.jsonl",
+      "exit_code": 143
+    }
+  ],
+  "modes": [
+    {
+      "variant": "control",
+      "seed": 912301,
+      "t_ac_ns": 2,
+      "status": "FAIL",
+      "log": "simulation-control-912301-tac2.jsonl.gz",
+      "native_rows": 0
+    }
+  ],
+  "seeds": [
+    912301
+  ],
+  "native_replay": false,
+  "physical_hardware_tested": false,
+  "full_live_codec_join": false,
+  "hardware_distinct_30fps_proven": false,
+  "full_frame_decode_under10ms_proven": false,
+  "scope": "Matched actual frozen controller/bridge versus same-row write pipeline, single-write MRS0x233. Candidate-memory native replay only. No shared traffic, live decode, route/PVT or physical hardware validation.",
+  "error_class": "RuntimeError",
+  "error": "command exit 143: /home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study/fpga/experiments/cu66-v91l-writepipe/attempts/20261107T000059979101Z-6be1218d/simulation-control-912301-tac2.jsonl",
+  "compressed_artifacts": {
+    "simulation-control-912301-tac2.jsonl": {
+      "path": "simulation-control-912301-tac2.jsonl.gz",
+      "gzip_sha256": "bf8228096d2e6b5932427be51979fcd170be58121d2baa51de2b4127458915d9",
+      "raw_sha256": "72de06a36eba6396c7ce9ab46c031cb5364ee173bf845b8f529dce61a893c057",
+      "rows": 44388
+    }
+  },
+  "wall_seconds": 93.48617238085717,
+  "artifacts_sha256": {
+    "compile-control-tac2.log": "cfc65f07238694351a362ca46445e185de5eb278b0e4e46614114f8a10f44d3c",
+    "compiler-version.log": "59d1cbef41d4ae78d5063d525b7aa13d18dc0493ea00537efc19b2ee398cb5a8",
+    "simulation-control-912301-tac2.jsonl.gz": "bf8228096d2e6b5932427be51979fcd170be58121d2baa51de2b4127458915d9",
+    "sources/fpga/experiments/cu66-v91l-sdram/controller/moonshine_sdram.sv": "9ecadf0e42bd0c35267e09d4c3b6df632d663d2096f93a80805b78528d2c6d4f",
+    "sources/fpga/experiments/cu66-v91l-sdram/row_to_sdram.sv": "f5d887dae1937e057999c9280a66674a7debbce86d191dd9f398949a2f24186c",
+    "sources/fpga/experiments/cu66-v91l-writepipe/controller/moonshine_sdram.sv": "a43869515d2587e90356ebe90c6bee8c4f0428276034cf7de648d9650694abe1",
+    "sources/fpga/experiments/cu66-v91l-writepipe/row_to_sdram.sv": "4062c13366335d2bd1844da04762c4c43ad6eade760676d2d410b6847a69dd0d",
+    "sources/fpga/experiments/cu66-v91l-writepipe/sdram_pin_model.sv": "b6fa2ab67ce8c6918225444329eb8f323cc0d02134f5181b09fe7d6ba64d2bf5",
+    "sources/fpga/experiments/cu66-v91l-writepipe/tb_controller.sv": "05bee2b16b57739d80c5a95867dc9deee03db356f3de2f5afdb7ae41242468b7",
+    "sources/scripts/cu66-v91l-writepipe/run_comparison.py": "3ca873c64876f4029ccc09d954ed44ec82e6af343a745d1efacbd718a51df70b",
+    "tool-version.log": "26daf9ad1ba36ee1c20cab9a869d0a1fbb8117230c80c78ec2d8cf597f64c4a5"
+  }
+}
