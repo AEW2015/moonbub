@@ -2,6 +2,22 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-06
 
+**V96 partial checkpoint: exact reference inventory and standalone materialization.**
+The [V96 study](cu66-v96/README.md) independently verifies 1,371 research streams
+and 11,105,100 canonical tile outputs across 457 retained sources. Bounded
+64/256-entry dictionaries find 37,295/63,164 additional exact cross-position
+copies (2.76%/4.68% of active residual blocks). Every copy is materialized;
+no memory-read reduction or residual-packet compression is inferred. A new
+COPY/CONST128/literal RTL engine passes 2,601 checks through the retained timed
+SDRAM controller, including dynamic protection, cancellation/drain and retry.
+The separate constant consumer model prices a potential 3.63% display-read
+reduction, with generation work charged; it is not an RTL raster-reader join.
+[Results](cu66-v96/results.md) separate those evidence scopes. V96d remains
+open: integrate the supported descriptor path with complete reconstruction,
+validation, HUD and shared continuous display, then measure full-path latency
+and traffic before promotion. Existing codec, V91l/V92d/V94 gates and the
+V100–V110 7-series physical implementation plan remain unchanged.
+
 **V95a–c exact-palette software checkpoint qualified; no rate promotion.**
 The [V95 pixel-palette study](cu66-v95/README.md) checks 8,226 plane variants,
 2,542,828 independently decoded records and 4,113 complete native frames.

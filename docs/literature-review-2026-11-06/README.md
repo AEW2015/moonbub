@@ -10,6 +10,18 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V96 E6 follow-up: [bounded materialized copies and constant service](../cu66-v96/README.md)
+now have an exact accepted-reference inventory and standalone timed-controller
+RTL evidence. 64/256-entry dictionaries expose 2.76%/4.68% of active residual
+blocks as additional exact copies; source reads and destination writes remain
+charged. 2,601 component checks cover actual addressed memory, leases and
+cancel/retry. A separate Python constant-display model identifies a potential
+3.63% read-command reduction while charging generation work. These are not
+full-path latency, compression or HEVC/AV1 wins. E6's complete shared-display,
+validation/HUD and no-underrun promotion gate remains open; no arbitrary alias
+or compacted physical window is introduced. [Results](../cu66-v96/results.md)
+retain the control and name the required integration.
+
 V95 E5 follow-up: [exact pixel palettes](../cu66-v95/README.md) now have
 bounded own/reused palettes, TOP/LEFT runs, escapes, RAW and actual residual
 fallback. Independent readers and 4,113 complete native frames preserve exact
