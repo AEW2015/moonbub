@@ -1,0 +1,376 @@
+--- V57/native/hud.hpp
++++ V58/native/hud.hpp
+@@ -84,92 +84,49 @@
+   need(v <= remaining, "HUD Rice bound");
+   return v;
+ }
+-inline cu66_port::Vector<uint8_t> channel33(Reader &r, unsigned count, unsigned maximum) {
+-  unsigned scheme = r.u8(), k = r.u8();
+-  uint32_t events = r.u32(), size = r.u32(), nb = r.u32();
+-  need(scheme <= 2 && k <= 14 && events <= count &&
+-           size <= 6 + 506 + 2 * count && nb <= 16 * count + 1,
+-       "HS33 channel bounds");
++template<class Emit>
++inline void channel33_emit(Reader &r,unsigned count,unsigned maximum,Emit emit) {
++  unsigned scheme=r.u8(),k=r.u8();
++  uint32_t events=r.u32(),size=r.u32(),nb=r.u32();
++  need(scheme<=2&&k<=14&&events<=count&&size<=6+506+2*count&&nb<=16*count+1,"HS33 channel bounds");
+   cu66_port::Vector<uint8_t> symbols;
+-  if (events) {
+-    Reader h(r.take(size));
+-    symbols = huffman(h, events, maximum);
+-    h.end();
+-  } else
+-    need(scheme == 1 && !size, "HS33 empty symbols");
+-  Bits bits(r.take((nb + 7) / 8), nb);
+-  if (scheme == 0) {
+-    need(!k && !nb && events == count, "HS33 plain syntax");
+-    return symbols;
+-  }
+-  cu66_port::Vector<uint8_t> out;
+-  out.reserve(count);
+-  if (scheme == 1) {
+-    for (int s : symbols) {
+-      need(s != 0, "HS33 nonzero symbol");
+-      auto gap = plain_rice(bits, k, count - unsigned(out.size()));
+-      out.insert(out.end(), gap, 0);
+-      need(out.size() < count, "HS33 expansion");
+-      out.push_back(s);
+-    }
+-    auto gap = plain_rice(bits, k, count - unsigned(out.size()));
+-    out.insert(out.end(), gap, 0);
+-  } else {
+-    need(events > 0, "HS33 repeat events");
+-    int last = -1;
+-    for (int s : symbols) {
+-      need(s != last && out.size() < count, "HS33 repeat order");
+-      last = s;
+-      auto n = plain_rice(bits, k, count - unsigned(out.size()) - 1) + 1;
+-      out.insert(out.end(), n, s);
+-    }
+-  }
+-  need(out.size() == count, "HS33 exact expansion");
+-  bits.end();
+-  return out;
+-}
+-inline cu66_port::Vector<uint16_t> byte_planes(View data, unsigned n) {
+-  Reader r(data);
+-  unsigned lo = r.u32(), hi = r.u32();
+-  need(size_t(lo) + hi + 8 == data.n, "HD25 planes lengths");
+-  auto unpack = [n](View input) {
+-    need(input.n && input.n <= n + (n + 127) / 128, "HD25 byte RLE bound");
+-    Reader a(input);
+-    Bytes out;
+-    out.reserve(n);
+-    while (a.pos < a.v.n) {
+-      unsigned t = a.u8(), count;
+-      uint8_t value = 0;
+-      if (t < 128) {
+-        count = t + 1;
+-        auto raw = a.take(count);
+-        need(out.size() + count <= n, "HD25 literal overflow");
+-        out.insert(out.end(), raw.p, raw.p + count);
+-        continue;
+-      }
+-      count = (t & 63) + 1;
+-      if (t >= 192) {
+-        value = a.u8();
+-        need(value != 0, "HD25 repeat zero");
+-      }
+-      need(out.size() + count <= n, "HD25 RLE overflow");
+-      out.insert(out.end(), count, value);
+-    }
+-    need(out.size() == n, "HD25 RLE coverage");
+-    return out;
++  if(events){Reader h(r.take(size));symbols=huffman(h,events,maximum);h.end();}
++  else need(scheme==1&&!size,"HS33 empty symbols");
++  Bits bits(r.take((nb+7)/8),nb);unsigned produced=0;
++  auto put=[&](unsigned v){need(produced<count,"HS33 expansion");emit(uint8_t(v));++produced;};
++  if(scheme==0){need(!k&&!nb&&events==count,"HS33 plain syntax");for(auto v:symbols)put(v);}
++  else if(scheme==1){
++    for(auto v:symbols){need(v!=0,"HS33 nonzero symbol");auto gap=plain_rice(bits,k,count-produced);while(gap--)put(0);put(v);}
++    auto gap=plain_rice(bits,k,count-produced);while(gap--)put(0);
++  }else{
++    need(events>0,"HS33 repeat events");int last=-1;
++    for(auto v:symbols){need(v!=last&&produced<count,"HS33 repeat order");last=v;auto n=plain_rice(bits,k,count-produced-1)+1;while(n--)put(v);}
++  }
++  need(produced==count,"HS33 exact expansion");bits.end();
++}
++inline cu66_port::Vector<uint8_t> channel33(Reader&r,unsigned count,unsigned maximum){
++  cu66_port::Vector<uint8_t> out;out.reserve(count);
++  channel33_emit(r,count,maximum,[&](uint8_t v){out.push_back(v);});return out;
++}
++inline void byte_planes_into(View data,unsigned n,cu66_port::Vector<uint16_t>&out,bool xor_values){
++  Reader r(data);unsigned lo=r.u32(),hi=r.u32();need(size_t(lo)+hi+8==data.n,"HD25 planes lengths");
++  out.resize(n);if(!xor_values)std::fill(out.begin(),out.end(),0);
++  auto unpack=[&](View input,unsigned shift){
++    need(input.n&&input.n<=n+(n+127)/128,"HD25 byte RLE bound");Reader a(input);unsigned pos=0;
++    auto put=[&](uint8_t v){need(pos<n,"HD25 RLE overflow");const uint16_t value=uint16_t(uint16_t(v)<<shift);if(xor_values)out[pos]^=value;else out[pos]=uint16_t((out[pos]&~uint16_t(255u<<shift))|value);++pos;};
++    while(a.pos<a.v.n){unsigned t=a.u8(),count;uint8_t value=0;
++      if(t<128){count=t+1;auto raw=a.take(count);need(pos+count<=n,"HD25 literal overflow");for(unsigned i=0;i<count;++i)put(raw[i]);continue;}
++      count=(t&63)+1;if(t>=192){value=a.u8();need(value!=0,"HD25 repeat zero");}need(pos+count<=n,"HD25 RLE overflow");while(count--)put(value);
++    }need(pos==n,"HD25 RLE coverage");
+   };
+-  auto a = unpack(r.take(lo)), b = unpack(r.take(hi));
+-  r.end();
+-  cu66_port::Vector<uint16_t> out(n);
+-  for (unsigned i = 0; i < n; i++)
+-    out[i] = uint16_t(a[i] | (uint32_t(b[i]) << 8));
+-  return out;
+-}
+-inline cu66_port::Vector<uint16_t> span_words(View data, unsigned w, unsigned hh) {
++  unpack(r.take(lo),0);unpack(r.take(hi),8);r.end();
++}
++inline cu66_port::Vector<uint16_t> byte_planes(View data,unsigned n){cu66_port::Vector<uint16_t> out;byte_planes_into(data,n,out,false);return out;}
++inline void span_words_into(View data,unsigned w,unsigned hh,cu66_port::Vector<uint16_t>&out,bool xor_values) {
+   Reader r(data);
+   unsigned count = r.u16();
+   need(count <= w * hh && count <= (data.n - 2) / 8, "HD25 spans count");
+-  cu66_port::Vector<uint16_t> out(w * hh);
++  out.resize(w*hh);if(!xor_values)std::fill(out.begin(),out.end(),0);
+   int last_y = -1, last_end = -1;
+   for (unsigned i = 0; i < count; i++) {
+     unsigned y = r.u16(), x = r.u16(), n = r.u16();
+@@ -186,17 +143,15 @@
+         need(last_nz < 0 || int(j) - last_nz < 4, "HD25 span zero gap");
+         last_nz = j;
+       }
+-      out[y * w + x + j] = v[j];
++      if(xor_values)out[y*w+x+j]^=v[j];else out[y*w+x+j]=v[j];
+     }
+     last_y = y;
+     last_end = x + n;
+   }
+   r.end();
+-  return out;
+-}
+-inline cu66_port::Vector<uint16_t>
+-rice_components(View data, unsigned w, unsigned hh,
+-                const cu66_port::Vector<uint16_t> *prediction, bool left) {
++}
++inline cu66_port::Vector<uint16_t> span_words(View data,unsigned w,unsigned hh){cu66_port::Vector<uint16_t> out;span_words_into(data,w,hh,out,false);return out;}
++inline void rice_components_into(View data,unsigned w,unsigned hh,const cu66_port::Vector<uint16_t>*prediction,bool left,cu66_port::Vector<uint16_t>&out) {
+   Reader r(data);
+   unsigned ks[3];
+   for (auto &k : ks) {
+@@ -208,7 +163,7 @@
+     n = r.u32();
+     need(n >= w * hh && n <= 127 * w * hh, "HD25 component Rice count");
+   }
+-  cu66_port::Vector<uint16_t> out(w * hh);
++  out.resize(w*hh);
+   for (int c = 0; c < 3; c++) {
+     unsigned maximum = c == 1 ? 63 : 31, shift = c == 0 ? 11 : c == 1 ? 5 : 0;
+     Bits bits(r.take((counts[c] + 7) / 8), counts[c]);
+@@ -231,14 +186,11 @@
+     bits.end();
+   }
+   r.end();
+-  return out;
+-}
+-inline std::pair<cu66_port::Vector<uint16_t>, size_t>
+-motion_prediction(const cu66_port::Vector<uint16_t> &ref, unsigned mode, View data,
+-                  unsigned w, unsigned hh) {
+-  cu66_port::Vector<uint16_t> pred(w * hh);
+-  if (mode == 1)
+-    return {ref, 0};
++}
++inline cu66_port::Vector<uint16_t> rice_components(View data,unsigned w,unsigned hh,const cu66_port::Vector<uint16_t>*prediction,bool left){cu66_port::Vector<uint16_t> out;rice_components_into(data,w,hh,prediction,left,out);return out;}
++inline size_t motion_prediction_into(const cu66_port::Vector<uint16_t>&ref,unsigned mode,View data,unsigned w,unsigned hh,cu66_port::Vector<uint16_t>&pred) {
++  pred.resize(w*hh);
++  if(mode==1){pred.assign(ref.begin(),ref.end());return 0;}
+   Reader r(data);
+   cu66_port::Vector<std::pair<int, int>> vectors;
+   if (mode == 2) {
+@@ -281,10 +233,11 @@
+       pred[y * w + x] = ref[clamp(int(y) + v.second, 0, hh - 1) * w +
+                             clamp(int(x) + v.first, 0, w - 1)];
+     }
+-  return {pred, r.pos};
+-}
++  return r.pos;
++}
++inline std::pair<cu66_port::Vector<uint16_t>,size_t> motion_prediction(const cu66_port::Vector<uint16_t>&ref,unsigned mode,View data,unsigned w,unsigned hh){cu66_port::Vector<uint16_t> out;auto pos=motion_prediction_into(ref,mode,data,w,hh,out);return {std::move(out),pos};}
+ inline cu66_port::Vector<uint16_t>
+-decode_full_patch(View packet, const std::array<uint16_t, 4> &rect) {
++decode_full_patch_into(View packet,const std::array<uint16_t,4>&rect,cu66_port::Vector<uint16_t> out) {
+   checked(packet, 30, 50000);
+   Reader r(packet.sub(0, packet.n - 4));
+   auto magic = r.magic();
+@@ -305,7 +258,7 @@
+     need(palette[i] > palette[i - 1], "HUD palette order");
+   auto data = r.take(length);
+   r.end();
+-  cu66_port::Vector<uint16_t> out;
++  out.clear();
+   cu66_port::Set<unsigned> used;
+   if (mode == 0) {
+     need(!colors && length == 2 * pixels, "HUD full raw");
+@@ -375,9 +328,8 @@
+     need(used.size() == colors, "HUD unused palette");
+   return out;
+ }
+-inline cu66_port::Vector<uint16_t> decode_patch(View packet, const Patch *reference,
+-                                          unsigned expected_w,
+-                                          unsigned expected_h) {
++inline cu66_port::Vector<uint16_t> decode_full_patch(View packet,const std::array<uint16_t,4>&rect){return decode_full_patch_into(packet,rect,cu66_port::Vector<uint16_t>{});}
++inline cu66_port::Vector<uint16_t> decode_patch_into(View packet,const Patch*reference,unsigned expected_w,unsigned expected_h,cu66_port::Vector<uint16_t> out) {
+   checked(packet, 50, 42290);
+   Reader r(packet.sub(0, packet.n - 4));
+   auto magic = r.magic();
+@@ -398,7 +350,7 @@
+     need(reference && reference->words.size() == w * hh &&
+              patch_tag(reference->words, w, hh) == rt,
+          "HUD patch reference");
+-  cu66_port::Vector<uint16_t> out;
++  out.clear();
+   if (hs) {
+     need(mode == 0 || mode == 1 || mode == 2 || mode == 3 || mode == 9 ||
+              mode == 10 || mode == 11,
+@@ -411,39 +363,23 @@
+     if (plain == 1) {
+       prediction = &reference->words;
+     } else if (plain) {
+-      auto q = motion_prediction(reference->words, plain, data, w, hh);
+-      out = std::move(q.first);
+-      prediction = &out;
+-      owned_prediction = true;
+-      pos = q.second;
++      pos=motion_prediction_into(reference->words,plain,data,w,hh,out);
++      prediction=&out;owned_prediction=true;
+     }
+     Reader a(data.sub(pos, data.n - pos));
+     if (!owned_prediction) out.assign(w * hh, 0);
+     for (int c = 0; c < 3; c++) {
+       unsigned maximum = c == 1 ? 63 : 31, shift = c == 0 ? 11 : c == 1 ? 5 : 0;
+-      auto mapped =
+-          magic == "HS33"
+-              ? channel33(a, w * hh, (mode & 8) ? 4 * maximum : 2 * maximum)
+-              : huffman(a, w * hh, (mode & 8) ? 4 * maximum : 2 * maximum);
+-      for (unsigned y = 0; y < hh; y++) {
+-        int rowdelta = 0, resultsum = 0;
+-        for (unsigned x = 0; x < w; x++) {
+-          int delta = signed_zig(mapped[y * w + x]);
+-          if (mode & 8) {
+-            rowdelta += delta;
+-            delta = rowdelta;
+-          }
+-          int result;
+-          if (!plain) {
+-            resultsum += delta;
+-            result = resultsum;
+-          } else
+-            result = int(((*prediction)[y * w + x] >> shift) & maximum) + delta;
+-          need(result >= 0 && result <= int(maximum), "HS reconstructed range");
+-          out[y * w + x] =
+-              uint16_t((out[y * w + x] & ~(uint32_t(maximum) << shift)) | (uint32_t(result) << shift));
+-        }
+-      }
++      unsigned position=0;int rowdelta=0,resultsum=0;
++      auto emit=[&](uint8_t symbol){
++        need(position<w*hh,"HS expansion");const unsigned x=position%w;if(!x){rowdelta=0;resultsum=0;}
++        int delta=signed_zig(symbol);if(mode&8){rowdelta+=delta;delta=rowdelta;}
++        int result;if(!plain){resultsum+=delta;result=resultsum;}else result=int(((*prediction)[position]>>shift)&maximum)+delta;
++        need(result>=0&&result<=int(maximum),"HS reconstructed range");out[position]=uint16_t((out[position]&~(uint32_t(maximum)<<shift))|(uint32_t(result)<<shift));++position;
++      };
++      if(magic=="HS33")channel33_emit(a,w*hh,(mode&8)?4*maximum:2*maximum,emit);
++      else{auto mapped=huffman(a,w*hh,(mode&8)?4*maximum:2*maximum);for(auto value:mapped)emit(value);}
++      need(position==w*hh,"HS exact channel pixels");
+     }
+     a.end();
+   } else {
+@@ -463,18 +399,14 @@
+       out = *base;
+       break;
+     case 2:
+-      out = span_words(data, w, hh);
+-      for (unsigned i = 0; i < out.size(); i++)
+-        out[i] ^= (*base)[i];
++      out.assign(base->begin(),base->end());span_words_into(data,w,hh,out,true);
+       break;
+     case 3:
+-      out = byte_planes(data, w * hh);
+-      for (unsigned i = 0; i < out.size(); i++)
+-        out[i] ^= (*base)[i];
++      out.assign(base->begin(),base->end());byte_planes_into(data,w*hh,out,true);
+       break;
+     case 6:
+     case 7:
+-      out = byte_planes(data, w * hh);
++      byte_planes_into(data,w*hh,out,false);
+       if (mode == 7)
+         for (unsigned y = 0; y < hh; y++)
+           for (unsigned x = 1; x < w; x++)
+@@ -482,27 +414,20 @@
+       break;
+     case 8:
+     case 9:
+-      out = rice_components(data, w, hh, base, mode == 9);
++      rice_components_into(data,w,hh,base,mode==9,out);
+       break;
+     case 4:
+     case 5: {
+-      auto q = motion_prediction(*base, mode == 4 ? 2 : 3, data, w, hh);
+-      auto residual = data.sub(q.second, data.n - q.second);
+-      need(residual.n > 0, "HD25 missing residual");
+-      unsigned grammar = residual[0];
+-      auto body = residual.sub(1, residual.n - 1);
+-      if (grammar == 0)
+-        out = span_words(body, w, hh);
+-      else if (grammar == 1)
+-        out = byte_planes(body, w * hh);
+-      else if (grammar == 2) {
+-        out = rice_components(body, w, hh, &q.first, false);
+-        for (unsigned i = 0; i < out.size(); i++)
+-          out[i] ^= q.first[i];
+-      } else
+-        need(false, "HD25 residual grammar");
+-      for (unsigned i = 0; i < out.size(); i++)
+-        out[i] ^= q.first[i];
++      auto consumed=motion_prediction_into(*base,mode==4?2:3,data,w,hh,out);
++      auto residual=data.sub(consumed,data.n-consumed);need(residual.n>0,"HD25 missing residual");
++      unsigned grammar=residual[0];auto body=residual.sub(1,residual.n-1);
++      if(grammar==0)span_words_into(body,w,hh,out,true);
++      else if(grammar==1)byte_planes_into(body,w*hh,out,true);
++      // The old grammar2 XORed prediction twice. In-place component decoding
++      // produces that same absolute result; each channel reads its old bits
++      // before replacing only that channel. Accepted storage is never written.
++      else if(grammar==2)rice_components_into(body,w,hh,&out,false,out);
++      else need(false,"HD25 residual grammar");
+       break;
+     }
+     }
+@@ -511,6 +436,7 @@
+        "HUD patch output tag");
+   return out;
+ }
++inline cu66_port::Vector<uint16_t> decode_patch(View packet,const Patch*reference,unsigned w,unsigned hh){return decode_patch_into(packet,reference,w,hh,cu66_port::Vector<uint16_t>{});}
+ inline cu66_port::Vector<Patch> decode_hud(View packet,
+                                      const cu66_port::Vector<Patch> *reference,
+                                      uint32_t fid, uint32_t rid) {
+@@ -563,12 +489,14 @@
+   // Allocate the largest fixed output patches before small decode temporaries
+   // fragment suitable blocks. Final order, reference indices and tags stay fixed.
+   constexpr std::array<unsigned, 4> order{{2, 3, 0, 1}};
++  // Private candidate output storage is planned before component temporaries.
++  for(unsigned i:order){out[i].rect=rects[i];out[i].words.reserve(size_t(rects[i][2])*rects[i][3]);}
+   for (unsigned i : order) {
+     auto data = components[i];
+     Patch p;
+     p.rect = rects[i];
+     if (kind[i] == 1)
+-      p.words = decode_full_patch(data, p.rect);
++      p.words = decode_full_patch_into(data,p.rect,std::move(out[i].words));
+     else {
+       need(data.n >= 4, "patch magic");
+       Reader q(data);
+@@ -576,8 +504,7 @@
+       need((kind[i] == 2 && pm == "HD25") || (kind[i] == 3 && pm == "HS32") ||
+                (kind[i] == 4 && pm == "HS33"),
+            "HUD type/body binding");
+-      p.words = decode_patch(data, reference ? &(*reference)[i] : nullptr,
+-                             p.rect[2], p.rect[3]);
++      p.words = decode_patch_into(data,reference?&(*reference)[i]:nullptr,p.rect[2],p.rect[3],std::move(out[i].words));
+     }
+     out[i] = std::move(p);
+   }
