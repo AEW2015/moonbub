@@ -1,0 +1,18 @@
+# V59 readback-off visual correctness issue ? 2026-11-08
+
+Status: local flash40 performance run is not visually qualified. Viewed the exact run01 full-readback photograph, run02 held photograph and expected frame039 PNG. Full-readback held scene is cyan/blue like the oracle; local readback-off held scene has severe red/orange false colors throughout the canonical scene, beyond HUD rectangles. Run02 reports40 accepted/presented,0 rejected/underruns, words readback disabled. Those counters are completion evidence and do not override the visible failure. Rates from this run must be labeled correctness-failed measurements.
+
+No hardware access or source fixes performed by this audit. Exact input image and inspected RTL SHA256 receipts are in the adjacent JSON. Confirmed the inspected seven HBU/controller/bridge/system/scanout files byte-identical to the preserved V55 executed-source copies and selected V029 release inputs.
+
+## Fence and cache trace
+
+1. HBU `dy71_hud_bulk_v025.sv` validates identity, count, offset and mode; each write waits for AUX response. Final completion happens only after the last response, not on issuing the word. Command23 returns actual completed word count; firmware validates HBU live ticket and block status.
+2. System `cu71_system_final_v023.sv` accepts HUD writes only at selected HUD base + completed-word index and counts writes on response handshake. It uses explicit AUX request/response ownership.
+3. Bridge `cu71_word_bridge_cache_v021.sv` implements scalar writes as aligned masked BL8. `WRITE_WAIT` returns a response only when `mem_idle` asserts. It invalidates matching scalar read-cache tags at write selection and completion. Thus HBU completion includes the controller's write recovery fence.
+4. SDRAM controller `moonshine_sdram_burst.sv` emits all8 beats and waits3 recovery cycles via WAITING before IDLE. Next requests latch their own write/read direction; no direction-restore operation exists. Refresh is timer-driven at IDLE and blocks request_ready when due; no explicit requirement for CPU readback traffic to make refresh occur was found.
+5. Full HUD readback does populate the AUX scalar read cache. LCD PREPARE uses separate burst DMA/context cache and independently fetches HUD plus initial canonical groups. It does not use the AUX scalar cache, so omitted readback should not remove a required cache warmup by design.
+6. Native HC70 arg2 affects only external evidence kind/status bit5; FPGA command19 receives the same success/count/bank/expected tag as qualification mode. No native evidence-kind value enters canonical decoder data, FPGA canonical tag, LCD pixel data, or a CRC. No direct arg2-to-false-color mechanism was found.
+
+Static inspection does not explain the failure. It does not prove absence of a physical turnaround/timing issue, an unmodeled memory/controller assumption, or a display/cache ownership defect exposed by changed traffic. Full readback changes both memory traffic and wall-clock delay; it may mask an existing problem without being a documented fence. Broad scene corruption makes a HUD-only content error an incomplete explanation. Canonical tag equality alone may attest reconstructed data before physical memory/scanout, so it cannot prove final visible RGB correctness.
+
+The root's next controlled network40 readback-off trial separates flash/no-Wi-Fi effects from omitted readback under the same immutable packet sequence. No fix or new FPGA requirement is established by this audit. Preserve the current failure and full-readback control; do not relabel successful counters as visual qualification.

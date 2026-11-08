@@ -1,0 +1,35 @@
+# V59 performance contract audit ? 2026-11-08
+
+Inspected V58 native/driver source and preserved executed V55 RTL under `C:/moon/publish/fpga/experiments/cu66-v71/stb1-v55-parserstage-system-20261108`. Read `C:/moon/AGENTS.md`. No hardware access or FPGA edits. Subsequently implemented the root-requested explicit native evidence mode only in `C:/moon/dev/experiments/v59-throughput-probe-20261108`.
+
+## Omitting per-frame readback
+
+V58 `network_driver.rs:179?197` writes all 21,120 words via completed HBU1 command22/23 blocks, then rereads and compares every word before HC70 op4 arg1 and FPGA command19. The native gate does not measure this readback: `decoded_verified` is native reconstruction/tag validation, while op4 consumes an external writer assertion. Existing HC70 has no independent SDRAM hash probe.
+
+Preserved `23-dy71_local_control_staging_burst_v1.sv:117?119,177,203` forwards command19 as identity-bound HUD drain with supplied count, bank, expected tag and success. There is no read-count prerequisite. `32-dy71_hud_bulk_v025.sv:27?34,86?110` validates bounded block setup, live generation/frame/reference/bank/ticket, sequential payload and matching command; success counts each error-free AUX response and completes only after the final response. Thus a firmware-only performance profile can retain all write completion/status checks and omit read mode1/payload reads. Receiver commit still requires native decode good, external HUD write assertion, base good, cache preparation good, and global memory/worker drains (`rtl/cu71_receiver_final_v022.sv:234?236`). No FPGA change is required for this experiment.
+
+Never claim SDRAM HUD verification from write counts or reuse an expected tag under an actual/readback-tag label. Report `words_verified=0`, readback timestamp absent/zero, explicit performance evidence mode. Keep the original full-readback path selectable for qualification. Performance success establishes completed writes under the existing bus contract; it does not establish stored words equal the native candidate.
+
+## Implemented native distinction
+
+V59 `native/hud_gate.hpp` and `native/endpoint.hpp` accept HC70 op4 arg2 with the existing 20-byte count + expected candidate-tag binding. This explicitly means externally asserted write completion only. Arg1 keeps the existing qualification path. Full generation/frame/reference/count/tag checks remain; invalid mode and cross-mode relabel attempts reject. Status byte1 bit5 is set for write-completion-only evidence and persists through commit; bit0 remains native decoded/tag verification only. Abort/reset clear evidence. Commit remains root-authorized and accepts the two explicit external evidence modes.
+
+Focused actual-native `tests/write_completion.cpp` passed under g++17 `-Os -Wall -Wextra -Werror`: both modes, mandatory assertion, invalid mode, wrong count/tag/generation/frame/reference, idempotent retry, no evidence relabel, commit, P-candidate abort rollback, and stale retry rejection. Commands, outputs and source SHA256 are in V59 `evidence/write-completion/execution.json`. Existing full oracle/SDK integration remains the root task's responsibility.
+
+## What presented means
+
+Local CSR `0x358` is the receiver bank controller's presented count (`23-...sv:247`). This is downstream of LCD scanout ownership: system `00-cu71_system_final_v023.sv:214` routes `lcd_presented` as receiver vblank/drain plus actual LCD front generation/frame/cache-slot. The receiver requires pending identity match (`cu71_receiver_final_v022.sv:237?239`). Bank `07-cu66_frame_bank_control.sv:52,96?104` increments only on safe pending-front swap. LCD `18-cu71_direct_scanout_admission_v023.sv:134?135,217?229` switches only at guarded LCD frame boundary with all scanout requests/render/pixel/cache/DMA activity drained, rejects nonincreasing generation/frame IDs, and emits its presented pulse then.
+
+Consequently the current count, per-ID checks, and zero faults/underruns support unique increasing source descriptors latched into LCD front ownership at LCD frame boundaries. It is stronger than accepted/commit count. It is not a count of full refreshes completed for each ID, a full-raster pixel equality check, or proof that the physical panel visibly displayed each unique image. First switch precedes that descriptor's raster output; repeated refreshes do not increment it. Avoid calling the rate verified panel FPS or unique completed panel frames.
+
+There is no exposed standalone LCD presented count in the inspected local CSR map. LD14 observer `30-cu71_lcd_observer_v014.sv:121?132` exposes `0x380` identity, `0x384` status, `0x388` snapshot sequence, `0x38c` snapshot frame and `0x390..0x39c` four physical RGB sample words, `0x3a4` ABI, `0x3a8` capabilities. This is a bounded sparse pixel snapshot, not full-frame completion. Note the existing firmware observer helper's `0x600` aliases must be checked against the exact top-level bridge before reuse; HBU1 occupies that local range in the preserved controller. A stronger complete unique raster claim needs explicit raster-completion evidence or independent capture, beyond the current count.
+
+## Independent flash input / USB review
+
+Reviewed V59 `performance_input.rs`, `network_usb.rs`, `usb_test.rs` and driver arg2 caller. No source edits to those files. No blocking logic or allocation defect identified. FLASH40 consists of immutable `include_bytes!` references totaling 1,041,478 bytes; source cursor is two usize fields (host size16, expected ESP32 size8), no packet-sized allocation. Pointer table is expected320 bytes on32-bit ESP32. Actual flash/DRAM section placement and factory partition fit remain final ELF/map/package checks; configured factory app capacity is5MiB. Do not infer SRAM usage from host object size.
+
+Local launch skips custom Wi-Fi setup, uses same existing fresh FPGA identity checks, MaintenanceGuard, exclusive worker,16KiB stack,98,304-byte native cap and8KiB heap reserve. Successful completion retains the lease/native endpoint; failures after writes quarantine and retain. USB keys1/2/3 dispatch network40/network120/local40; no direct collision found in lab/margin dispatch.
+
+Actual Flash methods passed focused host testing for all40 packets: exact header and every chunk byte, CRC, increasing IDs0..39, early-present rejection, out-of-order read/storage rejection, EOF/finite bound. Actual framing tests also passed. Evidence and source hashes: V59 `evidence/flash-source-review/execution.json`; test harness uses inert network-interface stubs and does not establish SDK/target behavior.
+
+Driver op4 arg2 ACK checks expected phase, write-only evidence bit, exact identity/count/tag. Native commit helper retains old accepted-cache identity validation; checking retained bit5 against selected profile at commit would add defensive assurance but the already checked ACK binds the current candidate. Qualification/readback words and timing remain zero in performance mode.

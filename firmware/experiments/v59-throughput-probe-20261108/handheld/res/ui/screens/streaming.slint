@@ -1,0 +1,28 @@
+import { Global, ScreenId, Backend } from "../common.slint";
+import { ScreenBase } from "../components/screen.slint";
+import { Button } from "../components/button.slint";
+export component StreamingScreen inherits ScreenBase {
+    title: "Streaming";
+    forward-focus: connect;
+    VerticalLayout {
+        spacing: 3px;
+        Text { text: "Test MJPEG / SD Wi-Fi config"; }
+        host := Button {
+            text: Backend.stream-host == "" ? "Host: SD (A edit)" : "Host " + Backend.stream-host + " [" + (Backend.stream-host-octet+1) + "]";
+            on-pressed => { Backend.stream-host-next(); }
+            on-left => { Backend.stream-host-adjust(-1); accept }
+            on-right => { Backend.stream-host-adjust(1); accept }
+            on-down => { connect.focus(); accept }
+        }
+        Text { text: "A: octet / Left-Right: adjust"; }
+        Text { text: Backend.stream-status; wrap: word-wrap; }
+        Text { text: Backend.stream-diagnostics; }
+        HorizontalLayout {
+            spacing: 3px;
+            connect := Button { text: "Connect"; on-up => { host.focus(); accept } on-right => { disconnect.focus(); accept } on-pressed => { Backend.stream-connect(); } on-down => { view.focus(); accept } }
+            disconnect := Button { text: "Disconnect"; on-left => { connect.focus(); accept } on-right => { back.focus(); accept } on-down => { view.focus(); accept } on-pressed => { Backend.stream-disconnect(); } }
+            back := Button { text: "Back"; on-left => { disconnect.focus(); accept } on-pressed => { Backend.stream-back(); } }
+        }
+        view := Button { text: "View video (Home: menu)"; on-up => { connect.focus(); accept } on-pressed => { Global.set-screen(ScreenId.Game); } }
+    }
+}

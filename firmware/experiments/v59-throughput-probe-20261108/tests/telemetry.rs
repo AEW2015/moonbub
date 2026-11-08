@@ -1,0 +1,57 @@
+#![allow(dead_code)]
+#[path="../handheld/src/cu66/stb1.rs"]mod stb1;
+#[path="../handheld/src/cu66/framing.rs"]mod framing;
+#[path="../handheld/src/cu66/hud.rs"]mod hud;
+#[path="../handheld/src/cu66/local.rs"]mod local;
+#[path="../handheld/src/cu66/network_driver.rs"]mod network_driver;
+#[path="../handheld/src/cu66/report_export.rs"]mod report_export;
+#[path="../handheld/src/cu66/report_snapshot.rs"]mod report_snapshot;
+use report_snapshot::*;
+use network_driver::{Report,Source,Header,Error};
+
+fn report()->Report{
+ Report{throughput:network_driver::Throughput::default(),readback_enabled:true,completed_records:12,cache_mode:true,record_index:[9,10,11],frame_id:[1009,1010,1011],generation:[19,20,21],frames:12,accepted:12,presented:12,rejected:0,underruns:0,words_written:253440,words_verified:253440,elapsed_us:456789,
+ hud_cpu_us:[100;3],allocator:[98304,42488,92379,15360,770,0],hud_pending_us:[2;3],hud_snapshot_us:[3;3],hu_extract_start_us:[1;3],hu_extract_done_us:[2;3],native_start_us:[4;3],native_done_us:[5;3],hu_extract_commands:[0;3],packet_complete_us:[2;3],admission_us:[2;3],hud_valid_us:[6;3],hud_write_done_us:[7;3],hud_readback_done_us:[8;3],hud_drained_us:[9;3],software_commit_acked_us:[10;3],presentation_observed_us:[11;3]}
+}
+fn snapshot()->Snapshot{let r=report();Snapshot::result(Ok(&r),Health{reads:1,writes:2,qspi:3,free:74000,largest:19456,stack_low:4096,min_free:12000},Progress{active_valid:true,ordinal:11,frame_id:1011,generation:21,phase:10,at_us:1234,current_length:20000,read_bytes:123456,stored_prefix:20000,presentation_acks:12})}
+fn export(store:&mut Store,now:&mut u64)->Vec<String>{let mut lines=Vec::new();while store.busy(){store.tick(*now,|a|lines.push(a.to_string()));*now+=EXPORT_INTERVAL_MS;}lines}
+fn field(line:&str,key:&str)->String{line.split_whitespace().find_map(|x|x.strip_prefix(&format!("{key}="))).unwrap().to_owned()}
+fn verify(lines:&[String])->bool{
+ if lines.len()<2||!lines[0].starts_with("DY45 BEGIN ")||!lines.last().unwrap().starts_with("DY45 END "){return false}
+ let n:usize=field(&lines[0],"n").parse().unwrap();if lines.len()!=n+2{return false}
+ let(epoch,attempt,hash)=(field(&lines[0],"e"),field(&lines[0],"a"),field(&lines[0],"hash"));let mut digest=2166136261u32;
+ for(i,line)in lines[1..lines.len()-1].iter().enumerate(){
+  if field(line,"e")!=epoch||field(line,"a")!=attempt||field(line,"n")!=n.to_string()||field(line,"i")!=i.to_string(){return false}
+  let prefix=format!("DY45 e={epoch} a={attempt} i={i} n={n} ");let Some(body)=line.strip_prefix(&prefix)else{return false};
+  for byte in body.bytes().chain(std::iter::once(b'\n')){digest=(digest^byte as u32).wrapping_mul(16777619);}
+ }
+ let end=lines.last().unwrap();field(end,"e")==epoch&&field(end,"a")==attempt&&field(end,"n")==n.to_string()&&field(end,"hash")==hash&&hash==format!("{digest:08x}")
+}
+#[test]fn complete_export_ring_identity_and_checksum(){let mut store=Store::new();assert_eq!(store.publish(snapshot(),0),Ok(1));let lines=export(&mut store,&mut 0);assert!(verify(&lines));let joined=lines.join("\n");assert!(joined.contains("ring capacity=3 retained=3 first=9 omitted=9"));let a=joined.find("ordinal=9 id=1009").unwrap();let b=joined.find("ordinal=10 id=1010").unwrap();let c=joined.find("ordinal=11 id=1011").unwrap();assert!(a<b&&b<c);assert!(joined.contains("hu_ingress_span"));assert!(!joined.contains("hu_scalar_fetch"));}
+#[test]fn dropped_reordered_and_corrupted_records_detected(){let mut store=Store::new();store.publish(snapshot(),0).unwrap();let lines=export(&mut store,&mut 0);let mut lost=lines.clone();lost.remove(3);assert!(!verify(&lost));let mut reordered=lines.clone();reordered.swap(4,5);assert!(!verify(&reordered));let mut changed=lines.clone();changed[2].push('x');assert!(!verify(&changed));let mut truncated=lines.clone();truncated.pop();assert!(!verify(&truncated));}
+#[test]fn reexport_is_same_snapshot_new_attempt_without_burst(){let mut store=Store::new();assert_eq!(store.request(0),Err(ExportError::NoSnapshot));store.publish(snapshot(),0).unwrap();assert_eq!(store.request(0),Err(ExportError::Busy));assert_eq!(store.publish(snapshot(),0),Err(ExportError::Busy));let mut now=0;let first=export(&mut store,&mut now);assert_eq!(store.request(now),Ok(1));let second=export(&mut store,&mut now);assert!(verify(&first)&&verify(&second));assert_eq!(field(&first[0],"hash"),field(&second[0],"hash"));assert_eq!(field(&first[0],"a"),"1");assert_eq!(field(&second[0],"a"),"2");assert_eq!(store.publish(snapshot(),now),Ok(2));}
+#[test]fn finite_queue_pacing_and_no_catchup_burst(){
+ let mut store=Store::new();store.publish(snapshot(),0).unwrap();let(mut queued,mut drops,mut records)=(0usize,0usize,0usize);
+ for now in 0..5000u64{queued=queued.saturating_sub(8);let mut count=0;store.tick(now,|a|{count+=1;records+=1;let bytes=a.to_string().len()+80;if queued+bytes>512{drops+=1}else{queued+=bytes}});assert!(count<=1);if !store.busy(){break}}
+ assert_eq!(drops,0);assert!(records>20);
+ store.request(10000).unwrap();let mut count=0;store.tick(20000,|_|count+=1);assert_eq!(count,1);store.tick(20000,|_|count+=1);assert_eq!(count,1);
+ let mut counterfactual=Store::new();counterfactual.publish(snapshot(),0).unwrap();let burst=export(&mut counterfactual,&mut 0);assert!(burst.iter().map(|s|s.len()+80).sum::<usize>()>512);
+}
+#[test]fn maximum_values_are_bounded_and_storage_does_not_scale(){let mut r=report();let max=network_driver::TimingAggregate{count:u32::MAX,total_us:u64::MAX,max_us:u64::MAX,bytes:u64::MAX};r.throughput=network_driver::Throughput{ingress:max,decoder:max,native:max,hud_write:max,hud_readback:max,commit_to_owner:max,owner_interval:max};r.frames=u32::MAX;r.completed_records=u32::MAX;r.record_index=[u32::MAX-3,u32::MAX-2,u32::MAX-1];r.frame_id=[u32::MAX;3];r.generation=[u64::MAX;3];r.accepted=u32::MAX;r.presented=u32::MAX;r.rejected=u32::MAX;r.underruns=u32::MAX;r.words_written=u32::MAX;r.words_verified=u32::MAX;r.elapsed_us=u64::MAX;r.hud_cpu_us=[u64::MAX;3];r.allocator=[usize::MAX;6];r.hud_pending_us=[u64::MAX;3];r.hu_extract_start_us=[u64::MAX;3];r.hu_extract_done_us=[u64::MAX;3];r.native_start_us=[u64::MAX;3];r.native_done_us=[u64::MAX;3];r.hu_extract_commands=[u32::MAX;3];r.packet_complete_us=[u64::MAX;3];r.admission_us=[u64::MAX;3];r.hud_valid_us=[u64::MAX;3];r.hud_write_done_us=[u64::MAX;3];r.hud_readback_done_us=[u64::MAX;3];r.hud_drained_us=[u64::MAX;3];r.software_commit_acked_us=[u64::MAX;3];r.presentation_observed_us=[u64::MAX;3];let mut s=snapshot();s.report=Some(r);s.health=Health{reads:u64::MAX,writes:u64::MAX,qspi:u64::MAX,free:usize::MAX,largest:usize::MAX,stack_low:usize::MAX,min_free:usize::MAX};s.progress=Progress{active_valid:true,ordinal:u32::MAX,frame_id:u32::MAX,generation:u64::MAX,phase:u8::MAX,at_us:u64::MAX,current_length:u32::MAX,read_bytes:u64::MAX,stored_prefix:u32::MAX,presentation_acks:u32::MAX};let mut store=Store::new();store.publish(s,0).unwrap();let lines:Vec<_>=export(&mut store,&mut 0).into_iter().map(|s|s.replacen("e=1 ","e=4294967295 ",1).replacen("a=1 ","a=4294967295 ",1)).collect();assert!(verify(&lines));for line in &lines{assert!(line.len()+80<=320,"{} {}",line.len()+80,line)}assert!(std::mem::size_of::<Store>()<=1440);println!("SNAPSHOT_BYTES={} STORE_BYTES={} MAX_WIRE_LINE_WITH_PREFIX={}",std::mem::size_of::<Snapshot>(),std::mem::size_of::<Store>(),lines.iter().map(|s|s.len()+80).max().unwrap());}
+#[test]fn error_retains_exact_active_progress_without_invented_arrays(){let error=Error::PacketMismatch;let mut s=snapshot();s.report=None;s.error=Some(error);s.progress.phase=network_driver::phase::STAGING;s.progress.stored_prefix=1024;s.progress.presentation_acks=2;let mut store=Store::new();store.publish(s,0).unwrap();let lines=export(&mut store,&mut 0);assert!(verify(&lines));let joined=lines.join("\n");assert!(joined.contains("partial_stage_arrays_retained=false"));assert!(joined.contains("phase=2"));assert!(joined.contains("stored=1024"));assert!(joined.contains("acked=2"));assert!(!joined.contains("summary ok=1"));}
+
+struct Dummy{seen:u32,fail_ack:bool}
+impl Source for Dummy{fn header(&mut self)->Result<Header,Error>{Ok(Header{prefix:[0;76],length:1500,crc:0})}fn read(&mut self,_:usize,b:&mut[u8;1024])->Result<usize,Error>{b[..7].fill(1);Ok(7)}fn stored(&mut self,_:usize)->Result<(),Error>{Ok(())}fn presented(&mut self)->Result<(),Error>{if self.fail_ack{Err(Error::Io)}else{Ok(())}}fn active(&mut self,_:u32,_:u32,_:u64,_:u8,_:u64){self.seen+=1;}}
+#[test]fn recording_source_delegates_and_counts_only_completed_calls(){let mut source=RecordingSource::new(Dummy{seen:0,fail_ack:false});source.header().unwrap();source.read(0,&mut[0;1024]).unwrap();source.stored(1024).unwrap();source.active(4,1004,9,network_driver::phase::STAGING,123);source.presented().unwrap();source.inner.fail_ack=true;assert_eq!(source.presented(),Err(Error::Io));assert_eq!((source.progress.read_bytes,source.progress.stored_prefix,source.progress.presentation_acks),(7,1024,1));assert_eq!((source.progress.ordinal,source.progress.frame_id,source.progress.generation,source.progress.phase,source.progress.at_us),(4,1004,9,2,123));assert_eq!(source.inner.seen,1);}
+
+#[test]fn failure_diagnostics_bounded_crc_and_observational_export(){
+ let mut d=hud::Diagnostics::default();d.native=[u64::MAX;24];d.stats=[usize::MAX;6];d.text=[255;96];d.text_length=usize::MAX;d.written=usize::MAX;d.opcode=255;d.reply=u32::MAX;d.payload_mask=u32::MAX;d.generation=u64::MAX;d.frame=u32::MAX;d.reference=u32::MAX;d.expected_tag=[255;16];d.observed_tag=[255;16];d.valid=true;d.stage=255;d.ffi=i32::MIN;
+ let s=Snapshot::result(Err(&Error::Hud),Health::default(),Progress::default()).with_diagnostics(d,Some(PassiveFpga{values:[Err(Error::Contended);6]}));let mut store=Store::new();store.publish(s,0).unwrap();let mut now=0;let a=export(&mut store,&mut now);assert!(verify(&a));for line in &a{assert!(line.len()+80<=320,"{} {}",line.len()+80,line);}assert!(a.iter().any(|s|s.contains("partial_stage_arrays_retained=false")));assert!(a.iter().any(|s|s.contains("native_text part=2")));assert_eq!(a.iter().filter(|s|s.contains("fpga_passive field=")).count(),6);
+ store.request(now).unwrap();let b=export(&mut store,&mut now);assert_eq!(field(&a[0],"hash"),field(&b[0],"hash"));assert!(verify(&b));assert!(std::mem::size_of::<Store>()<=1600);println!("V46_SNAPSHOT_BYTES={} STORE_BYTES={}",std::mem::size_of::<Snapshot>(),std::mem::size_of::<Store>());
+}
+
+#[test]fn export_carries_all_frame_totals_and_explicit_owner_evidence(){
+ let mut r=report();r.readback_enabled=false;r.throughput.ingress=network_driver::TimingAggregate{count:12,total_us:120,max_us:20,bytes:40960};r.throughput.owner_interval=network_driver::TimingAggregate{count:11,total_us:1100,max_us:150,bytes:0};
+ let mut lines=Vec::new();report_export::report(&r,|a|lines.push(a.to_string()));let joined=lines.join("\n");
+ assert!(joined.contains("aggregate stage=ingress count=12 total_us=120 max_us=20 bytes=40960"));assert!(joined.contains("aggregate stage=owner_interval count=11 total_us=1100 max_us=150 bytes=0"));assert!(joined.contains("presentation_evidence=owner_matching_scanout_start panel_evidence=complete_panel_raster_unmeasured"));assert!(joined.contains("readback_enabled=false hud_verification=hbu_write_completion_only panel_frames=unmeasured"));assert_eq!(lines.iter().filter(|l|l.starts_with("aggregate ")).count(),7);
+}
