@@ -1,0 +1,29 @@
+--- executed-control/BindGameBubWinUsb.cs
++++ offline-candidate/BindGameBubWinUsb.cs
+@@ -73,14 +73,21 @@
+             return value==null ? null : (object)new Dictionary<string,object>{{"kind",key.GetValueKind("DeviceInterfaceGUIDs").ToString()},{"value",value}};
+         }
+     }
++    // Pure snapshot predicate. Pre-install identity stays strict; driver installation
++    // legitimately replaces SPDRP_DEVICEDESC, so post-install uses the known inbox name.
++    internal static void ValidateTargetSnapshot(string[] hardware,string[] compatible,string[] service,string[] description,uint problem,bool requireUnbound) {
++        Need(Contains(hardware,Revision),"Exact DFU REV0411 hardware ID required");
++        Need(Contains(compatible,@"USB\Class_FF&SubClass_00&Prot_00")&&!Contains(compatible,@"USB\COMPOSITE"),"Exact noncomposite vendor DFU required");
++        if(requireUnbound)Need(description.Length==1&&description[0]=="Game Bub Handheld DFU","Exact updater product description required before install");
++        else Need(description.Length==1&&description[0]=="WinUsb Device","Expected Microsoft inbox WinUSB description required after install");
++        foreach(string s in hardware)Need(s.IndexOf("&MI_",StringComparison.OrdinalIgnoreCase)<0,"Composite child interface is forbidden");
++        if(requireUnbound)Need(problem==28&&service.Length==0,"Only unbound code28 updater may be installed");
++        else Need(problem==0&&service.Length==1&&String.Equals(service[0],"WINUSB",StringComparison.OrdinalIgnoreCase),"Expected bound WinUSB service/problem0 required after install");
++    }
+     static Dictionary<string,object> ReadTarget(IntPtr set,ref DEVINFO dev,bool requireUnbound) {
+         uint status,problem;Need(CM_Get_DevNode_Status(out status,out problem,dev.DevInst,0)==0,"Target is not a live local devnode");
+         string[] hardware=Property(set,ref dev,1),compatible=Property(set,ref dev,2),service=Property(set,ref dev,4),description=Property(set,ref dev,0);
+-        Need(Contains(hardware,Revision),"Exact DFU REV0411 hardware ID required");
+-        Need(Contains(compatible,@"USB\Class_FF&SubClass_00&Prot_00")&&!Contains(compatible,@"USB\COMPOSITE"),"Exact noncomposite vendor DFU required");
+-        Need(description.Length==1&&description[0]=="Game Bub Handheld DFU","Exact updater product description required");
+-        foreach(string s in hardware)Need(s.IndexOf("&MI_",StringComparison.OrdinalIgnoreCase)<0,"Composite child interface is forbidden");
+-        if(requireUnbound)Need(problem==28&&service.Length==0,"Only unbound code28 updater may be installed");
++        ValidateTargetSnapshot(hardware,compatible,service,description,problem,requireUnbound);
+         return new Dictionary<string,object>{{"instance",Target},{"expected_revision",Revision},{"problem",problem},{"status",status},{"class_guid",dev.ClassGuid.ToString()},{"hardware_ids",hardware},{"compatible_ids",compatible},{"service",service},{"description",description},{"DeviceInterfaceGUIDs_before",ExistingGuids()}};
+     }
+     static Dictionary<string,object> DriverMeta(IntPtr set,ref DEVINFO device,ref DRIVER driver) {
