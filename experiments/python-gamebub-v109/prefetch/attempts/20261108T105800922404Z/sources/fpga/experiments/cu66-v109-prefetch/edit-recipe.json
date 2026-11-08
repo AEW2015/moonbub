@@ -1,0 +1,50 @@
+{
+  "hypothesis": "prefetch address/range arithmetic on existing DC_FETCH/RAW_FETCH/AC_CHECK edges",
+  "live_decisions": [
+    "cache_valid",
+    "cache_address",
+    "outstanding",
+    "prefetch_offer",
+    "cancel",
+    "error",
+    "response_failure",
+    "prefetch_complete"
+  ],
+  "production": {
+    "packed_scratch_v91g2.sv": {
+      "candidate_sha256": "742726be34e0560b72f3cd0026edcd9be44bffbede5200a179edd483c24fca34",
+      "edits": [
+        {
+          "after": "    // Owned arithmetic is prepared on existing fetch/check edges. Cache tags,\n    // validity and response ownership remain live at the original launch edge.\n    logic [17:0] prefetch_line0, prefetch_lines[1:3];\n    logic prefetch_next_block, prefetch_next_raw;\n    logic [3:1] prefetch_remaining;",
+          "before": "    logic [31:0] candidate_word_address;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        if(prefetch_mode && !tile_mode && sealed && !prefetch_offer && !outstanding && !cancel && error==0) begin\n            if(state==EMIT && !raw_mode && prefetch_next_block) begin\n                if(!cache_valid[0] || cache_address[0]!=prefetch_line0) begin\n                    candidate_valid=1; candidate_segment=0;\n                    candidate_address=prefetch_line0;\n                end\n                for(integer b=1;b<=3;b=b+1) begin\n                    if(!candidate_valid && prefetch_remaining[b] &&\n                       (!cache_valid[b] || cache_address[b]!=prefetch_lines[b])) begin\n                        candidate_valid=1; candidate_segment=2'(b);\n                        candidate_address=prefetch_lines[b];\n                    end\n                end\n            end else if(state==RAW_EXTRACT && raw_mode && prefetch_next_raw) begin\n                if(!cache_valid[0] || cache_address[0]!=prefetch_line0) begin\n                    candidate_valid=1; candidate_segment=0;\n                    candidate_address=prefetch_line0;\n                end\n            end\n        end\n",
+          "before": "        candidate_word_address=0;\n        if(prefetch_mode && !tile_mode && sealed && !prefetch_offer && !outstanding && !cancel && error==0) begin\n            if(state==EMIT && !raw_mode && 17'(output_block)+1<blocks) begin\n                candidate_word_address=32+(32'(output_block)+1)*2;\n                if(!cache_valid[0] || cache_address[0]!=18'(candidate_word_address & 32'hfffffff0)) begin\n                    candidate_valid=1; candidate_segment=0;\n                    candidate_address=18'(candidate_word_address & 32'hfffffff0);\n                end\n                for(integer b=1;b<=3;b=b+1) begin\n                    candidate_word_address=starts[b]+cursors[b]*4;\n                    if(!candidate_valid && cursors[b]<counts[b] &&\n                       (!cache_valid[b] || cache_address[b]!=18'(candidate_word_address & 32'hfffffff0))) begin\n                        candidate_valid=1; candidate_segment=2'(b);\n                        candidate_address=18'(candidate_word_address & 32'hfffffff0);\n                    end\n                end\n            end else if(state==RAW_EXTRACT && raw_mode &&\n                32'(output_block)*64+32'(output_index)+1<32'(blocks)*64) begin\n                candidate_word_address=32+(32'(output_block)*64+32'(output_index)+1)*2;\n                if(!cache_valid[0] || cache_address[0]!=18'(candidate_word_address & 32'hfffffff0)) begin\n                    candidate_valid=1; candidate_segment=0;\n                    candidate_address=18'(candidate_word_address & 32'hfffffff0);\n                end\n            end\n        end\n",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                DC_FETCH, RAW_FETCH: begin\n                    // Full-width original expressions, captured before extraction.\n                    prefetch_line0<=18'((32+(raw_mode ?\n                        (32'(output_block)*64+32'(output_index)+1)*2 :\n                        (32'(output_block)+1)*2)) & 32'hfffffff0);\n                    prefetch_next_block<=17'(output_block)+1<blocks;\n                    prefetch_next_raw<=32'(output_block)*64+32'(output_index)+1<32'(blocks)*64;\n",
+          "before": "                DC_FETCH, RAW_FETCH: begin\n",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                AC_CHECK: begin\n                    // Cursors are unchanged on this edge. Every cursor increment\n                    // returns here before EMIT, including the last sparse band.\n                    for(integer b=1;b<=3;b=b+1) begin\n                        prefetch_lines[b]<=18'((starts[b]+cursors[b]*4) & 32'hfffffff0);\n                        prefetch_remaining[b]<=cursors[b]<counts[b];\n                    end\n",
+          "before": "                AC_CHECK: begin\n",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!cancel && !response_failure && !tile_mode)begin\n        if(state==EMIT && !raw_mode)begin\n            assert(prefetch_next_block==(17'(output_block)+1<blocks));\n            assert(prefetch_line0==18'((32+(32'(output_block)+1)*2)&32'hfffffff0));\n            for(integer b=1;b<=3;b=b+1)begin\n                assert(prefetch_lines[b]==18'((starts[b]+cursors[b]*4)&32'hfffffff0));\n                assert(prefetch_remaining[b]==(cursors[b]<counts[b]));\n            end\n        end\n        if(state==RAW_EXTRACT && raw_mode)begin\n            assert(prefetch_next_raw==(32'(output_block)*64+32'(output_index)+1<32'(blocks)*64));\n            assert(prefetch_line0==18'((32+(32'(output_block)*64+32'(output_index)+1)*2)&32'hfffffff0));\n        end\n    end\n",
+          "before": "`ifndef SYNTHESIS\n",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v108-capacity/packed_scratch_v91g2.sv",
+      "original_sha256": "5c4e6fc665c81920a2f907bb87d34e78f0eac22a114f75633a1f1dc2ddd33676"
+    }
+  },
+  "public_added_cycles": 0,
+  "schema": "v109-prefetch-existing-edge-v1",
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

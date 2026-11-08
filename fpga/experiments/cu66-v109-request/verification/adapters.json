@@ -1,0 +1,47 @@
+{
+  "adapters": [
+    {
+      "path": "fpga/experiments/cu66-v109-request/verification/ingress_original.sv",
+      "renames": [
+        [
+          "module br88_packet_ingress_sync_v91h ",
+          "module ingress_original "
+        ]
+      ],
+      "sha256": "2b3798d583af47d2c19d924f795d9042c7a9cbfd59f69d1decab86baece4ed82",
+      "source": "fpga/experiments/cu66-v108-capacity/br88_packet_ingress_sync_v91h.sv",
+      "source_sha256": "6514a5f2e2c1b597dfb2cddffeb3e637034d5fe79cdb07861ecd1081034c83c6"
+    },
+    {
+      "path": "fpga/experiments/cu66-v109-request/verification/ingress_candidate.sv",
+      "renames": [
+        [
+          "module br88_packet_ingress_sync_v91h ",
+          "module ingress_candidate "
+        ]
+      ],
+      "sha256": "74201875014568e5e30a62902e37bfbdb47ae387fc59991e0909ca5642679760",
+      "source": "fpga/experiments/cu66-v109-request/br88_packet_ingress_sync_v91h.sv",
+      "source_sha256": "ac7260e749ace036495a162882fdb30fdb129d2c7ddde8df67bc2a8957f8f4b1"
+    }
+  ],
+  "all_public_ports_compared": true,
+  "fixture_edits": [
+    [
+      "BOTH(ram_valid,0U);d.eval();uint32_t address=c.base+c.index;",
+      "BOTH(ram_valid,0U);uint32_t address=c.base+c.index;"
+    ],
+    [
+      "address=c.base+c.length-1;need(d.stage_read_addr==address",
+      "address=c.base+c.length-1;\n   // Explicit prepared prior-request formula; never derive this from ram_addr.\n   NEW(prepared_request_addr)=address;\n   NEW(prepared_request_in_bounds)=address<c.size&&address<49152U;\n   d.eval();need(d.stage_read_addr==address"
+    ]
+  ],
+  "fixture_sha256": "b7f758122667e97261d9211a7231f9599b32d319884fb53ee6a89a8550064a91",
+  "fixture_source": "fpga/experiments/cu66-v109-fetch/verification/tb_fetch.cpp",
+  "fixture_source_sha256": "b1997d266f506f361275a72c1853f98fe7a83c1e61783bccbb2d959de370662a",
+  "inherited_frozen_fixture_files": {
+    "ingress_capture_probe.sv": "d238bed5799b60147b470d71a2570412bb7d537084ce4c4b2b6eab3dbe930e36",
+    "tb_capture.cpp": "8b7d90ad7b9beb07a26bb3dce5b3422db97a298822853e09a4d30b1ccf3aa6c7"
+  },
+  "schema": "v109-request-complete-body-adapters-v1"
+}

@@ -1,0 +1,51 @@
+{
+  "adapters": [
+    {
+      "path": "fpga/experiments/cu66-v109-bank/verification/observed_original.sv",
+      "renames": [
+        [
+          "module packed_scratch_v91g2 ",
+          "module observed_original "
+        ],
+        [
+          "\n);",
+          ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);"
+        ],
+        [
+          "\nendmodule",
+          "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule"
+        ]
+      ],
+      "sha256": "4274a3c418f1a74211685fa00e99b23a6a00bdc42a671297db5d66aedf81e633",
+      "source": "fpga/experiments/cu66-v109-prefetch/packed_scratch_v91g2.sv",
+      "source_sha256": "742726be34e0560b72f3cd0026edcd9be44bffbede5200a179edd483c24fca34"
+    },
+    {
+      "path": "fpga/experiments/cu66-v109-bank/verification/observed_candidate.sv",
+      "renames": [
+        [
+          "module packed_scratch_v91g2 ",
+          "module observed_candidate "
+        ],
+        [
+          "\n);",
+          ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);"
+        ],
+        [
+          "\nendmodule",
+          "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule"
+        ]
+      ],
+      "sha256": "a3830a672fb7ccf2f8650431294026291f447f4984e2f61c42067c2fd1faba6b",
+      "source": "fpga/experiments/cu66-v109-bank/packed_scratch_v91g2.sv",
+      "source_sha256": "1ff4901cdaa98ef5267215f7454042a95d2dc001234caf5b4e4d44f0c6283843"
+    }
+  ],
+  "all_baseline_assertions_and_oracles_retained": true,
+  "schema": "v109-bank-lossless-complete-scratch-adapters-v1",
+  "unchanged_fixtures": {
+    "fpga/experiments/cu66-v109-prefetch/verification/historical_hazards.cpp": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a",
+    "fpga/experiments/cu66-v109-prefetch/verification/scratch_probe.sv": "2e832c2c31f0e9f651e0d7f9247d0c46648e88e21c93268ff3665d4b88afaeba",
+    "fpga/experiments/cu66-v109-prefetch/verification/tb_scratch.cpp": "ae181060a0e45152ef892c248285aced9ab1528153fbe28d2b10c24154cf3e86"
+  }
+}

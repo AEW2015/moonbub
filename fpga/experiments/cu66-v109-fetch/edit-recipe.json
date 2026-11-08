@@ -1,0 +1,34 @@
+{
+  "production": {
+    "br88_packet_ingress_sync_v91h.sv": {
+      "candidate_sha256": "4d6a16d0b89aa067fe3e7acc01351ea0bacac694cc63fb681a1471ee4683d044",
+      "edits": [
+        {
+          "after": "    logic [31:0] fetch_base, fetch_address, fetched_word;\n    // Owned at the existing request edge; private and deliberately unreset.\n    logic [31:0] expected_fetch_addr;\n    always_ff @(posedge clk)if(state==FETCH_REQ)expected_fetch_addr<=fetch_address;",
+          "before": "    logic [31:0] fetch_base, fetch_address, fetched_word;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "ram_epoch==context_epoch&&ram_addr==expected_fetch_addr&&fetch_kind==F_HEADER;",
+          "before": "ram_epoch==context_epoch&&ram_addr==fetch_address&&fetch_kind==F_HEADER;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "if(ram_epoch!=context_epoch || ram_addr!=expected_fetch_addr) fail_packet(4);",
+          "before": "if(ram_epoch!=context_epoch || ram_addr!=fetch_address) fail_packet(4);",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        assert(!(state==FETCH_WAIT && stage_read_rsp && ram_epoch==context_epoch) || expected_fetch_addr==fetch_address)\n            else $fatal(1,\"cached fetch address owner mismatch\");\n        assert(!stage_read_rsp || (state==FETCH_WAIT && ram_epoch==context_epoch && ram_addr==fetch_address))",
+          "before": "        assert(!stage_read_rsp || (state==FETCH_WAIT && ram_epoch==context_epoch && ram_addr==fetch_address))",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v108-capacity/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "6514a5f2e2c1b597dfb2cddffeb3e637034d5fe79cdb07861ecd1081034c83c6"
+    }
+  },
+  "public_added_cycles": 0,
+  "schema": "v109-fetch-existing-request-edge-v1",
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

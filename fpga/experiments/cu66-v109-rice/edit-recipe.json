@@ -1,0 +1,31 @@
+{
+  "added_public_cycles": 0,
+  "private_differences": "Only unused combinational prefix candidates/ranks/zeros/take/extraction outside guarded uses may differ for arbitrary unowned reservoir bits. Every public output, invalid output, counter and stored register remains exact.",
+  "production": {
+    "br88_rice_elastic.sv": {
+      "candidate": "fpga/experiments/cu66-v109-rice/br88_rice_elastic.sv",
+      "candidate_sha256": "dfa58d806ce93ab273f0eb4a2d45b391198ab4bee9ce33aea324d5285d1cc5df",
+      "edits": [
+        {
+          "after": "        // Availability qualifies consumption below; fixed taps avoid its decode\n        // before the balanced priority tree. Public and stored-state timing is exact.",
+          "before": "        // Keep the original valid-bit guards and balanced first-one priority.",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "            if (reservoir[63-i])",
+          "before": "            if (available > 7'(i) && reservoir[63-i])",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    // Independent guarded-use reference. Unused raw rank may differ when\n    // unowned bits are arbitrary; every selected PREFIX semantic must match.\n    logic [3:0] guarded_masked_rank;\n    logic [4:0] guarded_masked_zeros;\n    logic guarded_masked_found;\n    logic [5:0] guarded_masked_take;\n    always_comb begin\n        guarded_masked_rank=15;\n        for(integer p=14;p>=0;p=p-1)\n            if(available>7'(p) && reservoir[63-p])guarded_masked_rank=4'(p);\n        guarded_masked_zeros=window<6'(guarded_masked_rank)?5'(window):5'(guarded_masked_rank);\n        guarded_masked_found=6'(guarded_masked_rank)<window;\n        guarded_masked_take=guarded_masked_zeros==15?6'd15:\n            (guarded_masked_found?6'(guarded_masked_zeros)+1'b1:window);\n    end\n    always_ff @(posedge clk)if(state==PREFIX && !serial && can_step)begin\n        assert(zeros==guarded_masked_zeros && found_one==guarded_masked_found &&\n            take_bits==guarded_masked_take) else $fatal(1,\"guarded PREFIX semantic mismatch\");\n    end\n`endif\nendmodule",
+          "before": "endmodule",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-rice/br88_rice_elastic.sv",
+      "original_sha256": "f39c3f90d0242097ea3cd2693e6f4d99e58e33a0b49c644c720497f50e6777dc"
+    }
+  },
+  "schema": "v109-rice-guarded-prefix-tap-recipe-v1",
+  "status": "PREPARED_NOT_RTL_QUALIFIED_NOT_SELECTED"
+}

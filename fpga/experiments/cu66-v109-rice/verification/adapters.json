@@ -1,0 +1,96 @@
+{
+  "adapters": [
+    {
+      "path": "fpga/experiments/cu66-v109-rice/verification/rice_original.sv",
+      "renames": [
+        [
+          "module br88_rice_elastic (",
+          "module rice_original ("
+        ]
+      ],
+      "sha256": "645ef51ec98fe616784b151bc90c8131ff4f7ecb0add949604f70dcf15067cad",
+      "source": "fpga/experiments/cu66-v107-rice/br88_rice_elastic.sv",
+      "source_sha256": "f39c3f90d0242097ea3cd2693e6f4d99e58e33a0b49c644c720497f50e6777dc"
+    },
+    {
+      "path": "fpga/experiments/cu66-v109-rice/verification/rice_candidate.sv",
+      "renames": [
+        [
+          "module br88_rice_elastic (",
+          "module rice_candidate ("
+        ]
+      ],
+      "sha256": "760f0bc7292fa539edf0ebf6dd283f9184205aa37f2f7ced37526aa002f54e40",
+      "source": "fpga/experiments/cu66-v109-rice/br88_rice_elastic.sv",
+      "source_sha256": "dfa58d806ce93ab273f0eb4a2d45b391198ab4bee9ce33aea324d5285d1cc5df"
+    }
+  ],
+  "bench_edits": [
+    [
+      "OLD(reservoir)=oracle.reservoir;NEW(reservoir)=available?oracle.reservoir<<(64-available):0;",
+      "BOTH(reservoir,available?oracle.reservoir<<(64-available):0);"
+    ],
+    [
+      "require(d.probe_outputs_equal&&d.probe_internal_equal,\"actual complete parser pre/post comparison\");",
+      "require(d.probe_outputs_equal&&d.probe_internal_equal,\"actual complete parser pre/post comparison\");\n require(d.probe_guarded_equal,\"guarded prefix/suffix semantics\");"
+    ]
+  ],
+  "bench_original": "fpga/experiments/cu66-v107-rice/tb_rice.cpp",
+  "bench_original_sha256": "5132ad409b86c2e596297e4cdf2c27edc3314da17fd90ea4ab12ac332ccc2fb8",
+  "historical_original": "fpga/experiments/cu66-v91/tb_rice.cpp",
+  "historical_renames": [
+    [
+      "Vbr88_rice_elastic",
+      "Vrice_probe"
+    ],
+    [
+      "int main(int argc,char** argv)",
+      "int historical_rice_main(int argc,char** argv)"
+    ],
+    [
+      "d.clk=1; d.eval(); d.clk=0; d.eval();",
+      "rice_pre(d); d.clk=1; d.eval(); rice_post(d); d.clk=0; d.eval();"
+    ]
+  ],
+  "historical_sha256": "5ef80b0ee132974df217d9f53228c36389f14e27fb73535fccc16a05e28384e2",
+  "internal_comparisons": [
+    "state",
+    "active",
+    "use16",
+    "serial",
+    "failed",
+    "size_bits",
+    "loaded",
+    "consumed",
+    "reservoir",
+    "available",
+    "k",
+    "escape_width",
+    "quotient",
+    "suffix_left",
+    "suffix_acc",
+    "remaining",
+    "load_remaining",
+    "word_bad",
+    "cached_remaining",
+    "cached_load_remaining"
+  ],
+  "old_assertions_or_oracles_removed": false,
+  "prepared_state_change": "Old V107 is MSB-aligned; adapt inherited V106-original low-reservoir preparation to the same actual high alignment for BOTH modules; independent normalized low-queue oracle unchanged.",
+  "public_output_comparisons": [
+    "in_ready",
+    "req_ready",
+    "out_valid",
+    "out_value",
+    "out_consumed",
+    "out_error",
+    "count_cycles",
+    "count_inputs",
+    "count_symbols",
+    "count_bits",
+    "count_input_wait",
+    "count_output_stall",
+    "reservoir_bits"
+  ],
+  "schema": "v109-rice-complete-lossless-adapters-v1"
+}

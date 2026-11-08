@@ -1,0 +1,43 @@
+#define main original_capture_main
+#include "tb_capture.cpp"
+#undef main
+#include <algorithm>
+#include <sstream>
+struct PacketCase{std::string id;unsigned blocks;std::vector<uint8_t> packet,dense;};
+static std::vector<uint8_t> bytes(const std::string&s){need(s.size()%2==0,"hexsize");std::vector<uint8_t>o;for(size_t i=0;i<s.size();i+=2)o.push_back(uint8_t(std::stoul(s.substr(i,2),nullptr,16)));return o;}
+static uint32_t little(const std::vector<uint8_t>&p,unsigned a){return uint32_t(p[a])|(uint32_t(p[a+1])<<8)|(uint32_t(p[a+2])<<16)|(uint32_t(p[a+3])<<24);}
+struct Coef{unsigned band,block,index;int16_t value;};
+static std::vector<Coef> golden(const PacketCase&c){std::vector<Coef>o;std::array<unsigned,64>order{};unsigned rank=0;for(unsigned diag=0;diag<15;++diag)for(unsigned step=0;step<8;++step){int row=diag%2?int(step):7-int(step),col=int(diag)-row;if(col>=0&&col<8)order[rank++]=unsigned(row*8+col);}need(rank==64,"zigzag permutation");const bool raw=c.packet[5]==1;for(unsigned band=0;band<(raw?1U:4U);++band)for(unsigned block=0;block<c.blocks;++block)for(unsigned z=0;z<(raw?64U:band==0?1U:64U);++z){unsigned i=raw?z:order[z];if(!raw&&band&&(z==0||(z<6?1U:z<21?2U:3U)!=band))continue;unsigned at=(block*64+i)*2;int16_t v=int16_t(unsigned(c.dense[at])|(unsigned(c.dense[at+1])<<8));if(raw||band==0||v)o.push_back({band,block,i,v});}return o;}
+struct Whole{
+ Vingress_capture_probe d;std::mt19937 rng;uint64_t edges=0,requests=0,responses=0,outputs=0,packets=0,held=0,cancels=0,prepared_requests=0;std::array<uint64_t,4>kinds{};unsigned boundary_mask=0;bool pending=false;uint32_t expected=0,owned_epoch=0;
+ explicit Whole(unsigned seed):rng(seed){d.clk=0;d.reset=1;d.start=d.abort_packet=d.in_valid=0;d.out_ready=d.meta_ready=d.band_end_ready=0;d.packet_bytes=174;d.blocks=1;d.epoch=1;d.word16=d.serial_mode=0;d.in_data=d.in_last=0;tick();d.reset=0;}
+ void check(){need(!d.mismatch,"whole ingress complete public mismatch");}
+ void tick(){d.clk=0;d.eval();check();bool req=d.stage_read_req,rsp=d.stage_read_rsp,kill=d.stage_cancel;uint32_t addr=d.stage_read_addr,epoch=d.stage_req_epoch;if(rsp){need(pending&&!kill,"response missing actual request owner");need(d.stage_rsp_addr==expected&&d.stage_rsp_epoch==owned_epoch&&d.verify_expected_addr==expected,"independent request-edge address/epoch owner");++responses;unsigned k=d.stage_purpose;need(k<4,"purpose range");++kinds[k];if(k==0&&d.verify_fetch_index==41)boundary_mask|=1;if(k==0&&d.verify_fetch_index==42)boundary_mask|=2;if(k==0&&d.verify_fetch_index==45)boundary_mask|=4;if(k==1&&d.verify_fetch_index==6)boundary_mask|=8;}
+  d.clk=1;d.eval();check();d.clk=0;d.eval();check();if(kill||rsp)pending=false;if(req){need(!pending,"multiple actual staging requests");pending=true;expected=addr;owned_epoch=epoch;++requests;need(d.verify_expected_addr==addr,"request-edge cache exact full32");}need(++edges<40000000,"whole watchdog");}
+ void clean(){d.reset=1;d.start=d.abort_packet=d.in_valid=0;tick();d.reset=0;}
+ void noise(){d.packet_bytes=rng();d.blocks=rng()&131071U;d.epoch=rng();d.word16=rng()&1;d.serial_mode=rng()&1;}
+ bool run(const PacketCase&c,unsigned profile,int kind=-1,int index=-1,unsigned action=0,bool corrupt=false){clean();auto p=c.packet;if(corrupt)p.back()^=1;const auto gold=golden(c);const uint32_t epoch=1000U+unsigned(packets)+cancels;d.start=1;d.packet_bytes=p.size();d.blocks=c.blocks;d.epoch=epoch;d.word16=d.serial_mode=0;d.out_ready=d.meta_ready=d.band_end_ready=0;tick();d.start=0;unsigned at=0,out=0,ends=0,hold=0;bool metadata=false;
+  for(unsigned n=0;!d.done&&!d.error;++n){need(n<2000000,"packet watchdog");noise();d.in_valid=at<p.size()&&(!profile||rng()%4!=0);if(d.in_valid){d.in_data=p[at];d.in_last=at+1==p.size();}d.out_ready=!profile||rng()%4!=0;d.band_end_ready=!profile||rng()%4!=0;d.meta_ready=hold>=17;d.clk=0;d.eval();check();
+   if(kind>=0&&d.stage_purpose==unsigned(kind)&&d.verify_fetch_index==unsigned(index)&&(action<3?d.stage_read_req:d.stage_read_rsp)){
+    unsigned op=action%3;if(op==0)d.abort_packet=1;else if(op==1)d.reset=1;else{d.start=1;d.packet_bytes=p.size();d.blocks=c.blocks;d.epoch=epoch+1;d.word16=d.serial_mode=0;}d.eval();need(!d.out_valid&&!d.stage_read_req&&!d.stage_read_rsp&&!d.meta_valid,"same-edge immediate cancel fence");tick();d.abort_packet=d.reset=d.start=0;d.in_valid=0;tick();need(!pending&&!d.stage_read_rsp&&!d.out_valid,"cancel stale response escaped");++cancels;return false;
+   }
+   bool input=d.in_valid&&d.in_ready,output=d.out_valid&&d.out_ready,end=d.band_end_valid&&d.band_end_ready;
+   if(d.meta_valid){need(d.meta_blocks==c.blocks&&d.meta_epoch==epoch&&d.meta_raw==(c.packet[5]==1),"independent metadata owner");need(d.meta_count1==little(c.packet,30)&&d.meta_count2==little(c.packet,34)&&d.meta_count3==little(c.packet,38),"independent metadata counts");if(hold<17){++hold;++held;}metadata=true;}
+   if(output){need(out<gold.size(),"extra coefficient");const auto&g=gold[out];need(d.out_band==g.band&&d.out_block==g.block&&d.out_index==g.index&&int16_t(d.out_coefficient)==g.value&&d.out_epoch==epoch,"independent dense-derived sparse/raw golden "+c.id);++out;++outputs;}
+   if(end){need(d.band_end_band==ends&&d.band_end_epoch==epoch,"band end order/epoch");++ends;}
+   tick();if(input)++at;
+  }
+  if(corrupt){need(d.error==3&&!metadata&&out==0,"CRC error contract");return true;}
+  need(!d.error&&d.done&&metadata&&out==gold.size()&&ends==(c.packet[5]==1?1U:4U)&&at==p.size()&&!pending,"packet completion/golden count "+c.id);++packets;return true;
+ }
+ void address_cases(){
+  struct C{unsigned kind,index;uint32_t base,size,length;bool valid;};
+  const std::array<C,10>cs={{{0,41,0,1024,0,true},{0,42,0,1024,0,true},{0,45,0,1024,0,true},{1,6,400,1024,23,true},{1,6,0xfffffff0U,1024,33,true},{2,17,0xfffffff0U,1024,0,true},{3,1,42,1024,0,true},{2,63,0x80000000U,0xffffffffU,0,false},{1,6,0x7ffffff0U,0xffffffffU,0x80000012U,true},{0,42,0,1,0,false}}};
+  for(const auto&c:cs){clean();auto&r=*d.rootp;BOTH(state,12U);BOTH(fetch_index,c.index);BOTH(fetch_kind,c.kind);BOTH(fetch_base,c.base);BOTH(fetch_count,c.index+1U);BOTH(fetch_return,0U);BOTH(size_bytes,c.size);BOTH(context_epoch,0xa5b6c7d8U);BOTH(context_active,0U);BOTH(band,0U);BOTH(lengths[0],c.length);BOTH(ram_valid,0U);uint32_t address=c.base+c.index;if(c.kind==0&&c.index>=42)address=c.size-4+c.index-42;if(c.kind==1&&c.index==6)address=c.base+c.length-1;
+   // Explicit prepared prior-request formula; never derive this from ram_addr.
+   NEW(prepared_request_addr)=address;
+   NEW(prepared_request_in_bounds)=address<c.size&&address<49152U;
+   d.eval();need(d.stage_read_addr==address&&bool(d.stage_read_req)==c.valid,"independent full32 request address/bounds");tick();need(d.verify_expected_addr==address,"unreset cache captures full32 even rejected request");if(c.valid){need(d.stage_read_rsp,"actual registered response missing");tick();++prepared_requests;}else need(!d.stage_read_rsp&&d.error==4,"out-of-range request failure");}
+ }
+};
+int main(int argc,char**argv){if(argc!=4)return original_capture_main(argc,argv);try{unsigned seed=std::stoul(argv[1]);Whole w(seed);std::ifstream in(argv[3]);need(bool(in),"vectors open");std::vector<PacketCase>cs;std::string p,d,s;for(PacketCase c;in>>c.id>>c.blocks>>p>>d>>s;){c.packet=bytes(p);c.dense=bytes(d);cs.push_back(c);}need(cs.size()==20,"corpus count");w.address_cases();for(const auto&c:cs)for(unsigned profile=0;profile<2;++profile)w.run(c,profile);auto raw=std::find_if(cs.begin(),cs.end(),[](const auto&c){return c.packet[5]==1;});auto sparse=std::find_if(cs.begin(),cs.end(),[](const auto&c){return c.packet[5]==0;});need(raw!=cs.end()&&sparse!=cs.end(),"raw/sparse corpus");for(const auto&target:std::array<std::pair<int,int>,6>{{{0,41},{0,42},{0,45},{1,6},{2,0},{3,1}}})for(unsigned action=0;action<6;++action){const auto&c=target.first==3?*raw:*sparse;need(!w.run(c,1,target.first,target.second,action),"cancel point not reached");w.run(c,1);}w.run(*sparse,1,-1,-1,0,true);need(w.boundary_mask==15&&w.cancels==36&&w.prepared_requests==8,"actual request/cancel coverage");std::cout<<"{\"type\":\"whole_ingress_fetch_verdict\",\"status\":\"TEST_PASS\",\"seed\":"<<seed<<",\"packets\":"<<w.packets<<",\"edges\":"<<w.edges<<",\"golden_coefficients\":"<<w.outputs<<",\"requests\":"<<w.requests<<",\"responses\":"<<w.responses<<",\"metadata_hold_edges\":"<<w.held<<",\"cancel_retries\":"<<w.cancels<<",\"prepared_actual_requests\":"<<w.prepared_requests<<",\"boundary_mask\":"<<w.boundary_mask<<",\"purpose_responses\":["<<w.kinds[0]<<','<<w.kinds[1]<<','<<w.kinds[2]<<','<<w.kinds[3]<<"]}\n";return 0;}catch(const std::exception&e){std::cerr<<"FETCH_WHOLE_FAIL "<<e.what()<<'\n';return 1;}}

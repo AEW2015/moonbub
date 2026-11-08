@@ -1,0 +1,93 @@
+{
+  "added_public_cycles": 0,
+  "background_prefetch_owner": "Existing prefetch_segment and all background updates unchanged; foreground fixed-bank writes retain original procedural ordering and forwarding priority.",
+  "bank_decode_reset": "No reset added: redundant decode holds with original binary selector; baseline assertions unchanged, new invariants begin after first original capture.",
+  "production": {
+    "packed_scratch_v91g2.sv": {
+      "candidate": "fpga/experiments/cu66-v109-bank/packed_scratch_v91g2.sv",
+      "candidate_sha256": "1ff4901cdaa98ef5267215f7454042a95d2dc001234caf5b4e4d44f0c6283843",
+      "edits": [
+        {
+          "after": "    logic [1:0] read_segment;\n    // Redundant decode follows the existing read owner at exactly its two\n    // capture edges. Like read_segment, it holds through reset/cancellation.\n    logic [3:0] read_segment_oh;\n    logic [3:0] read_bank_hits, read_bank_prefetched_hits;\n    logic read_cache_hit, read_prefetched_hit;",
+          "before": "    logic [1:0] read_segment;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        // Offset shifts/position lookup are local to each physical bank.\n        // The captured one-hot owner selects the current live data/tag/valid;\n        // no cached hit/miss decision or extra-cycle forwarding is introduced.\n        read_word=0; read_position=0;\n        for(integer bank=0;bank<4;bank=bank+1)begin\n            read_word=read_word | ({32{read_segment_oh[bank]}} &\n                32'(cache_data[bank]>>(8*read_address[3:0])));\n            read_position=read_position | ({32{read_segment_oh[bank]}} &\n                {13'd0,cache_positions[bank][read_address[3:0]]});\n            read_bank_hits[bank]=read_segment_oh[bank] && cache_valid[bank] &&\n                cache_address[bank]==18'(read_address & 32'hfffffff0);\n            read_bank_prefetched_hits[bank]=read_bank_hits[bank] && prefetched_valid[bank];\n        end\n        read_cache_hit=|read_bank_hits;\n        read_prefetched_hit=|read_bank_prefetched_hits;",
+          "before": "        read_word=32'(cache_data[read_segment]>>(8*read_address[3:0]));",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        // read_position is selected with the one-hot word owner above.",
+          "before": "        read_position={13'd0,cache_positions[read_segment][read_address[3:0]]};",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "             (state==AC_EXTRACT && read_prefetched_hit));",
+          "before": "             (state==AC_EXTRACT && cache_valid[read_segment] && prefetched_valid[read_segment] &&\n              cache_address[read_segment]==18'(read_address & 32'hfffffff0)));",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                else begin\n                    for(integer bank=0;bank<4;bank=bank+1)\n                        if(read_segment_oh[bank])prefetched_valid[bank]<=0;\n                end",
+          "before": "                else prefetched_valid[read_segment]<=0;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                            for(integer bank=0;bank<4;bank=bank+1)\n                                if(read_segment_oh[bank])cache_data[bank]<=mem_rsp_data;",
+          "before": "                            cache_data[read_segment]<=mem_rsp_data;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                            if(read_segment_oh[0])begin",
+          "before": "                            if(read_segment==2'd0)begin",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                            if(read_segment_oh[1])begin",
+          "before": "                            if(read_segment==2'd1)begin",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                            if(read_segment_oh[2])begin",
+          "before": "                            if(read_segment==2'd2)begin",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                            if(read_segment_oh[3])begin",
+          "before": "                            if(read_segment==2'd3)begin",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                            for(integer bank=0;bank<4;bank=bank+1)begin\n                                if(read_segment_oh[bank])begin\n                                    cache_address[bank]<=transfer_address;\n                                    cache_valid[bank]<=1; prefetched_valid[bank]<=0;\n                                end\n                            end",
+          "before": "                            cache_address[read_segment]<=transfer_address; cache_valid[read_segment]<=1; prefetched_valid[read_segment]<=0;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                    read_segment<=0; read_segment_oh<=4'b0001; state<=DC_EXTRACT;",
+          "before": "                    read_segment<=0; state<=DC_EXTRACT;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                    read_segment<=read_band; read_segment_oh<=4'b0001<<read_band; read_address<=starts[read_band]+cursors[read_band]*4; state<=AC_EXTRACT;",
+          "before": "                    read_segment<=read_band; read_address<=starts[read_band]+cursors[read_band]*4; state<=AC_EXTRACT;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                    if(!read_cache_hit) begin",
+          "before": "                    if(!cache_valid[read_segment] || cache_address[read_segment]!=18'(read_address & 32'hfffffff0)) begin",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    // Neither read_segment nor its redundant decode has a reset. Before the\n    // first original capture, both are unowned; the public FSM cannot consume\n    // either. This verification-only flag persists across warm resets too.\n    logic read_segment_observed=0;\n    always_ff @(posedge clk)begin\n        if(!cancel && !response_failure &&\n            (state==DC_FETCH || state==RAW_FETCH || state==AC_FETCH))\n            read_segment_observed<=1;\n        if(read_segment_observed)begin\n            assert($onehot(read_segment_oh) && read_segment_oh==(4'b0001<<read_segment))\n                else $fatal(1,\"scratch redundant bank owner mismatch\");\n            assert(read_word==32'(cache_data[read_segment]>>(8*read_address[3:0])))\n                else $fatal(1,\"scratch onehot live word mismatch\");\n            assert(read_position=={13'd0,cache_positions[read_segment][read_address[3:0]]})\n                else $fatal(1,\"scratch onehot live position mismatch\");\n            assert(read_cache_hit==(cache_valid[read_segment] &&\n                cache_address[read_segment]==18'(read_address & 32'hfffffff0)))\n                else $fatal(1,\"scratch onehot live cache hit mismatch\");\n            assert(read_prefetched_hit==(cache_valid[read_segment] && prefetched_valid[read_segment] &&\n                cache_address[read_segment]==18'(read_address & 32'hfffffff0)))\n                else $fatal(1,\"scratch onehot live prefetch hit mismatch\");\n        end\n    end\n`endif\nendmodule",
+          "before": "endmodule",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v109-prefetch/packed_scratch_v91g2.sv",
+      "original_sha256": "742726be34e0560b72f3cd0026edcd9be44bffbede5200a179edd483c24fca34"
+    }
+  },
+  "read_segment_original_capture_edges": 2,
+  "schema": "v109-redundant-cache-bank-onehot-v1",
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

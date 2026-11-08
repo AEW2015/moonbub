@@ -1,0 +1,53 @@
+{
+  "production": {
+    "br88_packet_ingress_sync_v91h.sv": {
+      "candidate_sha256": "ac7260e749ace036495a162882fdb30fdb129d2c7ddde8df67bc2a8957f8f4b1",
+      "edits": [
+        {
+          "after": "    logic [31:0] expected_fetch_addr;\n    // Request payload is owned only in FETCH_REQ; no reset or kill enable.\n    logic [31:0] prepared_request_addr, next_request_addr;\n    logic prepared_request_in_bounds;\n    logic [5:0] next_request_index;\n    always_comb begin\n        next_request_index=fetch_index+6'd1;\n        next_request_addr=fetch_base+32'(next_request_index);\n        if(fetch_kind==F_HEADER && next_request_index>=42)\n            next_request_addr=size_bytes-4+32'(next_request_index)-42;\n        if(fetch_kind==F_DESCRIPTOR && next_request_index==6)\n            next_request_addr=fetch_base+lengths[band]-1;\n    end",
+          "before": "    logic [31:0] expected_fetch_addr;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "            fetch_base<=base; fetch_return<=continuation; buffer_bytes<=0; state<=FETCH_REQ;\n            // Initial index is zero for every fetch kind: the first address is base.\n            prepared_request_addr<=base;\n            prepared_request_in_bounds<=base<size_bytes && base<32'(MAX_PACKET_BYTES);",
+          "before": "            fetch_base<=base; fetch_return<=continuation; buffer_bytes<=0; state<=FETCH_REQ;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        stage_read_req=state==FETCH_REQ && !cancelled && prepared_request_in_bounds &&\n            !(context_active && (ctx_error!=0 || ctx_done));",
+          "before": "        stage_read_req=state==FETCH_REQ && !cancelled && fetch_address<size_bytes &&\n            fetch_address<32'(MAX_PACKET_BYTES) && !(context_active && (ctx_error!=0 || ctx_done));",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "ram_data<=memory[AW'(prepared_request_addr)]; ram_addr<=prepared_request_addr; ram_epoch<=context_epoch;",
+          "before": "ram_data<=memory[AW'(fetch_address)]; ram_addr<=fetch_address; ram_epoch<=context_epoch;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "    always_ff @(posedge clk) begin\n        // Speculative private preparation is independent of cancellation. On a\n        // successful nonfinal WAIT this becomes the next request's payload. A\n        // final response, failure or cancellation leaves it unowned; begin_fetch\n        // always replaces it before a new sequence can enter FETCH_REQ.\n        if(state==FETCH_WAIT) begin\n            prepared_request_addr<=next_request_addr;\n            prepared_request_in_bounds<=next_request_addr<size_bytes && next_request_addr<32'(MAX_PACKET_BYTES);\n        end\n        if(reset || abort_packet) begin",
+          "before": "    always_ff @(posedge clk) begin\n        if(reset || abort_packet) begin",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "else if(!prepared_request_in_bounds) fail_packet(4);",
+          "before": "else if(fetch_address>=size_bytes || fetch_address>=32'(MAX_PACKET_BYTES)) fail_packet(4);",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        if(state==FETCH_REQ)begin\n            assert(prepared_request_addr==fetch_address)else $fatal(1,\"prepared request address owner mismatch\");\n            assert(prepared_request_in_bounds==(fetch_address<size_bytes && fetch_address<32'(MAX_PACKET_BYTES)))\n                else $fatal(1,\"prepared request bounds owner mismatch\");\n        end\n        assert(!stage_read_req || (!stage_write && fetch_address<size_bytes && fetch_address<32'(MAX_PACKET_BYTES)))",
+          "before": "        assert(!stage_read_req || (!stage_write && fetch_address<size_bytes && fetch_address<32'(MAX_PACKET_BYTES)))",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v109-fetch/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "4d6a16d0b89aa067fe3e7acc01351ea0bacac694cc63fb681a1471ee4683d044"
+    }
+  },
+  "public_added_cycles": 0,
+  "qualification_baseline": {
+    "path": "fpga/experiments/cu66-v108-capacity/br88_packet_ingress_sync_v91h.sv",
+    "sha256": "6514a5f2e2c1b597dfb2cddffeb3e637034d5fe79cdb07861ecd1081034c83c6"
+  },
+  "schema": "v109-request-existing-prepare-edges-v1",
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

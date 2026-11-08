@@ -1,5 +1,46 @@
 # Game Bub application-specific codec: selected direction and gates
 
+<!-- V109-CHECKPOINT-START -->
+**V109 partial: functional cuts qualified; 100-MHz timing remains open.**
+The [V109 report](cu66-v109/README.md) records four fresh-RTL routes at the
+unchanged 10.000-ns clock on `xc7a100tcsg324-1`. Best worst slack is **−1.589 ns**
+for same-edge fault predicates, versus V108's **−2.020 ns**: a 0.431-ns
+improvement, with 14,204 setup-failing endpoints and 28.8% lower absolute TNS.
+The fault/prefetch/bank composition has the lowest absolute TNS (**−5,988.869 ns**,
+48.89% lower), but WNS **−1.737 ns**. Response-address capture routes at
+**−1.635 ns**; the request-address derivative regresses to **−2.275 ns**.
+All four pass hold/pulse checks and complete routing with zero routing errors,
+but **none passes setup at 100 MHz**. No positive candidate existed for a fresh
+validation repeat, and no address variant is promoted on functional evidence alone.
+
+Same-edge fault flags, existing-edge prefetch arithmetic, bank selection and
+owned response/request address preparation passed focused RTL checks. Each of
+four complete source compositions independently reproduces the same two frozen
+V108 seeds exactly: **44 case profiles / 42 directed checks per composition**,
+including public cycles, events, invalid values, counters and canonical pixels.
+This is repeated evidence on fixed workloads, not four independent gameplay
+corpora or a newly rerun original baseline. The 720×480 CS88 q16/all-BR88 format
+and 49,152-byte cap remain unchanged.
+
+The [new routed control-path analysis](cu66-v109/fetch-route-findings.md)
+locates scratch quiescence/start/cancel → coefficient CE at ten LUT levels,
+11.346-ns data delay, **84.506% routing**, plus a separate fault-ack → Rice CE
+path. The old ingress address launch sources are absent from that run's top
+fifty. The request route instead exposes transform fault → producer RAM-enable
+control. Prioritize exact same-edge local quiescence/owned-fault predicates;
+if exactness cannot be maintained, use a separately versioned registered
+kill/elastic-drain contract with immediate publication masking and explicit
+ownership/final-drain fences. Do not delay live cancellation as ordinary status,
+combine candidates without measurement, relax the clock or waive these paths.
+
+[Next implementation work](cu66-v109/next-implementation.md) retains the
+complete-parent clock/I/O/CDC, memory/display service and calibrated publication
+gates. The production parent still uses JPEG. Actual simulation counters remain
+unchanged and exceed the assumed one-million-cycle strict 10-ms budget in most
+cases. **V109 integrated closure, sustained hardware 30 fps and complete validated
+decoding below 10 ms remain OPEN.** V110 hardware qualification is not passed.
+<!-- V109-CHECKPOINT-END -->
+
 <!-- V108-CHECKPOINT-START -->
 **V108 partial: experiments finished; 100-MHz setup timing remains open.**
 The [V108 report](cu66-v108/README.md) records all six frozen-source strategies, a clean RTL
