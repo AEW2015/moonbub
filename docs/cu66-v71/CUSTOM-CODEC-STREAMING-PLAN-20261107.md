@@ -107,7 +107,9 @@ Do not start a long run if encoding support, receiver continuous lifecycle or me
 
 ## Immediate deliverables and coordination
 
-Current physical result: [V46 cold CPU12 passed](V46-CPU12-HARDWARE-RESULT-20261107.md), then [V46 network cached12 located frame3's failed11,520-byte malloc](V46-V027-CACHED12-FAILURE-20261107.md):35,284total free but7,680largest internal block. The wrapper identifies Prepare opcode1/native reply4; FPGA passive samples show3accepted/3presented/0rejected/0underruns. Keep the failed endpoint quarantined. Next is allocation-lifetime audit and fragmented-heap reproduction before selecting a bounded memory fix; no V027 rebuild is indicated by this immediate cause. V45's similar failure had no allocator detail, so its exact cause remains unproven.
+Next candidate: [V47 allocation-order hardware handoff](V47-HARDWARE-HANDOFF-20261107.md), with [change/test plan](V47-HUD-ORDER-PLAN-20261107.md). Offline exact-output/rollback tests, bounded actual-TLSF comparisons, target build and updater checks passed. Physical CPU12/network cached12 remain pending. This candidate improves some synthetic heap layouts but is not a universal fragmentation cure; no V027/wire/cap/reserve change.
+
+Current physical result: [V46 cold CPU12 passed](V46-CPU12-HARDWARE-RESULT-20261107.md), then [V46 network cached12 located frame3's failed11,520-byte malloc](V46-V027-CACHED12-FAILURE-20261107.md):35,284total free but7,680largest internal block. The wrapper identifies Prepare opcode1/native reply4; FPGA passive samples show3accepted/3presented/0rejected/0underruns. Keep the failed endpoint quarantined until coordinated update; no V027 rebuild is indicated by this immediate cause. V45's similar failure had no allocator detail, so its exact cause remains unproven.
 
 Previous physical result: [V45 cached3 passed](V45-V027-CACHED3-RESULT-20261107.md), then [cached12 stopped at frame3 with generic native Hud failure](V45-V027-CACHED12-FAILURE-20261107.md). Host and receiver agreed on three presentations and a stored-but-failed fourth frame; frames4–11 were withheld.
 
