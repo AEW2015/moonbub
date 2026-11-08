@@ -1,0 +1,57 @@
+{
+  "auditor": {
+    "path": "fpga/experiments/cu66-v106-ingress/audit_trace.py",
+    "sha256": "9f571c4263fda595da0c09ac0526fe6fd3fe26746df9884abec58105e8204585"
+  },
+  "checks": [
+    "Every source and retained artifact pinned and rehashed",
+    "Exact seven-edit source recipe and complete module/type-rename adapters",
+    "Original public header, bounds, valid, cancellation/error/done priority retained",
+    "Full32 cache/last algebra independently rerun",
+    "Actual old/new production pipelines with all synchronous-ingress public outputs compared each clock",
+    "Every prepared clock replayed independently; historical checkpoints individually checked but not a complete offline historical trace",
+    "Unchanged child in_ready independent of private inactive in_bits/in_last"
+  ],
+  "model": {
+    "full32_induction": {
+      "accepted_word": "cache_next=cache-bits mod2^32; replay_next=replay+bits mod2^32",
+      "context_start": "replay_next=0; cache_next=sizes[band]",
+      "hold": "both hold; size[band] is unchanged throughout live context",
+      "last": "(replay+bits==size) iff (size-replay==bits) in Z/(2^32)",
+      "reset_abort_replacement_start": "cache=0; replay=0; inactive except replacement may enter RECEIVE"
+    },
+    "rows": 200450,
+    "schema": "v106-ingress-mod32-model-v1",
+    "scope": "Algebra is universal modulo32; numeric rows are sampled evidence, not exhaustive 2^64 input enumeration. Inactive private ctx_bits/ctx_last deliberately unqualified.",
+    "status": "PASS",
+    "wrapped_subtractions": 99660
+  },
+  "receipt": "experiments/python-gamebub-v106/ingress/attempts/20261108T024251781215Z/receipt.json",
+  "receipt_sha256": "4bf37afab6fff48c4b23522de2af22cae1554f5f888aad9da16fa9c83d3d1d87",
+  "runs": [
+    {
+      "complete_trace_sha256": "21e75e52f8a6d7eb1be36e10118a933630cdd1d7ad287aec77fc406eea71cb11",
+      "historical_checkpoints": 31407,
+      "historical_edges": 7983546,
+      "prepared_cases": 5760,
+      "prepared_edges": 11521,
+      "prepared_initializations": 240,
+      "prepared_updates": 224,
+      "seed": 106401
+    },
+    {
+      "complete_trace_sha256": "19d5f710753931b9e26243284eada0d9d3641e49da671ba108a19b7f6b489bd6",
+      "historical_checkpoints": 31401,
+      "historical_edges": 7981974,
+      "prepared_cases": 5760,
+      "prepared_edges": 11521,
+      "prepared_initializations": 240,
+      "prepared_updates": 224,
+      "seed": 106402
+    }
+  ],
+  "schema": "v106-ingress-evidence-audit-v1",
+  "scope": "Native timing, hardware30fps and validated under10ms remain separate open gates.",
+  "status": "PASS_INGRESS_MODEL_ADAPTERS_AND_CHECKPOINTS",
+  "total_clock_edges": 15988562
+}

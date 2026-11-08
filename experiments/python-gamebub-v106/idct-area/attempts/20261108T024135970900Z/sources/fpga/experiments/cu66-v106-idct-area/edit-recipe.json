@@ -1,0 +1,46 @@
+{
+  "schema": "v106-edit-recipe-v1",
+  "variant": "idct-area",
+  "original_path": "fpga/experiments/cu66-v69/inverse/cu66_idct8x8.sv",
+  "original_sha256": "251d4c11d762f6a040c1934d9dca9d80e6187f470a90b7261c63d06d1f3c310c",
+  "candidate_path": "fpga/experiments/cu66-v106-idct-area/cu66_idct8x8.sv",
+  "candidate_sha256": "1ed49416dae06b727544ad1d2f96440f553cd99e5324dc895a0af5edbca5cc32",
+  "edits": [
+    {
+      "name": "shared_registered_operands",
+      "before": "    logic signed [37:0] products [0:7];",
+      "after": "    logic signed [37:0] products [0:7];\n    logic signed [23:0] operand_samples[0:7], next_samples[0:1];\n    logic [19:0] source_words[0:63];\n    logic signed [13:0] operand_basis[0:3];\n    logic prefetch_enable, prefetch_dc, prefetch_first;\n    logic [1:0] prefetch_group;\n    logic [2:0] prefetch_k;\n`ifndef SYNTHESIS\n    logic operand_live;\n`endif",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "one_shared_prefetch_selector_and_invariant",
+      "before": "    always_comb begin",
+      "after": "    for(genvar word=0;word<64;word=word+1)begin: fixed_source_words\n        assign source_words[word]=source_tile[word*20+:20];\n    end\n    // One next-address decoder and one variable read network per source.\n    always_comb begin\n        prefetch_enable=0;prefetch_dc=0;prefetch_first=state==FIRST_ACC;\n        prefetch_group=group_index;prefetch_k=k+3'd1;\n        if(state==IDLE)begin\n            prefetch_enable=in_valid && in_ready && !input_bad && in_tile!=0;\n            prefetch_group=0;prefetch_k=0;prefetch_dc=in_tile[1279:20]==0;\n        end else if(state==DC_FIRST_ACC)begin\n            prefetch_enable=1;prefetch_dc=1;prefetch_group=0;prefetch_k=0;\n        end else if(state==FIRST_ACC || state==SECOND_ACC)begin\n            prefetch_enable=!(state==SECOND_ACC && group_index==3 && k==7);\n            if(k==7)begin\n                prefetch_k=0;prefetch_group=group_index+2'd1;\n                if(group_index==3)prefetch_first=0;\n            end\n        end\n        for(integer row=0;row<2;row=row+1)begin\n            if(state==IDLE)\n                next_samples[row]={{4{in_tile[(row*8)*20+19]}},in_tile[(row*8)*20+:20]};\n            else if(prefetch_dc)\n                next_samples[row]=row==0 ? rounded({{2{products[0][37]}},products[0]}) : 24'sd0;\n            else if(prefetch_first)\n                next_samples[row]={{4{source_words[{prefetch_group,1'(row),prefetch_k}][19]}},\n                    source_words[{prefetch_group,1'(row),prefetch_k}]};\n            else next_samples[row]=intermediate[{prefetch_k,prefetch_group,1'(row)}];\n        end\n    end\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!rst&&!abort_frame &&\n        (state==FIRST_MUL||state==SECOND_MUL||state==DC_FIRST_MUL||state==DC_SECOND_MUL))begin\n        assert(operand_live);\n        for(integer p=0;p<8;p=p+1)begin\n            assert(operand_samples[p]==samples[p]);\n            assert(operand_basis[p%4]==basis(k,2'(p%4)));\n        end\n    end\n`endif\n\n    always_comb begin",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "kill_operand_live",
+      "before": "        if (rst || abort_frame) begin\n            state<=IDLE;",
+      "after": "        if (rst || abort_frame) begin\n`ifndef SYNTHESIS\n            operand_live<=0;\n`endif\n            for(integer p=0;p<4;p=p+1)operand_basis[p]<=0;\n            state<=IDLE;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "kill_operand_samples",
+      "before": "                products[lane]<='0;",
+      "after": "                operand_samples[lane]<='0;\n                products[lane]<='0;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "one_operand_register_write_site",
+      "before": "        end else begin\n            if (state!=IDLE && state!=OUTPUT_TILE) active_cycles<=active_cycles+1;",
+      "after": "        end else begin\n            if(prefetch_enable)begin\n                for(integer p=0;p<8;p=p+1)\n                    operand_samples[p]<=prefetch_dc && p!=0 ? 24'sd0 : next_samples[p/4];\n                for(integer p=0;p<4;p=p+1)operand_basis[p]<=basis(prefetch_k,2'(p));\n            end\n`ifndef SYNTHESIS\n            if(prefetch_enable)operand_live<=1;\n            else if((state==IDLE && in_valid && in_ready) || state==DC_SECOND_ACC ||\n                (state==SECOND_ACC && group_index==3 && k==7))operand_live<=0;\n`endif\n            if (state!=IDLE && state!=OUTPUT_TILE) active_cycles<=active_cycles+1;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "multiply_shared_registered_operands",
+      "before": "products[lane]<=$signed(samples[lane]) * $signed(basis(k,2'(lane%4)));",
+      "after": "products[lane]<=$signed(operand_samples[lane]) * $signed(operand_basis[lane%4]);",
+      "expected_occurrences": 1
+    }
+  ]
+}

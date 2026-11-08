@@ -1,0 +1,27 @@
+{
+  "schema": "v106-edit-recipe-v1",
+  "original_path": "fpga/experiments/cu66-v106-prefix/br88_rice_elastic.sv",
+  "original_sha256": "745a322dad262cbad732aea9af5d57ebfb940a961adc724b7d644b90baf25dbb",
+  "candidate_path": "fpga/experiments/cu66-v106-suffix/br88_rice_elastic.sv",
+  "candidate_sha256": "8940a4313a1efc88bdc7b55e885ae58d55e0e1f88208659010c5e5eb4e409ef7",
+  "edits": [
+    {
+      "name": "independent-suffix-extraction-declarations",
+      "before": "    logic [23:0] suffix_value, decoded_value;",
+      "after": "    logic [23:0] suffix_value, decoded_value;\n    logic [5:0] suffix_take_bits;\n    logic [63:0] suffix_extracted;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "specialize-only-selected-suffix-value",
+      "before": "        suffix_value=serial ? ((suffix_acc<<1) | 24'(extracted)) : 24'(extracted);",
+      "after": "        // The SUFFIX result needs no PREFIX rank/window/state mux in its\n        // extraction amount. Keep common extracted/take_bits for all updates.\n        suffix_take_bits=serial && suffix_left!=0 ? 6'd1 : 6'(suffix_left);\n        suffix_extracted=suffix_take_bits==0 ? 64'd0 : reservoir >> (available-7'(suffix_take_bits));\n        suffix_value=serial ? ((suffix_acc<<1) | 24'(suffix_extracted)) : 24'(suffix_extracted);",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "private-selected-suffix-invariant",
+      "before": "`ifndef SYNTHESIS\n",
+      "after": "`ifndef SYNTHESIS\n    // Only SUFFIX selects this combinational result; other states may differ.\n    always_ff @(posedge clk) if (state==SUFFIX) begin\n        assert (suffix_value==(serial ? ((suffix_acc<<1) | 24'(extracted)) : 24'(extracted)))\n            else $fatal(1,\"selected suffix extraction mismatch\");\n    end\n",
+      "expected_occurrences": 1
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "v106-edit-recipe-v1",
+  "original_path": "fpga/experiments/cu66-v91/br88_rice_elastic.sv",
+  "original_sha256": "f10846002fc007d4e5c25133fa425aa34ea492ff2738aeedd6aa5de7252acd47",
+  "candidate_path": "fpga/experiments/cu66-v106-rice/br88_rice_elastic.sv",
+  "candidate_sha256": "5ad9997d61a74bd650999c96508c17fc03d17323ab5b1f3689ad991126b3fe5e",
+  "edits": [
+    {
+      "name": "full32-remaining-cache-declaration",
+      "before": "    logic [31:0] remaining, load_remaining;",
+      "after": "    logic [31:0] remaining, load_remaining;\n    logic [31:0] cached_remaining, cached_load_remaining;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "select-cached-remainders",
+      "before": "        remaining = size_bits-consumed;\n        load_remaining = size_bits-loaded;",
+      "after": "        remaining = cached_remaining;\n        load_remaining = cached_load_remaining;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "equivalent-lastword-predicate",
+      "before": "in_last!=(loaded+32'(in_bits)==size_bits)",
+      "after": "in_last!=(cached_load_remaining==32'(in_bits))",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "initialize-both-caches-every-reset-or-start",
+      "before": "            size_bits<=stream_bits; loaded<=0; consumed<=0;",
+      "after": "            size_bits<=stream_bits; loaded<=0; consumed<=0;\n            cached_remaining<=stream_bits; cached_load_remaining<=stream_bits;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "mirror-good-input-load",
+      "before": "                    loaded<=loaded+32'(in_bits);",
+      "after": "                    loaded<=loaded+32'(in_bits);\n                    cached_load_remaining<=cached_load_remaining-32'(in_bits);",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "mirror-prefix-consumption",
+      "before": "                else if (prefix_empty) respond_error(TRUNCATED);\n                else if (can_step) begin\n                    reservoir<=reservoir & keep_mask;\n                    available<=available-7'(take_bits);\n                    consumed<=consumed+32'(take_bits);",
+      "after": "                else if (prefix_empty) respond_error(TRUNCATED);\n                else if (can_step) begin\n                    reservoir<=reservoir & keep_mask;\n                    available<=available-7'(take_bits);\n                    consumed<=consumed+32'(take_bits);\n                    cached_remaining<=cached_remaining-32'(take_bits);",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "mirror-suffix-consumption",
+      "before": "                if (remaining<32'(suffix_left)) respond_error(TRUNCATED);\n                else if (can_step) begin\n                    reservoir<=reservoir & keep_mask;\n                    available<=available-7'(take_bits);\n                    consumed<=consumed+32'(take_bits);",
+      "after": "                if (remaining<32'(suffix_left)) respond_error(TRUNCATED);\n                else if (can_step) begin\n                    reservoir<=reservoir & keep_mask;\n                    available<=available-7'(take_bits);\n                    consumed<=consumed+32'(take_bits);\n                    cached_remaining<=cached_remaining-32'(take_bits);",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "private-cache-invariants",
+      "before": "`ifndef SYNTHESIS\n",
+      "after": "`ifndef SYNTHESIS\n    // Private redundant-state invariants. These hold modulo 2^32 regardless\n    // of stream size, including idle/failed cycles after initialization.\n    always_ff @(posedge clk) if (!reset && !stream_start) begin\n        assert (cached_remaining==size_bits-consumed) else $fatal(1,\"remaining cache mismatch\");\n        assert (cached_load_remaining==size_bits-loaded) else $fatal(1,\"load remaining cache mismatch\");\n    end\n",
+      "expected_occurrences": 1
+    }
+  ]
+}

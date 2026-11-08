@@ -1,0 +1,21 @@
+{
+  "schema": "v106-edit-recipe-v1",
+  "original_path": "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv",
+  "original_sha256": "277e4ea7018a9463c505be09112309de936e8b28b9aada7908994c087595dd08",
+  "candidate_path": "fpga/experiments/cu66-v106-locality/cu66_inverse_stream_v91j.sv",
+  "candidate_sha256": "683e4fda539cd0149c6a88dbb2f33e941dde1269be1483cc2333e1ed9ef2f599",
+  "edits": [
+    {
+      "name": "static-coefficient-word-registers",
+      "before": "    cu66_dequant dequant (",
+      "after": "    // Coefficient storage is physically expressed as fixed-bank, fixed-word\n    // registers. No payload reset: ownership invalidation remains in the FSM.\n    // The original packed bank views feed both debug and the dequantizer.\n    for(genvar coef_bank=0;coef_bank<2;coef_bank=coef_bank+1)begin: coefficient_banks\n        for(genvar coef_word=0;coef_word<64;coef_word=coef_word+1)begin: words\n            logic [15:0] value;\n            always_ff @(posedge clk)begin\n                if(!reset&&!start&&!cancel&&error==0&&running&&input_fault==0&&\n                    in_valid&&in_ready&&fill_bank==1'(coef_bank)&&fill_index==6'(coef_word))\n                    value<=in_value;\n            end\n            assign coefficients[coef_bank][coef_word*16+:16]=value;\n        end\n    end\n\n    cu66_dequant dequant (",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "remove-dynamic-coefficient-write",
+      "before": "coefficients[fill_bank][int'(fill_index)*16+:16]<=in_value;",
+      "after": "",
+      "expected_occurrences": 1
+    }
+  ]
+}

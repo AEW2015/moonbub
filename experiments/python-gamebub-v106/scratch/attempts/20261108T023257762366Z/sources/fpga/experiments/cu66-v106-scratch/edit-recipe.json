@@ -1,0 +1,64 @@
+{
+  "candidate_path": "fpga/experiments/cu66-v106-scratch/packed_scratch_v91g2.sv",
+  "candidate_sha256": "b5ec30a8140834f1131b303f63939ad8632236247332e919c015da71ba33016c",
+  "edits": [
+    {
+      "after": "    logic [127:0] cache_data[0:3];\n    logic [18:0] cache_positions[0:3][0:15];\n    logic [18:0] head_positions[1:3];",
+      "before": "    logic [127:0] cache_data[0:3];",
+      "expected_occurrences": 1,
+      "name": "private-position-payloads"
+    },
+    {
+      "after": "    // All 32-bit record values map exactly to a 19-bit block/rank position.\n    function automatic logic [18:0] sparse_position(input logic [18:0] geometry);\n        sparse_position={geometry[18:6],zigzag(geometry[5:0])};\n    endfunction\n    function automatic logic rank_matches(input logic [1:0] band,input logic [5:0] rank);\n        case(band)\n            1: rank_matches=rank>=1 && rank<6;\n            2: rank_matches=rank>=6 && rank<21;\n            3: rank_matches=rank>=21;\n            default: rank_matches=rank==0;\n        endcase\n    endfunction\n    assign tile_mode=tile_overlap_mode && !raw_mode;",
+      "before": "    assign tile_mode=tile_overlap_mode && !raw_mode;",
+      "expected_occurrences": 1,
+      "name": "predecode-functions"
+    },
+    {
+      "after": "        read_position={13'd0,cache_positions[read_segment][read_address[3:0]]};",
+      "before": "        read_position=32'(read_word[31:19])*64+32'(zigzag(read_word[18:13]));",
+      "expected_occurrences": 1,
+      "name": "selected-cached-position"
+    },
+    {
+      "after": "                    cache_data[prefetch_segment]<=mem_rsp_data;\n                    for(integer b=0;b<4;b=b+1)if(prefetch_segment==2'(b))\n                        for(integer offset=0;offset<16;offset=offset+1)\n                            cache_positions[b][offset]<=sparse_position(19'(mem_rsp_data>>(8*offset+13)));",
+      "before": "                    cache_data[prefetch_segment]<=mem_rsp_data;",
+      "expected_occurrences": 1,
+      "name": "prefetch-position-owner-write"
+    },
+    {
+      "after": "                            cache_data[read_segment]<=mem_rsp_data;\n                            for(integer b=0;b<4;b=b+1)if(read_segment==2'(b))\n                                for(integer offset=0;offset<16;offset=offset+1)\n                                    cache_positions[b][offset]<=sparse_position(19'(mem_rsp_data>>(8*offset+13)));",
+      "before": "                            cache_data[read_segment]<=mem_rsp_data;",
+      "expected_occurrences": 1,
+      "name": "demand-position-owner-write"
+    },
+    {
+      "after": "!rank_matches(read_band,read_position[5:0])",
+      "before": "!band_matches(read_band,read_word[18:13])",
+      "expected_occurrences": 1,
+      "name": "cached-rank-band-validation"
+    },
+    {
+      "after": "read_position<={13'd0,head_positions[read_band]}",
+      "before": "read_position<=32'(heads[read_band][31:19])*64+32'(zigzag(heads[read_band][18:13]))",
+      "expected_occurrences": 1,
+      "name": "cached-previous-position"
+    },
+    {
+      "after": "                            heads[read_band]<=read_word;\n                            head_positions[read_band]<=read_position[18:0];",
+      "before": "                            heads[read_band]<=read_word;",
+      "expected_occurrences": 1,
+      "name": "head-position-owner-write"
+    },
+    {
+      "after": "`ifndef SYNTHESIS\n    // No claim is made about inactive private payloads after cancellation.\n    always_ff @(posedge clk)if(!cancel && !response_failure)begin\n        for(integer b=0;b<4;b=b+1)if(cache_valid[b])\n            for(integer offset=0;offset<16;offset=offset+1)\n                assert(cache_positions[b][offset]==sparse_position(19'(cache_data[b]>>(8*offset+13))));\n        if(state==AC_EXTRACT && cache_valid[read_segment] &&\n            cache_address[read_segment]==18'(read_address & 32'hfffffff0))begin\n            assert(read_position==32'(read_word[31:19])*64+32'(zigzag(read_word[18:13])));\n            if(cursors[read_band]!=0)\n                assert(head_positions[read_band]==sparse_position(heads[read_band][31:13]));\n        end\n    end\n`endif\n    assert property (@(posedge clk) mem_req_valid |-> mem_req_addr[3:0]==0 &&",
+      "before": "    assert property (@(posedge clk) mem_req_valid |-> mem_req_addr[3:0]==0 &&",
+      "expected_occurrences": 1,
+      "name": "live-position-invariants"
+    }
+  ],
+  "original_path": "fpga/experiments/cu66-v106-plan/packed_scratch_v91g2.sv",
+  "original_sha256": "c46f01765b79bd35929183d8475287c2b71e93c289371f0e3f212b320b175e48",
+  "schema": "v106-edit-recipe-v1",
+  "variant": "scratch-position-predecode"
+}

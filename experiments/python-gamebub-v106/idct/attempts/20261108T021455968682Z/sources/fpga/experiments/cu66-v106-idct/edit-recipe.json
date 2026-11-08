@@ -1,0 +1,76 @@
+{
+  "schema": "v106-edit-recipe-v1",
+  "variant": "idct",
+  "original_path": "fpga/experiments/cu66-v69/inverse/cu66_idct8x8.sv",
+  "original_sha256": "251d4c11d762f6a040c1934d9dca9d80e6187f470a90b7261c63d06d1f3c310c",
+  "candidate_path": "fpga/experiments/cu66-v106-idct/cu66_idct8x8.sv",
+  "candidate_sha256": "f972987d80a062b4969c71ac6157e8f17ab9e6b18088bafb77c4030eac78990e",
+  "edits": [
+    {
+      "name": "registered_operands",
+      "before": "    logic signed [37:0] products [0:7];",
+      "after": "    logic signed [37:0] products [0:7];\n    logic signed [23:0] operand_samples [0:7];\n    logic signed [13:0] operand_basis [0:7];\n`ifndef SYNTHESIS\n    logic operand_live;\n`endif",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "prefetch_tasks_and_invariant",
+      "before": "    always_comb begin",
+      "after": "    task automatic prefetch_first(input logic [1279:0] tile,\n                                   input logic [1:0] fg,input logic [2:0] fk);\n        for(integer p=0;p<8;p=p+1)begin\n            operand_samples[p]<={{4{tile[((int'(fg)*2+p/4)*8+int'(fk))*20+19]}},\n                tile[((int'(fg)*2+p/4)*8+int'(fk))*20+:20]};\n            operand_basis[p]<=basis(fk,2'(p%4));\n        end\n`ifndef SYNTHESIS\n        operand_live<=1;\n`endif\n    endtask\n    task automatic prefetch_second(input logic [1:0] fg,input logic [2:0] fk);\n        for(integer p=0;p<8;p=p+1)begin\n            operand_samples[p]<=intermediate[int'(fk)*8+int'(fg)*2+p/4];\n            operand_basis[p]<=basis(fk,2'(p%4));\n        end\n`ifndef SYNTHESIS\n        operand_live<=1;\n`endif\n    endtask\n    task automatic prefetch_dc(input logic signed [23:0] value);\n        for(integer p=0;p<8;p=p+1)begin\n            operand_samples[p]<=p==0?value:24'sd0;\n            operand_basis[p]<=basis(0,2'(p%4));\n        end\n`ifndef SYNTHESIS\n        operand_live<=1;\n`endif\n    endtask\n`ifndef SYNTHESIS\n    // The original combinational selector remains a reachable-MUL-state oracle.\n    always_ff @(posedge clk)if(!rst&&!abort_frame &&\n        (state==FIRST_MUL||state==SECOND_MUL||state==DC_FIRST_MUL||state==DC_SECOND_MUL))begin\n        assert(operand_live);\n        for(integer p=0;p<8;p=p+1)begin\n            assert(operand_samples[p]==samples[p]);\n            assert(operand_basis[p]==basis(k,2'(p%4)));\n        end\n    end\n`endif\n\n    always_comb begin",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "invalidate_kill",
+      "before": "        if (rst || abort_frame) begin\n            state<=IDLE;",
+      "after": "        if (rst || abort_frame) begin\n`ifndef SYNTHESIS\n            operand_live<=0;\n`endif\n            state<=IDLE;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "clear_operand_registers",
+      "before": "                products[lane]<='0;",
+      "after": "                operand_samples[lane]<='0;operand_basis[lane]<='0;\n                products[lane]<='0;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "initial_current_input_prefetch",
+      "before": "                    if (input_bad || in_tile==0) begin\n                        out_tile<=0;\n                        state<=OUTPUT_TILE;\n                    end else if (in_tile[1279:20]==0) state<=DC_FIRST_MUL;\n                    else state<=FIRST_MUL;",
+      "after": "                    if (input_bad || in_tile==0) begin\n`ifndef SYNTHESIS\n                        operand_live<=0;\n`endif\n                        out_tile<=0;\n                        state<=OUTPUT_TILE;\n                    end else if (in_tile[1279:20]==0)begin\n                        prefetch_dc({{4{in_tile[19]}},in_tile[19:0]});state<=DC_FIRST_MUL;\n                    end else begin prefetch_first(in_tile,0,0);state<=FIRST_MUL;end",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "multiply_prefetched_operands",
+      "before": "products[lane]<=$signed(samples[lane]) * $signed(basis(k,2'(lane%4)));",
+      "after": "products[lane]<=$signed(operand_samples[lane]) * $signed(operand_basis[lane]);",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "dc_same_edge_round_forward",
+      "before": "                DC_FIRST_ACC: begin\n                    dc_middle<=rounded({{2{products[0][37]}},products[0]});",
+      "after": "                DC_FIRST_ACC: begin\n                    prefetch_dc(rounded({{2{products[0][37]}},products[0]}));\n                    dc_middle<=rounded({{2{products[0][37]}},products[0]});",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "dc_end_invalid",
+      "before": "                DC_SECOND_ACC: begin\n                    for",
+      "after": "                DC_SECOND_ACC: begin\n`ifndef SYNTHESIS\n                    operand_live<=0;\n`endif\n                    for",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "completed_group_prefetch",
+      "before": "                        if (group_index==3) begin\n                            group_index<=0;",
+      "after": "                        if (group_index==3) begin\n                            if(state==FIRST_ACC)prefetch_second(0,0);\n`ifndef SYNTHESIS\n                            else operand_live<=0;\n`endif\n                            group_index<=0;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "next_group_prefetch",
+      "before": "                        end else begin\n                            group_index<=group_index+1;",
+      "after": "                        end else begin\n                            if(state==FIRST_ACC)prefetch_first(source_tile,group_index+2'd1,0);\n                            else prefetch_second(group_index+2'd1,0);\n                            group_index<=group_index+1;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "next_k_prefetch",
+      "before": "                        k<=k+1;\n                        state<=(state==FIRST_ACC) ? FIRST_MUL : SECOND_MUL;",
+      "after": "                        if(state==FIRST_ACC)prefetch_first(source_tile,group_index,k+3'd1);\n                        else prefetch_second(group_index,k+3'd1);\n                        k<=k+1;\n                        state<=(state==FIRST_ACC) ? FIRST_MUL : SECOND_MUL;",
+      "expected_occurrences": 1
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schema": "v106-edit-recipe-v1",
+  "original_path": "fpga/experiments/cu66-v106-rice/br88_rice_elastic.sv",
+  "original_sha256": "5ad9997d61a74bd650999c96508c17fc03d17323ab5b1f3689ad991126b3fe5e",
+  "candidate_path": "fpga/experiments/cu66-v106-prefix/br88_rice_elastic.sv",
+  "candidate_sha256": "745a322dad262cbad732aea9af5d57ebfb940a961adc724b7d644b90baf25dbb",
+  "edits": [
+    {
+      "name": "parallel-prefix-rank-declarations",
+      "before": "    integer i;",
+      "after": "    logic [15:0] prefix_candidates;\n    logic [3:0] prefix_rank_pairs [0:7];\n    logic [3:0] prefix_rank_quads [0:3];\n    logic [3:0] prefix_rank_octets [0:1];\n    logic [3:0] prefix_rank;\n    integer i;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "factor-window-after-balanced-rank",
+      "before": "        zeros=0; found_one=0;\n        // A fixed bounded leading-zero network, independent of packet length.\n        for (i=0; i<15; i=i+1) begin\n            if (i < int'(window) && !found_one) begin\n                if (available > 7'(i) && reservoir[available-1-7'(i)])\n                    found_one=1;\n                else zeros=zeros+1'b1;\n            end\n        end",
+      "after": "        // Look ahead independently of the late remaining-bit window. Preserve\n        // every original available guard and reservoir-bit expression.\n        prefix_candidates=16'd0;\n        for (i=0; i<15; i=i+1) begin\n            if (available > 7'(i) && reservoir[available-1-7'(i)])\n                prefix_candidates[i]=1'b1;\n        end\n        // Balanced, fixed-position priority tree; rank 15 denotes no one.\n        for (i=0; i<8; i=i+1)\n            prefix_rank_pairs[i]=prefix_candidates[2*i]?4'(2*i):\n                prefix_candidates[2*i+1]?4'(2*i+1):4'd15;\n        for (i=0; i<4; i=i+1)\n            prefix_rank_quads[i]=prefix_rank_pairs[2*i]!=15?\n                prefix_rank_pairs[2*i]:prefix_rank_pairs[2*i+1];\n        for (i=0; i<2; i=i+1)\n            prefix_rank_octets[i]=prefix_rank_quads[2*i]!=15?\n                prefix_rank_quads[2*i]:prefix_rank_quads[2*i+1];\n        prefix_rank=prefix_rank_octets[0]!=15?prefix_rank_octets[0]:prefix_rank_octets[1];\n        zeros=window<6'(prefix_rank)?5'(window):5'(prefix_rank);\n        found_one=6'(prefix_rank)<window;",
+      "expected_occurrences": 1
+    }
+  ]
+}

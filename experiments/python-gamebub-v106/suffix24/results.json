@@ -1,0 +1,36 @@
+{
+  "actual_RTL_run": false,
+  "candidate": {
+    "path": "fpga/experiments/cu66-v106-suffix24/br88_rice_elastic.sv",
+    "sha256": "d0e233eacb849476bac7c18157a6f29bd76228d378e07b2d7613db8a356cf919"
+  },
+  "exhaustive_boundary_pattern_cases": 196608,
+  "full_width_random_cases": 100000,
+  "generator": {
+    "path": "scripts/cu66-v106/suffix24.py",
+    "sha256": "2b2223d30a95593dd0cb57efa0bac17bb54d0ff36c653b7d6755338f5ad300f0"
+  },
+  "identity": "lo24(take==0?0:(reservoir >> ((available-take) mod128))) equals the explicit24-bit shift-result projection for every64-bit reservoir and every7-bit available/6-bit take, including shifts>=64. Existing serial accumulation already consumes onlylo24.",
+  "integrated_RTL_required": true,
+  "limits": [
+    "Algebra/source proof plus deterministic pattern/random checks, not standalone clocked parser or four-state proof.",
+    "Full-production strict lint and paired pipeline RTL must pass for the replacement before selection."
+  ],
+  "motivation": "Rejected fifth candidate has unused suffix_extracted[63:24] in strict full-production lint; focused wrapper exports masked that warning. Reject the candidate, retain failure, use exact private projection rather than suppressing lint.",
+  "original": {
+    "path": "fpga/experiments/cu66-v106-suffix/br88_rice_elastic.sv",
+    "sha256": "8940a4313a1efc88bdc7b55e885ae58d55e0e1f88208659010c5e5eb4e409ef7"
+  },
+  "original_all_consumers": [
+    "logic [63:0] suffix_extracted;",
+    "suffix_extracted=suffix_take_bits==0 ? 64'd0 : reservoir >> (available-7'(suffix_take_bits));",
+    "suffix_value=serial ? ((suffix_acc<<1) | 24'(suffix_extracted)) : 24'(suffix_extracted);"
+  ],
+  "recipe": {
+    "path": "fpga/experiments/cu66-v106-suffix24/edit-recipe.json",
+    "sha256": "290c32a3f136428c0a1d72c4fb93a014d61bef26d075e417425b7ef82af1cf97"
+  },
+  "schema": "v106-suffix24-projection-model-v1",
+  "status": "PASS_EXACT_PROJECTION_AND_RECIPES",
+  "transcript_sha256": "892805f00c831614a5a5d43fc266321126dc475ed3f708dcb95f31168181788b"
+}

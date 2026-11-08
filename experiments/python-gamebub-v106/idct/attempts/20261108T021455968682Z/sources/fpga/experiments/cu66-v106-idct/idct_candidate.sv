@@ -1,0 +1,264 @@
+// Exact two-pass Q14 inverse, mirrored outputs, eight shared multiply lanes.
+// Two microcycles per input: registered multiply, then signed accumulation.
+// Inputs are dequantized raster coefficients; output is an unclipped residual.
+module idct_candidate (
+    input  logic clk,
+    input  logic rst,
+    input  logic abort_frame,
+    input  logic in_valid,
+    output logic in_ready,
+    input  logic [31:0] in_id,
+    input  logic [1279:0] in_tile,
+    output logic out_valid,
+    input  logic out_ready,
+    output logic [31:0] out_id,
+    output logic [1535:0] out_tile,
+    output logic out_error,
+    output logic [31:0] active_cycles,
+    output logic [3:0] verify_state,
+    output logic [2:0] verify_k,
+    output logic [1:0] verify_group,
+    output logic [303:0] verify_products,
+    output logic [191:0] verify_samples,
+    output logic [111:0] verify_basis
+);
+    typedef enum logic [3:0] {IDLE, FIRST_MUL, FIRST_ACC, SECOND_MUL,
+        SECOND_ACC, DC_FIRST_MUL, DC_FIRST_ACC, DC_SECOND_MUL,
+        DC_SECOND_ACC, OUTPUT_TILE} state_t;
+    state_t state;
+    logic [1279:0] source_tile;
+    logic [1:0] group_index;
+    logic [2:0] k;
+    logic signed [23:0] intermediate [0:63];
+    logic signed [23:0] dc_middle;
+    logic signed [23:0] samples [0:7];
+    logic signed [37:0] products [0:7];
+    logic signed [23:0] operand_samples [0:7];
+    logic signed [13:0] operand_basis [0:7];
+`ifndef SYNTHESIS
+    logic operand_live;
+`endif
+    logic signed [39:0] even_sum [0:7], odd_sum [0:7];
+    logic signed [39:0] next_even [0:7], next_odd [0:7];
+    logic input_bad;
+    integer lane;
+    integer index;
+
+    function automatic logic signed [13:0] basis(input logic [2:0] fk,
+                                                input logic [1:0] fp);
+        case ({fk, fp})
+            5'd0,5'd1,5'd2,5'd3: basis=14'sd5793;
+            5'd4: basis=14'sd8035; 5'd5: basis=14'sd6811;
+            5'd6: basis=14'sd4551; 5'd7: basis=14'sd1598;
+            5'd8: basis=14'sd7568; 5'd9: basis=14'sd3135;
+            5'd10: basis=-14'sd3135; 5'd11: basis=-14'sd7568;
+            5'd12: basis=14'sd6811; 5'd13: basis=-14'sd1598;
+            5'd14: basis=-14'sd8035; 5'd15: basis=-14'sd4551;
+            5'd16: basis=14'sd5793; 5'd17: basis=-14'sd5793;
+            5'd18: basis=-14'sd5793; 5'd19: basis=14'sd5793;
+            5'd20: basis=14'sd4551; 5'd21: basis=-14'sd8035;
+            5'd22: basis=14'sd1598; 5'd23: basis=14'sd6811;
+            5'd24: basis=14'sd3135; 5'd25: basis=-14'sd7568;
+            5'd26: basis=14'sd7568; 5'd27: basis=-14'sd3135;
+            5'd28: basis=14'sd1598; 5'd29: basis=-14'sd4551;
+            5'd30: basis=14'sd6811; 5'd31: basis=-14'sd8035;
+            default: basis='0;
+        endcase
+    endfunction
+
+    function automatic logic signed [23:0] rounded(input logic signed [39:0] a);
+        begin
+            rounded=24'((a+40'sd8192) >>> 14);
+        end
+    endfunction
+
+    task automatic prefetch_first(input logic [1279:0] tile,
+                                   input logic [1:0] fg,input logic [2:0] fk);
+        for(integer p=0;p<8;p=p+1)begin
+            operand_samples[p]<={{4{tile[((int'(fg)*2+p/4)*8+int'(fk))*20+19]}},
+                tile[((int'(fg)*2+p/4)*8+int'(fk))*20+:20]};
+            operand_basis[p]<=basis(fk,2'(p%4));
+        end
+`ifndef SYNTHESIS
+        operand_live<=1;
+`endif
+    endtask
+    task automatic prefetch_second(input logic [1:0] fg,input logic [2:0] fk);
+        for(integer p=0;p<8;p=p+1)begin
+            operand_samples[p]<=intermediate[int'(fk)*8+int'(fg)*2+p/4];
+            operand_basis[p]<=basis(fk,2'(p%4));
+        end
+`ifndef SYNTHESIS
+        operand_live<=1;
+`endif
+    endtask
+    task automatic prefetch_dc(input logic signed [23:0] value);
+        for(integer p=0;p<8;p=p+1)begin
+            operand_samples[p]<=p==0?value:24'sd0;
+            operand_basis[p]<=basis(0,2'(p%4));
+        end
+`ifndef SYNTHESIS
+        operand_live<=1;
+`endif
+    endtask
+`ifndef SYNTHESIS
+    // The original combinational selector remains a reachable-MUL-state oracle.
+    always_ff @(posedge clk)if(!rst&&!abort_frame &&
+        (state==FIRST_MUL||state==SECOND_MUL||state==DC_FIRST_MUL||state==DC_SECOND_MUL))begin
+        assert(operand_live);
+        for(integer p=0;p<8;p=p+1)begin
+            assert(operand_samples[p]==samples[p]);
+            assert(operand_basis[p]==basis(k,2'(p%4)));
+        end
+    end
+`endif
+
+    always_comb begin
+        input_bad=1'b0;
+        for (integer n=0; n<64; n=n+1)
+            if ($signed(in_tile[n*20 +:20]) > 20'sd522240 ||
+                $signed(in_tile[n*20 +:20]) < -20'sd522240)
+                input_bad=1'b1;
+        for (integer l=0; l<8; l=l+1) begin
+            samples[l]='0;
+            if (state==FIRST_MUL)
+                samples[l]={{4{source_tile[((int'(group_index)*2+l/4)*8+int'(k))*20+19]}},
+                    source_tile[((int'(group_index)*2+l/4)*8+int'(k))*20 +:20]};
+            else if (state==SECOND_MUL)
+                samples[l]=intermediate[int'(k)*8+int'(group_index)*2+l/4];
+            else if (state==DC_FIRST_MUL && l==0)
+                samples[l]={{4{source_tile[19]}}, source_tile[19:0]};
+            else if (state==DC_SECOND_MUL && l==0)
+                samples[l]=dc_middle;
+            next_even[l]=even_sum[l];
+            next_odd[l]=odd_sum[l];
+            if (k[0]) next_odd[l]=odd_sum[l]+{{2{products[l][37]}},products[l]};
+            else next_even[l]=even_sum[l]+{{2{products[l][37]}},products[l]};
+        end
+    end
+
+    assign in_ready=(state==IDLE) && !abort_frame && !rst;
+    assign out_valid=(state==OUTPUT_TILE) && !abort_frame && !rst;
+
+    always_ff @(posedge clk) begin
+        if (rst || abort_frame) begin
+`ifndef SYNTHESIS
+            operand_live<=0;
+`endif
+            state<=IDLE;
+            source_tile<='0;
+            out_tile<='0;
+            out_error<=1'b0;
+            out_id<='0;
+            group_index<='0;
+            k<='0;
+            dc_middle<='0;
+            active_cycles<='0;
+            for (lane=0; lane<8; lane=lane+1) begin
+                operand_samples[lane]<='0;operand_basis[lane]<='0;
+                products[lane]<='0;
+                even_sum[lane]<='0;
+                odd_sum[lane]<='0;
+            end
+        end else begin
+            if (state!=IDLE && state!=OUTPUT_TILE) active_cycles<=active_cycles+1;
+            case (state)
+                IDLE: if (in_valid && in_ready) begin
+                    source_tile<=in_tile;
+                    out_id<=in_id;
+                    out_error<=input_bad;
+                    active_cycles<=0;
+                    group_index<=0;
+                    k<=0;
+                    for (lane=0; lane<8; lane=lane+1) begin
+                        even_sum[lane]<=0;
+                        odd_sum[lane]<=0;
+                    end
+                    if (input_bad || in_tile==0) begin
+`ifndef SYNTHESIS
+                        operand_live<=0;
+`endif
+                        out_tile<=0;
+                        state<=OUTPUT_TILE;
+                    end else if (in_tile[1279:20]==0)begin
+                        prefetch_dc({{4{in_tile[19]}},in_tile[19:0]});state<=DC_FIRST_MUL;
+                    end else begin prefetch_first(in_tile,0,0);state<=FIRST_MUL;end
+                end
+                FIRST_MUL, SECOND_MUL, DC_FIRST_MUL, DC_SECOND_MUL: begin
+                    for (lane=0; lane<8; lane=lane+1)
+                        products[lane]<=$signed(operand_samples[lane]) * $signed(operand_basis[lane]);
+                    case (state)
+                        FIRST_MUL: state<=FIRST_ACC;
+                        SECOND_MUL: state<=SECOND_ACC;
+                        DC_FIRST_MUL: state<=DC_FIRST_ACC;
+                        default: state<=DC_SECOND_ACC;
+                    endcase
+                end
+                DC_FIRST_ACC: begin
+                    prefetch_dc(rounded({{2{products[0][37]}},products[0]}));
+                    dc_middle<=rounded({{2{products[0][37]}},products[0]});
+                    state<=DC_SECOND_MUL;
+                end
+                DC_SECOND_ACC: begin
+`ifndef SYNTHESIS
+                    operand_live<=0;
+`endif
+                    for (index=0; index<64; index=index+1)
+                        out_tile[index*24 +:24]<=rounded({{2{products[0][37]}},products[0]});
+                    state<=OUTPUT_TILE;
+                end
+                FIRST_ACC, SECOND_ACC: begin
+                    if (k==7) begin
+                        for (lane=0; lane<8; lane=lane+1) begin
+                            if (state==FIRST_ACC) begin
+                                intermediate[(int'(group_index)*2+lane/4)*8+lane%4]
+                                    <=rounded(next_even[lane]+next_odd[lane]);
+                                intermediate[(int'(group_index)*2+lane/4)*8+7-lane%4]
+                                    <=rounded(next_even[lane]-next_odd[lane]);
+                            end else begin
+                                out_tile[((lane%4)*8+int'(group_index)*2+lane/4)*24 +:24]
+                                    <=rounded(next_even[lane]+next_odd[lane]);
+                                out_tile[((7-lane%4)*8+int'(group_index)*2+lane/4)*24 +:24]
+                                    <=rounded(next_even[lane]-next_odd[lane]);
+                            end
+                            even_sum[lane]<=0;
+                            odd_sum[lane]<=0;
+                        end
+                        k<=0;
+                        if (group_index==3) begin
+                            if(state==FIRST_ACC)prefetch_second(0,0);
+`ifndef SYNTHESIS
+                            else operand_live<=0;
+`endif
+                            group_index<=0;
+                            state<=(state==FIRST_ACC) ? SECOND_MUL : OUTPUT_TILE;
+                        end else begin
+                            if(state==FIRST_ACC)prefetch_first(source_tile,group_index+2'd1,0);
+                            else prefetch_second(group_index+2'd1,0);
+                            group_index<=group_index+1;
+                            state<=(state==FIRST_ACC) ? FIRST_MUL : SECOND_MUL;
+                        end
+                    end else begin
+                        for (lane=0; lane<8; lane=lane+1) begin
+                            even_sum[lane]<=next_even[lane];
+                            odd_sum[lane]<=next_odd[lane];
+                        end
+                        if(state==FIRST_ACC)prefetch_first(source_tile,group_index,k+3'd1);
+                        else prefetch_second(group_index,k+3'd1);
+                        k<=k+1;
+                        state<=(state==FIRST_ACC) ? FIRST_MUL : SECOND_MUL;
+                    end
+                end
+                OUTPUT_TILE: if (out_ready && out_valid) state<=IDLE;
+                default: state<=IDLE;
+            endcase
+        end
+    end
+    assign verify_state=state;assign verify_k=k;assign verify_group=group_index;
+    for(genvar p=0;p<8;p=p+1)begin: observation
+        assign verify_products[p*38+:38]=products[p];
+        assign verify_samples[p*24+:24]=samples[p];
+        assign verify_basis[p*14+:14]=basis(k,2'(p%4));
+    end
+
+endmodule

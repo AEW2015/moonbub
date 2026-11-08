@@ -1,0 +1,28 @@
+{
+  "schema": "v106-edit-recipe-v1",
+  "variant": "telemetry",
+  "original_path": "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv",
+  "original_sha256": "7511f6bee4aeb1d78b9751ac493854a2c926519da4efcfa940619009b92f3ed8",
+  "candidate_path": "fpga/experiments/cu66-v106-telemetry/br88_pipeline_v91h.sv",
+  "candidate_sha256": "c6f839570988768ac2a373302d8980ce9a6532ccbcf3c09415f9ca1c05959577",
+  "edits": [
+    {
+      "name": "static_emitter_words",
+      "before": "            count_emitter_state[dbg_emitter_state]<=count_emitter_state[dbg_emitter_state]+1'b1;",
+      "after": "            for(integer emitter_word=0;emitter_word<4;emitter_word=emitter_word+1)\n                if(dbg_emitter_state==2'(emitter_word))count_emitter_state[emitter_word]<=count_emitter_state[emitter_word]+1'b1;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "static_packet_words",
+      "before": "            count_packet_state[packet_state]<=count_packet_state[packet_state]+1'b1;",
+      "after": "            for(integer packet_word=0;packet_word<16;packet_word=packet_word+1)\n                if(packet_state==4'(packet_word))count_packet_state[packet_word]<=count_packet_state[packet_word]+1'b1;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "static_scratch_words",
+      "before": "            count_scratch_state[dbg_scratch_state]<=count_scratch_state[dbg_scratch_state]+1'b1;",
+      "after": "            for(integer scratch_word=0;scratch_word<32;scratch_word=scratch_word+1)\n                if(dbg_scratch_state==5'(scratch_word))count_scratch_state[scratch_word]<=count_scratch_state[scratch_word]+1'b1;",
+      "expected_occurrences": 1
+    }
+  ]
+}

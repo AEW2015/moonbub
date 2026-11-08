@@ -2,6 +2,51 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-07
 
+<!-- V106-CHECKPOINT-START -->
+**V106 partial checkpoint: exact datapaths, locality and measured timing.**
+The [V106 handoff](cu66-v106/README.md) retains the 720×480 CS88 q16/all-BR88
+profile, 49,152-byte cap, checked canonical pixels and public cycle schedule.
+All 24 required paired RTL lanes pass: 1,344
+case/profile runs and 1,632 directed checks. The independent
+source audit passes 80 checks on two byte-identical executions.
+These counts include both implementations, seeds/profiles and expected rejects;
+they are not unique displayed frames or hardware FPS.
+
+The selected completed route is `closure`: 46,062 LUTs,
+1,694 LUTRAMs, 36,919 FFs,
+32 RAMB36 / 10 RAMB18 and 27 DSPs,
+with WNS -4.034 ns versus V105's −13.124 ns
+(+9.090 ns change).
+The fixed **10 ns / 100 MHz internal component target remains unmet**. Single-route results do not establish implementation robustness.
+See the [stage-matched comparison](cu66-v106/vendor-comparison.md) and
+[physical-locality analysis](cu66-v106/physical-locality.md).
+
+The sixth integration passed its required RTL pair but reached the unchanged
+1,800-second build limit after synthesis, before placement/routing completed.
+Its synthesis WNS −3.205 ns is not a routed result. A separately audited
+[post-route probe](cu66-v106/postroute-probe.md) on the selected checkpoint
+improved WNS to −3.777 ns, with 44,630 failing setup endpoints remaining.
+That diagnostic is excluded from the Default-flow source selection; it also
+fails the fixed 100 MHz target.
+
+The first IDCT prefetch failed full-top packing and its parser variant failed
+strict production lint; its unrun canonical lane is explicitly excluded, never
+counted as a pass. A shared-selector repair passes exact clocked/golden tests
+and matched standalone synthesis uses only +82 LUTs
+versus the original unit, saving 8,484 versus the first
+prefetch. Unit synthesis is separate from complete-pipeline routing. The private
+24-bit projection and producer transition model are explicitly model/source
+proofs, supplemented by actual integrated RTL checks.
+
+The selected route's worst reported path is `coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/available_reg[0]/C` → `coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/out_value_reg[5]/D` (19 levels, 14.025 ns data delay). Continue measured timing work from this path before treating the component as 100-MHz qualified. The [remaining timing plan](cu66-v106/remaining-timing-plan.md)
+records the actual paths and qualifications. Scratch predecode adds an input
+capture path whose real parent arrival timing remains open. Parent clock/I/O/
+CDC, whole-device fit and memory arbitration/service, complete live integration,
+**sustained hardware 30 fps** and **validated complete FPGA decode below 10 ms**
+remain open. This implementation iteration adds no codec quality, bitrate,
+power or HEVC/AV1 benchmark claim.
+<!-- V106-CHECKPOINT-END -->
+
 **V105 partial checkpoint: admission recurrence and mode-table RAM inference.**
 [V105](cu66-v105/README.md) preserves the selected codec/profile, 720×480
 resolution, 49,152-byte cap and tested schedule. Full-width admission metadata

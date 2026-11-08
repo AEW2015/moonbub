@@ -1,0 +1,76 @@
+{
+  "candidate_path": "fpga/experiments/cu66-v106-producer-cache/cs88_pipeline_v91i2b.sv",
+  "candidate_sha256": "d8fcac88930509d2cc92ff603be11204f362010cbecab4fd4a515ef18606e8a6",
+  "edits": [
+    {
+      "after": "    logic [10:0] mapped_cell;\n    logic [10:0] producer_cell_cache;",
+      "before": "    logic [10:0] mapped_cell;",
+      "expected_occurrences": 1,
+      "name": "private_cache"
+    },
+    {
+      "after": "    assign lookup_cell=producer_cell_cache;",
+      "before": "    assign lookup_cell=quant_cell(plane,tile_cursor);",
+      "expected_occurrences": 1,
+      "name": "lookup_address"
+    },
+    {
+      "after": "plane<=0;tile_cursor<=0;producer_cell_cache<=0;mapped_tile<=0;",
+      "before": "plane<=0;tile_cursor<=0;mapped_tile<=0;",
+      "expected_occurrences": 1,
+      "name": "reset_abort"
+    },
+    {
+      "after": "plane<=0;tile_cursor<=0;producer_cell_cache<=0;expected_block<=0;",
+      "before": "plane<=0;tile_cursor<=0;expected_block<=0;",
+      "expected_occurrences": 1,
+      "name": "accepted_start"
+    },
+    {
+      "after": "end else begin plane<=0;producer_cell_cache<=quant_cell(0,tile_cursor);state<=PREP_PLANE;end",
+      "before": "end else begin plane<=0;state<=PREP_PLANE;end",
+      "expected_occurrences": 1,
+      "name": "entropy_success_plane_zero"
+    },
+    {
+      "after": "tile_cursor<=0;producer_cell_cache<=0;expected_block<=0;refill_cursor<=0;",
+      "before": "tile_cursor<=0;expected_block<=0;refill_cursor<=0;",
+      "expected_occurrences": 1,
+      "name": "prepare_tile_zero"
+    },
+    {
+      "after": "mapped_cell<=producer_cell_cache;",
+      "before": "mapped_cell<=quant_cell(plane,tile_cursor);",
+      "expected_occurrences": 1,
+      "name": "capture_mapped_cell"
+    },
+    {
+      "after": "                        end else begin tile_cursor<=tile_cursor+1;producer_cell_cache<=quant_cell(plane,tile_cursor+13'd1);state<=MAP_REQ;end",
+      "before": "                        end else begin tile_cursor<=tile_cursor+1;state<=MAP_REQ;end",
+      "expected_occurrences": 1,
+      "name": "skip_tile"
+    },
+    {
+      "after": "                            else begin tile_cursor<=tile_cursor+1;producer_cell_cache<=quant_cell(plane,tile_cursor+13'd1);state<=MAP_REQ;end",
+      "before": "                            else begin tile_cursor<=tile_cursor+1;state<=MAP_REQ;end",
+      "expected_occurrences": 1,
+      "name": "advance_tile"
+    },
+    {
+      "after": "else begin plane<=plane+1;producer_cell_cache<=quant_cell(plane+2'd1,tile_cursor);state<=PREP_PLANE;end",
+      "before": "else begin plane<=plane+1;state<=PREP_PLANE;end",
+      "expected_occurrences": 1,
+      "name": "advance_plane"
+    },
+    {
+      "after": "    always_ff @(posedge clk) if(!reset&&!abort_packet)begin\n        assert(producer_cell_cache==quant_cell(plane,tile_cursor))else $fatal(1,\"producer quant-cell cache mismatch\");",
+      "before": "    always_ff @(posedge clk) if(!reset&&!abort_packet)begin",
+      "expected_occurrences": 1,
+      "name": "live_invariant"
+    }
+  ],
+  "original_path": "fpga/experiments/cu66-v106-math/lut/cs88_pipeline_v91i2b.sv",
+  "original_sha256": "23dffb1f774049a18bc374e40b3ff36b8ac54e0d157646a3a865ce419cc2ddcf",
+  "schema": "v106-edit-recipe-v1",
+  "variant": "producer-cache"
+}

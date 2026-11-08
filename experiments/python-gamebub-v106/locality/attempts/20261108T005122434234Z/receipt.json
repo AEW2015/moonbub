@@ -1,0 +1,262 @@
+{
+  "artifacts_sha256": {
+    "binary.log": "e9a3f5bde457731d2abcbadc6f42c23619d91d441b5887774b06820b7a55d92c",
+    "boundary.tsv": "4dfa95cc9ecfdc850828e2fa442af3b7dcd69cb6af00399fd35c49600fcec1ed",
+    "compile.log": "35f642ff8261e201250ccfbbbcb8f0ca04c8e239ea4973c1aba40b0b357a0881",
+    "cu66_dequant.sv": "1ce06c26460a63b69ca9d742edb04ee9654827f883212c4bfe71293e0ed71084",
+    "cu66_idct8x8.sv": "251d4c11d762f6a040c1934d9dca9d80e6187f470a90b7261c63d06d1f3c310c",
+    "cu66_quant_rom.svh": "e0d5ae446155c1e295e0add487a30fec9c765cbafc0fabb15d248285ed22dca7",
+    "historical_inverse.cpp": "9f3bc530642bae2413bcc7967bd8964aadb03ba7b2c7967eac83622d2ea1e417",
+    "locality.py": "9a651fd304b75c9f9713b35383dfe74b06b4385af11ebebb5e12acc09b25de1f",
+    "locality_candidate.sv": "81fb8d8fc34297015401015f6185c5a6466fd935008fd7e65b20434f41d59779",
+    "locality_original.sv": "8885a837230d068ca637f7ce8b0cd2ec4b33cec7f6033caa45efd830367f4d46",
+    "locality_probe.sv": "d5d96125da5084e822506870774c1eb360af49484f544dd4083773720fcb1d51",
+    "ports.json": "f0d7c82ca8a6c8359dc02d4b38354bb0297eb8d46e5bd37f67e4f3823439ab63",
+    "seed-106401.jsonl.gz": "b2a60cd8062d16c6f6860ed639e19cb45a07b6529e800bb8e6848c40e56e6e10",
+    "seed-106401.log": "7cc8f38496c87ca3ebc7fd0d1662efbcab30c9966b0b076e2fede6451399fe9c",
+    "seed-106402.jsonl.gz": "2f317a4a03604f48d942d86258682f3203650c119ad47d24d69c74e487b60461",
+    "seed-106402.log": "5391aaf7b0364d00f54c6c111ca8ffe175980ea1f28b04d7f797e4675d5d244e",
+    "tb_locality.cpp": "b2fa80b0027cf493ff08b647fd33b0864f3908c1ca73419253760253448b4061",
+    "tool.log": "26daf9ad1ba36ee1c20cab9a869d0a1fbb8117230c80c78ec2d8cf597f64c4a5"
+  },
+  "backend": "Verilator5.020 explicit historical two-state behavioral backend",
+  "baseline": "eececf35da97c9b14230d464ecde7576cb7840db",
+  "candidate": {
+    "path": "fpga/experiments/cu66-v106-locality/cu66_inverse_stream_v91j.sv",
+    "sha256": "683e4fda539cd0149c6a88dbb2f33e941dde1269be1483cc2333e1ed9ef2f599"
+  },
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "OMP_NUM_THREADS=1",
+        "-w",
+        "/build/v106-locality-20261108T005122434234Z",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "--kill-after=5s",
+        "30s",
+        "verilator",
+        "--version"
+      ],
+      "exit_code": 0,
+      "log": "tool.log",
+      "resource_gate": {
+        "full_avg10": 0.0,
+        "maximum_full_avg10_exclusive": 1,
+        "mem_available_bytes": 21676994560,
+        "memory_psi": "some avg10=0.00 avg60=0.00 avg300=0.00 total=372836301\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=363072356\n",
+        "minimum_available_bytes": 8589934592,
+        "swap_alone_is_not_a_stop_condition": true
+      },
+      "wall_seconds": 0.11423239088617265
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "OMP_NUM_THREADS=1",
+        "-w",
+        "/build/v106-locality-20261108T005122434234Z",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "--kill-after=5s",
+        "300s",
+        "verilator",
+        "--cc",
+        "--exe",
+        "--build",
+        "-j",
+        "2",
+        "--assert",
+        "-Wall",
+        "-Wno-DECLFILENAME",
+        "--public-flat-rw",
+        "--top-module",
+        "locality_probe",
+        "--Mdir",
+        "/build/v106-locality-20261108T005122434234Z/obj",
+        "-CFLAGS",
+        "-std=c++17 -O2 -Wall -Wextra -Werror",
+        "/build/v106-locality-20261108T005122434234Z/locality_original.sv",
+        "/build/v106-locality-20261108T005122434234Z/locality_candidate.sv",
+        "/build/v106-locality-20261108T005122434234Z/locality_probe.sv",
+        "/build/v106-locality-20261108T005122434234Z/cu66_dequant.sv",
+        "/build/v106-locality-20261108T005122434234Z/cu66_idct8x8.sv",
+        "-I/build/v106-locality-20261108T005122434234Z",
+        "/build/v106-locality-20261108T005122434234Z/tb_locality.cpp"
+      ],
+      "exit_code": 0,
+      "log": "compile.log",
+      "resource_gate": {
+        "full_avg10": 0.0,
+        "maximum_full_avg10_exclusive": 1,
+        "mem_available_bytes": 21664919552,
+        "memory_psi": "some avg10=0.00 avg60=0.00 avg300=0.00 total=372836301\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=363072356\n",
+        "minimum_available_bytes": 8589934592,
+        "swap_alone_is_not_a_stop_condition": true
+      },
+      "wall_seconds": 8.833511423086748
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "OMP_NUM_THREADS=1",
+        "-w",
+        "/build/v106-locality-20261108T005122434234Z",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "--kill-after=5s",
+        "30s",
+        "sha256sum",
+        "/build/v106-locality-20261108T005122434234Z/obj/Vlocality_probe"
+      ],
+      "exit_code": 0,
+      "log": "binary.log",
+      "resource_gate": {
+        "full_avg10": 0.0,
+        "maximum_full_avg10_exclusive": 1,
+        "mem_available_bytes": 21580881920,
+        "memory_psi": "some avg10=0.00 avg60=0.00 avg300=0.00 total=372836307\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=363072363\n",
+        "minimum_available_bytes": 8589934592,
+        "swap_alone_is_not_a_stop_condition": true
+      },
+      "wall_seconds": 0.06420878507196903
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "OMP_NUM_THREADS=1",
+        "-w",
+        "/build/v106-locality-20261108T005122434234Z",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "--kill-after=5s",
+        "120s",
+        "/build/v106-locality-20261108T005122434234Z/obj/Vlocality_probe",
+        "106401",
+        "/build/v106-locality-20261108T005122434234Z/seed-106401.jsonl",
+        "/build/v106-locality-20261108T005122434234Z/boundary.tsv"
+      ],
+      "exit_code": 0,
+      "log": "seed-106401.log",
+      "resource_gate": {
+        "full_avg10": 0.0,
+        "maximum_full_avg10_exclusive": 1,
+        "mem_available_bytes": 21582737408,
+        "memory_psi": "some avg10=0.00 avg60=0.00 avg300=0.00 total=372836307\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=363072363\n",
+        "minimum_available_bytes": 8589934592,
+        "swap_alone_is_not_a_stop_condition": true
+      },
+      "wall_seconds": 0.2145433621481061
+    },
+    {
+      "argv": [
+        "docker",
+        "exec",
+        "-e",
+        "OMP_NUM_THREADS=1",
+        "-w",
+        "/build/v106-locality-20261108T005122434234Z",
+        "gamebub-cu66-v69-build",
+        "timeout",
+        "--kill-after=5s",
+        "120s",
+        "/build/v106-locality-20261108T005122434234Z/obj/Vlocality_probe",
+        "106402",
+        "/build/v106-locality-20261108T005122434234Z/seed-106402.jsonl",
+        "/build/v106-locality-20261108T005122434234Z/boundary.tsv"
+      ],
+      "exit_code": 0,
+      "log": "seed-106402.log",
+      "resource_gate": {
+        "full_avg10": 0.0,
+        "maximum_full_avg10_exclusive": 1,
+        "mem_available_bytes": 21605130240,
+        "memory_psi": "some avg10=0.00 avg60=0.00 avg300=0.00 total=372836307\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=363072363\n",
+        "minimum_available_bytes": 8589934592,
+        "swap_alone_is_not_a_stop_condition": true
+      },
+      "wall_seconds": 0.21472037001512945
+    }
+  ],
+  "limits": [
+    "Prepared internal states supplement actual historical inverse boundary/interface tests; prepared cases are not full packet reachability proof.",
+    "Two-state power-on zeros are test initialization, not FPGA power-on memory qualification. Coefficient data is not reset by the candidate.",
+    "All 128 coefficient words are checked every clock against an independent store oracle, including inactive and held contents.",
+    "No native mapping, routed improvement, board FPS or latency is established by this focused behavioral lane."
+  ],
+  "original": {
+    "path": "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv",
+    "sha256": "277e4ea7018a9463c505be09112309de936e8b28b9aada7908994c087595dd08"
+  },
+  "output_names": 42,
+  "port_names": 58,
+  "runs": [
+    {
+      "coefficient_bits": 2048,
+      "guarded_clocks": 897,
+      "historical_clocks": 11375,
+      "historical_writes": 3423,
+      "late_same_edge_write_fail_cases": 2,
+      "prepared_clocks": 9365,
+      "prepared_faults": [
+        0,
+        12,
+        40,
+        18,
+        8,
+        0,
+        0,
+        2
+      ],
+      "prepared_writes": 8378,
+      "seed": 106401,
+      "status": "TEST_PASS",
+      "word_count": 128
+    },
+    {
+      "coefficient_bits": 2048,
+      "guarded_clocks": 897,
+      "historical_clocks": 11326,
+      "historical_writes": 3423,
+      "late_same_edge_write_fail_cases": 2,
+      "prepared_clocks": 9365,
+      "prepared_faults": [
+        0,
+        12,
+        40,
+        18,
+        8,
+        0,
+        0,
+        2
+      ],
+      "prepared_writes": 8378,
+      "seed": 106402,
+      "status": "TEST_PASS",
+      "word_count": 128
+    }
+  ],
+  "schema": "v106-locality-clocked-probe-v1",
+  "source_sha256": {
+    "experiments/python-gamebub-v91j/vectors/boundary.tsv": "4dfa95cc9ecfdc850828e2fa442af3b7dcd69cb6af00399fd35c49600fcec1ed",
+    "fpga/experiments/cu66-v106-locality/cu66_inverse_stream_v91j.sv": "683e4fda539cd0149c6a88dbb2f33e941dde1269be1483cc2333e1ed9ef2f599",
+    "fpga/experiments/cu66-v106-locality/tb_locality.cpp": "b2fa80b0027cf493ff08b647fd33b0864f3908c1ca73419253760253448b4061",
+    "fpga/experiments/cu66-v69/inverse/cu66_dequant.sv": "1ce06c26460a63b69ca9d742edb04ee9654827f883212c4bfe71293e0ed71084",
+    "fpga/experiments/cu66-v69/inverse/cu66_idct8x8.sv": "251d4c11d762f6a040c1934d9dca9d80e6187f470a90b7261c63d06d1f3c310c",
+    "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh": "e0d5ae446155c1e295e0add487a30fec9c765cbafc0fabb15d248285ed22dca7",
+    "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv": "277e4ea7018a9463c505be09112309de936e8b28b9aada7908994c087595dd08",
+    "fpga/experiments/cu66-v91j/tb_inverse.cpp": "1b4fb5ca5ca828d9d5b00e17ff4a5d90676b5fe687a09018f198227c01a70d67",
+    "scripts/cu66-v106/locality.py": "9a651fd304b75c9f9713b35383dfe74b06b4385af11ebebb5e12acc09b25de1f"
+  },
+  "status": "PASS_ACTUAL_INVERSE_STORAGE_EQUIVALENCE",
+  "total_clock_edges": 41431
+}

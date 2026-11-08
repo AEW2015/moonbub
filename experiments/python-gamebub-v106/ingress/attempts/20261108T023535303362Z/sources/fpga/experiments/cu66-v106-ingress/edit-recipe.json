@@ -1,0 +1,51 @@
+{
+  "candidate_path": "fpga/experiments/cu66-v106-ingress/br88_packet_ingress_sync_v91h.sv",
+  "candidate_sha256": "4342972a6cf42cebf4f01a82841c0bc7c1850292ca23362817f7f071af126093",
+  "edits": [
+    {
+      "after": "    logic [31:0] replay_bits, raw_position, replay_word;\n    logic [31:0] cached_replay_remaining;",
+      "before": "    logic [31:0] replay_bits, raw_position, replay_word;",
+      "expected_occurrences": 1,
+      "name": "full32-live-replay-cache"
+    },
+    {
+      "after": "        ctx_bits=6'(cached_replay_remaining<(mode16 ? 16 : 32) ? cached_replay_remaining : (mode16 ? 16 : 32));\n        ctx_last=cached_replay_remaining==32'(ctx_bits);",
+      "before": "        ctx_bits=6'((sizes[band]-replay_bits)<(mode16 ? 16 : 32) ? sizes[band]-replay_bits : (mode16 ? 16 : 32));\n        ctx_last=replay_bits+32'(ctx_bits)==sizes[band];",
+      "expected_occurrences": 1,
+      "name": "cached-clamp-and-modular-last"
+    },
+    {
+      "after": "            mode16<=0; mode_serial<=0; raw_mode<=0; replay_bits<=0; raw_position<=0;\n            cached_replay_remaining<=0;",
+      "before": "            mode16<=0; mode_serial<=0; raw_mode<=0; replay_bits<=0; raw_position<=0;",
+      "expected_occurrences": 1,
+      "name": "reset-abort-cache"
+    },
+    {
+      "after": "            cursor<=42; band<=0; replay_bits<=0; raw_position<=0;\n            cached_replay_remaining<=0;",
+      "before": "            cursor<=42; band<=0; replay_bits<=0; raw_position<=0;",
+      "expected_occurrences": 1,
+      "name": "replacement-start-cache"
+    },
+    {
+      "after": "                CONTEXT_START: begin replay_bits<=0; cached_replay_remaining<=sizes[band]; word_valid<=0; context_active<=1; state<=CONTEXT_RUN; end",
+      "before": "                CONTEXT_START: begin replay_bits<=0; word_valid<=0; context_active<=1; state<=CONTEXT_RUN; end",
+      "expected_occurrences": 1,
+      "name": "context-start-cache"
+    },
+    {
+      "after": "                    if(ctx_valid && ctx_ready) begin replay_bits<=replay_bits+32'(ctx_bits); cached_replay_remaining<=cached_replay_remaining-32'(ctx_bits); word_valid<=0; end",
+      "before": "                    if(ctx_valid && ctx_ready) begin replay_bits<=replay_bits+32'(ctx_bits); word_valid<=0; end",
+      "expected_occurrences": 1,
+      "name": "accepted-word-cache"
+    },
+    {
+      "after": "    always_ff @(posedge clk) if(!cancelled) begin\n        if(state==CONTEXT_RUN)\n            assert(cached_replay_remaining==sizes[band]-replay_bits) else $fatal(1,\"live replay remaining cache\");",
+      "before": "    always_ff @(posedge clk) if(!cancelled) begin",
+      "expected_occurrences": 1,
+      "name": "live-cache-assertion"
+    }
+  ],
+  "original_path": "fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv",
+  "original_sha256": "771447e0f7516448f47ea1e47f56474e424662a8bbe2b3c32a1f489d2d2b2b27",
+  "schema": "v106-edit-recipe-v1"
+}
