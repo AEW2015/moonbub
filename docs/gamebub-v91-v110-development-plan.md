@@ -1,5 +1,48 @@
 # Game Bub V91–V110: codec selection and 7-series implementation
 
+<!-- V110-CHECKPOINT-START -->
+**V110 timing work: best completed WNS −1.022 ns; 100 MHz and hardware gates remain open.**
+The [V110 report](cu66-v110/README.md) retains the fixed 10.000-ns clock on
+`xc7a100tcsg324-1`, 720×480 CS88 q16/all-BR88 and the 49,152-byte cap.
+Nine complete source compositions each pass the same two frozen reference seeds:
+**44 case profiles / 42 directed checks per composition**, exact public cycles,
+events, counters and canonical pixels. These are fixed-workload repeats, not nine
+new gameplay corpora. Private cursors are compared while either side has a live
+owner; retired private cursor values may differ. The default-false context
+preserves generic checks; the selected validated caller alone enables the
+count specialization after discharging its count precondition.
+
+Nine completed fresh-RTL OOC routes all fail setup at 100 MHz. The best is the
+validated-caller count specialization with Default synthesis: **WNS −1.022 ns /
+TNS −1,125.069 ns / 4,620 setup-failing endpoints**, compared with V109 FETCH's
+−1.635 ns and the prior V109 frontier's −1.589 ns. All nine pass hold/pulse checks and finish with
+zero routing errors and zero unconstrained internal endpoints. No negative
+candidate is promoted. The request-address/cursor Default route measures
+−1.365 ns and shifts the worst path to context validation/control. The
+validated-caller specialization passes focused/full canonical RTL and
+improves WNS by 0.567 ns versus the prior V109 frontier. Absolute TNS is
+86.391% lower than the actual V109 FETCH control. Its final worst path is
+header-length validation feeding metadata register enables, so the next
+measured target is an earlier owned header-validation pipeline. The mapper
+path seen after placement is absent from the final top fifty paths. All
+changes still need a passing route and fresh repeat before clock qualification.
+No clock relaxation, timing exception or hardware performance is inferred from
+these results.
+
+The [offline hardware checker](cu66-v110/hardware-evidence.md) passes 12 synthetic
+tests, including rejection of one exact-10-ms outlier and duplicate frames. This
+is a proposed trace contract, not implemented counters or hardware attestation.
+[Actual transform events](cu66-v110/transform-budget.md) show serialized inverse math
+and residual emission; the proposed two-result-slot overlap architecture remains
+unimplemented and requires a versioned latency-aware ownership proof. Even at
+an assumed 100 MHz, most current component case counters exceed one million
+cycles; these are not calibrated complete-frame publication measurements.
+
+Production CS88 parent integration and full I/O/clock/CDC/memory/display
+qualification, sustained hardware **30 fps**, and every complete validated decode
+strictly **under 10 ms** remain **OPEN**. V110a–d are not passed by OOC results.
+<!-- V110-CHECKPOINT-END -->
+
 <!-- V109-CHECKPOINT-START -->
 **V109 partial: functional cuts qualified; 100-MHz timing remains open.**
 The [V109 report](cu66-v109/README.md) records four fresh-RTL routes at the

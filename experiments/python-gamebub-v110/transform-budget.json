@@ -1,0 +1,6649 @@
+{
+  "achieved_clock_or_decoder_only_math_service_proven": false,
+  "calibrated_hardware_latency": false,
+  "current_source_sha256": {
+    "fpga/experiments/cu66-v106-context/br88_context.sv": "9cb6337098d36adfbe4ef2dc073fc30a6dea17eaa4d57322fa4e725b8cce5277",
+    "fpga/experiments/cu66-v107-elastic/verification/bench.cpp": "ec51ee82e4981d00a432aab633defd01e5fe638dbe999e4a41de2f2a5ad12384",
+    "fpga/experiments/cu66-v107-meta-flags/cu66_coefficient_elastic.sv": "ea53b408aab5e522dfb2c4ffc2eefee41d58af37032cedc409e74815ab35dab9",
+    "fpga/experiments/cu66-v107-tables/cs88_admission_v91i2a.sv": "b149c94ba1a5dd7f1d09384126c762d0bb0de5aa664baa4b76c29c631aeb652e",
+    "fpga/experiments/cu66-v108-capacity/br88_packet_ingress_v91h.sv": "9529b8a76b531d22f7d0a4498295153f8a397c004725787c34af9824ee84cfb1",
+    "fpga/experiments/cu66-v108-capacity/br88_pipeline_v91h.sv": "cb440ed9c12c6fa3eac579aea99f2c03716e33b97ce50822ab00b93de08a4360",
+    "fpga/experiments/cu66-v108-outtile/cu66_idct8x8.sv": "3a30e2c527755ee5e34480274a7998795a773e23fef6cec8471fdd89c31a7808",
+    "fpga/experiments/cu66-v109-fetch/br88_packet_ingress_sync_v91h.sv": "4d6a16d0b89aa067fe3e7acc01351ea0bacac694cc63fb681a1471ee4683d044",
+    "fpga/experiments/cu66-v110-busy/packed_scratch_v91g2.sv": "e9a70463b78c0afbbded2358fd9b4ca7f600c695d9251b0cf3d202a74ad21478",
+    "fpga/experiments/cu66-v110-dequant/cu66_dequant.sv": "e0a62ee4886f5690e2a0c788d20cbef1ee669ef451a4944c10c43e43788c72ac",
+    "fpga/experiments/cu66-v110-fault/cs88_pipeline_v91k.sv": "950182396c4ac6f0f31c74fd41bf66c6122727e44cacf31ae48c55098e0dd786",
+    "fpga/experiments/cu66-v110-fault/cu66_inverse_stream_v91j.sv": "e00f53b7360878455e1078b0aaa3955ee0aab4abbecefde0c1b3b1f5a90c8a41",
+    "fpga/experiments/cu66-v110-fault/cu66_reconstruct_stream_v91k.sv": "f9dc06f183010a3486f387075b702a4cc7d9b4a06c1f4b0174cddad5813bf149",
+    "fpga/experiments/cu66-v110-ready/cs88_coefficients_v91k.sv": "b5f9dce886ce9d6d1460ac6d8579512750bc66504e306ecabf8bdd7f11bb40fd",
+    "fpga/experiments/cu66-v110-rice/br88_rice_elastic.sv": "dfa58d806ce93ab273f0eb4a2d45b391198ab4bee9ce33aea324d5285d1cc5df",
+    "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh": "e0d5ae446155c1e295e0add487a30fec9c765cbafc0fabb15d248285ed22dca7",
+    "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv": "3eb9fbc02732f06b05f68499a5c03d48c00f24f7621db6cb318fc13f07c40d64",
+    "fpga/experiments/cu66-v91d/br88_packet_ingress.sv": "3c1cb5d93802dfcece9b003dec151152ab9a59be9d4972cf46023b9e9002eaba",
+    "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv": "af78e9d263fcdaa5ccc0d13f370aa994f46e2feb198c54c9775122c02d07a505"
+  },
+  "definitions": [
+    "All durations use endpoint differences without +1. Residual span63 means64 accepted samples at consecutive clocks.",
+    "Assemble event is the complete-tile dequant launch/handshake, not the first coefficient-fill cycle.",
+    "Peak pending identities counts launched transform events not yet matched to residual completion, not all physical coefficient banks or private owners.",
+    "Response/service envelopes include FSM waits, fast paths and downstream readiness; they are not exclusive arithmetic occupancy.",
+    "Successive spacing includes source/chunk gaps and output backpressure. Same-child spacing still need not be pure math initiation interval.",
+    "Signed previous-residual-finish to next-assembly gap records overlap when negative, without summing overlapping stage envelopes.",
+    "Expected-error cases and incomplete/unretired owners are separate; no rejected work is promoted to validated output."
+  ],
+  "identity_fields": [
+    "id",
+    "memory_profile",
+    "frame_epoch",
+    "child_epoch",
+    "token",
+    "plane",
+    "block",
+    "tile",
+    "qcell",
+    "qscale"
+  ],
+  "input_sha256": {
+    "experiments/python-gamebub-v110/canonical-ready-rice/combined/attempts/20261108T140104467790Z/candidate-107601-events.jsonl.gz": "04ba759df134e48dff48ecf7b54263dc283142372654ed612d803e030ad3b83c",
+    "experiments/python-gamebub-v110/canonical-ready-rice/combined/attempts/20261108T140104467790Z/candidate-107601-simulation.jsonl": "7319cbd7dd7f901c2286bc8dd4adc5922a5235184b58441832e8d792d17ed162",
+    "experiments/python-gamebub-v110/canonical-ready-rice/combined/attempts/20261108T140104467790Z/candidate-107602-events.jsonl.gz": "e49430315df17a46ec3e1684dec54c1716dbcecf2cae6a6063ee7db06f7e1752",
+    "experiments/python-gamebub-v110/canonical-ready-rice/combined/attempts/20261108T140104467790Z/candidate-107602-simulation.jsonl": "d77c1425d0c278d08ace635753c7608f5962bb103faebf536a8c0cda5b06e661",
+    "experiments/python-gamebub-v110/canonical-ready-rice/combined/attempts/20261108T140104467790Z/receipt.json": "7b3494c516182df3dd1fb4c64e5749814ab43906914e9a4dc0f2d3424a51132a",
+    "experiments/python-gamebub-v110/canonical-ready-rice/combined/results.json": "4ac75dc994a0adc1b38547089a6d6bb78a18c64171144afd93321530d7059bc9"
+  },
+  "no_new_RTL_simulation_synthesis_implementation_or_hardware": true,
+  "per_seed": {
+    "107601": {
+      "peak_pending_launched_transform_identities": 1,
+      "unique_full_identities": 63412,
+      "unmatched_owners_at_trace_end": 0
+    },
+    "107602": {
+      "peak_pending_launched_transform_identities": 1,
+      "unique_full_identities": 63412,
+      "unmatched_owners_at_trace_end": 0
+    }
+  },
+  "rows": [
+    {
+      "assemble_to_dequant_histogram": {
+        "1": 1238,
+        "9": 6568
+      },
+      "assembly_during_math_input_handshakes": 491594,
+      "complete_matched_tiles": 7806,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 195282,
+        "dequant": 195291,
+        "identity": {
+          "block": 0,
+          "child_epoch": 1,
+          "frame_epoch": 1,
+          "id": "actual_001",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 0,
+          "qscale": 1,
+          "tile": 0,
+          "token": 1
+        },
+        "residual_first": 195297,
+        "residual_last": 195360
+      },
+      "id": "actual_001",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 1,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 1,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 2850,
+          "min": 66,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 130.0,
+          "p95": 202,
+          "p99": 202,
+          "worst_identity": {
+            "block": 3995,
+            "child_epoch": 1,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1020,
+            "qscale": 0,
+            "tile": 4111,
+            "token": 3996
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 11413,
+          "min": 9610,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 10511.5,
+          "p95": 11413,
+          "p99": 11413,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 3,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 2778,
+          "min": 2,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 66.0,
+          "p95": 130,
+          "p99": 130,
+          "worst_identity": {
+            "block": 3995,
+            "child_epoch": 1,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1020,
+            "qscale": 0,
+            "tile": 4111,
+            "token": 3996
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 11283,
+          "min": 2,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 3,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 1,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 2852,
+          "min": 68,
+          "n": 7803,
+          "negative_count": 0,
+          "p50": 132,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 3996,
+            "child_epoch": 1,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1021,
+            "qscale": 0,
+            "tile": 4112,
+            "token": 3997
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 11413,
+          "min": 68,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 132,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 3,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 11349,
+          "min": 132,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 132,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 3,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 11349,
+          "min": 132,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 132,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 3,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 7806,
+        "assemble_samples": 499584,
+        "dequant": 7806,
+        "dequant_samples": 499584,
+        "residual": 7806,
+        "residual_samples": 499584
+      },
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 4054
+      },
+      "assembly_during_math_input_handshakes": 255218,
+      "complete_matched_tiles": 4054,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 1648597,
+        "dequant": 1648606,
+        "identity": {
+          "block": 0,
+          "child_epoch": 4,
+          "frame_epoch": 2,
+          "id": "actual_006",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 94,
+          "qscale": 1,
+          "tile": 369,
+          "token": 1
+        },
+        "residual_first": 1648612,
+        "residual_last": 1648675
+      },
+      "id": "actual_006",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 4,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 35010,
+          "min": 78,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 202.0,
+          "p95": 447,
+          "p99": 1064,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 3757,
+          "min": 2541,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 3149.0,
+          "p95": 3757,
+          "p99": 3757,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 6,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 34938,
+          "min": 6,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 130.0,
+          "p95": 375,
+          "p99": 992,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 3000,
+          "min": 2,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 6,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 4,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 35012,
+          "min": 80,
+          "n": 4051,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1065,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 1,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 35012,
+          "min": 80,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1142,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 1,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 36023,
+          "min": 141,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1066,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 36023,
+          "min": 141,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1066,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 4054,
+        "assemble_samples": 259456,
+        "dequant": 4054,
+        "dequant_samples": 259456,
+        "residual": 4054,
+        "residual_samples": 259456
+      },
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 3198
+      },
+      "assembly_during_math_input_handshakes": 201351,
+      "complete_matched_tiles": 3198,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 2805168,
+        "dequant": 2805177,
+        "identity": {
+          "block": 0,
+          "child_epoch": 7,
+          "frame_epoch": 3,
+          "id": "actual_043",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 101,
+          "qscale": 1,
+          "tile": 382,
+          "token": 1
+        },
+        "residual_first": 2805307,
+        "residual_last": 2805370
+      },
+      "id": "actual_043",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 7,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 382,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 36536,
+          "min": 139,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 202.0,
+          "p95": 601,
+          "p99": 1910,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 1152,
+          "min": 603,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 877.5,
+          "p95": 1152,
+          "p99": 1152,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 36464,
+          "min": 67,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 130.0,
+          "p95": 529,
+          "p99": 1838,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 950,
+          "min": 2,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 7,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 382,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 36538,
+          "min": 141,
+          "n": 3195,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 603,
+          "p99": 1912,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 130,
+            "qscale": 1,
+            "tile": 130,
+            "token": 2909
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 36538,
+          "min": 141,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 603,
+          "p99": 1912,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 130,
+            "qscale": 1,
+            "tile": 130,
+            "token": 2909
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 37486,
+          "min": 141,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 603,
+          "p99": 1912,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 37486,
+          "min": 141,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 603,
+          "p99": 1912,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 3198,
+        "assemble_samples": 204672,
+        "dequant": 3198,
+        "dequant_samples": 204672,
+        "residual": 3198,
+        "residual_samples": 204672
+      },
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 6119
+      },
+      "assembly_during_math_input_handshakes": 385311,
+      "complete_matched_tiles": 6119,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 4137479,
+        "dequant": 4137488,
+        "identity": {
+          "block": 0,
+          "child_epoch": 10,
+          "frame_epoch": 4,
+          "id": "actual_031",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 99,
+          "qscale": 1,
+          "tile": 379,
+          "token": 1
+        },
+        "residual_first": 4137618,
+        "residual_last": 4137681
+      },
+      "id": "actual_031",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 9,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 10,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 99,
+            "qscale": 1,
+            "tile": 379,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 10711,
+          "min": 139,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 202,
+          "p95": 202,
+          "p99": 370,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 24822,
+          "min": 16372,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 20597.0,
+          "p95": 24822,
+          "p99": 24822,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 10639,
+          "min": 67,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 130,
+          "p95": 130,
+          "p99": 298,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 24620,
+          "min": 2,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 2.0,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 63,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 10,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 99,
+            "qscale": 1,
+            "tile": 379,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 10713,
+          "min": 141,
+          "n": 6116,
+          "negative_count": 0,
+          "p50": 204.0,
+          "p95": 204,
+          "p99": 372,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 98,
+            "qscale": 1,
+            "tile": 98,
+            "token": 4210
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 24822,
+          "min": 141,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 204.0,
+          "p95": 204,
+          "p99": 372,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 35331,
+          "min": 141,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 204.0,
+          "p95": 204,
+          "p99": 372,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 35331,
+          "min": 141,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 204.0,
+          "p95": 204,
+          "p99": 372,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 6119,
+        "assemble_samples": 391616,
+        "dequant": 6119,
+        "dequant_samples": 391616,
+        "residual": 6119,
+        "residual_samples": 391616
+      },
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 64,
+      "first_complete_tile": null,
+      "id": "actual_000",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107601,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 64,
+      "first_complete_tile": null,
+      "id": "actual_003",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107601,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 0,
+      "first_complete_tile": null,
+      "id": "structural_all_copy_zero_residual",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 4054
+      },
+      "assembly_during_math_input_handshakes": 255218,
+      "complete_matched_tiles": 4054,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 6369580,
+        "dequant": 6369589,
+        "identity": {
+          "block": 0,
+          "child_epoch": 13,
+          "frame_epoch": 8,
+          "id": "actual_006_varied_qcache",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 94,
+          "qscale": 1,
+          "tile": 369,
+          "token": 1
+        },
+        "residual_first": 6369595,
+        "residual_last": 6369658
+      },
+      "id": "actual_006_varied_qcache",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 13,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 35010,
+          "min": 78,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 202.0,
+          "p95": 447,
+          "p99": 1064,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 3757,
+          "min": 2541,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 3149.0,
+          "p95": 3757,
+          "p99": 3757,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 15,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 2,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 34938,
+          "min": 6,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 130.0,
+          "p95": 375,
+          "p99": 992,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 3000,
+          "min": 2,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 15,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 2,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 13,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 35012,
+          "min": 80,
+          "n": 4051,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1065,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 2,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 35012,
+          "min": 80,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1142,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 2,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 36023,
+          "min": 141,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1066,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 36023,
+          "min": 141,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1066,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 4054,
+        "assemble_samples": 259456,
+        "dequant": 4054,
+        "dequant_samples": 259456,
+        "residual": 4054,
+        "residual_samples": 259456
+      },
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 7,
+      "first_complete_tile": null,
+      "id": "actual_006_wrong_cache_tag",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107601,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 7,
+      "first_complete_tile": null,
+      "id": "actual_006_reserved_qcache_code",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107601,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "1": 646,
+        "9": 5829
+      },
+      "assembly_during_math_input_handshakes": 407803,
+      "complete_matched_tiles": 6475,
+      "expected_error": 147,
+      "first_complete_tile": {
+        "assemble": 7693230,
+        "dequant": 7693239,
+        "identity": {
+          "block": 0,
+          "child_epoch": 16,
+          "frame_epoch": 11,
+          "id": "actual_001_bad_third_inner_crc",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 0,
+          "qscale": 1,
+          "tile": 0,
+          "token": 1
+        },
+        "residual_first": 7693245,
+        "residual_last": 7693308
+      },
+      "id": "actual_001_bad_third_inner_crc",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 1,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 9,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 16,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 2850,
+          "min": 66,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 130,
+          "p95": 202,
+          "p99": 202,
+          "worst_identity": {
+            "block": 3995,
+            "child_epoch": 16,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1020,
+            "qscale": 0,
+            "tile": 4111,
+            "token": 3996
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 9610,
+          "min": 9610,
+          "n": 1,
+          "negative_count": 0,
+          "p50": 9610,
+          "p95": 9610,
+          "p99": 9610,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 17,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 2778,
+          "min": 2,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 66,
+          "p95": 130,
+          "p99": 130,
+          "worst_identity": {
+            "block": 3995,
+            "child_epoch": 16,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1020,
+            "qscale": 0,
+            "tile": 4111,
+            "token": 3996
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 9480,
+          "min": 2,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 2.0,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 17,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 63,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 16,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 2852,
+          "min": 68,
+          "n": 6473,
+          "negative_count": 0,
+          "p50": 132,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 3996,
+            "child_epoch": 16,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1021,
+            "qscale": 0,
+            "tile": 4112,
+            "token": 3997
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 9610,
+          "min": 68,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 132.0,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 17,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 9546,
+          "min": 132,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 132.0,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 17,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 9546,
+          "min": 132,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 132.0,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 17,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 6475,
+        "assemble_samples": 414400,
+        "dequant": 6475,
+        "dequant_samples": 414400,
+        "residual": 6475,
+        "residual_samples": 414400
+      },
+      "seed": 107601,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "1": 1238,
+        "9": 6568
+      },
+      "assembly_during_math_input_handshakes": 491293,
+      "complete_matched_tiles": 7806,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 8981714,
+        "dequant": 8981723,
+        "identity": {
+          "block": 0,
+          "child_epoch": 19,
+          "frame_epoch": 12,
+          "id": "actual_001",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 0,
+          "qscale": 1,
+          "tile": 0,
+          "token": 1
+        },
+        "residual_first": 8981729,
+        "residual_last": 8981792
+      },
+      "id": "actual_001",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 1,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 19,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 8184,
+          "min": 66,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 258.0,
+          "p95": 293,
+          "p99": 309,
+          "worst_identity": {
+            "block": 3995,
+            "child_epoch": 19,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1020,
+            "qscale": 0,
+            "tile": 4111,
+            "token": 3996
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 11451,
+          "min": 9615,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 10533.0,
+          "p95": 11451,
+          "p99": 11451,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 21,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 8112,
+          "min": 2,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 187.0,
+          "p95": 222,
+          "p99": 239,
+          "worst_identity": {
+            "block": 3995,
+            "child_epoch": 19,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1020,
+            "qscale": 0,
+            "tile": 4111,
+            "token": 3996
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 11182,
+          "min": 2,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 21,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 19,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 8186,
+          "min": 68,
+          "n": 7803,
+          "negative_count": 0,
+          "p50": 260,
+          "p95": 295,
+          "p99": 312,
+          "worst_identity": {
+            "block": 3996,
+            "child_epoch": 19,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1021,
+            "qscale": 0,
+            "tile": 4112,
+            "token": 3997
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 11451,
+          "min": 68,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 260,
+          "p95": 295,
+          "p99": 312,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 21,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 11248,
+          "min": 194,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 260,
+          "p95": 295,
+          "p99": 312,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 21,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 11248,
+          "min": 194,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 260,
+          "p95": 295,
+          "p99": 312,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 21,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 7806,
+        "assemble_samples": 499584,
+        "dequant": 7806,
+        "dequant_samples": 499584,
+        "residual": 7806,
+        "residual_samples": 499584
+      },
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 4054
+      },
+      "assembly_during_math_input_handshakes": 255280,
+      "complete_matched_tiles": 4054,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 11268574,
+        "dequant": 11268583,
+        "identity": {
+          "block": 0,
+          "child_epoch": 22,
+          "frame_epoch": 13,
+          "id": "actual_006",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 94,
+          "qscale": 1,
+          "tile": 369,
+          "token": 1
+        },
+        "residual_first": 11268589,
+        "residual_last": 11268652
+      },
+      "id": "actual_006",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 22,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 100557,
+          "min": 78,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 282.0,
+          "p95": 1163,
+          "p99": 2886,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 4044,
+          "min": 3648,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 3846.0,
+          "p95": 4044,
+          "p99": 4044,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 100485,
+          "min": 6,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 210.0,
+          "p95": 1091,
+          "p99": 2814,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 1718,
+          "min": 2,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 24,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 22,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 100559,
+          "min": 80,
+          "n": 4051,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1164,
+          "p99": 2887,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 1,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 100559,
+          "min": 80,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1165,
+          "p99": 3071,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 1,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 100559,
+          "min": 219,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1165,
+          "p99": 2888,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 100559,
+          "min": 219,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1165,
+          "p99": 2888,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 4054,
+        "assemble_samples": 259456,
+        "dequant": 4054,
+        "dequant_samples": 259456,
+        "residual": 4054,
+        "residual_samples": 259456
+      },
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 3198
+      },
+      "assembly_during_math_input_handshakes": 201350,
+      "complete_matched_tiles": 3198,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 13322097,
+        "dequant": 13322106,
+        "identity": {
+          "block": 0,
+          "child_epoch": 25,
+          "frame_epoch": 14,
+          "id": "actual_043",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 101,
+          "qscale": 1,
+          "tile": 382,
+          "token": 1
+        },
+        "residual_first": 13322236,
+        "residual_last": 13322299
+      },
+      "id": "actual_043",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 25,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 382,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 103870,
+          "min": 202,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 285.0,
+          "p95": 1549,
+          "p99": 5210,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 1589,
+          "min": 768,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 1178.5,
+          "p95": 1589,
+          "p99": 1589,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 27,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 105,
+            "qscale": 1,
+            "tile": 105,
+            "token": 3052
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 103798,
+          "min": 130,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 213.0,
+          "p95": 1477,
+          "p99": 5138,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 502,
+          "min": 2,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 25,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 382,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 103872,
+          "min": 204,
+          "n": 3195,
+          "negative_count": 0,
+          "p50": 287,
+          "p95": 1535,
+          "p99": 5212,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 130,
+            "qscale": 1,
+            "tile": 130,
+            "token": 2909
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 103872,
+          "min": 204,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 287,
+          "p95": 1551,
+          "p99": 5212,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 130,
+            "qscale": 1,
+            "tile": 130,
+            "token": 2909
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 104372,
+          "min": 224,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 287,
+          "p95": 1551,
+          "p99": 5212,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 104372,
+          "min": 224,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 287,
+          "p95": 1551,
+          "p99": 5212,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 3198,
+        "assemble_samples": 204672,
+        "dequant": 3198,
+        "dequant_samples": 204672,
+        "residual": 3198,
+        "residual_samples": 204672
+      },
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 6119
+      },
+      "assembly_during_math_input_handshakes": 385311,
+      "complete_matched_tiles": 6119,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 15607366,
+        "dequant": 15607375,
+        "identity": {
+          "block": 0,
+          "child_epoch": 28,
+          "frame_epoch": 15,
+          "id": "actual_031",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 99,
+          "qscale": 1,
+          "tile": 379,
+          "token": 1
+        },
+        "residual_first": 15607505,
+        "residual_last": 15607568
+      },
+      "id": "actual_031",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 9,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 28,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 99,
+            "qscale": 1,
+            "tile": 379,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 74193,
+          "min": 202,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 278,
+          "p95": 322,
+          "p99": 963,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 24865,
+          "min": 14758,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 19811.5,
+          "p95": 24865,
+          "p99": 24865,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 74121,
+          "min": 130,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 206,
+          "p95": 250,
+          "p99": 891,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 24552,
+          "min": 2,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 2.0,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 63,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 28,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 99,
+            "qscale": 1,
+            "tile": 379,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 74195,
+          "min": 204,
+          "n": 6116,
+          "negative_count": 0,
+          "p50": 280.0,
+          "p95": 324,
+          "p99": 965,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 98,
+            "qscale": 1,
+            "tile": 98,
+            "token": 4210
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 74195,
+          "min": 204,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 280.0,
+          "p95": 324,
+          "p99": 984,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 98,
+            "qscale": 1,
+            "tile": 98,
+            "token": 4210
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 98745,
+          "min": 211,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 280.0,
+          "p95": 324,
+          "p99": 965,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 98745,
+          "min": 211,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 280.0,
+          "p95": 324,
+          "p99": 965,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 6119,
+        "assemble_samples": 391616,
+        "dequant": 6119,
+        "dequant_samples": 391616,
+        "residual": 6119,
+        "residual_samples": 391616
+      },
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 64,
+      "first_complete_tile": null,
+      "id": "actual_000",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107601,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 64,
+      "first_complete_tile": null,
+      "id": "actual_003",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107601,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 0,
+      "first_complete_tile": null,
+      "id": "structural_all_copy_zero_residual",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 4054
+      },
+      "assembly_during_math_input_handshakes": 255280,
+      "complete_matched_tiles": 4054,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 19712772,
+        "dequant": 19712781,
+        "identity": {
+          "block": 0,
+          "child_epoch": 31,
+          "frame_epoch": 19,
+          "id": "actual_006_varied_qcache",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 94,
+          "qscale": 1,
+          "tile": 369,
+          "token": 1
+        },
+        "residual_first": 19712787,
+        "residual_last": 19712850
+      },
+      "id": "actual_006_varied_qcache",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 31,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 99799,
+          "min": 78,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 282.0,
+          "p95": 1167,
+          "p99": 2958,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 4117,
+          "min": 3579,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 3848.0,
+          "p95": 4117,
+          "p99": 4117,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 99727,
+          "min": 6,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 210.0,
+          "p95": 1095,
+          "p99": 2886,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 1625,
+          "min": 2,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 33,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 2,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 31,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 99801,
+          "min": 80,
+          "n": 4051,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1166,
+          "p99": 2941,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 2,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 99801,
+          "min": 80,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1169,
+          "p99": 2971,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 2,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 99801,
+          "min": 220,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1169,
+          "p99": 2960,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 99801,
+          "min": 220,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1169,
+          "p99": 2960,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 4054,
+        "assemble_samples": 259456,
+        "dequant": 4054,
+        "dequant_samples": 259456,
+        "residual": 4054,
+        "residual_samples": 259456
+      },
+      "seed": 107601,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 7,
+      "first_complete_tile": null,
+      "id": "actual_006_wrong_cache_tag",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107601,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 7,
+      "first_complete_tile": null,
+      "id": "actual_006_reserved_qcache_code",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107601,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "1": 646,
+        "9": 5829
+      },
+      "assembly_during_math_input_handshakes": 407558,
+      "complete_matched_tiles": 6475,
+      "expected_error": 147,
+      "first_complete_tile": {
+        "assemble": 21948514,
+        "dequant": 21948523,
+        "identity": {
+          "block": 0,
+          "child_epoch": 34,
+          "frame_epoch": 22,
+          "id": "actual_001_bad_third_inner_crc",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 0,
+          "qscale": 1,
+          "tile": 0,
+          "token": 1
+        },
+        "residual_first": 21948529,
+        "residual_last": 21948592
+      },
+      "id": "actual_001_bad_third_inner_crc",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 1,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 9,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 34,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 8210,
+          "min": 66,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 258,
+          "p95": 292,
+          "p99": 308,
+          "worst_identity": {
+            "block": 4095,
+            "child_epoch": 34,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1065,
+            "qscale": 0,
+            "tile": 4291,
+            "token": 4096
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 9616,
+          "min": 9616,
+          "n": 1,
+          "negative_count": 0,
+          "p50": 9616,
+          "p95": 9616,
+          "p99": 9616,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 35,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 8138,
+          "min": 2,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 186,
+          "p95": 221,
+          "p99": 236,
+          "worst_identity": {
+            "block": 4095,
+            "child_epoch": 34,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1065,
+            "qscale": 0,
+            "tile": 4291,
+            "token": 4096
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 9364,
+          "min": 2,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 2.0,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 35,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 63,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 34,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 8212,
+          "min": 68,
+          "n": 6473,
+          "negative_count": 0,
+          "p50": 260,
+          "p95": 294,
+          "p99": 310,
+          "worst_identity": {
+            "block": 4096,
+            "child_epoch": 34,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1066,
+            "qscale": 0,
+            "tile": 4292,
+            "token": 4097
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 9616,
+          "min": 68,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 260.0,
+          "p95": 294,
+          "p99": 310,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 35,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 9430,
+          "min": 193,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 260.0,
+          "p95": 294,
+          "p99": 310,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 35,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 9430,
+          "min": 193,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 260.0,
+          "p95": 294,
+          "p99": 310,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 35,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 6475,
+        "assemble_samples": 414400,
+        "dequant": 6475,
+        "dequant_samples": 414400,
+        "residual": 6475,
+        "residual_samples": 414400
+      },
+      "seed": 107601,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "1": 1238,
+        "9": 6568
+      },
+      "assembly_during_math_input_handshakes": 491594,
+      "complete_matched_tiles": 7806,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 195282,
+        "dequant": 195291,
+        "identity": {
+          "block": 0,
+          "child_epoch": 1,
+          "frame_epoch": 1,
+          "id": "actual_001",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 0,
+          "qscale": 1,
+          "tile": 0,
+          "token": 1
+        },
+        "residual_first": 195297,
+        "residual_last": 195360
+      },
+      "id": "actual_001",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 1,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 1,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 2850,
+          "min": 66,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 130.0,
+          "p95": 202,
+          "p99": 202,
+          "worst_identity": {
+            "block": 3995,
+            "child_epoch": 1,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1020,
+            "qscale": 0,
+            "tile": 4111,
+            "token": 3996
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 11413,
+          "min": 9610,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 10511.5,
+          "p95": 11413,
+          "p99": 11413,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 3,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 2778,
+          "min": 2,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 66.0,
+          "p95": 130,
+          "p99": 130,
+          "worst_identity": {
+            "block": 3995,
+            "child_epoch": 1,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1020,
+            "qscale": 0,
+            "tile": 4111,
+            "token": 3996
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 11283,
+          "min": 2,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 3,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 1,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 2852,
+          "min": 68,
+          "n": 7803,
+          "negative_count": 0,
+          "p50": 132,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 3996,
+            "child_epoch": 1,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1021,
+            "qscale": 0,
+            "tile": 4112,
+            "token": 3997
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 11413,
+          "min": 68,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 132,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 3,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 11349,
+          "min": 132,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 132,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 3,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 11349,
+          "min": 132,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 132,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 3,
+            "frame_epoch": 1,
+            "id": "actual_001",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 7806,
+        "assemble_samples": 499584,
+        "dequant": 7806,
+        "dequant_samples": 499584,
+        "residual": 7806,
+        "residual_samples": 499584
+      },
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 4054
+      },
+      "assembly_during_math_input_handshakes": 255218,
+      "complete_matched_tiles": 4054,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 1648597,
+        "dequant": 1648606,
+        "identity": {
+          "block": 0,
+          "child_epoch": 4,
+          "frame_epoch": 2,
+          "id": "actual_006",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 94,
+          "qscale": 1,
+          "tile": 369,
+          "token": 1
+        },
+        "residual_first": 1648612,
+        "residual_last": 1648675
+      },
+      "id": "actual_006",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 4,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 35010,
+          "min": 78,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 202.0,
+          "p95": 447,
+          "p99": 1064,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 3757,
+          "min": 2541,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 3149.0,
+          "p95": 3757,
+          "p99": 3757,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 6,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 34938,
+          "min": 6,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 130.0,
+          "p95": 375,
+          "p99": 992,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 3000,
+          "min": 2,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 6,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 4,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 35012,
+          "min": 80,
+          "n": 4051,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1065,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 1,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 35012,
+          "min": 80,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1142,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 1,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 36023,
+          "min": 141,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1066,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 36023,
+          "min": 141,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1066,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 5,
+            "frame_epoch": 2,
+            "id": "actual_006",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 4054,
+        "assemble_samples": 259456,
+        "dequant": 4054,
+        "dequant_samples": 259456,
+        "residual": 4054,
+        "residual_samples": 259456
+      },
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 3198
+      },
+      "assembly_during_math_input_handshakes": 201351,
+      "complete_matched_tiles": 3198,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 2805168,
+        "dequant": 2805177,
+        "identity": {
+          "block": 0,
+          "child_epoch": 7,
+          "frame_epoch": 3,
+          "id": "actual_043",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 101,
+          "qscale": 1,
+          "tile": 382,
+          "token": 1
+        },
+        "residual_first": 2805307,
+        "residual_last": 2805370
+      },
+      "id": "actual_043",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 7,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 382,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 36536,
+          "min": 139,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 202.0,
+          "p95": 601,
+          "p99": 1910,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 1152,
+          "min": 603,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 877.5,
+          "p95": 1152,
+          "p99": 1152,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 36464,
+          "min": 67,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 130.0,
+          "p95": 529,
+          "p99": 1838,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 950,
+          "min": 2,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 7,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 382,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 36538,
+          "min": 141,
+          "n": 3195,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 603,
+          "p99": 1912,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 130,
+            "qscale": 1,
+            "tile": 130,
+            "token": 2909
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 36538,
+          "min": 141,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 603,
+          "p99": 1912,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 130,
+            "qscale": 1,
+            "tile": 130,
+            "token": 2909
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 37486,
+          "min": 141,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 603,
+          "p99": 1912,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 37486,
+          "min": 141,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 603,
+          "p99": 1912,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 8,
+            "frame_epoch": 3,
+            "id": "actual_043",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 3198,
+        "assemble_samples": 204672,
+        "dequant": 3198,
+        "dequant_samples": 204672,
+        "residual": 3198,
+        "residual_samples": 204672
+      },
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 6119
+      },
+      "assembly_during_math_input_handshakes": 385311,
+      "complete_matched_tiles": 6119,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 4137479,
+        "dequant": 4137488,
+        "identity": {
+          "block": 0,
+          "child_epoch": 10,
+          "frame_epoch": 4,
+          "id": "actual_031",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 99,
+          "qscale": 1,
+          "tile": 379,
+          "token": 1
+        },
+        "residual_first": 4137618,
+        "residual_last": 4137681
+      },
+      "id": "actual_031",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 9,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 10,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 99,
+            "qscale": 1,
+            "tile": 379,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 10711,
+          "min": 139,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 202,
+          "p95": 202,
+          "p99": 370,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 24822,
+          "min": 16372,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 20597.0,
+          "p95": 24822,
+          "p99": 24822,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 10639,
+          "min": 67,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 130,
+          "p95": 130,
+          "p99": 298,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 24620,
+          "min": 2,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 2.0,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 63,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 10,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 99,
+            "qscale": 1,
+            "tile": 379,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 10713,
+          "min": 141,
+          "n": 6116,
+          "negative_count": 0,
+          "p50": 204.0,
+          "p95": 204,
+          "p99": 372,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 98,
+            "qscale": 1,
+            "tile": 98,
+            "token": 4210
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 24822,
+          "min": 141,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 204.0,
+          "p95": 204,
+          "p99": 372,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 35331,
+          "min": 141,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 204.0,
+          "p95": 204,
+          "p99": 372,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 35331,
+          "min": 141,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 204.0,
+          "p95": 204,
+          "p99": 372,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 11,
+            "frame_epoch": 4,
+            "id": "actual_031",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 6119,
+        "assemble_samples": 391616,
+        "dequant": 6119,
+        "dequant_samples": 391616,
+        "residual": 6119,
+        "residual_samples": 391616
+      },
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 64,
+      "first_complete_tile": null,
+      "id": "actual_000",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107602,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 64,
+      "first_complete_tile": null,
+      "id": "actual_003",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107602,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 0,
+      "first_complete_tile": null,
+      "id": "structural_all_copy_zero_residual",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 4054
+      },
+      "assembly_during_math_input_handshakes": 255218,
+      "complete_matched_tiles": 4054,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 6369580,
+        "dequant": 6369589,
+        "identity": {
+          "block": 0,
+          "child_epoch": 13,
+          "frame_epoch": 8,
+          "id": "actual_006_varied_qcache",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 94,
+          "qscale": 1,
+          "tile": 369,
+          "token": 1
+        },
+        "residual_first": 6369595,
+        "residual_last": 6369658
+      },
+      "id": "actual_006_varied_qcache",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 13,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 35010,
+          "min": 78,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 202.0,
+          "p95": 447,
+          "p99": 1064,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 3757,
+          "min": 2541,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 3149.0,
+          "p95": 3757,
+          "p99": 3757,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 15,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 2,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 34938,
+          "min": 6,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 130.0,
+          "p95": 375,
+          "p99": 992,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 3000,
+          "min": 2,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 15,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 2,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 13,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 35012,
+          "min": 80,
+          "n": 4051,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1065,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 2,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 35012,
+          "min": 80,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1142,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 2,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 36023,
+          "min": 141,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1066,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 36023,
+          "min": 141,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 204,
+          "p95": 449,
+          "p99": 1066,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 14,
+            "frame_epoch": 8,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 4054,
+        "assemble_samples": 259456,
+        "dequant": 4054,
+        "dequant_samples": 259456,
+        "residual": 4054,
+        "residual_samples": 259456
+      },
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 7,
+      "first_complete_tile": null,
+      "id": "actual_006_wrong_cache_tag",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107602,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 7,
+      "first_complete_tile": null,
+      "id": "actual_006_reserved_qcache_code",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107602,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "1": 646,
+        "9": 5829
+      },
+      "assembly_during_math_input_handshakes": 407803,
+      "complete_matched_tiles": 6475,
+      "expected_error": 147,
+      "first_complete_tile": {
+        "assemble": 7693230,
+        "dequant": 7693239,
+        "identity": {
+          "block": 0,
+          "child_epoch": 16,
+          "frame_epoch": 11,
+          "id": "actual_001_bad_third_inner_crc",
+          "memory_profile": 0,
+          "plane": 0,
+          "qcell": 0,
+          "qscale": 1,
+          "tile": 0,
+          "token": 1
+        },
+        "residual_first": 7693245,
+        "residual_last": 7693308
+      },
+      "id": "actual_001_bad_third_inner_crc",
+      "incomplete_residual_records": 0,
+      "memory_profile": 0,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 1,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 9,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 16,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 2850,
+          "min": 66,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 130,
+          "p95": 202,
+          "p99": 202,
+          "worst_identity": {
+            "block": 3995,
+            "child_epoch": 16,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1020,
+            "qscale": 0,
+            "tile": 4111,
+            "token": 3996
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 9610,
+          "min": 9610,
+          "n": 1,
+          "negative_count": 0,
+          "p50": 9610,
+          "p95": 9610,
+          "p99": 9610,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 17,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 2778,
+          "min": 2,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 66,
+          "p95": 130,
+          "p99": 130,
+          "worst_identity": {
+            "block": 3995,
+            "child_epoch": 16,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1020,
+            "qscale": 0,
+            "tile": 4111,
+            "token": 3996
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 9480,
+          "min": 2,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 2.0,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 17,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 63,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 16,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 2852,
+          "min": 68,
+          "n": 6473,
+          "negative_count": 0,
+          "p50": 132,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 3996,
+            "child_epoch": 16,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 0,
+            "qcell": 1021,
+            "qscale": 0,
+            "tile": 4112,
+            "token": 3997
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 9610,
+          "min": 68,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 132.0,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 17,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 9546,
+          "min": 132,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 132.0,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 17,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 9546,
+          "min": 132,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 132.0,
+          "p95": 204,
+          "p99": 204,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 17,
+            "frame_epoch": 11,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 0,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 6475,
+        "assemble_samples": 414400,
+        "dequant": 6475,
+        "dequant_samples": 414400,
+        "residual": 6475,
+        "residual_samples": 414400
+      },
+      "seed": 107602,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "1": 1238,
+        "9": 6568
+      },
+      "assembly_during_math_input_handshakes": 491305,
+      "complete_matched_tiles": 7806,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 8981684,
+        "dequant": 8981693,
+        "identity": {
+          "block": 0,
+          "child_epoch": 19,
+          "frame_epoch": 12,
+          "id": "actual_001",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 0,
+          "qscale": 1,
+          "tile": 0,
+          "token": 1
+        },
+        "residual_first": 8981699,
+        "residual_last": 8981762
+      },
+      "id": "actual_001",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 1,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 19,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 8132,
+          "min": 66,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 257.0,
+          "p95": 293,
+          "p99": 308,
+          "worst_identity": {
+            "block": 4095,
+            "child_epoch": 19,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1065,
+            "qscale": 0,
+            "tile": 4291,
+            "token": 4096
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 11447,
+          "min": 9622,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 10534.5,
+          "p95": 11447,
+          "p99": 11447,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 21,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 8060,
+          "min": 2,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 186.0,
+          "p95": 223,
+          "p99": 238,
+          "worst_identity": {
+            "block": 4095,
+            "child_epoch": 19,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1065,
+            "qscale": 0,
+            "tile": 4291,
+            "token": 4096
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 11197,
+          "min": 2,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 21,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 7806,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 19,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 8134,
+          "min": 68,
+          "n": 7803,
+          "negative_count": 0,
+          "p50": 259,
+          "p95": 295,
+          "p99": 311,
+          "worst_identity": {
+            "block": 4096,
+            "child_epoch": 19,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1066,
+            "qscale": 0,
+            "tile": 4292,
+            "token": 4097
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 11447,
+          "min": 68,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 259,
+          "p95": 295,
+          "p99": 311,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 21,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 11263,
+          "min": 199,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 259,
+          "p95": 295,
+          "p99": 311,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 21,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 11263,
+          "min": 199,
+          "n": 7805,
+          "negative_count": 0,
+          "p50": 259,
+          "p95": 295,
+          "p99": 311,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 21,
+            "frame_epoch": 12,
+            "id": "actual_001",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 6476
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 7806,
+        "assemble_samples": 499584,
+        "dequant": 7806,
+        "dequant_samples": 499584,
+        "residual": 7806,
+        "residual_samples": 499584
+      },
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 4054
+      },
+      "assembly_during_math_input_handshakes": 255280,
+      "complete_matched_tiles": 4054,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 11267472,
+        "dequant": 11267481,
+        "identity": {
+          "block": 0,
+          "child_epoch": 22,
+          "frame_epoch": 13,
+          "id": "actual_006",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 94,
+          "qscale": 1,
+          "tile": 369,
+          "token": 1
+        },
+        "residual_first": 11267487,
+        "residual_last": 11267550
+      },
+      "id": "actual_006",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 22,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 100495,
+          "min": 78,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 282.0,
+          "p95": 1164,
+          "p99": 2936,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 4254,
+          "min": 3638,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 3946.0,
+          "p95": 4254,
+          "p99": 4254,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 100423,
+          "min": 6,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 210.0,
+          "p95": 1092,
+          "p99": 2864,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 1684,
+          "min": 2,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 24,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 22,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 100497,
+          "min": 80,
+          "n": 4051,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1163,
+          "p99": 2932,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 1,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 100497,
+          "min": 80,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1166,
+          "p99": 2944,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 1,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 100497,
+          "min": 212,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1166,
+          "p99": 2938,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 100497,
+          "min": 212,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1166,
+          "p99": 2938,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 23,
+            "frame_epoch": 13,
+            "id": "actual_006",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 4054,
+        "assemble_samples": 259456,
+        "dequant": 4054,
+        "dequant_samples": 259456,
+        "residual": 4054,
+        "residual_samples": 259456
+      },
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 3198
+      },
+      "assembly_during_math_input_handshakes": 201350,
+      "complete_matched_tiles": 3198,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 13318688,
+        "dequant": 13318697,
+        "identity": {
+          "block": 0,
+          "child_epoch": 25,
+          "frame_epoch": 14,
+          "id": "actual_043",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 101,
+          "qscale": 1,
+          "tile": 382,
+          "token": 1
+        },
+        "residual_first": 13318827,
+        "residual_last": 13318890
+      },
+      "id": "actual_043",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 25,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 382,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 104590,
+          "min": 202,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 284.0,
+          "p95": 1520,
+          "p99": 5183,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 1529,
+          "min": 742,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 1135.5,
+          "p95": 1529,
+          "p99": 1529,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 27,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 105,
+            "qscale": 1,
+            "tile": 105,
+            "token": 3052
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 104518,
+          "min": 130,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 212.0,
+          "p95": 1448,
+          "p99": 5111,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 469,
+          "min": 2,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 3198,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 25,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 101,
+            "qscale": 1,
+            "tile": 382,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 104592,
+          "min": 204,
+          "n": 3195,
+          "negative_count": 0,
+          "p50": 286,
+          "p95": 1519,
+          "p99": 5185,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 130,
+            "qscale": 1,
+            "tile": 130,
+            "token": 2909
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 104592,
+          "min": 204,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 286,
+          "p95": 1522,
+          "p99": 5185,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 130,
+            "qscale": 1,
+            "tile": 130,
+            "token": 2909
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 105059,
+          "min": 219,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 286,
+          "p95": 1522,
+          "p99": 5185,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 105059,
+          "min": 219,
+          "n": 3197,
+          "negative_count": 0,
+          "p50": 286,
+          "p95": 1522,
+          "p99": 5185,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 26,
+            "frame_epoch": 14,
+            "id": "actual_043",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 108,
+            "qscale": 1,
+            "tile": 108,
+            "token": 2908
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 3198,
+        "assemble_samples": 204672,
+        "dequant": 3198,
+        "dequant_samples": 204672,
+        "residual": 3198,
+        "residual_samples": 204672
+      },
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 6119
+      },
+      "assembly_during_math_input_handshakes": 385311,
+      "complete_matched_tiles": 6119,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 15603873,
+        "dequant": 15603882,
+        "identity": {
+          "block": 0,
+          "child_epoch": 28,
+          "frame_epoch": 15,
+          "id": "actual_031",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 99,
+          "qscale": 1,
+          "tile": 379,
+          "token": 1
+        },
+        "residual_first": 15604012,
+        "residual_last": 15604075
+      },
+      "id": "actual_031",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 9,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 28,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 99,
+            "qscale": 1,
+            "tile": 379,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 73841,
+          "min": 202,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 278,
+          "p95": 323,
+          "p99": 963,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 24883,
+          "min": 14758,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 19820.5,
+          "p95": 24883,
+          "p99": 24883,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 73769,
+          "min": 130,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 206,
+          "p95": 251,
+          "p99": 891,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 24605,
+          "min": 2,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 2.0,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 6119,
+          "negative_count": 0,
+          "p50": 63,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 28,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 99,
+            "qscale": 1,
+            "tile": 379,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 73843,
+          "min": 204,
+          "n": 6116,
+          "negative_count": 0,
+          "p50": 280.0,
+          "p95": 325,
+          "p99": 965,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 98,
+            "qscale": 1,
+            "tile": 98,
+            "token": 4210
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 73843,
+          "min": 204,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 280.0,
+          "p95": 326,
+          "p99": 1004,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 98,
+            "qscale": 1,
+            "tile": 98,
+            "token": 4210
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 98446,
+          "min": 215,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 280.0,
+          "p95": 325,
+          "p99": 965,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 98446,
+          "min": 215,
+          "n": 6118,
+          "negative_count": 0,
+          "p50": 280.0,
+          "p95": 325,
+          "p99": 965,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 29,
+            "frame_epoch": 15,
+            "id": "actual_031",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 97,
+            "qscale": 1,
+            "tile": 97,
+            "token": 4209
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 6119,
+        "assemble_samples": 391616,
+        "dequant": 6119,
+        "dequant_samples": 391616,
+        "residual": 6119,
+        "residual_samples": 391616
+      },
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 64,
+      "first_complete_tile": null,
+      "id": "actual_000",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107602,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 64,
+      "first_complete_tile": null,
+      "id": "actual_003",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107602,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 0,
+      "first_complete_tile": null,
+      "id": "structural_all_copy_zero_residual",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "9": 4054
+      },
+      "assembly_during_math_input_handshakes": 255280,
+      "complete_matched_tiles": 4054,
+      "expected_error": 0,
+      "first_complete_tile": {
+        "assemble": 19707707,
+        "dequant": 19707716,
+        "identity": {
+          "block": 0,
+          "child_epoch": 31,
+          "frame_epoch": 19,
+          "id": "actual_006_varied_qcache",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 94,
+          "qscale": 1,
+          "tile": 369,
+          "token": 1
+        },
+        "residual_first": 19707722,
+        "residual_last": 19707785
+      },
+      "id": "actual_006_varied_qcache",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 9,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 9.0,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 31,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 100952,
+          "min": 78,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 282.0,
+          "p95": 1160,
+          "p99": 2938,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 4095,
+          "min": 3615,
+          "n": 2,
+          "negative_count": 0,
+          "p50": 3855.0,
+          "p95": 4095,
+          "p99": 4095,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 100880,
+          "min": 6,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 210.0,
+          "p95": 1088,
+          "p99": 2866,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 1540,
+          "min": 2,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 2,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 33,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 2,
+            "qcell": 101,
+            "qscale": 2,
+            "tile": 101,
+            "token": 3715
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 4054,
+          "negative_count": 0,
+          "p50": 63.0,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 31,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 94,
+            "qscale": 1,
+            "tile": 369,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 100954,
+          "min": 80,
+          "n": 4051,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1155,
+          "p99": 2917,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 2,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 100954,
+          "min": 80,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1162,
+          "p99": 2951,
+          "worst_identity": {
+            "block": 1,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 125,
+            "qscale": 2,
+            "tile": 125,
+            "token": 3442
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 100954,
+          "min": 215,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1162,
+          "p99": 2940,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 100954,
+          "min": 215,
+          "n": 4053,
+          "negative_count": 0,
+          "p50": 284,
+          "p95": 1162,
+          "p99": 2940,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 32,
+            "frame_epoch": 19,
+            "id": "actual_006_varied_qcache",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 106,
+            "qscale": 1,
+            "tile": 106,
+            "token": 3441
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 4054,
+        "assemble_samples": 259456,
+        "dequant": 4054,
+        "dequant_samples": 259456,
+        "residual": 4054,
+        "residual_samples": 259456
+      },
+      "seed": 107602,
+      "successful": true,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 7,
+      "first_complete_tile": null,
+      "id": "actual_006_wrong_cache_tag",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107602,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {},
+      "assembly_during_math_input_handshakes": 0,
+      "complete_matched_tiles": 0,
+      "expected_error": 7,
+      "first_complete_tile": null,
+      "id": "actual_006_reserved_qcache_code",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": null,
+        "assemble_to_last_residual": null,
+        "cross_child_assembly_spacing": null,
+        "dequant_to_first_residual": null,
+        "previous_residual_finish_to_next_assembly_signed": null,
+        "residual_span": null,
+        "same_child_assembly_spacing": null,
+        "successive_assembly_spacing": null,
+        "successive_residual_finish_spacing": null,
+        "successive_residual_start_spacing": null
+      },
+      "observed_counts": {},
+      "seed": 107602,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    },
+    {
+      "assemble_to_dequant_histogram": {
+        "1": 646,
+        "9": 5829
+      },
+      "assembly_during_math_input_handshakes": 407540,
+      "complete_matched_tiles": 6475,
+      "expected_error": 147,
+      "first_complete_tile": {
+        "assemble": 21944767,
+        "dequant": 21944776,
+        "identity": {
+          "block": 0,
+          "child_epoch": 34,
+          "frame_epoch": 22,
+          "id": "actual_001_bad_third_inner_crc",
+          "memory_profile": 1,
+          "plane": 0,
+          "qcell": 0,
+          "qscale": 1,
+          "tile": 0,
+          "token": 1
+        },
+        "residual_first": 21944782,
+        "residual_last": 21944845
+      },
+      "id": "actual_001_bad_third_inner_crc",
+      "incomplete_residual_records": 0,
+      "memory_profile": 1,
+      "metrics_cycles": {
+        "assemble_to_dequant": {
+          "max": 9,
+          "min": 1,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 9,
+          "p95": 9,
+          "p99": 9,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 34,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "assemble_to_last_residual": {
+          "max": 8301,
+          "min": 66,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 257,
+          "p95": 292,
+          "p99": 309,
+          "worst_identity": {
+            "block": 4095,
+            "child_epoch": 34,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1065,
+            "qscale": 0,
+            "tile": 4291,
+            "token": 4096
+          }
+        },
+        "cross_child_assembly_spacing": {
+          "max": 9621,
+          "min": 9621,
+          "n": 1,
+          "negative_count": 0,
+          "p50": 9621,
+          "p95": 9621,
+          "p99": 9621,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 35,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "dequant_to_first_residual": {
+          "max": 8229,
+          "min": 2,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 186,
+          "p95": 221,
+          "p99": 237,
+          "worst_identity": {
+            "block": 4095,
+            "child_epoch": 34,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1065,
+            "qscale": 0,
+            "tile": 4291,
+            "token": 4096
+          }
+        },
+        "previous_residual_finish_to_next_assembly_signed": {
+          "max": 9354,
+          "min": 2,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 2.0,
+          "p95": 2,
+          "p99": 2,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 35,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "residual_span": {
+          "max": 63,
+          "min": 63,
+          "n": 6475,
+          "negative_count": 0,
+          "p50": 63,
+          "p95": 63,
+          "p99": 63,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 34,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 1
+          }
+        },
+        "same_child_assembly_spacing": {
+          "max": 8303,
+          "min": 68,
+          "n": 6473,
+          "negative_count": 0,
+          "p50": 259,
+          "p95": 294,
+          "p99": 311,
+          "worst_identity": {
+            "block": 4096,
+            "child_epoch": 34,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 0,
+            "qcell": 1066,
+            "qscale": 0,
+            "tile": 4292,
+            "token": 4097
+          }
+        },
+        "successive_assembly_spacing": {
+          "max": 9621,
+          "min": 68,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 259.0,
+          "p95": 294,
+          "p99": 311,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 35,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "successive_residual_finish_spacing": {
+          "max": 9420,
+          "min": 195,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 259.0,
+          "p95": 294,
+          "p99": 311,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 35,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        },
+        "successive_residual_start_spacing": {
+          "max": 9420,
+          "min": 195,
+          "n": 6474,
+          "negative_count": 0,
+          "p50": 259.0,
+          "p95": 294,
+          "p99": 311,
+          "worst_identity": {
+            "block": 0,
+            "child_epoch": 35,
+            "frame_epoch": 22,
+            "id": "actual_001_bad_third_inner_crc",
+            "memory_profile": 1,
+            "plane": 1,
+            "qcell": 0,
+            "qscale": 1,
+            "tile": 0,
+            "token": 5145
+          }
+        }
+      },
+      "observed_counts": {
+        "assemble": 6475,
+        "assemble_samples": 414400,
+        "dequant": 6475,
+        "dequant_samples": 414400,
+        "residual": 6475,
+        "residual_samples": 414400
+      },
+      "seed": 107602,
+      "successful": false,
+      "unmatched_assembled_owners_at_trace_end": 0
+    }
+  ],
+  "schema": "v110-retained-transform-event-budget-v1",
+  "script_sha256": "1e9670dbb7571324ccd05539f2bb541e0ca402dcbb82e6af047123a21cd2d850",
+  "status": "READ_ONLY_QUALIFIED_RTL_EVENT_RESPONSE_AND_SPACING_DIAGNOSTIC",
+  "validated_decode_under10ms": false
+}

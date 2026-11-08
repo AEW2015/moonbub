@@ -1,0 +1,11 @@
+# V110 cursor focused audit
+
+**Status: PASS for the focused cursor-owner RTL scope.** This is not a full-Q, physical-timing, or hardware qualification.
+
+The selected immutable attempt is `experiments/python-gamebub-v110/cursors/attempts/20261108T153917289977Z/results.json` (SHA-256 `86d79262684a1e7c0e2ab1bd7d0b0d29eb9af7df1df6a066135cddfc7d607080`). The candidate source snapshot is `fpga/experiments/cu66-v110-cursors/packed_scratch_v91g2.sv` (SHA-256 `ebc4ca022b00e9d41613155eb80859986a8a2fbb803b4541a72511105589a218`), replacing the V110 busy version. The probe keeps FSM state equal every sampled edge and compares cursor payload whenever either side is in a live state; IDLE, DRAIN, FINISHED, and FAILED are inactive. Six per-seed cases deliberately observe inactive cursor divergence and then verify that a new owner starts with zero cursors. Thus the result is cycle-exact at public interfaces and cursor-exact for live owners; it does not require all private register contents to match.
+
+The source change removes the two cursor writes from begin/read paths and moves clearing to every IDLE edge, with increments on existing cache-hit AC_EXTRACT edges. No public cycle was added, and assertions were not disabled or downgraded. The retained inherited checks include 72 full transactions, 128 corrupt-response cases, four read owners, and 48 DC-line boundary transactions per seed. Both seeds (111201 and 111202) passed those checks and six retirement/restoration cases each. Build flags included Verilator `--assert -Wall` and C++ `-Wall -Wextra -Werror`.
+
+The earlier attempt at `153818355793Z` remains recorded as a compile-only failure: three fixture `while` clauses triggered `-Werror=misleading-indentation`; it did not execute RTL. The selected retry passed with the same production source hash. The finite 111,360-row owner model supports the reset/restoration argument but is not a formal RTL proof. At audit time the composed full-Q cursor run was still in progress, and no native timing or hardware claim is made.
+
+Machine-readable pins, exact test counts, comparison details, and retained artifact hashes are in [`cursors-focused-final.json`](../../experiments/python-gamebub-v110/audit/cursors-focused-final.json).

@@ -1,0 +1,45 @@
+{
+  "added_public_cycles": 0,
+  "all_original_assertions_retained": true,
+  "precondition": "Specialization enabled only for validated synchronous ingress; on actual consumed start AC event_count<=blocks*band_width; generic default false retains original unconditional validation.",
+  "production": {
+    "br88_context.sv": {
+      "candidate": "fpga/experiments/cu66-v110-count-domain/br88_context.sv",
+      "candidate_sha256": "029e1ed9b7fd9d3cd8bdf46d0d8e87d773062e1e238001c4b8e672553bb7ab64",
+      "edits": [
+        {
+          "after": "module br88_context #(\n    parameter bit PREVALIDATED_EVENT_COUNT=1'b0\n) (",
+          "before": "module br88_context (",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "k0>19 || k1>11 || (!PREVALIDATED_EVENT_COUNT && event_count>start_limit)",
+          "before": "k0>19 || k1>11 || event_count>start_limit",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v106-context/br88_context.sv",
+      "original_sha256": "9cb6337098d36adfbe4ef2dc073fc30a6dea17eaa4d57322fa4e725b8cce5277"
+    },
+    "br88_packet_ingress_sync_v91h.sv": {
+      "candidate": "fpga/experiments/cu66-v110-count-domain/br88_packet_ingress_sync_v91h.sv",
+      "candidate_sha256": "38c524b52d40c1a7764ac7219582af974b8f973d94d8cff03f23c7088b2bcf28",
+      "edits": [
+        {
+          "after": "    br88_context #(.PREVALIDATED_EVENT_COUNT(1'b1)) context_decoder (",
+          "before": "    br88_context context_decoder (",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    // Independent mathematical caller contract, evaluated only on actual start.\n    // No threshold cache or context start_limit is used as the expected value.\n    always_ff @(posedge clk)if(state==CONTEXT_START && !cancelled)begin\n        assert(context_blocks!=0 && context_blocks<=17'd65536)\n            else $fatal(1,\"prevalidated context block domain\");\n        if(band==0)\n            assert({32'd0,counts[band]}=={47'd0,context_blocks})\n                else $fatal(1,\"prevalidated DC count relation\");\n        else\n            assert({32'd0,counts[band]} <= {47'd0,context_blocks} *\n                (band==1 ? 64'd5 : band==2 ? 64'd15 : 64'd43))\n                else $fatal(1,\"prevalidated AC count relation\");\n    end\n    function automatic logic [31:0] capacity_expected_upper",
+          "before": "`ifndef SYNTHESIS\n    function automatic logic [31:0] capacity_expected_upper",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v109-request/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "ac7260e749ace036495a162882fdb30fdb129d2c7ddde8df67bc2a8957f8f4b1"
+    }
+  },
+  "remaining_product": "limit<=start_limit and WAIT_RUN position bound/error6 unchanged",
+  "schema": "v110-count-domain-caller-specialization-v1"
+}

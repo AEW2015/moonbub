@@ -1,0 +1,13 @@
+# V110 AddressCursors native audit
+
+**Receipt and provenance audit passed; the 100 MHz component timing gate failed.** This was a read-only review of the completed P8 implementation receipt and retained artifacts. No implementation was rerun.
+
+The selected receipt is `experiments/python-gamebub-v110/address-cursors-native/20261108T162032966586Z/receipt.json` (SHA-256 `e796b86e6dc6c38f913659799e38553594f2be5e5ac753ff996cf14759f8adb5`). It records a completed fresh-RTL Default run with the 10 ns clock loaded before synthesis, two CPUs, 8 GiB memory and total swap, and the 3600-second watchdog. The actual Default tool command omitted `-directive`; its command and parent log SHA are retained in the evidence record, with the unavailable directive message honestly left `None`. The terminal Cursor route is separately hash-pinned as negative eligibility evidence, not as this route's source/method baseline.
+
+The composition binds the actual AddressCursors R6 Default source/method control and the full canonical Q. The Q passed 44 profiles and 42 directed checks on seeds 107601 and 107602, with eight replacements and exact public stdout/event/cycle/canonical comparisons against the frozen V109 FETCH baseline. The native source contains 18 bound origins (17 RTL and one header); compared with its actual Default R6 control, exactly the scratch cursor source and synchronous request ingress change. I independently verified all 72 route artifacts, all 98 retained artifact hashes, all source snapshots and recipe snapshots, and the unchanged parent synthesis-checkpoint hash.
+
+The route remains negative: WNS −1.365 ns, TNS −1662.130 ns, 6,031 setup failures, positive hold at 0.043 ns, positive pulse width at 3.750 ns, and zero routing errors. The worst path starts at ingress `band_reg[1]`, traverses the context DSP48 path and control logic, and ends at `context_decoder/done_reg/D`: 12 logic levels and 11.358 ns data delay. The former `stage_read_addr` endpoint is not the current worst endpoint. The DSP and source expression support attribution to the band-selected `start_limit` count/bound cone. The mapped report calls the DSP net `state5`; because `start_limit` also feeds the preserved runtime position/error6 limit, the report alone does not fully separate those consumers' downstream logic.
+
+All eight completed V110 native routes remain negative; no positive fresh repeat is recorded. This is an OOC component result only: no 100 MHz pass, full-parent signoff, board I/O timing, bitstream, hardware 30 fps, or validated decode-under-10-ms result is claimed.
+
+Detailed hashes and raw report pins are recorded in [`address-cursors-native-final.json`](../../experiments/python-gamebub-v110/audit/address-cursors-native-final.json).

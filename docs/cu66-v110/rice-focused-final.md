@@ -1,0 +1,7 @@
+# V110 Rice focused proof audit
+
+The selected focused receipt is an actual RTL run with two passing seeds (110701 and 110702). Each seed records 189,105 prepared clocks, 6,096 parameter cases, the complete 1,520-case × 8-configuration historical golden suite, 173,061 requests per configuration, 104 directed checks, and 8,320 arbitrary inactive/unowned reservoir cases. All 18 source hashes match the current tree and selected attempt snapshots; all 26 retained artifact hashes match.
+
+The extra unowned-bit check allows the private `prefix_rank` value to differ (258 cases per seed). It still calls the inherited `verify()` comparison for every public output and stored state, checks independent size/loaded/consumed/cache/counter/reservoir invariants, and explicitly verifies the raw reservoir is retained in both implementations. The production edit recipe is reversible, keeps the original assertion block, and qualification uses Verilator `--assert`, `-Wall`, fatal C++ warnings, no warning suppression, and no assertion weakening. The exhaustive guarded-use result represents 68,157,440 cases across 33,280 guard classes; it is a model result, not an RTL or physical result.
+
+This focused pass is not a full-parent canonical qualification, native route, timing result, or hardware result. Machine-readable receipt audit: [`rice-focused-final.json`](../../experiments/python-gamebub-v110/audit/rice-focused-final.json).

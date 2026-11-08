@@ -1,0 +1,15 @@
+# V110 count-domain native code review
+
+**Static review status: current bindings and focused proof pass; full canonical Q is pending. No preflight or native launch is authorized by this audit.** The root-provided pure guard receipt was reviewed as evidence but not rerun here.
+
+The transformation remains narrowly scoped. `PREVALIDATED_EVENT_COUNT` defaults to false, preserving unconditional behavior for generic context users. Only the selected synchronous ingress instance enables it. The selected context optimization guards only the AC `event_count > start_limit` rejection; block, band, k, DC, zero-count, and error-priority checks remain. The runtime start limit and WAIT_RUN position/error6 checks remain. The ingress retains malformed descriptor-count rejection. Its actual-start assertion independently checks legal block range and exact DC or unsigned 64-bit AC count bound, without using `start_limit` or the threshold cache as its oracle.
+
+Generic context comparison remains unconditional. The enabled context pair is checked under the explicit consumed-start owner precondition; only an AC-count-invalid owner is excluded from that pair. The full ingress keeps public, invalid, error, counter, debug, and memory comparisons unconditional. The receipt does not claim all private state is exact, and reports no added public cycles or weakened assertions.
+
+The current source adapter SHA (`f8cfe2c5…`) matches the current policy pin. The refreshed pure guard receipt has 64 checks (7 positive, 57 negative) and matches the current policy and driver hashes. Independent read-only calls to the current driver’s parent closure, specialization-input validator, and focused-proof closure passed. The selected focused receipt has actual RTL PASS and all listed artifacts hash-verified. It records 14 commands total: 8 successful positive commands and 6 expected original-assertion rejections across the whole run; the context compile was reused under exact input/order/flags/binary pins, while both context simulations were fresh and ingress was rebuilt. Two earlier fixture-only compile failures remain retained.
+
+The remaining gate is the full canonical `canonical-count-domain/combined` result: it must pass all 44 profiles and 42 directed checks across both seeds, with nine replacements and complete source/artifact closure. At audit time that result file was absent. Therefore there is no native timing, OOC, or hardware qualification claim, and native preparation remains blocked on canonical PASS.
+
+The copied flow retains the AddressCursors method: fixed 10 ns, Default synthesis by omission, Default opt, ExtraNetDelay_high placement, no physical optimization, Default route, no retiming, 8 GiB memory and swap, two CPUs/threads, and a 3600-second watchdog. The measured negative P8 Default parent remains the source/method control; it cannot be used as a positive timing claim.
+
+Detailed current pins and gate status: [`count-domain-native-code.json`](../../experiments/python-gamebub-v110/audit/count-domain-native-code.json).

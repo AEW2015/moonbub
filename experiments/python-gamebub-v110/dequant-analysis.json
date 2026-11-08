@@ -1,0 +1,433 @@
+{
+  "architectural_boundary": "Simply adding MREG/PREG or a result stage delays each visible partial output write and final out_valid unless the schedule is reworked. Treat that as a versioned public contract change, not zero-latency. Existing-edge operand preparation is possible because IDLE acceptance precedes first MULTIPLY result by one full cycle and each MULTIPLY edge already precedes the next group result.",
+  "baseline_WNS_ns": -1.635,
+  "baseline_receipt": "experiments/python-gamebub-v109/native/20261108T121030620057Z/receipt.json",
+  "baseline_receipt_sha256": "d2983a44f4a464803e1552ab70a8925090e41fd58164bca713ef6b3d0a2f8347",
+  "clock_period_ns": 10.0,
+  "dsp_registers": [
+    {
+      "AREG": 0,
+      "BREG": 0,
+      "MREG": 0,
+      "PREG": 0,
+      "instance": "transform/dequant/out_dequantized1",
+      "primitive": "DSP48E1"
+    },
+    {
+      "AREG": 0,
+      "BREG": 0,
+      "MREG": 0,
+      "PREG": 0,
+      "instance": "transform/dequant/out_dequantized1__0",
+      "primitive": "DSP48E1"
+    },
+    {
+      "AREG": 0,
+      "BREG": 0,
+      "MREG": 0,
+      "PREG": 0,
+      "instance": "transform/dequant/out_dequantized1__1",
+      "primitive": "DSP48E1"
+    },
+    {
+      "AREG": 0,
+      "BREG": 0,
+      "MREG": 0,
+      "PREG": 0,
+      "instance": "transform/dequant/out_dequantized1__2",
+      "primitive": "DSP48E1"
+    },
+    {
+      "AREG": 0,
+      "BREG": 0,
+      "MREG": 0,
+      "PREG": 0,
+      "instance": "transform/dequant/out_dequantized1__3",
+      "primitive": "DSP48E1"
+    },
+    {
+      "AREG": 0,
+      "BREG": 0,
+      "MREG": 0,
+      "PREG": 0,
+      "instance": "transform/dequant/out_dequantized1__4",
+      "primitive": "DSP48E1"
+    },
+    {
+      "AREG": 0,
+      "BREG": 0,
+      "MREG": 0,
+      "PREG": 0,
+      "instance": "transform/dequant/out_dequantized1__5",
+      "primitive": "DSP48E1"
+    },
+    {
+      "AREG": 0,
+      "BREG": 0,
+      "MREG": 0,
+      "PREG": 0,
+      "instance": "transform/dequant/out_dequantized1__6",
+      "primitive": "DSP48E1"
+    }
+  ],
+  "needed_proof": [
+    "Assert prepared operands equal legacy current-group selected coefficient and scaled/clamped quantizer whenever MULTIPLY consumes.",
+    "Compare complete old/new public interface every cycle including invalid payload, first/last group, stalls, reset/abort at every group and allzero/invalid fast exits.",
+    "Exercise both chroma modes and all scale codes, +/-2048 and rejected outside range, alternating owners and changing unowned in_* sidebands.",
+    "Keep all original full/focused goldens and assertions; canonical both seeds before source-exact native comparison."
+  ],
+  "part": "xc7a100tcsg324-1",
+  "recommendation": {
+    "added_public_cycles": 0,
+    "advance_capture": "On non-killed MULTIPLY group g<7 edge, write original group g result and simultaneously prepare coefficient/q for group g+1 from owned saved payload/sidebands.",
+    "consumption": "Each MULTIPLY group g consumes matching prepared signed16 coefficient and nonnegative8 quantizer; product remains signed25 then truncated20 into exact original packed output slice.",
+    "first_capture": "On accepted IDLE edge, coefficient[group0] and q(group0) derive from current in_coefficients/in_chroma/in_scale_code, not pre-edge saved registers.",
+    "lanes": 8,
+    "name": "Prepare next-group multiplier operands on existing input/MULTIPLY edges",
+    "not_claimed": [
+      "No demonstrated timing gain",
+      "No AREG/BREG inference guarantee",
+      "No current criticality after in-progress V110 routes",
+      "No measured MHz or successful full canonical proof"
+    ],
+    "operand_bits_per_lane": 24,
+    "physical_intent": "Move group-index ROM/scale/coefficient selection before operand registers; seek DSP AREG/BREG packing only if source-exact native report confirms it.",
+    "retained": "Original group_index schedule, output write location/edge, in_ready/out_valid, ID/error, bad/allzero fast path, public partial/invalid payload, reset/abort clear, HOLD_TILE stalls and owner semantics."
+  },
+  "remaining_top50_dequant_paths": [
+    {
+      "delay_ns": 11.413,
+      "destination": "transform/dequant/out_dequantized_reg[1259]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[19]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 5,
+      "route_ns": 6.805,
+      "slack_ns": -1.564,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.394,
+      "destination": "transform/dequant/out_dequantized_reg[939]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[19]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 6,
+      "route_ns": 6.786,
+      "slack_ns": -1.559,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.405,
+      "destination": "transform/dequant/out_dequantized_reg[285]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[5]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 7,
+      "route_ns": 6.797,
+      "slack_ns": -1.556,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.439,
+      "destination": "transform/dequant/out_dequantized_reg[440]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[0]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 9,
+      "route_ns": 6.831,
+      "slack_ns": -1.551,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.359,
+      "destination": "transform/dequant/out_dequantized_reg[1254]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[14]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 10,
+      "route_ns": 6.751,
+      "slack_ns": -1.546,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.39,
+      "destination": "transform/dequant/out_dequantized_reg[1244]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[4]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 11,
+      "route_ns": 6.782,
+      "slack_ns": -1.541,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.395,
+      "destination": "transform/dequant/out_dequantized_reg[128]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[8]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 12,
+      "route_ns": 6.787,
+      "slack_ns": -1.522,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.367,
+      "destination": "transform/dequant/out_dequantized_reg[1246]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[6]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 13,
+      "route_ns": 6.759,
+      "slack_ns": -1.518,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.386,
+      "destination": "transform/dequant/out_dequantized_reg[137]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[17]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 21,
+      "route_ns": 6.778,
+      "slack_ns": -1.513,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.406,
+      "destination": "transform/dequant/out_dequantized_reg[280]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[0]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 43,
+      "route_ns": 6.798,
+      "slack_ns": -1.506,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.342,
+      "destination": "transform/dequant/out_dequantized_reg[1099]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[19]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 44,
+      "route_ns": 6.734,
+      "slack_ns": -1.501,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.346,
+      "destination": "transform/dequant/out_dequantized_reg[924]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[4]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 45,
+      "route_ns": 6.738,
+      "slack_ns": -1.497,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.307,
+      "destination": "transform/dequant/out_dequantized_reg[445]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[5]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 48,
+      "route_ns": 6.699,
+      "slack_ns": -1.486,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.337,
+      "destination": "transform/dequant/out_dequantized_reg[120]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[0]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 49,
+      "route_ns": 6.729,
+      "slack_ns": -1.483,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    },
+    {
+      "delay_ns": 11.306,
+      "destination": "transform/dequant/out_dequantized_reg[297]/D",
+      "dsp_pins": [
+        "transform/dequant/out_dequantized1__5/P[17]"
+      ],
+      "logic_levels": 5,
+      "logic_ns": 4.608,
+      "rank": 50,
+      "route_ns": 6.698,
+      "slack_ns": -1.483,
+      "source": "transform/dequant/group_index_reg[1]_rep__1/C"
+    }
+  ],
+  "schema": "v110-dequant-existing-edge-analysis-v1",
+  "scope": "Retained FETCH route/source evidence only; no RTL edits, simulator, synthesis, implementation, hardware, constraints or active busy proof modifications.",
+  "status": "READ_ONLY_ANALYSIS_NO_RTL_OR_NEW_TOOL_RUN",
+  "verified_origins": [
+    {
+      "actual": "fpga/experiments/cu66-v107-meta-flags/cu66_coefficient_elastic.sv",
+      "alias": "fpga/experiments/cu66-v107-elastic/cu66_coefficient_elastic.sv",
+      "sha256": "ea53b408aab5e522dfb2c4ffc2eefee41d58af37032cedc409e74815ab35dab9"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v107-payload-reset/cu66_dequant.sv",
+      "alias": "fpga/experiments/cu66-v69/inverse/cu66_dequant.sv",
+      "sha256": "579cb5d397e6638c0533fd54250e161612bdaed74117a29475afbab648aec7fb"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v108-outtile/cu66_idct8x8.sv",
+      "alias": "fpga/experiments/cu66-v69/inverse/cu66_idct8x8.sv",
+      "sha256": "3a30e2c527755ee5e34480274a7998795a773e23fef6cec8471fdd89c31a7808"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh",
+      "alias": "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh",
+      "sha256": "e0d5ae446155c1e295e0add487a30fec9c765cbafc0fabb15d248285ed22dca7"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv",
+      "alias": "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv",
+      "sha256": "3eb9fbc02732f06b05f68499a5c03d48c00f24f7621db6cb318fc13f07c40d64"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v107-rice/br88_rice_elastic.sv",
+      "alias": "fpga/experiments/cu66-v91/br88_rice_elastic.sv",
+      "sha256": "f39c3f90d0242097ea3cd2693e6f4d99e58e33a0b49c644c720497f50e6777dc"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v106-context/br88_context.sv",
+      "alias": "fpga/experiments/cu66-v91b/br88_context.sv",
+      "sha256": "9cb6337098d36adfbe4ef2dc073fc30a6dea17eaa4d57322fa4e725b8cce5277"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v91d/br88_packet_ingress.sv",
+      "alias": "fpga/experiments/cu66-v91d/br88_packet_ingress.sv",
+      "sha256": "3c1cb5d93802dfcece9b003dec151152ab9a59be9d4972cf46023b9e9002eaba"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v108-capacity/packed_scratch_v91g2.sv",
+      "alias": "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv",
+      "sha256": "5c4e6fc665c81920a2f907bb87d34e78f0eac22a114f75633a1f1dc2ddd33676"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v109-fetch/br88_packet_ingress_sync_v91h.sv",
+      "alias": "fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv",
+      "sha256": "4d6a16d0b89aa067fe3e7acc01351ea0bacac694cc63fb681a1471ee4683d044"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v108-capacity/br88_packet_ingress_v91h.sv",
+      "alias": "fpga/experiments/cu66-v91h/br88_packet_ingress_v91h.sv",
+      "sha256": "9529b8a76b531d22f7d0a4498295153f8a397c004725787c34af9824ee84cfb1"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v108-capacity/br88_pipeline_v91h.sv",
+      "alias": "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv",
+      "sha256": "cb440ed9c12c6fa3eac579aea99f2c03716e33b97ce50822ab00b93de08a4360"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v107-tables/cs88_admission_v91i2a.sv",
+      "alias": "fpga/experiments/cu66-v91i2/cs88_admission_v91i2a.sv",
+      "sha256": "b149c94ba1a5dd7f1d09384126c762d0bb0de5aa664baa4b76c29c631aeb652e"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv",
+      "alias": "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv",
+      "sha256": "af78e9d263fcdaa5ccc0d13f370aa994f46e2feb198c54c9775122c02d07a505"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v109-fault/cu66_inverse_stream_v91j.sv",
+      "alias": "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv",
+      "sha256": "6670cda8f2971285036be892a996234e1e0fd3d0f6ed4cc4a60723a4a8995950"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v109-fault/cs88_coefficients_v91k.sv",
+      "alias": "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv",
+      "sha256": "5f18c913b6f2702e8f1036ba70b3ba7328d7cdbdfbc8810972c577bee167e86b"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v109-fault/cs88_pipeline_v91k.sv",
+      "alias": "fpga/experiments/cu66-v91k/cs88_pipeline_v91k.sv",
+      "sha256": "2d8fd318c8cdcc6041b064ecf81d2e8e7d18409b815577b1aa30154db4730770"
+    },
+    {
+      "actual": "fpga/experiments/cu66-v109-fault/cu66_reconstruct_stream_v91k.sv",
+      "alias": "fpga/experiments/cu66-v91k/cu66_reconstruct_stream_v91k.sv",
+      "sha256": "20dbae96f2e22f492c65ea722665b8c6fc87097a8a16617e38645bc6457c59a0"
+    }
+  ],
+  "verified_reports": {
+    "experiments/python-gamebub-v109/native/20261108T121030620057Z/reports/route-dsp-registers.tsv": "c35163618cb1c96a1e1ad2f776b40657bb46a86f1ce13e066bc9d934e7961c92",
+    "experiments/python-gamebub-v109/native/20261108T121030620057Z/reports/route-high-fanout.rpt": "86ac8d751f71f5aed6bf69991dc226ad33e9260b8792cd1510058a4fc211ded6",
+    "experiments/python-gamebub-v109/native/20261108T121030620057Z/reports/route-setup-paths.rpt": "483859825ba170fc84a156b71334bdf35eaa5ece8c4f6a043fef72c7dbb94be6",
+    "experiments/python-gamebub-v109/native/20261108T121030620057Z/reports/route-timing-summary.rpt": "d00ea92bf33ccbb58c599bb8e196b1b437e4647d69ab5d76854da7a6c4d74f94"
+  },
+  "worst_path_DSP": {
+    "arc": "B[3] -> P[19]",
+    "delay_ns": 3.656,
+    "instance": "transform/dequant/out_dequantized1__5",
+    "location": "DSP48_X0Y6"
+  },
+  "worst_path_segments": [
+    {
+      "fanout": 107,
+      "net": "transform/dequant_n_2",
+      "route_ns": 1.794
+    },
+    {
+      "fanout": 5,
+      "net": "transform/dequant/out_dequantized1__5_1",
+      "route_ns": 0.847
+    },
+    {
+      "fanout": 1,
+      "net": "transform/dequant/out_dequantized1__5_i_26_n_0",
+      "route_ns": 0.483
+    },
+    {
+      "fanout": 1,
+      "net": "transform/dequant/out_dequantized1__5_i_3_n_0",
+      "route_ns": 1.103
+    },
+    {
+      "fanout": 1,
+      "net": "transform/dequant/p_0_in[1259]",
+      "route_ns": 1.506
+    },
+    {
+      "fanout": 8,
+      "net": "transform/dequant/out_dequantized[1259]_i_1_n_0",
+      "route_ns": 1.072
+    }
+  ]
+}

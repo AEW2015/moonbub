@@ -1,0 +1,35 @@
+{
+  "schema": "v110-canonical-and-native-harness-source-review-v1",
+  "status": "PASS_SOURCE_GUARDS_AND_GATED_FLOW_REVIEW",
+  "scope": "Read-only review of scripts/cu66-v110/canonical.py, scripts/cu66-v110/native.py, fpga/experiments/cu66-v110-flow run/report Tcl and runner, plus study-policy.json. No flow or RTL run executed for this review.",
+  "source_pins": {
+    "scripts/cu66-v110/canonical.py":"8c5e20992114bf036a6ec65bad48f752305b40ff43e1c87a4f8691a001b838b8",
+    "scripts/cu66-v110/native.py":"2ece767f15930a4423d4da969f8aa72da92ea2fe9a9ad6feec0cb40c30778fab",
+    "fpga/experiments/cu66-v110-flow/run_native.py":"6e404a5ddb96b0e9b3119e3c8867bab4d90193b4fb1029b52d517d619f5f6039",
+    "fpga/experiments/cu66-v110-flow/run.tcl":"3a5cb36dbb04681712ac5ee48146c73e88b95f5de818a4d9282ffdb503e59d47",
+    "fpga/experiments/cu66-v110-flow/report.tcl":"06f6a30f7935142a356d3b4f8151ba5c464526afbae82298f591d5caa152f38c",
+    "experiments/python-gamebub-v110/study-policy.json":"ad0f6efbd3731618349fbe94fa65e35724d6cd2f4c51ca42614b2039367013a6"
+  },
+  "canonical": {
+    "baseline":"Actual V109 FETCH native receipt and its pinned canonical Q result; checks receipt/input manifest, fixed 10 ns clock loaded before synthesis, V109 source origins and baseline receipt/result identity.",
+    "current_origin_binding":"All 18 baseline source origins are checked against recorded hashes. V110 busy/fault overrides are explicit and each must have a matching PASS actual focused receipt hash. Unchanged V107 bench/packaging and admission source remain bound to the frozen V109 record.",
+    "functional_guard":"Uses Verilator --assert and -Wall, no DNDEBUG; rejects compiler warnings; requires candidate PASS rows to match frozen V109 control stdout and raw event/canonical artifact hashes per seed.",
+    "count_guard":"Candidate profile/directed counters increment only after each candidate seed passes. Baseline V109 RTL is explicitly reused, not recompiled or recounted.",
+    "current_q_state":"Busy and combined Q processes had partial candidate output but no final receipt at audit; they are not counted as passes.",
+    "snapshots":"The canonical script in each active busy and combined attempt source snapshot matches the current script SHA."
+  },
+  "native_gate": {
+    "source_contract":"Requires a PASS actual canonical result, 18 source closure entries including 17 SV files and one header, current origin hashes, and applicable focused proof hashes.",
+    "baseline_clock":"Pins V109 FETCH receipt/input manifest and 10 ns actual pre-synthesis clock-loaded evidence.",
+    "preflight_binding":"Requires policy, prepared inputs, source contract, tool, and recipe hashes to match an independent PASS_V110_NATIVE_PREFLIGHT_AUDIT record before dispatch.",
+    "resource_and_repeat_controls":"Policy limits initial trials to three variants, at most two concurrent heavy jobs, 2 CPUs/8 GiB/2400 s; permits two hypothesis-led adaptive trials and one clean positive RTL repeat. Silent retries are rejected.",
+    "report_parser":"Runner enforces exact 10 ns clock waveform, setup/hold/pulse, check_timing, and route-status predicates; root reports parser self-test matched all four actual V109 report sets. The V110 launcher also checks V109 FETCH reports parse identically to the pinned receipt before preparing a trial.",
+    "local_predicate_mapping":"Flow report emits read-only local-predicates TSV for busy_owned/fault_pending/fault_ack cells with primitive/location/INIT where available; no KEEP or DONT_TOUCH is applied.",
+    "scope":"OOC component route only. Runner hard-codes board I/O, complete top, hardware 30 fps and under-10-ms qualification false; physical pass still requires a fresh RTL repeat."
+  },
+  "open_canonical_receipts": [
+    "experiments/python-gamebub-v110/canonical/busy/attempts/20261108T130242453019Z/receipt.json",
+    "experiments/python-gamebub-v110/canonical/combined/attempts/20261108T130450424219Z/receipt.json"
+  ],
+  "native_runs_present": false
+}

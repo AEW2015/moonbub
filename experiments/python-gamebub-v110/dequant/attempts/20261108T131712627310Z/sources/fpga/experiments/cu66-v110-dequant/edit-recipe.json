@@ -1,0 +1,35 @@
+{
+  "added_public_cycles": 0,
+  "first_group": "Live in_* on original IDLE capture edge, matching original coefficient/chroma/scale RF captures including invalid/kill edges.",
+  "next_group": "Saved owned payload at MULTIPLY group<7 edge while original current-group output writes on its unchanged edge.",
+  "original_private_payload_capture_unchanged": true,
+  "owned_operand_invariant": "Every non-killed MULTIPLY cycle: coefficient, fully scaled/clamped quantizer and signed25 product match original current-group expressions.",
+  "production": {
+    "cu66_dequant.sv": {
+      "candidate": "fpga/experiments/cu66-v110-dequant/cu66_dequant.sv",
+      "candidate_sha256": "e0a62ee4886f5690e2a0c788d20cbef1ee669ef451a4944c10c43e43788c72ac",
+      "edits": [
+        {
+          "after": "    logic signed [24:0] products [0:7];\n    // Prepare the next owned beat on an existing edge. The input acceptance\n    // edge supplies group zero; each result edge supplies the following group.\n    // These private payload registers need no reset or new public valid state.\n    logic signed [15:0] operand_coefficients [0:7];\n    logic [7:0] operand_quantizers [0:7];\n    logic signed [24:0] operand_products [0:7];\n    function automatic logic [7:0] prepared_quant(input logic chr,\n        input logic [1:0] sc,input logic [5:0] position);\n        logic [8:0] value;\n        case(sc)\n            0:value=({1'b0,base_quant(chr,position)}+9'd1)>>1;\n            1:value={1'b0,base_quant(chr,position)};\n            2:value={base_quant(chr,position),1'b0};\n            default:value=0;\n        endcase\n        prepared_quant=(value>255)?8'hff:value[7:0];\n    endfunction\n    for(genvar lane=0;lane<8;lane=lane+1)begin: prepared_operands\n        assign operand_products[lane]=$signed(operand_coefficients[lane]) *\n                                      $signed({1'b0,operand_quantizers[lane]});\n        always_ff @(posedge clk)begin\n            if(state==IDLE)begin\n                operand_coefficients[lane]<=in_coefficients[lane*16 +:16];\n                operand_quantizers[lane]<=prepared_quant(in_chroma,in_scale_code,6'(lane));\n            end else if(state==MULTIPLY && group_index!=7)begin\n                operand_coefficients[lane]<=coefficients[((int'(group_index)+1)*8+lane)*16 +:16];\n                operand_quantizers[lane]<=prepared_quant(chroma,scale_code,{(group_index+3'd1),3'(lane)});\n            end\n        end\n    end",
+          "before": "    logic signed [24:0] products [0:7];",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "out_dequantized[(int'(group_index)*8+lane)*20 +:20]<=20'(operand_products[lane]);",
+          "before": "out_dequantized[(int'(group_index)*8+lane)*20 +:20]<=20'(products[lane]);",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    // The original quantizer/selection/product expressions remain independent\n    // reference expressions. Only owned MULTIPLY cycles consume operands.\n    always_ff @(posedge clk)if(state==MULTIPLY && !rst && !abort_i)begin\n        for(integer lane=0;lane<8;lane=lane+1)begin\n            assert(operand_coefficients[lane]==coefficients[(int'(group_index)*8+lane)*16 +:16])\n                else $fatal(1,\"dequant prepared coefficient owner mismatch\");\n            assert(operand_quantizers[lane]==q[lane])\n                else $fatal(1,\"dequant prepared quantizer owner mismatch\");\n            assert(operand_products[lane]==products[lane])\n                else $fatal(1,\"dequant prepared signed product mismatch\");\n        end\n    end\n`endif\nendmodule",
+          "before": "endmodule",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-payload-reset/cu66_dequant.sv",
+      "original_sha256": "579cb5d397e6638c0533fd54250e161612bdaed74117a29475afbab648aec7fb"
+    }
+  },
+  "public_partial_invalid_output_schedule_unchanged": true,
+  "schema": "v110-dequant-existing-edge-operands-v1",
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

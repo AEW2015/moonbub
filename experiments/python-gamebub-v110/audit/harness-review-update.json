@@ -1,0 +1,51 @@
+{
+  "schema": "v110-dequant-harness-source-review-v1",
+  "status": "PASS_SOURCE_GATES_WITH_NONBLOCKING_PROFILE_ALLOWLIST_NOTE",
+  "audited_at": "2026-11-08",
+  "scope": "Read-only source review of new combined-dequant canonical/native qualification gates, study policy, current dequant focused-model status, and report-only mapping additions. No simulation, synthesis, native route, or hardware run performed.",
+  "source_pins": {
+    "scripts/cu66-v110/dequant_canonical.py":"ba696f2625ce3a938554ec7a60224fb9aae81a57dbc452deb92267e37b238cd0",
+    "scripts/cu66-v110/native_dequant.py":"507da081b803fec83adf2062af7a6fa4c64261bb303e760e52f104e65a26157b",
+    "scripts/cu66-v110/dequant/qualify.py":"8379eeb133ac4234957b7a827d6030f00ba085ea0eb6b893b91f622c18349673",
+    "scripts/cu66-v110/dequant/prepare.py":"cd1c2bd175e0e85d35de5360c991a4d736bb17cf019ade16cc06f90b706e750b",
+    "experiments/python-gamebub-v110/study-policy.json":"a1d521da9c6cb4c624554c6a8b54229e9e19a44bcec37de49ea2e52ed95d9add",
+    "experiments/python-gamebub-v110/dequant/model.json":"244e286e3e62827e1acb1c91c3bf5b30b8ed80363e26cef714cd0e0a1c2b5b3a",
+    "experiments/python-gamebub-v110/dequant/preparation.json":"8b389c4326684a8f7f0b7f3165ed90fb26a7acaf64632c4d5494417fd236f6f5",
+    "experiments/python-gamebub-v110/dequant-analysis.json":"7a045d6248b7f2a4073506f070f341ffc74716ad8454a65fd95f27aac94a640c",
+    "fpga/experiments/cu66-v110-flow/report.tcl":"06f6a30f7935142a356d3b4f8151ba5c464526afbae82298f591d5caa152f38c",
+    "fpga/experiments/cu66-v110-flow/run_native.py":"6b359d08cfd3315f530f56d54d60581dc08a4c421c3dc180d1eacfe622735ddd"
+  },
+  "dequant_proof_status": {
+    "model_status":"PASS_EXISTING_EDGE_OPERAND_MODEL_NOT_RTL",
+    "rtl_focused_receipt_present":false,
+    "canonical_result_present":false,
+    "interpretation":"The independent existing-edge operand model is not an actual RTL proof. Canonical and native qualification remain gated until an actual focused dequant RTL PASS receipt exists."
+  },
+  "canonical_gates": {
+    "baseline":"Pins V109 FETCH actual native receipt, Q result, 10 ns actual pre-synthesis clock state, 18 source origins and the unchanged bench/vector inputs.",
+    "profile":"Only combined composition accepted. Busy, fault, and combined focused proof receipts must all be PASS/actual; the dequant proof receipt is additionally required.",
+    "source_binding":"Requires candidate busy/fault/dequant source hashes to match the corresponding focused receipts, while unchanged source hashes remain tied to the frozen V109 FETCH canonical source record.",
+    "assertions_and_outputs":"Verilator --assert and -Wall remain active; compiler warnings fail. Both frozen V109 seeds must pass 22 cases/21 directed checks each, with exact stdout/events/cycles and raw canonical artifacts matching the actual V109 FETCH control.",
+    "control_reuse":"V109 FETCH actual RTL is reused, not rebuilt or counted as a new V110 run.",
+    "current_state":"No dequant focused results.json or canonical-dequant combined results.json exists as of this audit."
+  },
+  "native_gates": {
+    "profile":"native_dequant.py uses the combined-dequant canonical namespace and requires a passing actual canonical result plus busy, fault and dequant focused proof pins.",
+    "native_source_closure":"Reconstructs the 18-source closure (17 SV + one include header), checks canonical-to-origin hashes, pins V109 FETCH receipt and fixed clock, policy/recipe/tool hashes, and tests parser output against the pinned FETCH report result before preflight.",
+    "dispatch":"Requires an independently PASSed preflight audit bound to the exact preflight and policy hashes; launch capacity, no-silent-retry, adaptive-trial, and positive-repeat limits are inherited from native.py.",
+    "initial_trial_policy":{"allowed_profile_names":4,"maximum_initial_trials":3,"adaptive_trials_after_hypothesis":2,"positive_clean_repeat":1,"maximum_concurrent_heavy_jobs":2},
+    "trial_naming":"The default combined variant and dequant tag create trial_id v110-combined-dequant, matching the new policy profile name."
+  },
+  "policy_enforcement_note": {
+    "severity":"NONBLOCKING_FOR_THE_DEFAULT_COMBINED_DEQUANT_INVOCATION",
+    "finding":"The launcher enforces the global initial-trial ceiling and native_dequant.py constrains the source composition to combined, but it accepts a caller-supplied alphanumeric --tag without checking the generated trial/profile name against study-policy.initial_variants. The policy list is therefore not a programmatic per-profile allowlist.",
+    "current_default":"No mismatch on the default invocation: trial_id is v110-combined-dequant, one of the listed profiles."
+  },
+  "mapping_report": {
+    "path":"fpga/experiments/cu66-v110-flow/report.tcl",
+    "fields":"Each synth/place/route report emits instance, primitive, location and INIT for matching busy_owned, fault_pending and fault_ack cell names where available.",
+    "read_only":"No set_property, KEEP, DONT_TOUCH or MAX_FANOUT preservation directive was added. The file is report-only and does not affect mapped logic.",
+    "other_flow_change":"run_native.py emits the rich methodology report from native findings and explicitly preserves fixed 10 ns, no-waiver, no-board-I/O/complete-parent qualification limits."
+  },
+  "related_canonical_state_at_review":"Per root status, the existing combined canonical run had seed 107601 PASS and seed 107602 still running; final combined PASS remains required before native dispatch."
+}

@@ -1,0 +1,135 @@
+{
+  "adapters": [
+    {
+      "path": "fpga/experiments/cu66-v110-count-domain/verification/context_original.sv",
+      "renames": [
+        [
+          "module br88_context",
+          "module context_original"
+        ],
+        [
+          "\n);",
+          ",\n    output logic [15:0] verify_sparse_block,\n    output logic [5:0] verify_sparse_index\n);"
+        ],
+        [
+          "\nendmodule",
+          "\n    assign verify_sparse_block=sparse_block;assign verify_sparse_index=sparse_index;\n\nendmodule"
+        ]
+      ],
+      "sha256": "2b5425853b22175373300f577cbf3dd442ea6afe12e0d9270d4f2163f13237ec",
+      "source": "fpga/experiments/cu66-v106-context/br88_context.sv",
+      "source_sha256": "9cb6337098d36adfbe4ef2dc073fc30a6dea17eaa4d57322fa4e725b8cce5277"
+    },
+    {
+      "path": "fpga/experiments/cu66-v110-count-domain/verification/context_candidate.sv",
+      "renames": [
+        [
+          "module br88_context",
+          "module context_candidate"
+        ],
+        [
+          "\n);",
+          ",\n    output logic [15:0] verify_sparse_block,\n    output logic [5:0] verify_sparse_index\n);"
+        ],
+        [
+          "\nendmodule",
+          "\n    assign verify_sparse_block=sparse_block;assign verify_sparse_index=sparse_index;\n\nendmodule"
+        ]
+      ],
+      "sha256": "77daafaa2309e3b2b38afb42cedc5931ad34a75c8224c93bfb40355196b45356",
+      "source": "fpga/experiments/cu66-v110-count-domain/br88_context.sv",
+      "source_sha256": "029e1ed9b7fd9d3cd8bdf46d0d8e87d773062e1e238001c4b8e672553bb7ab64"
+    },
+    {
+      "path": "fpga/experiments/cu66-v110-count-domain/verification/ingress_reference_context.sv",
+      "renames": [
+        [
+          "module br88_context",
+          "module br88_context_reference"
+        ]
+      ],
+      "sha256": "5ce93375901681bba2a52340a473279a238063bb03369384c738b0b0aaa98554",
+      "source": "fpga/experiments/cu66-v106-context/br88_context.sv",
+      "source_sha256": "9cb6337098d36adfbe4ef2dc073fc30a6dea17eaa4d57322fa4e725b8cce5277"
+    },
+    {
+      "path": "fpga/experiments/cu66-v110-count-domain/verification/ingress_original.sv",
+      "renames": [
+        [
+          "module br88_packet_ingress_sync_v91h ",
+          "module ingress_original "
+        ],
+        [
+          "    br88_context context_decoder (",
+          "    br88_context_reference context_decoder ("
+        ]
+      ],
+      "sha256": "65af122b6aedc325667717f37ff306381e422759527844344c34a67633b5dd19",
+      "source": "fpga/experiments/cu66-v109-request/br88_packet_ingress_sync_v91h.sv",
+      "source_sha256": "ac7260e749ace036495a162882fdb30fdb129d2c7ddde8df67bc2a8957f8f4b1"
+    },
+    {
+      "path": "fpga/experiments/cu66-v110-count-domain/verification/ingress_candidate.sv",
+      "renames": [
+        [
+          "module br88_packet_ingress_sync_v91h ",
+          "module ingress_candidate "
+        ]
+      ],
+      "sha256": "9a345349868cec5d2547b47969160e7cc9e1a51b9f66e233d7e21f9178bb9560",
+      "source": "fpga/experiments/cu66-v110-count-domain/br88_packet_ingress_sync_v91h.sv",
+      "source_sha256": "38c524b52d40c1a7764ac7219582af974b8f973d94d8cff03f23c7088b2bcf28"
+    }
+  ],
+  "all_original_assertions_and_goldens_retained": true,
+  "all_public_ports_including_invalid_and_counters": true,
+  "context_fixture_original": "fpga/experiments/cu66-v106-context/tb_context.cpp",
+  "context_fixture_original_sha256": "cce85e7a734c11195e62e48c67f868687e0561ebc4fd7aea59786642acec41e9",
+  "context_probe_edits": [
+    [
+      "    output logic mismatch,",
+      "    output logic mismatch,\n    output logic specialized_owner_domain, specialized_mismatch,"
+    ],
+    [
+      "    assign verify_original_geometry=",
+      "    logic special_in_ready;\n    logic special_out_valid;\n    logic [15:0] special_out_block;\n    logic [5:0] special_out_index;\n    logic signed [15:0] special_out_coefficient;\n    logic [31:0] special_out_epoch;\n    logic special_done;\n    logic [3:0] special_error;\n    logic [31:0] special_consumed_bits;\n    logic [63:0] special_count_cycles;\n    logic [63:0] special_count_inputs;\n    logic [63:0] special_count_symbols;\n    logic [63:0] special_count_outputs;\n    logic [63:0] special_count_output_stall;\n    logic [63:0] special_count_input_wait;\n    logic [63:0] special_count_parser_cycles;\n    logic [63:0] special_count_parser_output_stall;\n    logic [3:0] special_debug_state;\n    logic [6:0] special_reservoir_bits;\n    logic [15:0] special_sparse_block;logic [5:0] special_sparse_index;\n    logic start_count_precondition;\n    assign start_count_precondition=band==0 || band>3 ||\n        ({32'd0,event_count} <= {47'd0,blocks} * (band==1 ? 64'd5 : band==2 ? 64'd15 : 64'd43));\n    always_ff @(posedge clk)\n        if(reset || abort_context)specialized_owner_domain<=1;\n        else if(start)specialized_owner_domain<=start_count_precondition;\n    context_candidate #(.PREVALIDATED_EVENT_COUNT(1'b1)) specialized (\n        .clk(clk),\n        .reset(reset),\n        .start(start),\n        .abort_context(abort_context),\n        .blocks(blocks),\n        .band(band),\n        .k0(k0),\n        .k1(k1),\n        .event_count(event_count),\n        .stream_bits(stream_bits),\n        .epoch(epoch),\n        .word16(word16),\n        .serial_mode(serial_mode),\n        .in_valid(in_valid),\n        .in_ready(special_in_ready),\n        .in_data(in_data),\n        .in_bits(in_bits),\n        .in_last(in_last),\n        .out_valid(special_out_valid),\n        .out_ready(out_ready),\n        .out_block(special_out_block),\n        .out_index(special_out_index),\n        .out_coefficient(special_out_coefficient),\n        .out_epoch(special_out_epoch),\n        .done(special_done),\n        .error(special_error),\n        .consumed_bits(special_consumed_bits),\n        .count_cycles(special_count_cycles),\n        .count_inputs(special_count_inputs),\n        .count_symbols(special_count_symbols),\n        .count_outputs(special_count_outputs),\n        .count_output_stall(special_count_output_stall),\n        .count_input_wait(special_count_input_wait),\n        .count_parser_cycles(special_count_parser_cycles),\n        .count_parser_output_stall(special_count_parser_output_stall),\n        .debug_state(special_debug_state),\n        .reservoir_bits(special_reservoir_bits),\n        .verify_sparse_block(special_sparse_block),.verify_sparse_index(special_sparse_index));\n    assign specialized_mismatch=specialized_owner_domain && (special_in_ready!=original_in_ready ||\n        special_out_valid!=original_out_valid ||\n        special_out_block!=original_out_block ||\n        special_out_index!=original_out_index ||\n        special_out_coefficient!=original_out_coefficient ||\n        special_out_epoch!=original_out_epoch ||\n        special_done!=original_done ||\n        special_error!=original_error ||\n        special_consumed_bits!=original_consumed_bits ||\n        special_count_cycles!=original_count_cycles ||\n        special_count_inputs!=original_count_inputs ||\n        special_count_symbols!=original_count_symbols ||\n        special_count_outputs!=original_count_outputs ||\n        special_count_output_stall!=original_count_output_stall ||\n        special_count_input_wait!=original_count_input_wait ||\n        special_count_parser_cycles!=original_count_parser_cycles ||\n        special_count_parser_output_stall!=original_count_parser_output_stall ||\n        special_debug_state!=original_debug_state ||\n        special_reservoir_bits!=original_reservoir_bits || special_sparse_block!=original_sparse_block || special_sparse_index!=original_sparse_index);\n    assign verify_original_geometry="
+    ],
+    [
+      "        mismatch=original_sparse_block",
+      "        mismatch=specialized_mismatch || original_sparse_block"
+    ]
+  ],
+  "context_probe_original": "fpga/experiments/cu66-v106-context/context_probe.sv",
+  "context_probe_original_sha256": "6b19e9170a87177e31daf9585749c7d16b9859eca32677aac6fa8ca7cb4e71d9",
+  "generic_pair_unconditional": true,
+  "schema": "v110-count-domain-actual-whole-context-and-ingress-adapters-v1",
+  "specialized_pair_precondition": "Owned start band0 or band>3 or AC count<=unsigned64 blocks*factor; reset/abort always compared. Other invalid config fields do not exempt comparison.",
+  "whole_ingress_fixture_edits": {
+    "ingress_capture_probe.sv": [],
+    "tb_capture.cpp": [
+      [
+        "#include \"Vingress_capture_probe_br88_context.h\"",
+        "#include \"Vingress_capture_probe__Syms.h\""
+      ],
+      [
+        "NEW(expected_fetch_addr)=uint32_t(index);",
+        "BOTH(expected_fetch_addr,uint32_t(index));"
+      ]
+    ],
+    "tb_fetch.cpp": [
+      [
+        "NEW(prepared_request_addr)=address;",
+        "BOTH(prepared_request_addr,address);"
+      ],
+      [
+        "NEW(prepared_request_in_bounds)=address<c.size&&address<49152U;",
+        "BOTH(prepared_request_in_bounds,address<c.size&&address<49152U);"
+      ]
+    ]
+  },
+  "whole_ingress_fixture_originals": {
+    "fpga/experiments/cu66-v109-request/verification/ingress_capture_probe.sv": "d238bed5799b60147b470d71a2570412bb7d537084ce4c4b2b6eab3dbe930e36",
+    "fpga/experiments/cu66-v109-request/verification/tb_capture.cpp": "8b7d90ad7b9beb07a26bb3dce5b3422db97a298822853e09a4d30b1ccf3aa6c7",
+    "fpga/experiments/cu66-v109-request/verification/tb_fetch.cpp": "b7f758122667e97261d9211a7231f9599b32d319884fb53ee6a89a8550064a91"
+  }
+}

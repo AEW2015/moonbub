@@ -1,0 +1,78 @@
+{
+  "schema": "v110-cursors-focused-audit-v1",
+  "status": "PASS_FOCUSED_CURSOR_OWNER_SCOPE_AUDIT",
+  "scope": "Focused two-seed actual RTL/probe regression only. Public behavior and active-owner cursor preservation; not full-Q, physical, or hardware qualification.",
+  "pins": {
+    "summary_path": "experiments/python-gamebub-v110/cursors/results.json",
+    "summary_sha256": "7c2e5c896d0c13e737c2e972f981280dcdde1dcfda0f4a7464a4c319845a999d",
+    "selected_attempt_path": "experiments/python-gamebub-v110/cursors/attempts/20261108T153917289977Z/results.json",
+    "selected_attempt_sha256": "86d79262684a1e7c0e2ab1bd7d0b0d29eb9af7df1df6a066135cddfc7d607080",
+    "source_snapshot": "experiments/python-gamebub-v110/cursors/attempts/20261108T153917289977Z/sources/fpga/experiments/cu66-v110-cursors/packed_scratch_v91g2.sv",
+    "source_sha256": "ebc4ca022b00e9d41613155eb80859986a8a2fbb803b4541a72511105589a218",
+    "candidate_source_sha256_in_receipt": "ebc4ca022b00e9d41613155eb80859986a8a2fbb803b4541a72511105589a218",
+    "preparation_sha256": "df03ad540e6dbeeb37ab47fce513e9e485ccd4acf905df6b97771c933f3a708d",
+    "model_sha256": "f8208b54212db97c8e3837388f97ac7dd475063ed9677ad3e5faf9381f000670",
+    "binary_sha256": "00f03c27c29844e44d558b01c337e65ae3cd777d84ce8775788d4e7180793d0d",
+    "receipt_source_inventory_entries": 30,
+    "receipt_artifact_map_sha256_matches_files": true
+  },
+  "candidate_change": {
+    "production_replacement_count": 1,
+    "original": "fpga/experiments/cu66-v110-busy/packed_scratch_v91g2.sv",
+    "candidate": "fpga/experiments/cu66-v110-cursors/packed_scratch_v91g2.sv",
+    "edit_summary": "Removed two cursor updates tied to begin/read paths; added independent cursor clear on every IDLE edge and increment on existing valid cache-hit AC_EXTRACT edge. No public cycle added; controller transitions otherwise preserved.",
+    "added_public_cycles": 0,
+    "assertions_disabled_or_downgraded": false,
+    "warnings_suppressed": false
+  },
+  "comparison_contract": {
+    "fsm_state_raw_equal_each_sampled_edge": true,
+    "cursor_equal_if_either_side_live": true,
+    "live_states_exclude": [
+      "IDLE",
+      "DRAIN",
+      "FINISHED",
+      "FAILED"
+    ],
+    "inactive_private_cursor_equality_required": false,
+    "intentional_inactive_cursor_divergence_tested": true,
+    "noncursor_outputs_and_debug_state_compared": true,
+    "qualifications": "Cursor-adjacent cache payload/head observation checks retain their original valid/use/ordinal qualifiers; do not describe every private probe bit as unconditional raw equality. Public cycle behavior, invalid/debug/memory interfaces, and the inherited active assertions remain enabled.",
+    "all_private_RF_exact": false
+  },
+  "focused_results": {
+    "seeds": [
+      111201,
+      111202
+    ],
+    "per_seed": {
+      "inherited_full_transactions": 72,
+      "corrupt_response_cases": 128,
+      "read_owner_cases": 4,
+      "dc_line_boundary_transactions": 48,
+      "cursor_retirement_cases": 6,
+      "inactive_divergence_cases": 6,
+      "restored_new_owner_cases": 6,
+      "inherited_verdict": "TEST_PASS",
+      "cursor_retirement_verdict": "TEST_PASS"
+    },
+    "miter_build": "Verilator --assert -Wall; C++17 -Wall -Wextra -Werror; successful build and simulation; no warning suppression",
+    "model": {
+      "status": "PASS_BOUNDED_CURSOR_OWNER_RESTORATION_MODEL_NOT_RTL",
+      "transition_rows": 111360,
+      "formal_or_RTL_proof": false,
+      "intentional_retired_divergence_rows": null
+    }
+  },
+  "retained_first_attempt": {
+    "path": "experiments/python-gamebub-v110/cursors/attempts/20261108T153818355793Z/results.json",
+    "sha256": "1c3fd95b9c2f4dffc6d74280f5908b08cf0429cbec21fda0c6084af643fa9222",
+    "status": "compile failed; actual_RTL_run=false",
+    "cause": "C++ fixture -Werror=misleading-indentation on three while clauses in tb_cursors.cpp; retained. The selected subsequent attempt passed with the same candidate production source SHA."
+  },
+  "limits": [
+    "Focused cursor-retirement proof only; composed full-Q cursor run was still active at audit time.",
+    "No native timing, place/route, physical-clock, or hardware result is claimed.",
+    "Finite model is not a formal RTL/four-state proof."
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "added_public_cycles": 0,
+  "production": {
+    "packed_scratch_v91g2.sv": {
+      "candidate": "fpga/experiments/cu66-v110-cursors/packed_scratch_v91g2.sv",
+      "candidate_sha256": "ebc4ca022b00e9d41613155eb80859986a8a2fbb803b4541a72511105589a218",
+      "edits": [
+        {
+          "after": "                        // Private cursor payload clears on every original IDLE edge below.",
+          "before": "                        for(integer b=1;b<=3;b=b+1) cursors[b]<=0;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                            head_valid[read_band]<=1;",
+          "before": "                            cursors[read_band]<=cursors[read_band]+1; head_valid[read_band]<=1;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "    // Cursor payload is unowned in IDLE/DRAIN/FINISHED/FAILED. Every new\n    // owner enters through an IDLE edge, restoring all cursors before use.\n    // A cache miss must hold: the matching read returns to this same ordinal.\n    // Malformed/cancelled hit increments retire with the owner and cannot\n    // change any later live use. Public/controller/head updates stay guarded.\n    for(genvar cursor_bank=1;cursor_bank<=3;cursor_bank=cursor_bank+1)begin: cursor_payload\n        always_ff @(posedge clk)begin\n            if(state==IDLE)cursors[cursor_bank]<=0;\n            else if(state==AC_EXTRACT && read_band==2'(cursor_bank) &&\n                cache_valid[read_segment] &&\n                cache_address[read_segment]==18'(read_address & 32'hfffffff0))\n                cursors[cursor_bank]<=cursors[cursor_bank]+1;\n        end\n    end\n\n    always_ff @(posedge clk) begin\n        // A reset is cancellation, not permission to discard an accepted write.",
+          "before": "    always_ff @(posedge clk) begin\n        // A reset is cancellation, not permission to discard an accepted write.",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v110-busy/packed_scratch_v91g2.sv",
+      "original_sha256": "e9a70463b78c0afbbded2358fd9b4ca7f600c695d9251b0cf3d202a74ad21478"
+    }
+  },
+  "schema": "v110-private-cursor-owner-scope-v1",
+  "scope": "Every production public/invalid/debug/memory output and noncursor stored state exact; cursors equal whenever either DUT has a live owner. Only retired/unowned cursor payload may differ. Cache misses hold. No all-private-state equivalence claim.",
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

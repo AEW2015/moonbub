@@ -1,0 +1,31 @@
+{
+  "added_public_cycles": 0,
+  "production": {
+    "br88_rice_elastic.sv": {
+      "candidate": "fpga/experiments/cu66-v110-prefix/br88_rice_elastic.sv",
+      "candidate_sha256": "c07d936e807a09ee332b5df4c3f743f88f284784fbcf1e704d1a8db770c33eac",
+      "edits": [
+        {
+          "after": "                      (found_one ? 6'(prefix_rank)+6'd1 : window);",
+          "before": "                      (zeros==15 ? 6'd15 : (found_one ? 6'(zeros)+1'b1 : window));",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                            quotient<=5'(prefix_rank); suffix_left<=prefix_rank==15 ? escape_width : k;",
+          "before": "                            quotient<=zeros; suffix_left<=zeros==15 ? escape_width : k;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    // All PREFIX take values agree, even when the current cycle cannot consume.\n    always_ff @(posedge clk)if(state==PREFIX)begin\n        assert(take_bits==(serial ? 6'd1 : (zeros==15 ? 6'd15 : (found_one ? 6'(zeros)+6'd1 : window))))\n            else $fatal(1,\"parallel prefix take identity mismatch\");\n    end\n    // Existing outer priority reaches this write only when not truncated.\n    always_ff @(posedge clk)if(!reset&&!stream_start&&active&&state==PREFIX&&!out_valid&&\n        !(req_valid&&req_ready)&&!(in_valid&&in_ready)&&failed==0&&!prefix_empty&&can_step&&\n        !serial&&(found_one||window==15))begin\n        assert(zeros==5'(prefix_rank) && (zeros==15)==(prefix_rank==15))\n            else $fatal(1,\"selected parallel prefix rank identity mismatch\");\n    end\n`endif\nendmodule",
+          "before": "endmodule",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v110-rice/br88_rice_elastic.sv",
+      "original_sha256": "dfa58d806ce93ab273f0eb4a2d45b391198ab4bee9ce33aea324d5285d1cc5df"
+    }
+  },
+  "schema": "v110-parallel-prefix-guarded-rank-v1",
+  "scope": "Take expression exact for every reachable combinational window/rank including stalled/inactive cycles. Rank load equivalence only in original parallel PREFIX nontruncated write branch. Original guards, zeros/reference, assertions, public/invalid/counters and all raw registers retained.",
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

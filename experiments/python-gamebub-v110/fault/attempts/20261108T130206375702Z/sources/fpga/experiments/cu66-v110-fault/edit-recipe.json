@@ -1,0 +1,166 @@
+{
+  "added_public_cycles": 0,
+  "baseline_receipt": "experiments/python-gamebub-v109/native/20261108T121030620057Z/receipt.json",
+  "baseline_receipt_sha256": "d2983a44f4a464803e1552ab70a8925090e41fd58164bca713ef6b3d0a2f8347",
+  "error_assignment_policy": "Existing fault/reset/start/cancel/error assignment and priority unchanged. Pending defaults zero on every edge, then fail(reason) assigns (reason!=0)&&!ack_i&&!old_fault in original task priority.",
+  "production": {
+    "cs88_pipeline_v91k.sv": {
+      "alias": "fpga/experiments/cu66-v91k/cs88_pipeline_v91k.sv",
+      "candidate": "fpga/experiments/cu66-v110-fault/cs88_pipeline_v91k.sv",
+      "candidate_sha256": "950182396c4ac6f0f31c74fd41bf66c6122727e44cacf31ae48c55098e0dd786",
+      "edits": [
+        {
+          "after": "    logic inverse_fault, reconstruction_fault, coefficient_fault;\n    logic inverse_fault_pending, reconstruction_fault_pending;",
+          "before": "    logic inverse_fault, reconstruction_fault, coefficient_fault;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "    assign base_abort=abort_packet||inverse_fault_pending||reconstruction_fault_pending;",
+          "before": "    assign base_abort=abort_packet||(inverse_fault&&!inverse_fault_ack)||(reconstruction_fault&&!reconstruction_fault_ack);",
+          "expected_occurrences": 1
+        },
+        {
+          "after": ".error(inverse_error),.fault_o(inverse_fault),\n        .fault_ack_i(inverse_fault_ack),.fault_pending_o(inverse_fault_pending),",
+          "before": ".error(inverse_error),.fault_o(inverse_fault),",
+          "expected_occurrences": 1
+        },
+        {
+          "after": ".error(reconstruct_error),.fault_o(reconstruction_fault),\n        .fault_ack_i(reconstruction_fault_ack),.fault_pending_o(reconstruction_fault_pending),",
+          "before": ".error(reconstruct_error),.fault_o(reconstruction_fault),",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        assert(inverse_fault_pending==(inverse_fault&&!inverse_fault_ack)) else $fatal(1,\"inverse pending fault/ack mismatch\");\n        assert(reconstruction_fault_pending==(reconstruction_fault&&!reconstruction_fault_ack)) else $fatal(1,\"reconstruction pending fault/ack mismatch\");\n        assert(inverse_fault==(inverse_error!=0))",
+          "before": "        assert(inverse_fault==(inverse_error!=0))",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v109-fault/cs88_pipeline_v91k.sv",
+      "original_sha256": "2d8fd318c8cdcc6041b064ecf81d2e8e7d18409b815577b1aa30154db4730770"
+    },
+    "cu66_inverse_stream_v91j.sv": {
+      "alias": "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv",
+      "candidate": "fpga/experiments/cu66-v110-fault/cu66_inverse_stream_v91j.sv",
+      "candidate_sha256": "e00f53b7360878455e1078b0aaa3955ee0aab4abbecefde0c1b3b1f5a90c8a41",
+      "edits": [
+        {
+          "after": "    output logic fault_o,\n    // Pulse equals fault_o && !top acknowledgement on the original fault edge.\n    input logic fault_ack_i,\n    output logic fault_pending_o,",
+          "before": "    output logic fault_o,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "error<=reason;fault_o<=(reason)!=0;fault_pending_o<=(reason)!=0&&!fault_ack_i&&!fault_o;",
+          "before": "error<=reason;fault_o<=(reason)!=0;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "    always_ff @(posedge clk) begin\n        // Ack observes the old fault on this edge. A held fault is acknowledged.\n        fault_pending_o<=0;\n        if(reset||start||cancel)begin",
+          "before": "    always_ff @(posedge clk) begin\n        if(reset||start||cancel)begin",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v109-fault/cu66_inverse_stream_v91j.sv",
+      "original_sha256": "6670cda8f2971285036be892a996234e1e0fd3d0f6ed4cc4a60723a4a8995950"
+    },
+    "cu66_reconstruct_stream_v91k.sv": {
+      "alias": "fpga/experiments/cu66-v91k/cu66_reconstruct_stream_v91k.sv",
+      "candidate": "fpga/experiments/cu66-v110-fault/cu66_reconstruct_stream_v91k.sv",
+      "candidate_sha256": "f9dc06f183010a3486f387075b702a4cc7d9b4a06c1f4b0174cddad5813bf149",
+      "edits": [
+        {
+          "after": "    output logic fault_o,\n    // Pulse equals fault_o && !top acknowledgement on the original fault edge.\n    input logic fault_ack_i,\n    output logic fault_pending_o,",
+          "before": "    output logic fault_o,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "error<=reason;fault_o<=(reason)!=0;fault_pending_o<=(reason)!=0&&!fault_ack_i&&!fault_o;",
+          "before": "error<=reason;fault_o<=(reason)!=0;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "    always_ff @(posedge clk)begin\n        // Ack observes the old fault on this edge. A held fault is acknowledged.\n        fault_pending_o<=0;\n        if(reset||cancel||start)begin",
+          "before": "    always_ff @(posedge clk)begin\n        if(reset||cancel||start)begin",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v109-fault/cu66_reconstruct_stream_v91k.sv",
+      "original_sha256": "20dbae96f2e22f492c65ea722665b8c6fc87097a8a16617e38645bc6457c59a0"
+    }
+  },
+  "schema": "v110-owned-unacknowledged-fault-recipe-v1",
+  "source_origins": {
+    "fpga/experiments/cu66-v107-elastic/cu66_coefficient_elastic.sv": {
+      "path": "fpga/experiments/cu66-v107-meta-flags/cu66_coefficient_elastic.sv",
+      "sha256": "ea53b408aab5e522dfb2c4ffc2eefee41d58af37032cedc409e74815ab35dab9"
+    },
+    "fpga/experiments/cu66-v69/inverse/cu66_dequant.sv": {
+      "path": "fpga/experiments/cu66-v107-payload-reset/cu66_dequant.sv",
+      "sha256": "579cb5d397e6638c0533fd54250e161612bdaed74117a29475afbab648aec7fb"
+    },
+    "fpga/experiments/cu66-v69/inverse/cu66_idct8x8.sv": {
+      "path": "fpga/experiments/cu66-v108-outtile/cu66_idct8x8.sv",
+      "sha256": "3a30e2c527755ee5e34480274a7998795a773e23fef6cec8471fdd89c31a7808"
+    },
+    "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh": {
+      "path": "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh",
+      "sha256": "e0d5ae446155c1e295e0add487a30fec9c765cbafc0fabb15d248285ed22dca7"
+    },
+    "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv": {
+      "path": "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv",
+      "sha256": "3eb9fbc02732f06b05f68499a5c03d48c00f24f7621db6cb318fc13f07c40d64"
+    },
+    "fpga/experiments/cu66-v91/br88_rice_elastic.sv": {
+      "path": "fpga/experiments/cu66-v107-rice/br88_rice_elastic.sv",
+      "sha256": "f39c3f90d0242097ea3cd2693e6f4d99e58e33a0b49c644c720497f50e6777dc"
+    },
+    "fpga/experiments/cu66-v91b/br88_context.sv": {
+      "path": "fpga/experiments/cu66-v106-context/br88_context.sv",
+      "sha256": "9cb6337098d36adfbe4ef2dc073fc30a6dea17eaa4d57322fa4e725b8cce5277"
+    },
+    "fpga/experiments/cu66-v91d/br88_packet_ingress.sv": {
+      "path": "fpga/experiments/cu66-v91d/br88_packet_ingress.sv",
+      "sha256": "3c1cb5d93802dfcece9b003dec151152ab9a59be9d4972cf46023b9e9002eaba"
+    },
+    "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv": {
+      "path": "fpga/experiments/cu66-v108-capacity/packed_scratch_v91g2.sv",
+      "sha256": "5c4e6fc665c81920a2f907bb87d34e78f0eac22a114f75633a1f1dc2ddd33676"
+    },
+    "fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv": {
+      "path": "fpga/experiments/cu66-v109-fetch/br88_packet_ingress_sync_v91h.sv",
+      "sha256": "4d6a16d0b89aa067fe3e7acc01351ea0bacac694cc63fb681a1471ee4683d044"
+    },
+    "fpga/experiments/cu66-v91h/br88_packet_ingress_v91h.sv": {
+      "path": "fpga/experiments/cu66-v108-capacity/br88_packet_ingress_v91h.sv",
+      "sha256": "9529b8a76b531d22f7d0a4498295153f8a397c004725787c34af9824ee84cfb1"
+    },
+    "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv": {
+      "path": "fpga/experiments/cu66-v108-capacity/br88_pipeline_v91h.sv",
+      "sha256": "cb440ed9c12c6fa3eac579aea99f2c03716e33b97ce50822ab00b93de08a4360"
+    },
+    "fpga/experiments/cu66-v91i2/cs88_admission_v91i2a.sv": {
+      "path": "fpga/experiments/cu66-v107-tables/cs88_admission_v91i2a.sv",
+      "sha256": "b149c94ba1a5dd7f1d09384126c762d0bb0de5aa664baa4b76c29c631aeb652e"
+    },
+    "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv": {
+      "path": "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv",
+      "sha256": "af78e9d263fcdaa5ccc0d13f370aa994f46e2feb198c54c9775122c02d07a505"
+    },
+    "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv": {
+      "path": "fpga/experiments/cu66-v110-fault/cu66_inverse_stream_v91j.sv",
+      "sha256": "e00f53b7360878455e1078b0aaa3955ee0aab4abbecefde0c1b3b1f5a90c8a41"
+    },
+    "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv": {
+      "path": "fpga/experiments/cu66-v109-fault/cs88_coefficients_v91k.sv",
+      "sha256": "5f18c913b6f2702e8f1036ba70b3ba7328d7cdbdfbc8810972c577bee167e86b"
+    },
+    "fpga/experiments/cu66-v91k/cs88_pipeline_v91k.sv": {
+      "path": "fpga/experiments/cu66-v110-fault/cs88_pipeline_v91k.sv",
+      "sha256": "950182396c4ac6f0f31c74fd41bf66c6122727e44cacf31ae48c55098e0dd786"
+    },
+    "fpga/experiments/cu66-v91k/cu66_reconstruct_stream_v91k.sv": {
+      "path": "fpga/experiments/cu66-v110-fault/cu66_reconstruct_stream_v91k.sv",
+      "sha256": "f9dc06f183010a3486f387075b702a4cc7d9b4a06c1f4b0174cddad5813bf149"
+    }
+  },
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

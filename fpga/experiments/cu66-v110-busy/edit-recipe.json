@@ -1,0 +1,417 @@
+{
+  "added_public_cycles": 0,
+  "initialization": "busy_owned=0 paired with original state=IDLE; invariant unconditional after initialized clock.",
+  "priority": "Each state write is nested together with its busy write. Original branch/procedural order and final override retained.",
+  "production": {
+    "packed_scratch_v91g2.sv": {
+      "candidate": "fpga/experiments/cu66-v110-busy/packed_scratch_v91g2.sv",
+      "candidate_sha256": "e9a70463b78c0afbbded2358fd9b4ca7f600c695d9251b0cf3d202a74ad21478",
+      "edits": [
+        {
+          "after": "    state_t state=IDLE, return_state;\n    // Same-edge redundant quiescence predicate. Every original state write\n    // below carries its own sibling update, including final override priority.\n    logic busy_owned=0;",
+          "before": "    state_t state=IDLE, return_state;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        busy=busy_owned;",
+          "before": "        busy=state!=IDLE && state!=FINISHED && state!=FAILED;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "    always_ff @(posedge clk) begin\n        // A reset is cancellation, not permission to discard an accepted write.\n        if(reset || (abort_valid && abort_epoch==active_epoch)) begin\n            sealed<=0; done<=0; error<=0; cache_valid<=0; head_valid<=0;\n            assembly_bytes<=0; write_slot_valid<=0; prefetch_offer<=0; prefetched_valid<=0;\n            bank_ready<=0; tile_preparing<=0; tile_valid[0]<=0; tile_valid[1]<=0; tile_overlap_mode<=0;\n            if(outstanding && (!mem_rsp_valid || mem_rsp_epoch!=request_epoch)) begin\n                begin state<=DRAIN; busy_owned<=1'b1; end\n                if(mem_rsp_valid) error<=6;\n            end else begin begin state<=IDLE; busy_owned<=1'b0; end outstanding<=0; end\n        end else if(mem_rsp_valid && (!outstanding || mem_rsp_epoch!=request_epoch)) begin\n            // A mismatched response cannot retire the real outstanding request.\n            error<=6; sealed<=0; done<=0; write_slot_valid<=0; assembly_bytes<=0; prefetch_offer<=0; cache_valid<=0; prefetched_valid<=0; bank_ready<=0; tile_preparing<=0;\n            begin state<=outstanding ? DRAIN : FAILED; busy_owned<=(outstanding); end\n        end else if(state==DRAIN) begin\n            if(mem_rsp_valid && outstanding) begin outstanding<=0; begin state<=IDLE; busy_owned<=1'b0; end end\n            else if(!outstanding) begin state<=IDLE; busy_owned<=1'b0; end\n        end else if(prefetch_offer && outstanding && mem_rsp_valid && mem_rsp_error) begin\n            outstanding<=0; prefetch_offer<=0; cache_valid<=0; prefetched_valid<=0;\n            error<=5; sealed<=0; done<=0; begin state<=FAILED; busy_owned<=1'b0; end\n        end else if(overlap_mode && write_slot_valid && outstanding && mem_rsp_valid && mem_rsp_error) begin\n            outstanding<=0; write_slot_valid<=0; assembly_bytes<=0;\n            error<=5; sealed<=0; done<=0; begin state<=FAILED; busy_owned<=1'b0; end\n        end else begin\n            // Consumer owns a ready bank until its sixty-fourth acceptance.\n            // Producer writes only the other, unready bank; same-edge publish\n            // and release update different per-bank ready bits.\n            if(tile_mode && dense_valid && dense_ready) begin\n                if(tile_emit_index==63) begin\n                    bank_ready[emit_bank]<=0; tile_emit_index<=0; emit_bank<=!emit_bank;\n                end else tile_emit_index<=tile_emit_index+1;\n            end\n            // Slot ownership ends only at physical matching ACK. The controller\n            // may replace it with the assembled line on this same edge.\n            if(overlap_mode && write_slot_valid) begin\n                if(!outstanding && mem_req_valid && mem_req_ready) outstanding<=1;\n                if(outstanding && mem_rsp_valid) begin outstanding<=0; write_slot_valid<=0; end\n            end\n            if(debug_prefetch_use) begin\n                if(state==DC_EXTRACT) prefetched_valid[0]<=0;\n                else prefetched_valid[read_segment]<=0;\n            end\n            if(prefetch_launch) begin\n                transfer_address<=candidate_address; request_epoch<=active_epoch;\n                prefetch_segment<=candidate_segment; prefetch_offer<=1;\n            end\n            if(prefetch_offer) begin\n                if(!outstanding && mem_req_valid && mem_req_ready) outstanding<=1;\n                if(prefetch_complete) begin\n                    outstanding<=0; prefetch_offer<=0;\n                    cache_data[prefetch_segment]<=mem_rsp_data;\n                    if(prefetch_segment==2'd0)begin\n                        cache_positions[0][0]<=sparse_position(19'(mem_rsp_data>>13));\n                        cache_positions[0][1]<=sparse_position(19'(mem_rsp_data>>21));\n                        cache_positions[0][2]<=sparse_position(19'(mem_rsp_data>>29));\n                        cache_positions[0][3]<=sparse_position(19'(mem_rsp_data>>37));\n                        cache_positions[0][4]<=sparse_position(19'(mem_rsp_data>>45));\n                        cache_positions[0][5]<=sparse_position(19'(mem_rsp_data>>53));\n                        cache_positions[0][6]<=sparse_position(19'(mem_rsp_data>>61));\n                        cache_positions[0][7]<=sparse_position(19'(mem_rsp_data>>69));\n                        cache_positions[0][8]<=sparse_position(19'(mem_rsp_data>>77));\n                        cache_positions[0][9]<=sparse_position(19'(mem_rsp_data>>85));\n                        cache_positions[0][10]<=sparse_position(19'(mem_rsp_data>>93));\n                        cache_positions[0][11]<=sparse_position(19'(mem_rsp_data>>101));\n                        cache_positions[0][12]<=sparse_position(19'(mem_rsp_data>>109));\n                        cache_positions[0][13]<=sparse_position(19'(mem_rsp_data>>117));\n                        cache_positions[0][14]<=sparse_position(19'(mem_rsp_data>>125));\n                        cache_positions[0][15]<=sparse_position(19'(mem_rsp_data>>133));\n                    end\n                    if(prefetch_segment==2'd1)begin\n                        cache_positions[1][0]<=sparse_position(19'(mem_rsp_data>>13));\n                        cache_positions[1][1]<=sparse_position(19'(mem_rsp_data>>21));\n                        cache_positions[1][2]<=sparse_position(19'(mem_rsp_data>>29));\n                        cache_positions[1][3]<=sparse_position(19'(mem_rsp_data>>37));\n                        cache_positions[1][4]<=sparse_position(19'(mem_rsp_data>>45));\n                        cache_positions[1][5]<=sparse_position(19'(mem_rsp_data>>53));\n                        cache_positions[1][6]<=sparse_position(19'(mem_rsp_data>>61));\n                        cache_positions[1][7]<=sparse_position(19'(mem_rsp_data>>69));\n                        cache_positions[1][8]<=sparse_position(19'(mem_rsp_data>>77));\n                        cache_positions[1][9]<=sparse_position(19'(mem_rsp_data>>85));\n                        cache_positions[1][10]<=sparse_position(19'(mem_rsp_data>>93));\n                        cache_positions[1][11]<=sparse_position(19'(mem_rsp_data>>101));\n                        cache_positions[1][12]<=sparse_position(19'(mem_rsp_data>>109));\n                        cache_positions[1][13]<=sparse_position(19'(mem_rsp_data>>117));\n                        cache_positions[1][14]<=sparse_position(19'(mem_rsp_data>>125));\n                        cache_positions[1][15]<=sparse_position(19'(mem_rsp_data>>133));\n                    end\n                    if(prefetch_segment==2'd2)begin\n                        cache_positions[2][0]<=sparse_position(19'(mem_rsp_data>>13));\n                        cache_positions[2][1]<=sparse_position(19'(mem_rsp_data>>21));\n                        cache_positions[2][2]<=sparse_position(19'(mem_rsp_data>>29));\n                        cache_positions[2][3]<=sparse_position(19'(mem_rsp_data>>37));\n                        cache_positions[2][4]<=sparse_position(19'(mem_rsp_data>>45));\n                        cache_positions[2][5]<=sparse_position(19'(mem_rsp_data>>53));\n                        cache_positions[2][6]<=sparse_position(19'(mem_rsp_data>>61));\n                        cache_positions[2][7]<=sparse_position(19'(mem_rsp_data>>69));\n                        cache_positions[2][8]<=sparse_position(19'(mem_rsp_data>>77));\n                        cache_positions[2][9]<=sparse_position(19'(mem_rsp_data>>85));\n                        cache_positions[2][10]<=sparse_position(19'(mem_rsp_data>>93));\n                        cache_positions[2][11]<=sparse_position(19'(mem_rsp_data>>101));\n                        cache_positions[2][12]<=sparse_position(19'(mem_rsp_data>>109));\n                        cache_positions[2][13]<=sparse_position(19'(mem_rsp_data>>117));\n                        cache_positions[2][14]<=sparse_position(19'(mem_rsp_data>>125));\n                        cache_positions[2][15]<=sparse_position(19'(mem_rsp_data>>133));\n                    end\n                    if(prefetch_segment==2'd3)begin\n                        cache_positions[3][0]<=sparse_position(19'(mem_rsp_data>>13));\n                        cache_positions[3][1]<=sparse_position(19'(mem_rsp_data>>21));\n                        cache_positions[3][2]<=sparse_position(19'(mem_rsp_data>>29));\n                        cache_positions[3][3]<=sparse_position(19'(mem_rsp_data>>37));\n                        cache_positions[3][4]<=sparse_position(19'(mem_rsp_data>>45));\n                        cache_positions[3][5]<=sparse_position(19'(mem_rsp_data>>53));\n                        cache_positions[3][6]<=sparse_position(19'(mem_rsp_data>>61));\n                        cache_positions[3][7]<=sparse_position(19'(mem_rsp_data>>69));\n                        cache_positions[3][8]<=sparse_position(19'(mem_rsp_data>>77));\n                        cache_positions[3][9]<=sparse_position(19'(mem_rsp_data>>85));\n                        cache_positions[3][10]<=sparse_position(19'(mem_rsp_data>>93));\n                        cache_positions[3][11]<=sparse_position(19'(mem_rsp_data>>101));\n                        cache_positions[3][12]<=sparse_position(19'(mem_rsp_data>>109));\n                        cache_positions[3][13]<=sparse_position(19'(mem_rsp_data>>117));\n                        cache_positions[3][14]<=sparse_position(19'(mem_rsp_data>>125));\n                        cache_positions[3][15]<=sparse_position(19'(mem_rsp_data>>133));\n                    end\n                    cache_address[prefetch_segment]<=transfer_address;\n                    cache_valid[prefetch_segment]<=1; prefetched_valid[prefetch_segment]<=1;\n                end\n            end\n            case(state)\n                IDLE: if(begin_valid) begin\n                    sealed<=0; done<=0; error<=0;\n                    if(epoch_seen && begin_epoch<=last_epoch) begin error<=2; begin state<=FAILED; busy_owned<=1'b0; end end\n                    else if(begin_blocks==0 || begin_blocks>8192 ||\n                        32'(begin_blocks)<begin_threshold1 || 32'(begin_blocks)<begin_threshold2 ||\n                        32'(begin_blocks)<begin_threshold3 ||\n                        (begin_raw && (begin_count1!=0 || begin_count2!=0 || begin_count3!=0)) ||\n                        capacity_bad) begin error<=1; begin state<=FAILED; busy_owned<=1'b0; end end\n                    else begin\n                        epoch_seen<=1; last_epoch<=begin_epoch; active_epoch<=begin_epoch;\n                        blocks<=begin_blocks; raw_mode<=begin_raw; tile_overlap_mode<=begin_tile_overlap; bank_ready<=0; tile_preparing<=0; prep_bank<=0; emit_bank<=0; prepare_block<=0; tile_emit_index<=0; tile_valid[0]<=0; tile_valid[1]<=0; serial_clear<=begin_serial_clear; overlap_mode<=begin_overlap; prefetch_mode<=begin_prefetch; prefetch_offer<=0; prefetched_valid<=0; write_slot_valid<=0; used_bytes<=19'(plan_used);\n                        counts[0]<=begin_raw ? 32'(begin_blocks)*64 : 32'(begin_blocks);\n                        counts[1]<=begin_count1; counts[2]<=begin_count2; counts[3]<=begin_count3;\n                        starts[0]<=32; starts[1]<=plan_start1; starts[2]<=plan_start2; starts[3]<=plan_start3;\n                        phase<=0; written<=0; previous_valid<=0; assembler<=0; assembly_bytes<=0;\n                        write_address<=32; cache_valid<=0; head_valid<=0;\n                        for(integer b=1;b<=3;b=b+1) cursors[b]<=0;\n                        begin state<=INGEST; busy_owned<=1'b1; end\n                    end\n                end\n                INGEST: begin\n                    if(coef_valid) begin\n                        if(input_bad) begin\n                            error<=coef_epoch!=active_epoch ? 2 : 3;\n                            if(overlap_mode) begin\n                                write_slot_valid<=0; assembly_bytes<=0;\n                                begin state<=((outstanding && !mem_rsp_valid) ||\n                                    (!outstanding && mem_req_valid && mem_req_ready)) ? DRAIN : FAILED; busy_owned<=(((outstanding && !mem_rsp_valid) ||\n                                    (!outstanding && mem_req_valid && mem_req_ready))); end\n                            end else begin state<=FAILED; busy_owned<=1'b0; end\n                        end\n                        else begin\n                            pending_record<=raw_mode || phase==0 ? {16'd0,coef_value} :\n                                {coef_block[12:0],coef_index,coef_value[12:0]};\n                            pending_bytes<=raw_mode || phase==0 ? 2 : 4;\n                            pending_position<=input_position; begin state<=APPEND; busy_owned<=1'b1; end\n                        end\n                    end else if(band_end_valid) begin\n                        if(band_end_epoch!=active_epoch || band_end_band!=phase[1:0] || written!=counts[phase[1:0]]) begin\n                            error<=band_end_epoch!=active_epoch ? 2 : 4;\n                            if(overlap_mode) begin\n                                write_slot_valid<=0; assembly_bytes<=0;\n                                begin state<=((outstanding && !mem_rsp_valid) ||\n                                    (!outstanding && mem_req_valid && mem_req_ready)) ? DRAIN : FAILED; busy_owned<=(((outstanding && !mem_rsp_valid) ||\n                                    (!outstanding && mem_req_valid && mem_req_ready))); end\n                            end else begin state<=FAILED; busy_owned<=1'b0; end\n                        end else if(assembly_bytes!=0) begin\n                            if(overlap_mode) begin\n                                return_state<=NEXT_BAND;\n                                if(slot_available) begin\n                                    transfer_data<=assembler; transfer_address<=18'(write_address);\n                                    request_epoch<=active_epoch; write_slot_valid<=1;\n                                    write_address<=write_address+16; begin state<=NEXT_BAND; busy_owned<=1'b1; end\n                                end else begin state<=FLUSH_LINE; busy_owned<=1'b1; end\n                            end else begin\n                                transfer_data<=assembler; transfer_address<=18'(write_address);\n                                request_epoch<=active_epoch; return_state<=NEXT_BAND; begin state<=WRITE_REQ; busy_owned<=1'b1; end\n                            end\n                        end else begin state<=NEXT_BAND; busy_owned<=1'b1; end\n                    end\n                end\n                APPEND: begin\n                    if(pending_bytes==2) assembler[8*assembly_bytes+:16]<=pending_record[15:0];\n                    else assembler[8*assembly_bytes+:32]<=pending_record;\n                    written<=written+1; previous_position<=pending_position; previous_valid<=1;\n                    if(assembly_bytes+5'(pending_bytes)==16) begin\n                        return_state<=INGEST;\n                        if(overlap_mode) begin\n                            if(slot_available) begin\n                                transfer_data<=assembler | (128'(pending_record) << (8*assembly_bytes));\n                                transfer_address<=18'(write_address); request_epoch<=active_epoch;\n                                write_slot_valid<=1; write_address<=write_address+16;\n                                begin state<=INGEST; busy_owned<=1'b1; end assembler<=0; assembly_bytes<=0;\n                            end else begin assembly_bytes<=16; begin state<=FLUSH_LINE; busy_owned<=1'b1; end end\n                        end else begin\n                            transfer_data<=assembler | (128'(pending_record) << (8*assembly_bytes));\n                            transfer_address<=18'(write_address); request_epoch<=active_epoch;\n                            begin state<=WRITE_REQ; busy_owned<=1'b1; end assembler<=0; assembly_bytes<=0;\n                        end\n                    end else begin assembly_bytes<=assembly_bytes+5'(pending_bytes); begin state<=INGEST; busy_owned<=1'b1; end end\n                end\n                FLUSH_LINE: if(slot_available) begin\n                    transfer_data<=assembler; transfer_address<=18'(write_address);\n                    request_epoch<=active_epoch; write_slot_valid<=1;\n                    write_address<=write_address+16; assembler<=0; assembly_bytes<=0;\n                    begin state<=return_state; busy_owned<=(return_state!=IDLE && return_state!=FINISHED && return_state!=FAILED); end\n                end\n                NEXT_BAND: begin\n                    assembler<=0; assembly_bytes<=0; written<=0; previous_valid<=0;\n                    if(raw_mode || phase==3) begin phase<=4; begin state<=WAIT_SEAL; busy_owned<=1'b1; end end\n                    else begin\n                        phase<=phase+1; write_address<=starts[phase[1:0]+2'd1]; begin state<=INGEST; busy_owned<=1'b1; end\n                    end\n                end\n                WAIT_SEAL: if(seal_valid && seal_ready) begin\n                    if(seal_epoch!=active_epoch) begin error<=2; begin state<=FAILED; busy_owned<=1'b0; end end\n                    else begin state<=HEADER0; busy_owned<=1'b1; end\n                end\n                HEADER0: begin\n                    transfer_data<={counts[1],31'd0,raw_mode,15'd0,blocks,32'h43393150};\n                    transfer_address<=0; request_epoch<=active_epoch; return_state<=HEADER1; begin state<=WRITE_REQ; busy_owned<=1'b1; end\n                end\n                HEADER1: begin\n                    transfer_data<={32'd0,13'd0,used_bytes,counts[3],counts[2]};\n                    transfer_address<=16; request_epoch<=active_epoch; return_state<=HEADER_DONE; begin state<=WRITE_REQ; busy_owned<=1'b1; end\n                end\n                HEADER_DONE: begin\n                    sealed<=1; transfer_address<=0; return_state<=DESC0; begin state<=READ_REQ; busy_owned<=1'b1; end\n                end\n                WRITE_REQ: if(mem_req_ready) begin outstanding<=1; begin state<=WRITE_WAIT; busy_owned<=1'b1; end end\n                WRITE_WAIT: if(mem_rsp_valid) begin\n                    outstanding<=0;\n                    if(mem_rsp_error) begin error<=5; sealed<=0; begin state<=FAILED; busy_owned<=1'b0; end bank_ready<=0; tile_preparing<=0; end\n                    else begin write_address<=write_address+16; begin state<=return_state; busy_owned<=(return_state!=IDLE && return_state!=FINISHED && return_state!=FAILED); end end\n                end\n                READ_REQ: if(mem_req_ready) begin outstanding<=1; begin state<=READ_WAIT; busy_owned<=1'b1; end end\n                READ_WAIT: if(mem_rsp_valid) begin\n                    outstanding<=0;\n                    if(mem_rsp_error) begin error<=5; sealed<=0; begin state<=FAILED; busy_owned<=1'b0; end bank_ready<=0; tile_preparing<=0; end\n                    else begin\n                        transfer_data<=mem_rsp_data;\n                        if(return_state!=DESC0 && return_state!=DESC1) begin\n                            cache_data[read_segment]<=mem_rsp_data;\n                            if(read_segment==2'd0)begin\n                                cache_positions[0][0]<=sparse_position(19'(mem_rsp_data>>13));\n                                cache_positions[0][1]<=sparse_position(19'(mem_rsp_data>>21));\n                                cache_positions[0][2]<=sparse_position(19'(mem_rsp_data>>29));\n                                cache_positions[0][3]<=sparse_position(19'(mem_rsp_data>>37));\n                                cache_positions[0][4]<=sparse_position(19'(mem_rsp_data>>45));\n                                cache_positions[0][5]<=sparse_position(19'(mem_rsp_data>>53));\n                                cache_positions[0][6]<=sparse_position(19'(mem_rsp_data>>61));\n                                cache_positions[0][7]<=sparse_position(19'(mem_rsp_data>>69));\n                                cache_positions[0][8]<=sparse_position(19'(mem_rsp_data>>77));\n                                cache_positions[0][9]<=sparse_position(19'(mem_rsp_data>>85));\n                                cache_positions[0][10]<=sparse_position(19'(mem_rsp_data>>93));\n                                cache_positions[0][11]<=sparse_position(19'(mem_rsp_data>>101));\n                                cache_positions[0][12]<=sparse_position(19'(mem_rsp_data>>109));\n                                cache_positions[0][13]<=sparse_position(19'(mem_rsp_data>>117));\n                                cache_positions[0][14]<=sparse_position(19'(mem_rsp_data>>125));\n                                cache_positions[0][15]<=sparse_position(19'(mem_rsp_data>>133));\n                            end\n                            if(read_segment==2'd1)begin\n                                cache_positions[1][0]<=sparse_position(19'(mem_rsp_data>>13));\n                                cache_positions[1][1]<=sparse_position(19'(mem_rsp_data>>21));\n                                cache_positions[1][2]<=sparse_position(19'(mem_rsp_data>>29));\n                                cache_positions[1][3]<=sparse_position(19'(mem_rsp_data>>37));\n                                cache_positions[1][4]<=sparse_position(19'(mem_rsp_data>>45));\n                                cache_positions[1][5]<=sparse_position(19'(mem_rsp_data>>53));\n                                cache_positions[1][6]<=sparse_position(19'(mem_rsp_data>>61));\n                                cache_positions[1][7]<=sparse_position(19'(mem_rsp_data>>69));\n                                cache_positions[1][8]<=sparse_position(19'(mem_rsp_data>>77));\n                                cache_positions[1][9]<=sparse_position(19'(mem_rsp_data>>85));\n                                cache_positions[1][10]<=sparse_position(19'(mem_rsp_data>>93));\n                                cache_positions[1][11]<=sparse_position(19'(mem_rsp_data>>101));\n                                cache_positions[1][12]<=sparse_position(19'(mem_rsp_data>>109));\n                                cache_positions[1][13]<=sparse_position(19'(mem_rsp_data>>117));\n                                cache_positions[1][14]<=sparse_position(19'(mem_rsp_data>>125));\n                                cache_positions[1][15]<=sparse_position(19'(mem_rsp_data>>133));\n                            end\n                            if(read_segment==2'd2)begin\n                                cache_positions[2][0]<=sparse_position(19'(mem_rsp_data>>13));\n                                cache_positions[2][1]<=sparse_position(19'(mem_rsp_data>>21));\n                                cache_positions[2][2]<=sparse_position(19'(mem_rsp_data>>29));\n                                cache_positions[2][3]<=sparse_position(19'(mem_rsp_data>>37));\n                                cache_positions[2][4]<=sparse_position(19'(mem_rsp_data>>45));\n                                cache_positions[2][5]<=sparse_position(19'(mem_rsp_data>>53));\n                                cache_positions[2][6]<=sparse_position(19'(mem_rsp_data>>61));\n                                cache_positions[2][7]<=sparse_position(19'(mem_rsp_data>>69));\n                                cache_positions[2][8]<=sparse_position(19'(mem_rsp_data>>77));\n                                cache_positions[2][9]<=sparse_position(19'(mem_rsp_data>>85));\n                                cache_positions[2][10]<=sparse_position(19'(mem_rsp_data>>93));\n                                cache_positions[2][11]<=sparse_position(19'(mem_rsp_data>>101));\n                                cache_positions[2][12]<=sparse_position(19'(mem_rsp_data>>109));\n                                cache_positions[2][13]<=sparse_position(19'(mem_rsp_data>>117));\n                                cache_positions[2][14]<=sparse_position(19'(mem_rsp_data>>125));\n                                cache_positions[2][15]<=sparse_position(19'(mem_rsp_data>>133));\n                            end\n                            if(read_segment==2'd3)begin\n                                cache_positions[3][0]<=sparse_position(19'(mem_rsp_data>>13));\n                                cache_positions[3][1]<=sparse_position(19'(mem_rsp_data>>21));\n                                cache_positions[3][2]<=sparse_position(19'(mem_rsp_data>>29));\n                                cache_positions[3][3]<=sparse_position(19'(mem_rsp_data>>37));\n                                cache_positions[3][4]<=sparse_position(19'(mem_rsp_data>>45));\n                                cache_positions[3][5]<=sparse_position(19'(mem_rsp_data>>53));\n                                cache_positions[3][6]<=sparse_position(19'(mem_rsp_data>>61));\n                                cache_positions[3][7]<=sparse_position(19'(mem_rsp_data>>69));\n                                cache_positions[3][8]<=sparse_position(19'(mem_rsp_data>>77));\n                                cache_positions[3][9]<=sparse_position(19'(mem_rsp_data>>85));\n                                cache_positions[3][10]<=sparse_position(19'(mem_rsp_data>>93));\n                                cache_positions[3][11]<=sparse_position(19'(mem_rsp_data>>101));\n                                cache_positions[3][12]<=sparse_position(19'(mem_rsp_data>>109));\n                                cache_positions[3][13]<=sparse_position(19'(mem_rsp_data>>117));\n                                cache_positions[3][14]<=sparse_position(19'(mem_rsp_data>>125));\n                                cache_positions[3][15]<=sparse_position(19'(mem_rsp_data>>133));\n                            end\n                            cache_address[read_segment]<=transfer_address; cache_valid[read_segment]<=1; prefetched_valid[read_segment]<=0;\n                        end\n                        begin state<=return_state; busy_owned<=(return_state!=IDLE && return_state!=FINISHED && return_state!=FAILED); end\n                    end\n                end\n                DESC0: begin\n                    descriptor_low<=transfer_data; transfer_address<=16;\n                    return_state<=DESC1; begin state<=READ_REQ; busy_owned<=1'b1; end\n                end\n                DESC1: begin\n                    if(descriptor_low!={counts[1],31'd0,raw_mode,15'd0,blocks,32'h43393150} ||\n                       transfer_data!={32'd0,13'd0,used_bytes,counts[3],counts[2]}) begin\n                        error<=7; sealed<=0; begin state<=FAILED; busy_owned<=1'b0; end\n                    end else begin\n                        output_block<=0; output_index<=0; clear_index<=0;\n                        if(tile_mode) begin\n                            prep_bank<=0; emit_bank<=0; prepare_block<=0; tile_emit_index<=0;\n                            bank_ready<=0; tile_preparing<=1; bank_block[0]<=0; bank_epoch[0]<=active_epoch;\n                        end\n                        begin state<=raw_mode ? RAW_FETCH : CLEAR_TILE; busy_owned<=1'b1; end\n                    end\n                end\n                CLEAR_TILE: begin\n                    tile_valid[prep_bank]<=0;\n                    if(serial_clear) tile[prep_bank][clear_index]<=0;\n                    if(!serial_clear || clear_index==63) begin clear_index<=0; begin state<=DC_FETCH; busy_owned<=1'b1; end end\n                    else clear_index<=clear_index+1;\n                end\n                DC_FETCH, RAW_FETCH: begin\n                    read_address<=32+(raw_mode ? (32'(output_block)*64+32'(output_index))*2 : (tile_mode ? 32'(prepare_block) : 32'(output_block))*2);\n                    read_segment<=0; begin state<=DC_EXTRACT; busy_owned<=1'b1; end\n                end\n                DC_EXTRACT: begin\n                    if(!cache_valid[0] || cache_address[0]!=18'(read_address & 32'hfffffff0)) begin\n                        transfer_address<=18'(read_address & 32'hfffffff0); return_state<=DC_EXTRACT; begin state<=READ_REQ; busy_owned<=1'b1; end\n                    end else if(read_half < -2048 || read_half > 2048) begin\n                        error<=3; sealed<=0; begin state<=FAILED; busy_owned<=1'b0; end\n                    end else if(raw_mode) begin\n                        raw_value<=16'(cache_data[0]>>(8*read_address[3:0])); begin state<=RAW_EXTRACT; busy_owned<=1'b1; end\n                    end else begin\n                        tile[prep_bank][0]<=16'(cache_data[0]>>(8*read_address[3:0])); tile_valid[prep_bank][0]<=1; read_band<=1; begin state<=AC_CHECK; busy_owned<=1'b1; end\n                    end\n                end\n                AC_CHECK: begin\n                    if(!head_valid[read_band] && cursors[read_band]<counts[read_band]) begin state<=AC_FETCH; busy_owned<=1'b1; end\n                    else if(head_valid[read_band] && heads[read_band][31:19]==(tile_mode ? prepare_block[12:0] : output_block[12:0])) begin\n                        tile[prep_bank][heads[read_band][18:13]]<={{3{heads[read_band][12]}},heads[read_band][12:0]};\n                        tile_valid[prep_bank][heads[read_band][18:13]]<=1; head_valid[read_band]<=0;\n                    end else if(read_band==3) begin\n                        if(tile_mode) begin\n                            bank_ready[prep_bank]<=1; tile_preparing<=0;\n                            begin state<=BANK_WAIT; busy_owned<=1'b1; end\n                        end else begin output_index<=0; begin state<=EMIT; busy_owned<=1'b1; end end\n                    end\n                    else read_band<=read_band+1;\n                end\n                AC_FETCH: begin\n                    read_segment<=read_band; read_address<=starts[read_band]+cursors[read_band]*4; begin state<=AC_EXTRACT; busy_owned<=1'b1; end\n                end\n                AC_EXTRACT: begin\n                    if(!cache_valid[read_segment] || cache_address[read_segment]!=18'(read_address & 32'hfffffff0)) begin\n                        transfer_address<=18'(read_address & 32'hfffffff0); return_state<=AC_EXTRACT; begin state<=READ_REQ; busy_owned<=1'b1; end\n                    end else begin\n                        if(17'(read_word[31:19])>=blocks || !rank_matches(read_band,read_position[5:0]) ||\n                           $signed(read_word[12:0])==0 || $signed(read_word[12:0]) < -2048 ||\n                           $signed(read_word[12:0]) > 2048 ||\n                           (cursors[read_band]!=0 && read_position<={13'd0,head_positions[read_band]})) begin\n                            error<=3; sealed<=0; begin state<=FAILED; busy_owned<=1'b0; end\n                        end else begin\n                            heads[read_band]<=read_word;\n                            head_positions[read_band]<=read_position[18:0];\n                            cursors[read_band]<=cursors[read_band]+1; head_valid[read_band]<=1; begin state<=AC_CHECK; busy_owned<=1'b1; end\n                        end\n                    end\n                end\n                EMIT, RAW_EXTRACT: if(dense_ready) begin\n                    if(output_index==63) begin\n                        if(17'(output_block)+1==blocks) begin done<=1; begin state<=FINISHED; busy_owned<=1'b0; end end\n                        else begin\n                            output_block<=output_block+1; output_index<=0;\n                            if(prefetch_mode && (prefetch_launch || (prefetch_offer && !prefetch_complete))) begin\n                                return_state<=raw_mode ? RAW_FETCH : CLEAR_TILE; begin state<=PREFETCH_DRAIN; busy_owned<=1'b1; end\n                            end else begin state<=raw_mode ? RAW_FETCH : CLEAR_TILE; busy_owned<=1'b1; end\n                        end\n                    end else begin\n                        output_index<=output_index+1;\n                        if(raw_mode) begin\n                            if(prefetch_mode && (prefetch_launch || (prefetch_offer && !prefetch_complete))) begin\n                                return_state<=RAW_FETCH; begin state<=PREFETCH_DRAIN; busy_owned<=1'b1; end\n                            end else begin state<=RAW_FETCH; busy_owned<=1'b1; end\n                        end\n                    end\n                end\n                PREFETCH_DRAIN: if(prefetch_complete || (!prefetch_offer && !outstanding)) begin state<=return_state; busy_owned<=(return_state!=IDLE && return_state!=FINISHED && return_state!=FAILED); end\n                BANK_WAIT: begin\n                    if(17'(prepare_block)+1==blocks) begin state<=PREP_DONE; busy_owned<=1'b1; end\n                    else if(!bank_ready[!prep_bank]) begin\n                        prep_bank<=!prep_bank; prepare_block<=prepare_block+1;\n                        bank_block[!prep_bank]<=prepare_block+1; bank_epoch[!prep_bank]<=active_epoch;\n                        tile_preparing<=1; clear_index<=0; begin state<=CLEAR_TILE; busy_owned<=1'b1; end\n                    end\n                end\n                PREP_DONE: ;\n                FINISHED, FAILED: ;\n                default: begin state<=FAILED; busy_owned<=1'b0; end\n            endcase\n            if(tile_mode && dense_valid && dense_ready && tile_emit_index==63 &&\n                17'(bank_block[emit_bank])+1==blocks) begin\n                done<=1; begin state<=FINISHED; busy_owned<=1'b0; end\n            end\n        end\n    end\n",
+          "before": "    always_ff @(posedge clk) begin\n        // A reset is cancellation, not permission to discard an accepted write.\n        if(reset || (abort_valid && abort_epoch==active_epoch)) begin\n            sealed<=0; done<=0; error<=0; cache_valid<=0; head_valid<=0;\n            assembly_bytes<=0; write_slot_valid<=0; prefetch_offer<=0; prefetched_valid<=0;\n            bank_ready<=0; tile_preparing<=0; tile_valid[0]<=0; tile_valid[1]<=0; tile_overlap_mode<=0;\n            if(outstanding && (!mem_rsp_valid || mem_rsp_epoch!=request_epoch)) begin\n                state<=DRAIN;\n                if(mem_rsp_valid) error<=6;\n            end else begin state<=IDLE; outstanding<=0; end\n        end else if(mem_rsp_valid && (!outstanding || mem_rsp_epoch!=request_epoch)) begin\n            // A mismatched response cannot retire the real outstanding request.\n            error<=6; sealed<=0; done<=0; write_slot_valid<=0; assembly_bytes<=0; prefetch_offer<=0; cache_valid<=0; prefetched_valid<=0; bank_ready<=0; tile_preparing<=0;\n            state<=outstanding ? DRAIN : FAILED;\n        end else if(state==DRAIN) begin\n            if(mem_rsp_valid && outstanding) begin outstanding<=0; state<=IDLE; end\n            else if(!outstanding) state<=IDLE;\n        end else if(prefetch_offer && outstanding && mem_rsp_valid && mem_rsp_error) begin\n            outstanding<=0; prefetch_offer<=0; cache_valid<=0; prefetched_valid<=0;\n            error<=5; sealed<=0; done<=0; state<=FAILED;\n        end else if(overlap_mode && write_slot_valid && outstanding && mem_rsp_valid && mem_rsp_error) begin\n            outstanding<=0; write_slot_valid<=0; assembly_bytes<=0;\n            error<=5; sealed<=0; done<=0; state<=FAILED;\n        end else begin\n            // Consumer owns a ready bank until its sixty-fourth acceptance.\n            // Producer writes only the other, unready bank; same-edge publish\n            // and release update different per-bank ready bits.\n            if(tile_mode && dense_valid && dense_ready) begin\n                if(tile_emit_index==63) begin\n                    bank_ready[emit_bank]<=0; tile_emit_index<=0; emit_bank<=!emit_bank;\n                end else tile_emit_index<=tile_emit_index+1;\n            end\n            // Slot ownership ends only at physical matching ACK. The controller\n            // may replace it with the assembled line on this same edge.\n            if(overlap_mode && write_slot_valid) begin\n                if(!outstanding && mem_req_valid && mem_req_ready) outstanding<=1;\n                if(outstanding && mem_rsp_valid) begin outstanding<=0; write_slot_valid<=0; end\n            end\n            if(debug_prefetch_use) begin\n                if(state==DC_EXTRACT) prefetched_valid[0]<=0;\n                else prefetched_valid[read_segment]<=0;\n            end\n            if(prefetch_launch) begin\n                transfer_address<=candidate_address; request_epoch<=active_epoch;\n                prefetch_segment<=candidate_segment; prefetch_offer<=1;\n            end\n            if(prefetch_offer) begin\n                if(!outstanding && mem_req_valid && mem_req_ready) outstanding<=1;\n                if(prefetch_complete) begin\n                    outstanding<=0; prefetch_offer<=0;\n                    cache_data[prefetch_segment]<=mem_rsp_data;\n                    if(prefetch_segment==2'd0)begin\n                        cache_positions[0][0]<=sparse_position(19'(mem_rsp_data>>13));\n                        cache_positions[0][1]<=sparse_position(19'(mem_rsp_data>>21));\n                        cache_positions[0][2]<=sparse_position(19'(mem_rsp_data>>29));\n                        cache_positions[0][3]<=sparse_position(19'(mem_rsp_data>>37));\n                        cache_positions[0][4]<=sparse_position(19'(mem_rsp_data>>45));\n                        cache_positions[0][5]<=sparse_position(19'(mem_rsp_data>>53));\n                        cache_positions[0][6]<=sparse_position(19'(mem_rsp_data>>61));\n                        cache_positions[0][7]<=sparse_position(19'(mem_rsp_data>>69));\n                        cache_positions[0][8]<=sparse_position(19'(mem_rsp_data>>77));\n                        cache_positions[0][9]<=sparse_position(19'(mem_rsp_data>>85));\n                        cache_positions[0][10]<=sparse_position(19'(mem_rsp_data>>93));\n                        cache_positions[0][11]<=sparse_position(19'(mem_rsp_data>>101));\n                        cache_positions[0][12]<=sparse_position(19'(mem_rsp_data>>109));\n                        cache_positions[0][13]<=sparse_position(19'(mem_rsp_data>>117));\n                        cache_positions[0][14]<=sparse_position(19'(mem_rsp_data>>125));\n                        cache_positions[0][15]<=sparse_position(19'(mem_rsp_data>>133));\n                    end\n                    if(prefetch_segment==2'd1)begin\n                        cache_positions[1][0]<=sparse_position(19'(mem_rsp_data>>13));\n                        cache_positions[1][1]<=sparse_position(19'(mem_rsp_data>>21));\n                        cache_positions[1][2]<=sparse_position(19'(mem_rsp_data>>29));\n                        cache_positions[1][3]<=sparse_position(19'(mem_rsp_data>>37));\n                        cache_positions[1][4]<=sparse_position(19'(mem_rsp_data>>45));\n                        cache_positions[1][5]<=sparse_position(19'(mem_rsp_data>>53));\n                        cache_positions[1][6]<=sparse_position(19'(mem_rsp_data>>61));\n                        cache_positions[1][7]<=sparse_position(19'(mem_rsp_data>>69));\n                        cache_positions[1][8]<=sparse_position(19'(mem_rsp_data>>77));\n                        cache_positions[1][9]<=sparse_position(19'(mem_rsp_data>>85));\n                        cache_positions[1][10]<=sparse_position(19'(mem_rsp_data>>93));\n                        cache_positions[1][11]<=sparse_position(19'(mem_rsp_data>>101));\n                        cache_positions[1][12]<=sparse_position(19'(mem_rsp_data>>109));\n                        cache_positions[1][13]<=sparse_position(19'(mem_rsp_data>>117));\n                        cache_positions[1][14]<=sparse_position(19'(mem_rsp_data>>125));\n                        cache_positions[1][15]<=sparse_position(19'(mem_rsp_data>>133));\n                    end\n                    if(prefetch_segment==2'd2)begin\n                        cache_positions[2][0]<=sparse_position(19'(mem_rsp_data>>13));\n                        cache_positions[2][1]<=sparse_position(19'(mem_rsp_data>>21));\n                        cache_positions[2][2]<=sparse_position(19'(mem_rsp_data>>29));\n                        cache_positions[2][3]<=sparse_position(19'(mem_rsp_data>>37));\n                        cache_positions[2][4]<=sparse_position(19'(mem_rsp_data>>45));\n                        cache_positions[2][5]<=sparse_position(19'(mem_rsp_data>>53));\n                        cache_positions[2][6]<=sparse_position(19'(mem_rsp_data>>61));\n                        cache_positions[2][7]<=sparse_position(19'(mem_rsp_data>>69));\n                        cache_positions[2][8]<=sparse_position(19'(mem_rsp_data>>77));\n                        cache_positions[2][9]<=sparse_position(19'(mem_rsp_data>>85));\n                        cache_positions[2][10]<=sparse_position(19'(mem_rsp_data>>93));\n                        cache_positions[2][11]<=sparse_position(19'(mem_rsp_data>>101));\n                        cache_positions[2][12]<=sparse_position(19'(mem_rsp_data>>109));\n                        cache_positions[2][13]<=sparse_position(19'(mem_rsp_data>>117));\n                        cache_positions[2][14]<=sparse_position(19'(mem_rsp_data>>125));\n                        cache_positions[2][15]<=sparse_position(19'(mem_rsp_data>>133));\n                    end\n                    if(prefetch_segment==2'd3)begin\n                        cache_positions[3][0]<=sparse_position(19'(mem_rsp_data>>13));\n                        cache_positions[3][1]<=sparse_position(19'(mem_rsp_data>>21));\n                        cache_positions[3][2]<=sparse_position(19'(mem_rsp_data>>29));\n                        cache_positions[3][3]<=sparse_position(19'(mem_rsp_data>>37));\n                        cache_positions[3][4]<=sparse_position(19'(mem_rsp_data>>45));\n                        cache_positions[3][5]<=sparse_position(19'(mem_rsp_data>>53));\n                        cache_positions[3][6]<=sparse_position(19'(mem_rsp_data>>61));\n                        cache_positions[3][7]<=sparse_position(19'(mem_rsp_data>>69));\n                        cache_positions[3][8]<=sparse_position(19'(mem_rsp_data>>77));\n                        cache_positions[3][9]<=sparse_position(19'(mem_rsp_data>>85));\n                        cache_positions[3][10]<=sparse_position(19'(mem_rsp_data>>93));\n                        cache_positions[3][11]<=sparse_position(19'(mem_rsp_data>>101));\n                        cache_positions[3][12]<=sparse_position(19'(mem_rsp_data>>109));\n                        cache_positions[3][13]<=sparse_position(19'(mem_rsp_data>>117));\n                        cache_positions[3][14]<=sparse_position(19'(mem_rsp_data>>125));\n                        cache_positions[3][15]<=sparse_position(19'(mem_rsp_data>>133));\n                    end\n                    cache_address[prefetch_segment]<=transfer_address;\n                    cache_valid[prefetch_segment]<=1; prefetched_valid[prefetch_segment]<=1;\n                end\n            end\n            case(state)\n                IDLE: if(begin_valid) begin\n                    sealed<=0; done<=0; error<=0;\n                    if(epoch_seen && begin_epoch<=last_epoch) begin error<=2; state<=FAILED; end\n                    else if(begin_blocks==0 || begin_blocks>8192 ||\n                        32'(begin_blocks)<begin_threshold1 || 32'(begin_blocks)<begin_threshold2 ||\n                        32'(begin_blocks)<begin_threshold3 ||\n                        (begin_raw && (begin_count1!=0 || begin_count2!=0 || begin_count3!=0)) ||\n                        capacity_bad) begin error<=1; state<=FAILED; end\n                    else begin\n                        epoch_seen<=1; last_epoch<=begin_epoch; active_epoch<=begin_epoch;\n                        blocks<=begin_blocks; raw_mode<=begin_raw; tile_overlap_mode<=begin_tile_overlap; bank_ready<=0; tile_preparing<=0; prep_bank<=0; emit_bank<=0; prepare_block<=0; tile_emit_index<=0; tile_valid[0]<=0; tile_valid[1]<=0; serial_clear<=begin_serial_clear; overlap_mode<=begin_overlap; prefetch_mode<=begin_prefetch; prefetch_offer<=0; prefetched_valid<=0; write_slot_valid<=0; used_bytes<=19'(plan_used);\n                        counts[0]<=begin_raw ? 32'(begin_blocks)*64 : 32'(begin_blocks);\n                        counts[1]<=begin_count1; counts[2]<=begin_count2; counts[3]<=begin_count3;\n                        starts[0]<=32; starts[1]<=plan_start1; starts[2]<=plan_start2; starts[3]<=plan_start3;\n                        phase<=0; written<=0; previous_valid<=0; assembler<=0; assembly_bytes<=0;\n                        write_address<=32; cache_valid<=0; head_valid<=0;\n                        for(integer b=1;b<=3;b=b+1) cursors[b]<=0;\n                        state<=INGEST;\n                    end\n                end\n                INGEST: begin\n                    if(coef_valid) begin\n                        if(input_bad) begin\n                            error<=coef_epoch!=active_epoch ? 2 : 3;\n                            if(overlap_mode) begin\n                                write_slot_valid<=0; assembly_bytes<=0;\n                                state<=((outstanding && !mem_rsp_valid) ||\n                                    (!outstanding && mem_req_valid && mem_req_ready)) ? DRAIN : FAILED;\n                            end else state<=FAILED;\n                        end\n                        else begin\n                            pending_record<=raw_mode || phase==0 ? {16'd0,coef_value} :\n                                {coef_block[12:0],coef_index,coef_value[12:0]};\n                            pending_bytes<=raw_mode || phase==0 ? 2 : 4;\n                            pending_position<=input_position; state<=APPEND;\n                        end\n                    end else if(band_end_valid) begin\n                        if(band_end_epoch!=active_epoch || band_end_band!=phase[1:0] || written!=counts[phase[1:0]]) begin\n                            error<=band_end_epoch!=active_epoch ? 2 : 4;\n                            if(overlap_mode) begin\n                                write_slot_valid<=0; assembly_bytes<=0;\n                                state<=((outstanding && !mem_rsp_valid) ||\n                                    (!outstanding && mem_req_valid && mem_req_ready)) ? DRAIN : FAILED;\n                            end else state<=FAILED;\n                        end else if(assembly_bytes!=0) begin\n                            if(overlap_mode) begin\n                                return_state<=NEXT_BAND;\n                                if(slot_available) begin\n                                    transfer_data<=assembler; transfer_address<=18'(write_address);\n                                    request_epoch<=active_epoch; write_slot_valid<=1;\n                                    write_address<=write_address+16; state<=NEXT_BAND;\n                                end else state<=FLUSH_LINE;\n                            end else begin\n                                transfer_data<=assembler; transfer_address<=18'(write_address);\n                                request_epoch<=active_epoch; return_state<=NEXT_BAND; state<=WRITE_REQ;\n                            end\n                        end else state<=NEXT_BAND;\n                    end\n                end\n                APPEND: begin\n                    if(pending_bytes==2) assembler[8*assembly_bytes+:16]<=pending_record[15:0];\n                    else assembler[8*assembly_bytes+:32]<=pending_record;\n                    written<=written+1; previous_position<=pending_position; previous_valid<=1;\n                    if(assembly_bytes+5'(pending_bytes)==16) begin\n                        return_state<=INGEST;\n                        if(overlap_mode) begin\n                            if(slot_available) begin\n                                transfer_data<=assembler | (128'(pending_record) << (8*assembly_bytes));\n                                transfer_address<=18'(write_address); request_epoch<=active_epoch;\n                                write_slot_valid<=1; write_address<=write_address+16;\n                                state<=INGEST; assembler<=0; assembly_bytes<=0;\n                            end else begin assembly_bytes<=16; state<=FLUSH_LINE; end\n                        end else begin\n                            transfer_data<=assembler | (128'(pending_record) << (8*assembly_bytes));\n                            transfer_address<=18'(write_address); request_epoch<=active_epoch;\n                            state<=WRITE_REQ; assembler<=0; assembly_bytes<=0;\n                        end\n                    end else begin assembly_bytes<=assembly_bytes+5'(pending_bytes); state<=INGEST; end\n                end\n                FLUSH_LINE: if(slot_available) begin\n                    transfer_data<=assembler; transfer_address<=18'(write_address);\n                    request_epoch<=active_epoch; write_slot_valid<=1;\n                    write_address<=write_address+16; assembler<=0; assembly_bytes<=0;\n                    state<=return_state;\n                end\n                NEXT_BAND: begin\n                    assembler<=0; assembly_bytes<=0; written<=0; previous_valid<=0;\n                    if(raw_mode || phase==3) begin phase<=4; state<=WAIT_SEAL; end\n                    else begin\n                        phase<=phase+1; write_address<=starts[phase[1:0]+2'd1]; state<=INGEST;\n                    end\n                end\n                WAIT_SEAL: if(seal_valid && seal_ready) begin\n                    if(seal_epoch!=active_epoch) begin error<=2; state<=FAILED; end\n                    else state<=HEADER0;\n                end\n                HEADER0: begin\n                    transfer_data<={counts[1],31'd0,raw_mode,15'd0,blocks,32'h43393150};\n                    transfer_address<=0; request_epoch<=active_epoch; return_state<=HEADER1; state<=WRITE_REQ;\n                end\n                HEADER1: begin\n                    transfer_data<={32'd0,13'd0,used_bytes,counts[3],counts[2]};\n                    transfer_address<=16; request_epoch<=active_epoch; return_state<=HEADER_DONE; state<=WRITE_REQ;\n                end\n                HEADER_DONE: begin\n                    sealed<=1; transfer_address<=0; return_state<=DESC0; state<=READ_REQ;\n                end\n                WRITE_REQ: if(mem_req_ready) begin outstanding<=1; state<=WRITE_WAIT; end\n                WRITE_WAIT: if(mem_rsp_valid) begin\n                    outstanding<=0;\n                    if(mem_rsp_error) begin error<=5; sealed<=0; state<=FAILED; bank_ready<=0; tile_preparing<=0; end\n                    else begin write_address<=write_address+16; state<=return_state; end\n                end\n                READ_REQ: if(mem_req_ready) begin outstanding<=1; state<=READ_WAIT; end\n                READ_WAIT: if(mem_rsp_valid) begin\n                    outstanding<=0;\n                    if(mem_rsp_error) begin error<=5; sealed<=0; state<=FAILED; bank_ready<=0; tile_preparing<=0; end\n                    else begin\n                        transfer_data<=mem_rsp_data;\n                        if(return_state!=DESC0 && return_state!=DESC1) begin\n                            cache_data[read_segment]<=mem_rsp_data;\n                            if(read_segment==2'd0)begin\n                                cache_positions[0][0]<=sparse_position(19'(mem_rsp_data>>13));\n                                cache_positions[0][1]<=sparse_position(19'(mem_rsp_data>>21));\n                                cache_positions[0][2]<=sparse_position(19'(mem_rsp_data>>29));\n                                cache_positions[0][3]<=sparse_position(19'(mem_rsp_data>>37));\n                                cache_positions[0][4]<=sparse_position(19'(mem_rsp_data>>45));\n                                cache_positions[0][5]<=sparse_position(19'(mem_rsp_data>>53));\n                                cache_positions[0][6]<=sparse_position(19'(mem_rsp_data>>61));\n                                cache_positions[0][7]<=sparse_position(19'(mem_rsp_data>>69));\n                                cache_positions[0][8]<=sparse_position(19'(mem_rsp_data>>77));\n                                cache_positions[0][9]<=sparse_position(19'(mem_rsp_data>>85));\n                                cache_positions[0][10]<=sparse_position(19'(mem_rsp_data>>93));\n                                cache_positions[0][11]<=sparse_position(19'(mem_rsp_data>>101));\n                                cache_positions[0][12]<=sparse_position(19'(mem_rsp_data>>109));\n                                cache_positions[0][13]<=sparse_position(19'(mem_rsp_data>>117));\n                                cache_positions[0][14]<=sparse_position(19'(mem_rsp_data>>125));\n                                cache_positions[0][15]<=sparse_position(19'(mem_rsp_data>>133));\n                            end\n                            if(read_segment==2'd1)begin\n                                cache_positions[1][0]<=sparse_position(19'(mem_rsp_data>>13));\n                                cache_positions[1][1]<=sparse_position(19'(mem_rsp_data>>21));\n                                cache_positions[1][2]<=sparse_position(19'(mem_rsp_data>>29));\n                                cache_positions[1][3]<=sparse_position(19'(mem_rsp_data>>37));\n                                cache_positions[1][4]<=sparse_position(19'(mem_rsp_data>>45));\n                                cache_positions[1][5]<=sparse_position(19'(mem_rsp_data>>53));\n                                cache_positions[1][6]<=sparse_position(19'(mem_rsp_data>>61));\n                                cache_positions[1][7]<=sparse_position(19'(mem_rsp_data>>69));\n                                cache_positions[1][8]<=sparse_position(19'(mem_rsp_data>>77));\n                                cache_positions[1][9]<=sparse_position(19'(mem_rsp_data>>85));\n                                cache_positions[1][10]<=sparse_position(19'(mem_rsp_data>>93));\n                                cache_positions[1][11]<=sparse_position(19'(mem_rsp_data>>101));\n                                cache_positions[1][12]<=sparse_position(19'(mem_rsp_data>>109));\n                                cache_positions[1][13]<=sparse_position(19'(mem_rsp_data>>117));\n                                cache_positions[1][14]<=sparse_position(19'(mem_rsp_data>>125));\n                                cache_positions[1][15]<=sparse_position(19'(mem_rsp_data>>133));\n                            end\n                            if(read_segment==2'd2)begin\n                                cache_positions[2][0]<=sparse_position(19'(mem_rsp_data>>13));\n                                cache_positions[2][1]<=sparse_position(19'(mem_rsp_data>>21));\n                                cache_positions[2][2]<=sparse_position(19'(mem_rsp_data>>29));\n                                cache_positions[2][3]<=sparse_position(19'(mem_rsp_data>>37));\n                                cache_positions[2][4]<=sparse_position(19'(mem_rsp_data>>45));\n                                cache_positions[2][5]<=sparse_position(19'(mem_rsp_data>>53));\n                                cache_positions[2][6]<=sparse_position(19'(mem_rsp_data>>61));\n                                cache_positions[2][7]<=sparse_position(19'(mem_rsp_data>>69));\n                                cache_positions[2][8]<=sparse_position(19'(mem_rsp_data>>77));\n                                cache_positions[2][9]<=sparse_position(19'(mem_rsp_data>>85));\n                                cache_positions[2][10]<=sparse_position(19'(mem_rsp_data>>93));\n                                cache_positions[2][11]<=sparse_position(19'(mem_rsp_data>>101));\n                                cache_positions[2][12]<=sparse_position(19'(mem_rsp_data>>109));\n                                cache_positions[2][13]<=sparse_position(19'(mem_rsp_data>>117));\n                                cache_positions[2][14]<=sparse_position(19'(mem_rsp_data>>125));\n                                cache_positions[2][15]<=sparse_position(19'(mem_rsp_data>>133));\n                            end\n                            if(read_segment==2'd3)begin\n                                cache_positions[3][0]<=sparse_position(19'(mem_rsp_data>>13));\n                                cache_positions[3][1]<=sparse_position(19'(mem_rsp_data>>21));\n                                cache_positions[3][2]<=sparse_position(19'(mem_rsp_data>>29));\n                                cache_positions[3][3]<=sparse_position(19'(mem_rsp_data>>37));\n                                cache_positions[3][4]<=sparse_position(19'(mem_rsp_data>>45));\n                                cache_positions[3][5]<=sparse_position(19'(mem_rsp_data>>53));\n                                cache_positions[3][6]<=sparse_position(19'(mem_rsp_data>>61));\n                                cache_positions[3][7]<=sparse_position(19'(mem_rsp_data>>69));\n                                cache_positions[3][8]<=sparse_position(19'(mem_rsp_data>>77));\n                                cache_positions[3][9]<=sparse_position(19'(mem_rsp_data>>85));\n                                cache_positions[3][10]<=sparse_position(19'(mem_rsp_data>>93));\n                                cache_positions[3][11]<=sparse_position(19'(mem_rsp_data>>101));\n                                cache_positions[3][12]<=sparse_position(19'(mem_rsp_data>>109));\n                                cache_positions[3][13]<=sparse_position(19'(mem_rsp_data>>117));\n                                cache_positions[3][14]<=sparse_position(19'(mem_rsp_data>>125));\n                                cache_positions[3][15]<=sparse_position(19'(mem_rsp_data>>133));\n                            end\n                            cache_address[read_segment]<=transfer_address; cache_valid[read_segment]<=1; prefetched_valid[read_segment]<=0;\n                        end\n                        state<=return_state;\n                    end\n                end\n                DESC0: begin\n                    descriptor_low<=transfer_data; transfer_address<=16;\n                    return_state<=DESC1; state<=READ_REQ;\n                end\n                DESC1: begin\n                    if(descriptor_low!={counts[1],31'd0,raw_mode,15'd0,blocks,32'h43393150} ||\n                       transfer_data!={32'd0,13'd0,used_bytes,counts[3],counts[2]}) begin\n                        error<=7; sealed<=0; state<=FAILED;\n                    end else begin\n                        output_block<=0; output_index<=0; clear_index<=0;\n                        if(tile_mode) begin\n                            prep_bank<=0; emit_bank<=0; prepare_block<=0; tile_emit_index<=0;\n                            bank_ready<=0; tile_preparing<=1; bank_block[0]<=0; bank_epoch[0]<=active_epoch;\n                        end\n                        state<=raw_mode ? RAW_FETCH : CLEAR_TILE;\n                    end\n                end\n                CLEAR_TILE: begin\n                    tile_valid[prep_bank]<=0;\n                    if(serial_clear) tile[prep_bank][clear_index]<=0;\n                    if(!serial_clear || clear_index==63) begin clear_index<=0; state<=DC_FETCH; end\n                    else clear_index<=clear_index+1;\n                end\n                DC_FETCH, RAW_FETCH: begin\n                    read_address<=32+(raw_mode ? (32'(output_block)*64+32'(output_index))*2 : (tile_mode ? 32'(prepare_block) : 32'(output_block))*2);\n                    read_segment<=0; state<=DC_EXTRACT;\n                end\n                DC_EXTRACT: begin\n                    if(!cache_valid[0] || cache_address[0]!=18'(read_address & 32'hfffffff0)) begin\n                        transfer_address<=18'(read_address & 32'hfffffff0); return_state<=DC_EXTRACT; state<=READ_REQ;\n                    end else if(read_half < -2048 || read_half > 2048) begin\n                        error<=3; sealed<=0; state<=FAILED;\n                    end else if(raw_mode) begin\n                        raw_value<=16'(cache_data[0]>>(8*read_address[3:0])); state<=RAW_EXTRACT;\n                    end else begin\n                        tile[prep_bank][0]<=16'(cache_data[0]>>(8*read_address[3:0])); tile_valid[prep_bank][0]<=1; read_band<=1; state<=AC_CHECK;\n                    end\n                end\n                AC_CHECK: begin\n                    if(!head_valid[read_band] && cursors[read_band]<counts[read_band]) state<=AC_FETCH;\n                    else if(head_valid[read_band] && heads[read_band][31:19]==(tile_mode ? prepare_block[12:0] : output_block[12:0])) begin\n                        tile[prep_bank][heads[read_band][18:13]]<={{3{heads[read_band][12]}},heads[read_band][12:0]};\n                        tile_valid[prep_bank][heads[read_band][18:13]]<=1; head_valid[read_band]<=0;\n                    end else if(read_band==3) begin\n                        if(tile_mode) begin\n                            bank_ready[prep_bank]<=1; tile_preparing<=0;\n                            state<=BANK_WAIT;\n                        end else begin output_index<=0; state<=EMIT; end\n                    end\n                    else read_band<=read_band+1;\n                end\n                AC_FETCH: begin\n                    read_segment<=read_band; read_address<=starts[read_band]+cursors[read_band]*4; state<=AC_EXTRACT;\n                end\n                AC_EXTRACT: begin\n                    if(!cache_valid[read_segment] || cache_address[read_segment]!=18'(read_address & 32'hfffffff0)) begin\n                        transfer_address<=18'(read_address & 32'hfffffff0); return_state<=AC_EXTRACT; state<=READ_REQ;\n                    end else begin\n                        if(17'(read_word[31:19])>=blocks || !rank_matches(read_band,read_position[5:0]) ||\n                           $signed(read_word[12:0])==0 || $signed(read_word[12:0]) < -2048 ||\n                           $signed(read_word[12:0]) > 2048 ||\n                           (cursors[read_band]!=0 && read_position<={13'd0,head_positions[read_band]})) begin\n                            error<=3; sealed<=0; state<=FAILED;\n                        end else begin\n                            heads[read_band]<=read_word;\n                            head_positions[read_band]<=read_position[18:0];\n                            cursors[read_band]<=cursors[read_band]+1; head_valid[read_band]<=1; state<=AC_CHECK;\n                        end\n                    end\n                end\n                EMIT, RAW_EXTRACT: if(dense_ready) begin\n                    if(output_index==63) begin\n                        if(17'(output_block)+1==blocks) begin done<=1; state<=FINISHED; end\n                        else begin\n                            output_block<=output_block+1; output_index<=0;\n                            if(prefetch_mode && (prefetch_launch || (prefetch_offer && !prefetch_complete))) begin\n                                return_state<=raw_mode ? RAW_FETCH : CLEAR_TILE; state<=PREFETCH_DRAIN;\n                            end else state<=raw_mode ? RAW_FETCH : CLEAR_TILE;\n                        end\n                    end else begin\n                        output_index<=output_index+1;\n                        if(raw_mode) begin\n                            if(prefetch_mode && (prefetch_launch || (prefetch_offer && !prefetch_complete))) begin\n                                return_state<=RAW_FETCH; state<=PREFETCH_DRAIN;\n                            end else state<=RAW_FETCH;\n                        end\n                    end\n                end\n                PREFETCH_DRAIN: if(prefetch_complete || (!prefetch_offer && !outstanding)) state<=return_state;\n                BANK_WAIT: begin\n                    if(17'(prepare_block)+1==blocks) state<=PREP_DONE;\n                    else if(!bank_ready[!prep_bank]) begin\n                        prep_bank<=!prep_bank; prepare_block<=prepare_block+1;\n                        bank_block[!prep_bank]<=prepare_block+1; bank_epoch[!prep_bank]<=active_epoch;\n                        tile_preparing<=1; clear_index<=0; state<=CLEAR_TILE;\n                    end\n                end\n                PREP_DONE: ;\n                FINISHED, FAILED: ;\n                default: state<=FAILED;\n            endcase\n            if(tile_mode && dense_valid && dense_ready && tile_emit_index==63 &&\n                17'(bank_block[emit_bank])+1==blocks) begin\n                done<=1; state<=FINISHED;\n            end\n        end\n    end\n",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    logic busy_predicate_initialized=0;\n    always_ff @(posedge clk)begin\n        busy_predicate_initialized<=1;\n        // Unconditional after the first clock, including reset, abort, DRAIN,\n        // invalid cycles, error branches and final physical-response retirement.\n        if(busy_predicate_initialized)\n            assert(busy_owned==(state!=IDLE && state!=FINISHED && state!=FAILED))\n                else $fatal(1,\"scratch same-edge busy predicate mismatch\");\n    end\n`endif\nendmodule",
+          "before": "endmodule",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v108-capacity/packed_scratch_v91g2.sv",
+      "original_sha256": "5c4e6fc665c81920a2f907bb87d34e78f0eac22a114f75633a1f1dc2ddd33676"
+    }
+  },
+  "schema": "v110-same-edge-scratch-busy-v1",
+  "state_write_coverage": [
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 0,
+      "original_line": 314,
+      "rhs": "DRAIN"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 1,
+      "original_line": 316,
+      "rhs": "IDLE"
+    },
+    {
+      "busy_rhs": "(outstanding)",
+      "ordinal": 2,
+      "original_line": 320,
+      "rhs": "outstanding ? DRAIN : FAILED"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 3,
+      "original_line": 322,
+      "rhs": "IDLE"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 4,
+      "original_line": 323,
+      "rhs": "IDLE"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 5,
+      "original_line": 326,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 6,
+      "original_line": 329,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 7,
+      "original_line": 437,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 8,
+      "original_line": 442,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 9,
+      "original_line": 452,
+      "rhs": "INGEST"
+    },
+    {
+      "busy_rhs": "(((outstanding && !mem_rsp_valid) ||\n                                    (!outstanding && mem_req_valid && mem_req_ready)))",
+      "ordinal": 10,
+      "original_line": 461,
+      "rhs": "((outstanding && !mem_rsp_valid) ||\n                                    (!outstanding && mem_req_valid && mem_req_ready)) ? DRAIN : FAILED"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 11,
+      "original_line": 463,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 12,
+      "original_line": 469,
+      "rhs": "APPEND"
+    },
+    {
+      "busy_rhs": "(((outstanding && !mem_rsp_valid) ||\n                                    (!outstanding && mem_req_valid && mem_req_ready)))",
+      "ordinal": 13,
+      "original_line": 476,
+      "rhs": "((outstanding && !mem_rsp_valid) ||\n                                    (!outstanding && mem_req_valid && mem_req_ready)) ? DRAIN : FAILED"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 14,
+      "original_line": 478,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 15,
+      "original_line": 485,
+      "rhs": "NEXT_BAND"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 16,
+      "original_line": 486,
+      "rhs": "FLUSH_LINE"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 17,
+      "original_line": 489,
+      "rhs": "WRITE_REQ"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 18,
+      "original_line": 491,
+      "rhs": "NEXT_BAND"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 19,
+      "original_line": 505,
+      "rhs": "INGEST"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 20,
+      "original_line": 506,
+      "rhs": "FLUSH_LINE"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 21,
+      "original_line": 510,
+      "rhs": "WRITE_REQ"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 22,
+      "original_line": 512,
+      "rhs": "INGEST"
+    },
+    {
+      "busy_rhs": "(return_state!=IDLE && return_state!=FINISHED && return_state!=FAILED)",
+      "ordinal": 23,
+      "original_line": 518,
+      "rhs": "return_state"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 24,
+      "original_line": 522,
+      "rhs": "WAIT_SEAL"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 25,
+      "original_line": 524,
+      "rhs": "INGEST"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 26,
+      "original_line": 528,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 27,
+      "original_line": 529,
+      "rhs": "HEADER0"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 28,
+      "original_line": 533,
+      "rhs": "WRITE_REQ"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 29,
+      "original_line": 537,
+      "rhs": "WRITE_REQ"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 30,
+      "original_line": 540,
+      "rhs": "READ_REQ"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 31,
+      "original_line": 542,
+      "rhs": "WRITE_WAIT"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 32,
+      "original_line": 545,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "(return_state!=IDLE && return_state!=FINISHED && return_state!=FAILED)",
+      "ordinal": 33,
+      "original_line": 546,
+      "rhs": "return_state"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 34,
+      "original_line": 548,
+      "rhs": "READ_WAIT"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 35,
+      "original_line": 551,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "(return_state!=IDLE && return_state!=FINISHED && return_state!=FAILED)",
+      "ordinal": 36,
+      "original_line": 630,
+      "rhs": "return_state"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 37,
+      "original_line": 635,
+      "rhs": "READ_REQ"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 38,
+      "original_line": 640,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 39,
+      "original_line": 647,
+      "rhs": "raw_mode ? RAW_FETCH : CLEAR_TILE"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 40,
+      "original_line": 653,
+      "rhs": "DC_FETCH"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 41,
+      "original_line": 658,
+      "rhs": "DC_EXTRACT"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 42,
+      "original_line": 662,
+      "rhs": "READ_REQ"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 43,
+      "original_line": 664,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 44,
+      "original_line": 666,
+      "rhs": "RAW_EXTRACT"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 45,
+      "original_line": 668,
+      "rhs": "AC_CHECK"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 46,
+      "original_line": 672,
+      "rhs": "AC_FETCH"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 47,
+      "original_line": 679,
+      "rhs": "BANK_WAIT"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 48,
+      "original_line": 680,
+      "rhs": "EMIT"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 49,
+      "original_line": 685,
+      "rhs": "AC_EXTRACT"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 50,
+      "original_line": 689,
+      "rhs": "READ_REQ"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 51,
+      "original_line": 695,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 52,
+      "original_line": 699,
+      "rhs": "AC_CHECK"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 53,
+      "original_line": 705,
+      "rhs": "FINISHED"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 54,
+      "original_line": 709,
+      "rhs": "PREFETCH_DRAIN"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 55,
+      "original_line": 710,
+      "rhs": "raw_mode ? RAW_FETCH : CLEAR_TILE"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 56,
+      "original_line": 716,
+      "rhs": "PREFETCH_DRAIN"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 57,
+      "original_line": 717,
+      "rhs": "RAW_FETCH"
+    },
+    {
+      "busy_rhs": "(return_state!=IDLE && return_state!=FINISHED && return_state!=FAILED)",
+      "ordinal": 58,
+      "original_line": 721,
+      "rhs": "return_state"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 59,
+      "original_line": 723,
+      "rhs": "PREP_DONE"
+    },
+    {
+      "busy_rhs": "1'b1",
+      "ordinal": 60,
+      "original_line": 727,
+      "rhs": "CLEAR_TILE"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 61,
+      "original_line": 732,
+      "rhs": "FAILED"
+    },
+    {
+      "busy_rhs": "1'b0",
+      "ordinal": 62,
+      "original_line": 736,
+      "rhs": "FINISHED"
+    }
+  ],
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

@@ -1,0 +1,180 @@
+{
+  "RTL_source_frozen_after_focused_PASS": true,
+  "actual_data_path": {
+    "cursor_R_paths_in_top50": 39,
+    "delay_ns": 11.14,
+    "logic_levels": 14,
+    "logic_ns": 3.239,
+    "read_segment_launches_in_top50": 40,
+    "route_ns": 7.901,
+    "route_percent": 70.926,
+    "source_fanout": 28
+  },
+  "actual_new_native_run": false,
+  "actual_worst": {
+    "data_path_delay_ns": 11.14,
+    "destination": "coefficients/child/scratch/cursors_reg[1][29]/R",
+    "logic_levels": 14,
+    "slack_ns": -1.654,
+    "source": "coefficients/child/scratch/read_segment_reg[1]/C"
+  },
+  "all_private_RF_exact": false,
+  "cache_miss_rule": "Both cursor payloads hold on a miss; READ_REQ/READ_WAIT returns to the same ordinal. Incrementing on miss is an explicit model counterexample.",
+  "candidate_sha256": "ebc4ca022b00e9d41613155eb80859986a8a2fbb803b4541a72511105589a218",
+  "candidate_source": "fpga/experiments/cu66-v110-cursors/packed_scratch_v91g2.sv",
+  "consumer_inventory": [
+    {
+      "gates": "state==AC_CHECK; debug additionally tile_mode,!cancel,!response_failure",
+      "state": "AC_CHECK",
+      "use": "progress versus counts and debug_tile_publish"
+    },
+    {
+      "gates": "original controller priority and state==AC_FETCH",
+      "state": "AC_FETCH",
+      "use": "registered read_address=starts[read_band]+cursors[read_band]*4"
+    },
+    {
+      "gates": "original controller priority and cache-hit record decode",
+      "state": "AC_EXTRACT",
+      "use": "non-first-record monotonicity check"
+    },
+    {
+      "gates": "prefetch_mode,!tile_mode,sealed,!prefetch_offer,!outstanding,!cancel,error==0,state==EMIT,!raw_mode,next_block",
+      "state": "EMIT",
+      "use": "prefetch candidate address and remaining count"
+    }
+  ],
+  "cursor_payload_bits": 96,
+  "cursor_source_inventory": [
+    {
+      "line": 96,
+      "text": "logic [31:0] heads[1:3], cursors[1:3];"
+    },
+    {
+      "line": 208,
+      "text": "(head_valid[read_band] || cursors[read_band]>=counts[read_band]) &&"
+    },
+    {
+      "line": 280,
+      "text": "candidate_word_address=starts[b]+cursors[b]*4;"
+    },
+    {
+      "line": 281,
+      "text": "if(!candidate_valid && cursors[b]<counts[b] &&"
+    },
+    {
+      "line": 454,
+      "text": "for(integer b=1;b<=3;b=b+1) cursors[b]<=0;"
+    },
+    {
+      "line": 677,
+      "text": "if(!head_valid[read_band] && cursors[read_band]<counts[read_band]) begin state<=AC_FETCH; busy_owned<=1'b1; end"
+    },
+    {
+      "line": 690,
+      "text": "read_segment<=read_band; read_address<=starts[read_band]+cursors[read_band]*4; begin state<=AC_EXTRACT; busy_owned<=1'b1; end"
+    },
+    {
+      "line": 699,
+      "text": "(cursors[read_band]!=0 && read_position<={13'd0,head_positions[read_band]})) begin"
+    },
+    {
+      "line": 704,
+      "text": "cursors[read_band]<=cursors[read_band]+1; head_valid[read_band]<=1; begin state<=AC_CHECK; busy_owned<=1'b1; end"
+    },
+    {
+      "line": 782,
+      "text": "if(cursors[read_band]!=0)"
+    }
+  ],
+  "external_hierarchical_cursor_consumers": [],
+  "focused_receipt": "experiments/python-gamebub-v110/cursors/attempts/20261108T153917289977Z/results.json",
+  "focused_receipt_sha256": "86d79262684a1e7c0e2ab1bd7d0b0d29eb9af7df1df6a066135cddfc7d607080",
+  "focused_runs": [
+    {
+      "cursor_retirement": {
+        "cursor_retirement_cases": 6,
+        "inactive_divergence_cases": 6,
+        "restored_new_owner_cases": 6,
+        "seed": 111201,
+        "status": "TEST_PASS",
+        "type": "cursor_retirement_verdict"
+      },
+      "inherited": {
+        "bank_mask": 15,
+        "begin_input_noise_edges": 128138,
+        "corrupt_response_cases": 128,
+        "dc_line_boundary_transactions": 48,
+        "full_transactions": 72,
+        "offset_mask": 65535,
+        "read_owner_cases": 4,
+        "seed": 111201,
+        "status": "TEST_PASS",
+        "total_clock_edges": 290831,
+        "type": "bank_complete_verdict"
+      }
+    },
+    {
+      "cursor_retirement": {
+        "cursor_retirement_cases": 6,
+        "inactive_divergence_cases": 6,
+        "restored_new_owner_cases": 6,
+        "seed": 111202,
+        "status": "TEST_PASS",
+        "type": "cursor_retirement_verdict"
+      },
+      "inherited": {
+        "bank_mask": 15,
+        "begin_input_noise_edges": 128465,
+        "corrupt_response_cases": 128,
+        "dc_line_boundary_transactions": 48,
+        "full_transactions": 72,
+        "offset_mask": 65535,
+        "read_owner_cases": 4,
+        "seed": 111202,
+        "status": "TEST_PASS",
+        "total_clock_edges": 291222,
+        "type": "bank_complete_verdict"
+      }
+    }
+  ],
+  "hardware_contact": false,
+  "model_counts": {
+    "deliberately_retired_divergence_rows": 53296,
+    "restored_new_owner_graph_edges": 192,
+    "retired_physical_owner_graph_edges": 9216,
+    "retired_physical_owner_graph_nodes": 512,
+    "transition_rows": 111360,
+    "valid_begin_restoration_rows": 1024
+  },
+  "model_path": "experiments/python-gamebub-v110/cursors/model.json",
+  "model_scope": "Per-bank equality/zero/modular-increment induction with exhaustive3-bit values, plus retired physical-owner graph. Source-audited guarded consumer inventory; not formal whole-RTL, arbitraryfourstate or reachability proof.",
+  "model_sha256": "f8208b54212db97c8e3837388f97ac7dd475063ed9677ad3e5faf9381f000670",
+  "native_control_receipt": "experiments/python-gamebub-v110/native/20261108T145904974022Z/receipt.json",
+  "native_control_receipt_sha256": "8ea9df6dcf6e42438be10dd41507a1693cf0903fe3a65102d36df57107e02c6b",
+  "new_miter_contract": "All actual public ports/invalid values/debug/memory/read-address and noncursor state exact. Cursor equality required if EITHER raw DUT state is live. Both raw states compared unconditionally before scope; old proofs untouched.",
+  "no_IDLE_observable_cursor_counterexample_found": true,
+  "old_probe_unconditional_private_cursor_compare": "fpga/experiments/cu66-v110-busy/verification/scratch_probe.sv:362",
+  "original_sha256": "e9a70463b78c0afbbded2358fd9b4ca7f600c695d9251b0cf3d202a74ad21478",
+  "original_source": "fpga/experiments/cu66-v110-busy/packed_scratch_v91g2.sv",
+  "path_report_sha256": "df151d920ae21b46d19e05d6e868373f58510afc10dfd498a41777c65c7a6be7",
+  "private_divergence_rule": "Candidate may clear unowned IDLE data or speculatively increment on hit during cancel/error/malformed record; the same edge retires that owner into IDLE/DRAIN/FAILED/FINISHED. All noncursor controller/public/state updates remain exact.",
+  "public_cursor_output": false,
+  "public_debug_prefetch_launch_unchanged": true,
+  "public_debug_prefetch_use_unchanged": true,
+  "read_address_and_other_private_registers_unchanged": true,
+  "remaining_gates": [
+    "Independent source review and full canonical composition qualification",
+    "Any new native experiment requires separate policy/budget/grant",
+    "Actual synthesis/placement/route must show cursor reset mapping and timing; no predicted MHz or recovery claimed"
+  ],
+  "restoration_rule": "Every path from IDLE/DRAIN/FAILED/FINISHED to a cursor-consuming owner passes a valid original IDLE begin edge, where original and candidate cursors become zero. DRAIN ignores stale return_state and retires only to IDLE.",
+  "retained_first_attempt": {
+    "first_cause": "New C++ fixture misleading-indentation warning treated as error; only three while-loop braces/layout repaired before explicit second attempt. No RTL, assertion, golden or warning-suppression change.",
+    "path": "experiments/python-gamebub-v110/cursors/attempts/20261108T153818355793Z/results.json",
+    "sha256": "1c3fd95b9c2f4dffc6d74280f5908b08cf0429cbec21fda0c6084af643fa9222",
+    "status": "FAIL_BEFORE_SIMULATION"
+  },
+  "schema": "v110-speculative-private-cursor-analysis-v1",
+  "status": "SOURCE_OWNER_AUDIT_AND_FOCUSED_RTL_PASS_NO_PHYSICAL_GAIN_CLAIM"
+}

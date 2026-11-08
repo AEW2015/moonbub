@@ -1,0 +1,93 @@
+{
+  "schema": "v110-hardware-evidence-checker-final-audit-v1",
+  "status": "PASS_SOURCE_BOUND_SYNTHETIC_SELFTEST_AUDIT",
+  "scope": "Independent read-only review of the offline checker source, recorded synthetic self-test, root review, and normative hardware-evidence documentation. No tests rerun and no hardware evidence created.",
+  "selftest": {
+    "receipt": "experiments/python-gamebub-v110/hardware-evidence/selftest.json",
+    "receipt_sha256": "0e793e6855bae041b3435f97dd1ff5c159ad5ebecd24f7b1c283bfae307dbd03",
+    "transcript": "experiments/python-gamebub-v110/hardware-evidence/selftest.log",
+    "transcript_sha256": "a49d8434e8e588bc9634dccbfb17fdd530885b5d59cdb786b91c60f2f8d840e6",
+    "status": "PASS_SYNTHETIC_SELFTEST_ONLY",
+    "tests_run": 12,
+    "findings": 23,
+    "failures": 0,
+    "errors": 0,
+    "wall_seconds": 3.1702380971983075,
+    "maximum_rss_kib": 28228,
+    "address_space_limit_bytes": 268435456,
+    "cpu_limit_seconds": 55,
+    "all_finding_hardware_execution_verified_false": true,
+    "all_finding_hardware_acceptance_false": true,
+    "top_level_hardware_execution_verified": false,
+    "top_level_hardware_acceptance": false,
+    "all_fixture_inputs_deleted_after_selftest": true
+  },
+  "root_review": {
+    "path": "experiments/python-gamebub-v110/hardware-evidence/root-review.json",
+    "sha256": "dab9209a8b349524f7f045f49a496072f8166d509ba1f8bc217cb5367df5e55a",
+    "status": "PASS_SOURCE_BOUND_SELFTEST_REVIEW",
+    "pins_selftest_receipt_sha256": true,
+    "tests": 12,
+    "findings": 23,
+    "source_hashes_current": true,
+    "hardware_execution_verified": false,
+    "hardware_acceptance": false,
+    "reviewed_without_rerunning_tests": true
+  },
+  "source_integrity": {
+    "checker": {
+      "path": "scripts/cu66-v110/hardware_evidence.py",
+      "sha256": "28c5266fbbef95d9f0b44502ab3b03dd22ed8dbe8af270fbd2ee3d1663d3a0f7",
+      "current_hash_matches_receipt": true
+    },
+    "selftest": {
+      "path": "scripts/cu66-v110/tests/test_hardware_evidence.py",
+      "sha256": "d628362de464a8e7f8a3914d16937450af939240fe4fd044d39d6028242ff6c5",
+      "current_hash_matches_receipt": true
+    },
+    "selftest_receipt_sha256_matches_root_review": true
+  },
+  "behavior_review": {
+    "calibration": "Requires explicit positive rational tick rate, named clock, kind, calibration file hash, and matching clock/rate/kind values in the calibration artifact. Verifies file consistency, not physical calibration accuracy or uncertainty.",
+    "counter_contract": "Requires explicit width 1-64, wrap_count, raw tick in range, one declared reset epoch shared by all timestamps, and explicit single-epoch/reset and wrap policies; absolute ticks use wrap_count * 2^width + tick.",
+    "provenance": "Requires nonempty artifact pins and verifies each file hash. A matching pin proves only which supplied bytes were read, not that they came from a device or a complete capture.",
+    "windows_and_frames": "Checks ordered nonoverlapping exact 60 s then 600 s windows, fixed floor-30-Hz release schedule, distinct IDs and intended source/publication/display identity, timestamps and increasing display order, flags, supplied content-hash equality, queue bounds, per-frame underruns, and supplied whole-window health totals.",
+    "strict_latency": "Uses integer rational comparison 100 * latency_ticks * rate_denominator < rate_numerator for every packet-complete to validated-publication sample. Exactly 10 ms fails regardless of median/percentile.",
+    "offline_flags": "hardware_execution_verified and hardware_acceptance remain false in all results, including a numerical pass labelled hardware_capture."
+  },
+  "notable_findings": {
+    "positive_fixture": {
+      "numerical_gates_pass": true,
+      "60s_frames": 1800,
+      "600s_frames": 18000,
+      "fps_each_window": 30.0,
+      "sample_latency_ms": 5.0,
+      "hardware_execution_verified": false,
+      "hardware_acceptance": false
+    },
+    "exact_10ms_outlier": {
+      "test": "exact-10ms",
+      "60s_median_ms": 5.0,
+      "60s_max_ms": 10.0,
+      "60s_strict_latency_pass": false,
+      "worst_frame_id": "60s-source-17",
+      "worst_trace_line": 18,
+      "latency_ticks": 10000,
+      "tick_rate_hz": 1000000,
+      "600s_window_still_numerically_passes": true,
+      "overall_numerical_gate_passes": false
+    },
+    "capture_label_only": {
+      "test": "hardware-label-only",
+      "evidence_kind": "hardware_capture",
+      "numerical_gates_pass": true,
+      "hardware_execution_verified": false,
+      "hardware_acceptance": false
+    }
+  },
+  "limits": [
+    "Queue peaks, health totals, calibration metadata, event flags, and provenance are supplied trace observations/claims; offline hash and consistency checks cannot attest device execution, unlogged events, or that supplied health totals cover real operation.",
+    "A synthetic or hardware-labeled fixture can pass numerical checks but cannot qualify hardware. Independent capture provenance, calibrated device counters, real contention, and complete production integration remain required.",
+    "The self-test demonstrates checker behavior against synthetic fixtures only; it is not a hardware, simulation, or product performance result."
+  ]
+}

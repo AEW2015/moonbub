@@ -1,0 +1,49 @@
+{
+  "cache_miss_negative_control": {
+    "cache_hit": false,
+    "new_cursor": 0,
+    "next_state": "READ_REQ",
+    "old_cursor": 0,
+    "state": "AC_EXTRACT",
+    "violated": "Live cursor equality fails before READ_WAIT returns to the same record.",
+    "wrong_increment_next_new": 1,
+    "wrong_increment_next_old": 0
+  },
+  "cursor_consumer_states": [
+    "AC_CHECK",
+    "AC_EXTRACT",
+    "AC_FETCH",
+    "EMIT"
+  ],
+  "deliberately_retired_divergence_rows": 53296,
+  "extension_to32bits": "Per-bank induction uses only equality, identical increment modulo2^width, and same-edge zero restoration; no arithmetic bound assumption.",
+  "lifecycle_coverage": [
+    "Global cancel\u2192IDLE or physical DRAIN",
+    "Mismatched response\u2192FAILED or DRAIN",
+    "Invalid begin\u2192FAILED without owner",
+    "Bad cached record\u2192FAILED; optional final override\u2192FINISHED",
+    "Cache miss\u2192READ_REQ/WAIT\u2192same AC_EXTRACT ordinal",
+    "Wrong ACK holds DRAIN; matching late ACK\u2192IDLE only",
+    "Preload/unaccepted begin noise does not create owner",
+    "Every valid IDLE begin clears all banks before any active consumer"
+  ],
+  "limits": "Finite source-transformation/owner induction model; holds stand for unchanged active controller transitions. Late-ACK graph edges audited from source. Not formal RTL/four-state/reachability or physical timing proof; actual complete miter required.",
+  "restored_new_owner_graph_edges": 192,
+  "retired_physical_owner_graph_edges": 9216,
+  "retired_physical_owner_graph_nodes": 512,
+  "retired_states": [
+    "DRAIN",
+    "FAILED",
+    "FINISHED",
+    "IDLE"
+  ],
+  "source_original_assertions_retained": true,
+  "source_sha256": {
+    "fpga/experiments/cu66-v110-busy/packed_scratch_v91g2.sv": "e9a70463b78c0afbbded2358fd9b4ca7f600c695d9251b0cf3d202a74ad21478",
+    "fpga/experiments/cu66-v110-cursors/packed_scratch_v91g2.sv": "ebc4ca022b00e9d41613155eb80859986a8a2fbb803b4541a72511105589a218"
+  },
+  "status": "PASS_BOUNDED_CURSOR_OWNER_RESTORATION_MODEL_NOT_RTL",
+  "transition_rows": 111360,
+  "unsigned_width3_all_values_and_wrap": true,
+  "valid_begin_restoration_rows": 1024
+}

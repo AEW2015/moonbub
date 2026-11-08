@@ -1,0 +1,107 @@
+{
+  "actual_RTL_run": false,
+  "audited_at_utc": "2026-11-08T15:20:43.363575+00:00",
+  "bad_word_capture_counterexample": {
+    "available": 0,
+    "in_bits": 1,
+    "in_last": 1,
+    "incorrect_if_capture_every_accepted_in_last": true,
+    "loaded": 0,
+    "required_complete_after": false,
+    "size": 64,
+    "word_bad": true
+  },
+  "complete_invariant": "load_complete_owned == (loaded==size_bits)",
+  "counterexamples_if_assumptions_violated": [
+    {
+      "available": 1,
+      "consumed": 0,
+      "loaded": 2,
+      "old_parallel_can_step": false,
+      "proposed_parallel_ready": true,
+      "reason": "available != loaded-consumed",
+      "size": 2
+    },
+    {
+      "available": 10,
+      "consumed": 0,
+      "loaded": 10,
+      "old_parallel_can_step": true,
+      "proposed_parallel_ready": false,
+      "reason": "loaded>size violates availability<=remaining",
+      "size": 5
+    },
+    {
+      "available": 3,
+      "old_found_one": false,
+      "prefix_rank": 5,
+      "proposed_has_one": true,
+      "reason": "First one is in unowned padding",
+      "remaining": 3
+    }
+  ],
+  "exact_threshold_class_model": {
+    "available_exact": [
+      0,
+      64
+    ],
+    "large_class_reason": "For remaining>64 and available<=64, load_complete is false and min(remaining,15)=15. This is an analytical exact class, not sampled 32bit enumeration.",
+    "load_complete_priority_cases": 1344,
+    "padding_consistent_first_rank_classes_checked": 28000,
+    "ready_classes_checked": 2210,
+    "remaining_exact": [
+      0,
+      64
+    ],
+    "remaining_large_class": [
+      65,
+      4294967295
+    ],
+    "selected_take_classes_checked": 21319,
+    "wait_classes_checked": 8840
+  },
+  "found_formula": "parallel_prefix_has_one = prefix_rank!=15 (equivalently OR of reservoir[63:49]), used only in original selected PREFIX updates",
+  "heavy_run": false,
+  "invariants_required": [
+    "available == loaded-consumed",
+    "0<=consumed<=loaded<=size_bits<=2^32-1",
+    "available<=64",
+    "MSB-aligned raw reservoir bits below available are zero"
+  ],
+  "limitations": [
+    "Conditional legal-state algebra; false for some deliberately inconsistent inactive fixtures if used outside active selected updates.",
+    "No speed/clock prediction. Prefix-empty and truncation remaining tests remain operational."
+  ],
+  "original_loaded_write_inventory": [
+    {
+      "line": 115,
+      "rhs": "0"
+    },
+    {
+      "line": 148,
+      "rhs": "loaded+32'(in_bits)"
+    }
+  ],
+  "proposed_load_complete_writes": [
+    "reset||stream_start: stream_bits==0, same branch as loaded<=0 and size_bits<=stream_bits",
+    "Winning active input acceptance AND !word_bad: in_last, same branch as loaded<=loaded+in_bits",
+    "All other branches: hold; request acceptance/bad words must not assign"
+  ],
+  "ready_formula": "parallel_prefix_ready = available>=15 || load_complete_owned",
+  "schema": "v110-prospective-availability-algebra-analysis-v1",
+  "selected_for_native": false,
+  "source": {
+    "path": "fpga/experiments/cu66-v110-prefix/br88_rice_elastic.sv",
+    "sha256": "c07d936e807a09ee332b5df4c3f743f88f284784fbcf1e704d1a8db770c33eac"
+  },
+  "source_copied_or_edited": false,
+  "source_order_and_contract_requirements": [
+    "Retain original comb can_step/found/take/zeros as references and all original assertions/public/raw-state miter checks.",
+    "New aliases apply only to selected PREFIX sequential updates and PREFIX wait; preserve request/input/reset/start/failure/empty/truncation priority and SUFFIX schedule.",
+    "Initialize new complete bit coherently in prepared fixtures; active states relying on algebra must satisfy geometry/padding. Existing inactive arbitrary raw fixtures remain unchanged because active updates are not authorized.",
+    "Assert complete/availability coherence after initialized legal operation; do not assume every prepared inactive state is legal.",
+    "Actual focused/fullcanonical source qualification remains mandatory. Current final prefix native bottleneck moved to scratch bank selection, so this is not an immediate measured timing priority."
+  ],
+  "status": "PASS_CONDITIONAL_LEGAL_STATE_ALGEBRA_NOT_RTL_NOT_SELECTED",
+  "wait_formula": "PREFIX wait = !prefix_empty && !prefix_step_ready && !(in_valid&&in_ready); serial step_ready=available!=0, parallel step_ready as above; SUFFIX wait unchanged"
+}
