@@ -1,0 +1,1 @@
+set rtl_sources [list {/build/v107-cdc-sync-native-20261108T041555711433Z/v107_reset_release.sv} {/build/v107-cdc-sync-native-20261108T041555711433Z/v107_async_fifo.sv} {/build/v107-cdc-sync-native-20261108T041555711433Z/v107_cdc_fabric.sv}]

@@ -1,0 +1,45 @@
+{
+  "baseline": "fpga/experiments/cu66-v107-header/cs88_admission_v91i2a.sv",
+  "baseline_sha256": "7a417f9a647e77571e6d31d6780412bc62dda4bdc1ef879017266694df9763a9",
+  "candidate": "fpga/experiments/cu66-v107-scale/cs88_admission_v91i2a.sv",
+  "candidate_sha256": "1956b84f3253ae688674744cd68952e21d8404318b0f4f7b69cf13e1207abfb3",
+  "changes": [
+    {
+      "end": 2858,
+      "new": "",
+      "old": "1:0] scales [0:1349];\n    logic [",
+      "start": 2825
+    },
+    {
+      "end": 4062,
+      "new": ";\n\n    // V107: external writes on A, Q_FILL/registered lookup on B.\n    wire scale_live=!reset&&!start&&!abort_packet;\n    wire scale_fill=scale_live&&state==Q_FILL;\n    wire scale_lookup=scale_live&&lookup_req&&state==FINISHED;\n    cu66_scale_tdp_v107 scale_store(.clk(clk),.a_write(scale_live&&cache_write),\n        .a_addr(cache_index),.a_data(cache_data),.b_write(scale_fill),.b_read(scale_lookup),\n        .b_addr(scale_fill?q_runs[10:0]:lookup_cell),.b_data(q_value),.b_q(lookup_scale))",
+      "old": "",
+      "start": 4062
+    },
+    {
+      "end": 11135,
+      "new": "",
+      "old": "cache_write&&!reset&&!start&&!abort_packet)scales[cache_index]<=cache_data;\n        if(",
+      "start": 11048
+    },
+    {
+      "end": 11276,
+      "new": "",
+      "old": "];lookup_scale<=scales[lookup_cell",
+      "start": 11242
+    },
+    {
+      "end": 22726,
+      "new": "",
+      "old": "scales[q_runs[10:0]]<=q_value;",
+      "start": 22696
+    },
+    {
+      "end": 25655,
+      "new": "\n// Isolated common-clock TDP scale storage; no reset/initialization promise.\nmodule cu66_scale_tdp_v107 (\n    input wire clk,input wire a_write,input wire [10:0] a_addr,input wire [1:0] a_data,\n    input wire b_write,b_read,input wire [10:0] b_addr,input wire [1:0] b_data,\n    output reg [1:0] b_q\n);\n    (* ram_style=\"block\" *) reg [1:0] words [0:1349];\n    // Suppress only same-address simultaneous A writes: original Q_FILL wins.\n    wire a_commit=a_write && !(b_write && a_addr==b_addr);\n    always @(posedge clk)if(a_commit) words[a_addr]<=a_data;\n    // A B-write must hold the previous lookup output (NO_CHANGE semantics).\n    always @(posedge clk)begin\n        if(b_write) words[b_addr]<=b_data;\n        else if(b_read) b_q<=words[b_addr];\n    end\nendmodule\n",
+      "old": "",
+      "start": 25655
+    }
+  ],
+  "note": "Inferred common-clock TDP; actual physical mode/hold-mux qualification selected by matching final source hash."
+}

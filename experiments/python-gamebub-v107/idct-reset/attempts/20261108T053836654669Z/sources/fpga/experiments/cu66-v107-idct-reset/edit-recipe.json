@@ -1,0 +1,24 @@
+{
+  "status": "PASS_EXACT_SOURCE_RECIPE",
+  "original_path": "fpga/experiments/cu66-v106-idct-area/cu66_idct8x8.sv",
+  "original_sha256": "1ed49416dae06b727544ad1d2f96440f553cd99e5324dc895a0af5edbca5cc32",
+  "candidate_path": "fpga/experiments/cu66-v107-idct-reset/cu66_idct8x8.sv",
+  "candidate_sha256": "2495e1d5461771cd2d09ce8770ea7818f4f38703bf035bbed4049cdd4226d44f",
+  "edits": [
+    {
+      "before": "            source_tile<='0;\n",
+      "after": "",
+      "expected_occurrences": 1
+    },
+    {
+      "before": "                    source_tile<=in_tile;\n",
+      "after": "",
+      "expected_occurrences": 1
+    },
+    {
+      "before": "    always_ff @(posedge clk) begin\n        if (rst || abort_frame) begin",
+      "after": "    // V107: this private payload is unowned in IDLE. Capture freely there;\n    // the accepted edge captures the same tile, then every math/output state\n    // holds it. Only the small owner/control state needs reset/cancellation.\n    always_ff @(posedge clk)if(state==IDLE)source_tile<=in_tile;\n\n    always_ff @(posedge clk) begin\n        if (rst || abort_frame) begin",
+      "expected_occurrences": 1
+    }
+  ]
+}

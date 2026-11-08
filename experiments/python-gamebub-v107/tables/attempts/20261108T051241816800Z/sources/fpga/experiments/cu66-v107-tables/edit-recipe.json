@@ -1,0 +1,65 @@
+{
+  "V105_mode_recipe_sha256": "e83013f017ac22467c3a46144bf12df6912dd393f45bd616c33823d06c4c58e5",
+  "baseline": "fpga/experiments/cu66-v107-scale/cs88_admission_v91i2a.sv",
+  "baseline_sha256": "1956b84f3253ae688674744cd68952e21d8404318b0f4f7b69cf13e1207abfb3",
+  "candidate": "fpga/experiments/cu66-v107-tables/cs88_admission_v91i2a.sv",
+  "candidate_sha256": "b149c94ba1a5dd7f1d09384126c762d0bb0de5aa664baa4b76c29c631aeb652e",
+  "canonical_mode_generator_sha256": "d2b582f9458d08a12fb31b6837e7290870edc1e00bfc75af9785cc0ed8b34608",
+  "changes": [
+    {
+      "end": 2810,
+      "new": "",
+      "old": "9];\n    logic [1:0] modes [0:809",
+      "start": 2778
+    },
+    {
+      "end": 9929,
+      "new": "// Canonical single mode-store write port. The full-width parser address\n    // arithmetic and branch guards retain the original source semantics.\n    logic mode_write_enable;\n    logic [12:0] mode_write_address;\n    logic [1:0] mode_write_data;\n    always_comb begin\n        mode_write_enable=1'b0;\n        mode_write_address=13'd0;\n        mode_write_data=2'd0;\n        if(!reset&&!start&&!abort_packet)begin\n            if(state==ACTIVE_CLEAR&&active_index!=8100)begin\n                mode_write_enable=1'b1;\n                mode_write_address=active_index[12:0];\n                mode_write_data=2'd1;\n            end else if(state==KEY_TILE&&tile!=tile_count(plane))begin\n                mode_write_enable=1'b1;\n                mode_write_address=13'((plane==0?0:plane==1?5400:6750)+tile);\n                mode_write_data=hidden(plane,tile)?2'd1:2'd2;\n            end else if(state==MODE_BIT&&bits_left!=0&&mixed_bit)begin\n                mode_write_enable=1'b1;\n                mode_write_address=13'((plane==0?0:plane==1?5400:6750)+tile);\n                mode_write_data=bit_cache[7]?2'd2:2'd0;\n            end else if(state==GROUP_TILE&&tile!=group_end)begin\n                if(hidden(plane,tile)||group_tag==0)begin\n                    mode_write_enable=1'b1;\n                    mode_write_address=13'((plane==0?0:plane==1?5400:6750)+tile);\n                    mode_write_data=hidden(plane,tile)?2'd1:2'd0;\n                end else if(group_tag==1)begin\n                    mode_write_enable=1'b1;\n                    mode_write_address=13'((plane==0?0:plane==1?5400:6750)+tile);\n                    mode_write_data=2'd2;\n                end\n            end\n        end\n    end\n    cu66_mode_store_v107 mode_store(.clk(clk),.write_enable(mode_write_enable),\n        .write_address(mode_write_address),.write_data(mode_write_data),\n        .read_enable(lookup_req&&state==FINISHED&&!reset&&!start&&!abort_packet),\n        .read_address(lookup_tile),.q(lookup_mode));\n\n    ",
+      "old": "",
+      "start": 9929
+    },
+    {
+      "end": 11629,
+      "new": "",
+      "old": "\n        if(lookup_req&&state==FINISHED&&!reset&&!start&&!abort_packet)begin\n            lookup_mode<=modes[lookup_tile];\n        end",
+      "start": 11496
+    },
+    {
+      "end": 13571,
+      "new": "",
+      "old": "modes[active_index[12:0]]<=1;",
+      "start": 13542
+    },
+    {
+      "end": 17540,
+      "new": "",
+      "old": "modes[13'((plane==0?0:plane==1?5400:6750)+tile)]<=hidden(plane,tile)?2'd1:2'd2;",
+      "start": 17461
+    },
+    {
+      "end": 18490,
+      "new": "",
+      "old": "modes[13'((plane==0?0:plane==1?5400:6750)+tile)]<=bit_cache[7]?2'd2:2'd0;",
+      "start": 18417
+    },
+    {
+      "end": 19815,
+      "new": "",
+      "old": "modes[13'((plane==0?0:plane==1?5400:6750)+tile)]<=hidden(plane,tile)?2'd1:2'd0;",
+      "start": 19736
+    },
+    {
+      "end": 20006,
+      "new": "",
+      "old": "modes[13'((plane==0?0:plane==1?5400:6750)+tile)]<=2'd2;",
+      "start": 19951
+    },
+    {
+      "end": 26733,
+      "new": "module cu66_mode_store_v107 (\n    input wire clk,write_enable,input wire [12:0] write_address,input wire [1:0] write_data,\n    input wire read_enable,input wire [12:0] read_address,output reg [1:0] q\n);\n    (* ram_style=\"block\" *) reg [1:0] words [0:8099];\n    // Parser writes and FINISHED reads are mutually exclusive in the caller.\n    // Preserve the last registered lookup value across every parser write.\n    always @(posedge clk)begin\n        if(write_enable)words[write_address]<=write_data;\n        else if(read_enable)q<=words[read_address];\n    end\nendmodule\n",
+      "old": "",
+      "start": 26733
+    }
+  ],
+  "schema": "v107-tables-exact-mode-composition-v1"
+}

@@ -1,0 +1,94 @@
+{
+  "baseline": "fpga/experiments/cu66-v107-quant/cs88_admission_v91i2a.sv",
+  "baseline_sha256": "58d0fcb876692c2ad38fa0585a5d2e13cd83079f64a84538f8de5a5c4d139d61",
+  "candidate": "fpga/experiments/cu66-v107-header/cs88_admission_v91i2a.sv",
+  "candidate_sha256": "7a417f9a647e77571e6d31d6780412bc62dda4bdc1ef879017266694df9763a9",
+  "changes": [
+    {
+      "end": 3227,
+      "new": ";\n    // V107: exact full-width header sums captured on existing byte-load edges.\n    logic [34:0] header_mode_start, header_residual_start, header_hud_tail;\n    logic [34:0] header_residual_end, header_packet_total",
+      "old": "",
+      "start": 3227
+    },
+    {
+      "end": 7969,
+      "new": "\");\n    end\n`endif\n`ifndef SYNTHESIS\n    // Every real HEADER_CHECK follows a complete sequential header load. The\n    // caches need no reset: cancelled parses cannot consume them, and a new\n    // parse recaptures all fields. Prepared-state tests bind these invariants.\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&state==HEADER_CHECK)begin\n        assert(header_mode_start==35'd128+{3'd0,h32(36)}) else $fatal(1,\"header mode-start cache\");\n        assert(header_residual_start==35'd128+{3'd0,h32(36)}+{3'd0,h32(40)}) else $fatal(1,\"header residual-start cache\");\n        assert(header_hud_tail==35'd4+{3'd0,h32(44)}) else $fatal(1,\"header HUD-tail cache\");\n        assert(header_residual_end==35'd128+{3'd0,h32(36)}+{3'd0,h32(40)}+{3'd0,h32(48)}) else $fatal(1,\"header residual-end cache\");\n        assert(header_packet_total==35'd132+{3'd0,h32(36)}+{3'd0,h32(40)}+{3'd0,h32(44)}+{3'd0,h32(48)}) else $fatal(1,\"header packet-total cache",
+      "old": "",
+      "start": 7969
+    },
+    {
+      "end": 12932,
+      "new": "// The current field's final byte has not reached header[]\n                    // yet; forward it while the preceding bytes are stable.\n                    if(header_index==39)\n                        header_mode_start<=35'd128+{3'd0,header[36],header[37],header[38],byte_value};\n                    if(header_index==43)\n                        header_residual_start<=header_mode_start+{3'd0,header[40],header[41],header[42],byte_value};\n                    if(header_index==47)\n                        header_hud_tail<=35'd4+{3'd0,header[44],header[45],header[46],byte_value};\n                    if(header_index==51)\n                        header_residual_end<=header_residual_start+{3'd0,header[48],header[49],header[50],byte_value};\n                    if(header_index==55)\n                        header_packet_total<=header_residual_end+header_hud_tail;\n                    ",
+      "old": "",
+      "start": 12932
+    },
+    {
+      "end": 13700,
+      "new": "hea",
+      "old": "64'",
+      "start": 13697
+    },
+    {
+      "end": 13768,
+      "new": "er_packet_total",
+      "old": "132+{32'd0,h32(36)}+{32'd0,h32(40)}+{32'd0,h32(44)}+{32'd0,h32(48)}",
+      "start": 13701
+    },
+    {
+      "end": 13773,
+      "new": "",
+      "old": "2",
+      "start": 13772
+    },
+    {
+      "end": 14442,
+      "new": "header_mode_start[3",
+      "old": "",
+      "start": 14442
+    },
+    {
+      "end": 14453,
+      "new": ":0]",
+      "old": "28+h32(36)",
+      "start": 14443
+    },
+    {
+      "end": 14470,
+      "new": "header_residual_start[3",
+      "old": "",
+      "start": 14470
+    },
+    {
+      "end": 14487,
+      "new": ":",
+      "old": "28+h32(36)+h32(4",
+      "start": 14471
+    },
+    {
+      "end": 14489,
+      "new": "]",
+      "old": ")",
+      "start": 14488
+    },
+    {
+      "end": 14529,
+      "new": "header_residual_end[3",
+      "old": "",
+      "start": 14529
+    },
+    {
+      "end": 14546,
+      "new": ":",
+      "old": "28+h32(36)+h32(4",
+      "start": 14530
+    },
+    {
+      "end": 14556,
+      "new": "]",
+      "old": ")+h32(48)",
+      "start": 14547
+    }
+  ],
+  "offset_units": "ASCII offsets; apply in reverse order",
+  "status": "PASS_EXACT_RECIPE_AND_ADAPTERS"
+}

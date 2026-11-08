@@ -1,0 +1,67 @@
+{
+  "all_original_need_calls_retained": true,
+  "candidate": "fpga/experiments/cu66-v107-elastic/verification/bench.cpp",
+  "candidate_need_calls": 144,
+  "candidate_sha256": "ec51ee82e4981d00a432aab633defd01e5fe638dbe999e4a41de2f2a5ad12384",
+  "changes": [
+    {
+      "end": 55,
+      "new": "\n#include \"Vcs88_pipeline_v91k___024root.h\"\n#include <deque>\n#ifndef ELASTIC\n#define ELASTIC 0\n#endif",
+      "old": "",
+      "start": 55
+    },
+    {
+      "end": 7377,
+      "new": "\n    std::deque<Tuple> elastic_queue;\n    uint64_t elastic_up=0,elastic_down=0,elastic_discard=0,inverse_input_model=0;\n    uint64_t elastic_total_up=0,elastic_total_down=0,elastic_total_discard=0,elastic_fence_checks=0,elastic_hold_checks=0;\n    bool elastic_fence_seen=false;\n#if ELASTIC\n    Tuple staged_tuple()const{const auto&r=*d.rootp;return {\n        unsigned(r.cs88_pipeline_v91k__DOT__staged_plane),unsigned(r.cs88_pipeline_v91k__DOT__staged_block),\n        unsigned(r.cs88_pipeline_v91k__DOT__staged_index),unsigned(r.cs88_pipeline_v91k__DOT__staged_tile),\n        unsigned(r.cs88_pipeline_v91k__DOT__staged_qcell),unsigned(r.cs88_pipeline_v91k__DOT__staged_qscale),\n        r.cs88_pipeline_v91k__DOT__staged_epoch,r.cs88_pipeline_v91k__DOT__staged_child_epoch,\n        int(int16_t(r.cs88_pipeline_v91k__DOT__staged_value))};}\n    void elastic_pre(){\n        const auto&r=*d.rootp;\n        const bool kill=d.reset||r.cs88_pipeline_v91k__DOT__accepted_start||r.cs88_pipeline_v91k__DOT__coefficient_stage_cancel;\n        const bool full=r.cs88_pipeline_v91k__DOT__coefficient_boundary__DOT__full;\n        const bool valid=r.cs88_pipeline_v91k__DOT__staged_valid,ready=r.cs88_pipeline_v91k__DOT__staged_ready;\n        need(full==!elastic_queue.empty()&&elastic_queue.size()<=1,\"independent staged occupancy/owner bound\");\n        need(bool(r.cs88_pipeline_v91k__DOT__coefficient_stage_occupied)==(full||bool(r.cs88_pipeline_v91k__DOT__coefficient_boundary__DOT__final_wait)),\"stage occupied binding\");\n        if(d.reset||r.cs88_pipeline_v91k__DOT__accepted_start)inverse_input_model=0;\n        if(kill){\n            need(!valid&&!d.coefficient_ready&&!r.cs88_pipeline_v91k__DOT__staged_done,\"stage flush leaked valid/ready/done\");\n            elastic_discard+=elastic_queue.size();elastic_total_discard+=elastic_queue.size();elastic_queue.clear();elastic_fence_seen=false;\n        }else{\n            need(bool(r.cs88_pipeline_v91k__DOT__staged_done)==(elastic_fence_seen&&elastic_queue.empty()),\"registered done fence ordering\");\n            if(r.cs88_pipeline_v91k__DOT__staged_done){need(d.coefficient_done&&!valid&&!full,\"done overtook raw completion/queued token\");++elastic_fence_checks;}\n            need(!r.cs88_pipeline_v91k__DOT__coefficient_boundary__DOT__final_wait,\"real sticky producer done preceded its final acceptance\");\n            if(valid){need(!elastic_queue.empty()&&staged_tuple()==elastic_queue.front(),\"full coefficient ownership tuple changed/reordered\");if(!ready)++elastic_hold_checks;}\n            if(valid&&ready){elastic_queue.pop_front();++elastic_down;++elastic_total_down;++inverse_input_model;}\n            if(d.coefficient_valid&&d.coefficient_ready){elastic_queue.push_back(coefficient_tuple());++elastic_up;++elastic_total_up;}\n            if(d.coefficient_done)elastic_fence_seen=true;\n        }\n        need(elastic_up==elastic_down+elastic_discard+elastic_queue.size(),\"up/down/discard accepted-token conservation\");\n    }\n    void elastic_post(){const auto&r=*d.rootp;\n        need(bool(r.cs88_pipeline_v91k__DOT__coefficient_boundary__DOT__full)==!elastic_queue.empty(),\"registered slot owner after edge\");\n        need(d.inverse_count_inputs==inverse_input_model,\"independent inverse accepted staged input counter\");}\n#endif",
+      "old": "",
+      "start": 7377
+    },
+    {
+      "end": 18984,
+      "new": "#if ELASTIC\n        elastic_pre();\n#endif\n",
+      "old": "",
+      "start": 18984
+    },
+    {
+      "end": 25310,
+      "new": "#if ELASTIC\n        elastic_post();\n#endif\n",
+      "old": "",
+      "start": 25310
+    },
+    {
+      "end": 26138,
+      "new": ";\n        need(elastic_queue.empty(),\"prepare retained staged owner\");elastic_up=elastic_down=elastic_discard=0",
+      "old": "",
+      "start": 26138
+    },
+    {
+      "end": 33144,
+      "new": "#if ELASTIC\n        need(elastic_queue.empty(),\"finished case retained staged owner\");\n        need(elastic_up==coefficients&&elastic_down==d.inverse_count_inputs,\"upstream/downstream independently counted handshakes\");\n        need(d.inverse_count_inputs+elastic_discard==coefficients,\"inverse input plus explicit stage flush discards\");\n        if(c.error==0)need(elastic_discard==0&&d.inverse_count_inputs==coefficients,\"successful frame exact inverse input count\");\n#else\n",
+      "old": "",
+      "start": 33144
+    },
+    {
+      "end": 33217,
+      "new": "\n#endif\n        ",
+      "old": "",
+      "start": 33217
+    },
+    {
+      "end": 35789,
+      "new": "<<\"},\\\"elastic\\\":{\\\"enabled\\\":\"<<ELASTIC<<\",\\\"accepted\\\":\"<<elastic_up<<\",\\\"delivered\\\":\"<<elastic_down<<\",\\\"discarded\\\":\"<<elastic_discard<<\",\\\"final_occupied\\\":\"<<elastic_queue.size()",
+      "old": "",
+      "start": 35789
+    },
+    {
+      "end": 45822,
+      "new": "elastic_enabled\\\":\"<<ELASTIC<<\",\\\"elastic_total_up\\\":\"<<b.elastic_total_up<<\",\\\"elastic_total_down\\\":\"<<b.elastic_total_down<<\",\\\"elastic_total_discard\\\":\"<<b.elastic_total_discard<<\",\\\"elastic_hold_checks\\\":\"<<b.elastic_hold_checks<<\",\\\"elastic_fence_checks\\\":\"<<b.elastic_fence_checks<<\",\\\"clock_edges\\\":\"<<b.cycle<<\",\\\"",
+      "old": "",
+      "start": 45822
+    }
+  ],
+  "conditional_adaptation": "Original inverse_count_inputs==coefficients applies unchanged in control; candidate success retains equality and every candidate edge additionally mirrors inverse input count. Fault cases require inputs+explicitly counted stage discards==upstream accepts, complete tuple order and drained ownership.",
+  "original": "fpga/experiments/cu66-v91k/tb_pipeline.cpp",
+  "original_need_calls": 129,
+  "original_sha256": "9cc466ab7a179360ea93ad9740bdbf78e23785e886cea74eea208a55b801bb3d",
+  "status": "PASS_EXACT_VERIFICATION_BENCH_RECIPE"
+}

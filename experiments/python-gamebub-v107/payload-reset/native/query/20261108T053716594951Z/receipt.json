@@ -1,0 +1,129 @@
+{
+  "artifacts_sha256": {
+    "candidate.tsv": "60ade9f605dc24c089b7897580cbcb1b9f0148c265f0bde576239b39fd0d51cc",
+    "native_query.py": "62392cb74eea6c85430ebc2e8c9f70c98029d621bc866f9dd715b6bb0a9a0c17",
+    "original.tsv": "139d9b13bb581c27652f3d1e2ee444a26a76a7e44280964f515d11a366fabe26",
+    "query.tcl": "2495f3faa6f75fe01a306579563b4e0c0c7f8a1ac1a0b9873ab36d537b0b1708",
+    "tool.log": "ffb09b52e9be61d461a3114b0ba96789372784c5f3760d35b3b0e0ccfae8845b"
+  },
+  "candidate_sha256": "579cb5d397e6638c0533fd54250e161612bdaed74117a29475afbab648aec7fb",
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "--init",
+    "--name",
+    "gamebub-v107-dequant-query-20261108t053716594951z",
+    "--memory",
+    "8g",
+    "--memory-swap",
+    "8g",
+    "--cpus",
+    "2",
+    "--pids-limit",
+    "2048",
+    "--network",
+    "host",
+    "--ulimit",
+    "core=0",
+    "--mount",
+    "type=bind,src=/home/lori/acorn-nexys4-ddr/tools,dst=/opt/amd-tools,readonly",
+    "--mount",
+    "type=bind,src=/home/lori/acorn-nexys4-ddr/cache/vivado.lic,dst=/root/.Xilinx/license.dat,readonly",
+    "--mount",
+    "type=bind,src=/home/lori/gamebub-build/cu66-v69/v107-dequant-native-20261108T053458446649Z,dst=/frozen,readonly",
+    "--mount",
+    "type=bind,src=/home/lori/gamebub-build/cu66-v69/v107-dequant-query-20261108T053716594951Z,dst=/build/v107-dequant-query-20261108T053716594951Z",
+    "-e",
+    "LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1",
+    "-e",
+    "XILINXD_LICENSE_FILE=/root/.Xilinx/license.dat",
+    "-w",
+    "/build/v107-dequant-query-20261108T053716594951Z",
+    "acorn-nexys4-ddr:2026.1",
+    "timeout",
+    "--signal=TERM",
+    "--kill-after=15s",
+    "180s",
+    "/opt/amd-tools/2026.1/Vivado/bin/vivado",
+    "-mode",
+    "batch",
+    "-nojournal",
+    "-nolog",
+    "-notrace",
+    "-source",
+    "query.tcl",
+    "-tclargs",
+    "/build/v107-dequant-query-20261108T053716594951Z"
+  ],
+  "correction": "Historical get_ports -of_objects returned empty columns for both variants; classify actual all_fanin startpoints by CLASS port instead.",
+  "dcp_sha256_after": {
+    "/home/lori/gamebub-build/cu66-v69/v107-dequant-native-20261108T053458446649Z/results/candidate/synth.dcp": "e5980b78d5fa3db202c7475b9f5d9618bf5de68388bdeee620d946dc92e7bf77",
+    "/home/lori/gamebub-build/cu66-v69/v107-dequant-native-20261108T053458446649Z/results/original/synth.dcp": "34b188fab728b62d2630f952fc8d27ed3a36a98c672d13304bfcf972bb433de2"
+  },
+  "dcp_sha256_before": {
+    "/home/lori/gamebub-build/cu66-v69/v107-dequant-native-20261108T053458446649Z/results/candidate/synth.dcp": "e5980b78d5fa3db202c7475b9f5d9618bf5de68388bdeee620d946dc92e7bf77",
+    "/home/lori/gamebub-build/cu66-v69/v107-dequant-native-20261108T053458446649Z/results/original/synth.dcp": "34b188fab728b62d2630f952fc8d27ed3a36a98c672d13304bfcf972bb433de2"
+  },
+  "exit_code": 0,
+  "memory_samples": [
+    {
+      "available_bytes": 23603400704,
+      "elapsed_seconds": 0.0006122540216892958,
+      "psi_full_avg10": 0.0
+    },
+    {
+      "available_bytes": 23136165888,
+      "elapsed_seconds": 5.001689461991191,
+      "psi_full_avg10": 0.0
+    },
+    {
+      "available_bytes": 22739935232,
+      "elapsed_seconds": 10.003057922935113,
+      "psi_full_avg10": 0.0
+    },
+    {
+      "available_bytes": 22297407488,
+      "elapsed_seconds": 15.004310379968956,
+      "psi_full_avg10": 0.0
+    }
+  ],
+  "metrics": {
+    "candidate": {
+      "ce_ports": [
+        ""
+      ],
+      "ce_register_starts": [
+        "{FSM_onehot_state_reg[0]/C}"
+      ],
+      "cells": 1027,
+      "ground_reset": 1027,
+      "reset_ports": [
+        ""
+      ]
+    },
+    "original": {
+      "ce_ports": [
+        "abort_i in_valid rst"
+      ],
+      "ce_register_starts": [
+        "{FSM_onehot_state_reg[0]/C}"
+      ],
+      "cells": 1027,
+      "ground_reset": 0,
+      "reset_ports": [
+        "abort_i rst"
+      ]
+    }
+  },
+  "prior_receipt": "experiments/python-gamebub-v107/payload-reset/native/20261108T053458446649Z/receipt.json",
+  "prior_receipt_sha256": "3cb0a5937ac99152426000668a2f40d5922320471d64b7315a16433b8a25229a",
+  "resource_before": {
+    "available_bytes": 23603400704,
+    "psi_full_avg10": 0.0
+  },
+  "schema": "v107-dequant-exact-port-fanin-query-v1",
+  "status": "PASS_EXACT_MAPPED_PAYLOAD_RESET_AND_CE_FANIN",
+  "stop_reason": null,
+  "wall_seconds": 17.508886283962056
+}

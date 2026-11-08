@@ -1,0 +1,36 @@
+{
+  "baseline": "fpga/experiments/cu66-v69/inverse/cu66_dequant.sv",
+  "baseline_sha256": "1ce06c26460a63b69ca9d742edb04ee9654827f883212c4bfe71293e0ed71084",
+  "candidate": "fpga/experiments/cu66-v107-payload-reset/cu66_dequant.sv",
+  "candidate_sha256": "579cb5d397e6638c0533fd54250e161612bdaed74117a29475afbab648aec7fb",
+  "changes": [
+    {
+      "end": 1870,
+      "new": "// Private, unowned while IDLE: deliberately capture even during kill or\n    // without valid. Every MULTIPLY entry follows an accepted IDLE edge, which\n    // replaces all payload bits. Owned MULTIPLY/HOLD_TILE jobs never reload.\n    always_ff @(posedge clk)if(state==IDLE)begin\n        coefficients<=in_coefficients;chroma<=in_chroma;scale_code<=in_scale_code;\n    end\n    ",
+      "old": "",
+      "start": 1870
+    },
+    {
+      "end": 1993,
+      "new": "",
+      "old": ";coefficients<=0;chroma<=0;scale_code<=0",
+      "start": 1953
+    },
+    {
+      "end": 2229,
+      "new": "",
+      "old": "\n                coefficients<=in_coefficients;chroma<=in_chroma;scale_code<=in_scale_code;",
+      "start": 2138
+    }
+  ],
+  "private_load_predicate": "state==IDLE; independent of rst, abort_i and in_valid",
+  "private_reset_bits_removed": 1027,
+  "public_reset_fields_retained": [
+    "state",
+    "group_index",
+    "out_id",
+    "out_error",
+    "out_dequantized"
+  ],
+  "schema": "v107-dequant-private-reset-edit-v1"
+}

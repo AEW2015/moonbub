@@ -1,0 +1,112 @@
+{
+  "baseline": "fpga/experiments/cu66-v105-admission/cs88_admission_v91i2a.sv",
+  "baseline_sha256": "a03a88ec25a1792b5ba5c970bb47cb66ae8b5277ec1f2680caba460e61af1d4a",
+  "candidate": "fpga/experiments/cu66-v107-quant/cs88_admission_v91i2a.sv",
+  "candidate_sha256": "58d0fcb876692c2ad38fa0585a5d2e13cd83079f64a84538f8de5a5c4d139d61",
+  "changes": [
+    {
+      "end": 2654,
+      "new": ";\n    // V107: select a run byte on the existing edge before Q_RUN.\n    logic [7:0] q_run_byte",
+      "old": "",
+      "start": 2654
+    },
+    {
+      "end": 7473,
+      "new": "\n    end\n`endif\n`ifndef SYNTHESIS\n    // Only the nonterminal Q_RUN branch consumes this prefetched byte.\n    // qbuffer has no writes between capture in Q_CHECK/Q_FILL and Q_RUN.\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet &&\n        state==Q_RUN && q_index!=qmap_bytes-4)begin\n        assert(q_run_byte==qbuffer[q_index[8:0]])\n            else $fatal(1,\"quant run-byte cache mismatch\");",
+      "old": "",
+      "start": 7473
+    },
+    {
+      "end": 19530,
+      "new": "q_run_byte<=qbuffer[12];",
+      "old": "",
+      "start": 19530
+    },
+    {
+      "end": 19821,
+      "new": "_run_",
+      "old": "",
+      "start": 19821
+    },
+    {
+      "end": 19825,
+      "new": "yt",
+      "old": "uff",
+      "start": 19822
+    },
+    {
+      "end": 19841,
+      "new": "",
+      "old": "r[q_index[8:0]]",
+      "start": 19826
+    },
+    {
+      "end": 19862,
+      "new": "_run_",
+      "old": "",
+      "start": 19862
+    },
+    {
+      "end": 19866,
+      "new": "yt",
+      "old": "uff",
+      "start": 19863
+    },
+    {
+      "end": 19882,
+      "new": "",
+      "old": "r[q_index[8:0]]",
+      "start": 19867
+    },
+    {
+      "end": 19983,
+      "new": "_run_",
+      "old": "",
+      "start": 19983
+    },
+    {
+      "end": 19987,
+      "new": "yt",
+      "old": "uff",
+      "start": 19984
+    },
+    {
+      "end": 20003,
+      "new": "",
+      "old": "r[q_index[8:0]]",
+      "start": 19988
+    },
+    {
+      "end": 20047,
+      "new": "_run_",
+      "old": "",
+      "start": 20047
+    },
+    {
+      "end": 20051,
+      "new": "yt",
+      "old": "uff",
+      "start": 20048
+    },
+    {
+      "end": 20067,
+      "new": "",
+      "old": "r[q_index[8:0]]",
+      "start": 20052
+    },
+    {
+      "end": 20334,
+      "new": "begin\n                        q_run_byte<=qbuffer[q_index[8:0]];",
+      "old": "",
+      "start": 20334
+    },
+    {
+      "end": 20347,
+      "new": "\n                    end",
+      "old": "",
+      "start": 20347
+    }
+  ],
+  "offset_units": "ASCII offsets; apply in reverse order",
+  "status": "PASS_EXACT_RECIPE_AND_ADAPTERS"
+}

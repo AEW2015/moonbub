@@ -1,0 +1,103 @@
+{
+  "latest_capture": "F_HEADER WAIT41",
+  "latest_commit": "F_HEADER REQ45",
+  "production": {
+    "br88_packet_ingress_sync_v91h.sv": {
+      "candidate_sha256": "fbe823aa5dd1a775005d3a267123b84721fd8b36df1bbce3cb89dac3c783d49a",
+      "edits": [
+        {
+          "after": "    output logic [31:0] meta_prefix1, meta_prefix12, meta_prefix123,\n    output logic [31:0] meta_threshold1, meta_threshold2, meta_threshold3,",
+          "before": "    output logic [31:0] meta_prefix1, meta_prefix12, meta_prefix123,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "\n    // COUNT_THRESHOLD_PIPELINE_BEGIN: eight registered positions E0..E7.\n    // Capture at WAIT33/37/41; latest commit REQ45, before WAIT45/HEADER.\n    // Private payload has no reset or global CE; validity owns each packet.\n    logic [31:0] count_threshold[0:2];\n    logic [2:0] threshold_live;\n    logic descriptor_count_bad;\n    assign meta_threshold1=count_threshold[0];\n    assign meta_threshold2=count_threshold[1];\n    assign meta_threshold3=count_threshold[2];\n    for(genvar tb=0;tb<3;tb=tb+1)begin: threshold_pipes\n        localparam integer DIVISOR=tb==0?5:tb==1?15:43;\n        localparam integer LAST=33+4*tb;\n        localparam logic [31:0] RECIP=32'(64'h100000000/64'(DIVISOR));\n        logic [31:0] forwarded_count;\n        logic [6:0] valid_pipe;\n        logic flush, capture;\n        (* use_dsp = \"yes\" *) logic [32:0] mul00, mul01, mul10, mul11;\n        (* use_dsp = \"yes\" *) logic [32:0] check_lo, check_hi;\n        logic [33:0] cross_s1, cross_s2;\n        logic [16:0] low_carry_s1;\n        logic [32:0] high_s1, high_s2;\n        logic [31:0] n_delay[0:5];\n        logic [31:0] q_s3, q_s4, q_s5, q_s6;\n        logic [31:0] product_s5, remainder_s6;\n        logic [1:0] correction;\n        assign forwarded_count={ram_data,fetch_bytes[LAST-1],fetch_bytes[LAST-2],fetch_bytes[LAST-3]};\n        assign capture=prefix_header_capture&&fetch_index==6'(LAST);\n        assign flush=cancelled||context_failure||(context_active&&ctx_done);\n        assign correction=remainder_s6==0?2'd0:(remainder_s6>32'(DIVISOR)?2'd2:2'd1);\n        always_ff @(posedge clk)begin\n            if(flush)begin valid_pipe<=0;threshold_live[tb]<=0;end\n            else begin\n                valid_pipe<={valid_pipe[5:0],capture};\n                if(valid_pipe[6])threshold_live[tb]<=1;\n            end\n        end\n        always_ff @(posedge clk)begin\n            // E0: exact unsigned16 x unsigned17 reciprocal products.\n            mul00<=forwarded_count[15:0]*{1'b0,RECIP[15:0]};\n            mul01<=forwarded_count[15:0]*{1'b0,RECIP[31:16]};\n            mul10<=forwarded_count[31:16]*{1'b0,RECIP[15:0]};\n            mul11<=forwarded_count[31:16]*{1'b0,RECIP[31:16]};\n            n_delay[0]<=forwarded_count;\n            for(integer j=1;j<6;j=j+1)n_delay[j]<=n_delay[j-1];\n            // E1/E2: split the three-term cross sum across two edges.\n            cross_s1<={1'b0,mul01}+{1'b0,mul10};\n            low_carry_s1<=mul00[32:16];high_s1<=mul11;\n            cross_s2<=cross_s1+{17'd0,low_carry_s1};high_s2<=high_s1;\n            // E3: high32 of n*M, q0 is floor(n/d) or one less.\n            q_s3<=32'({1'b0,high_s2}+{16'd0,cross_s2[33:16]});\n            // E4: bounded q0*d, again using16 x17 registered products.\n            check_lo<=q_s3[15:0]*17'(DIVISOR);\n            check_hi<=q_s3[31:16]*17'(DIVISOR);q_s4<=q_s3;\n            // E5/E6: full product is <=n, so its low32 are exact.\n            product_s5<=check_lo[31:0]+{check_hi[15:0],16'd0};q_s5<=q_s4;\n            remainder_s6<=n_delay[5]-product_s5;q_s6<=q_s5;\n            // E7: one carry chain, with a bounded0/1/2 correction.\n            if(valid_pipe[6])count_threshold[tb]<=q_s6+{30'd0,correction};\n        end\n`ifndef SYNTHESIS\n        always_ff @(posedge clk)if(!flush&&valid_pipe[6])begin\n            assert(remainder_s6<32'(2*DIVISOR))else $fatal(1,\"count reciprocal remainder bound\");\n        end\n`endif\n    end\n    always_comb begin\n        case(band)\n            1:descriptor_count_bad=32'(context_blocks)<count_threshold[0];\n            2:descriptor_count_bad=32'(context_blocks)<count_threshold[1];\n            3:descriptor_count_bad=32'(context_blocks)<count_threshold[2];\n            default:descriptor_count_bad=counts[0]>32'(context_blocks);\n        endcase\n    end\n    // COUNT_THRESHOLD_PIPELINE_END\n\n    function automatic logic [31:0] cached32(input integer at);",
+          "before": "    function automatic logic [31:0] cached32(input integer at);",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "descriptor_count_bad",
+          "before": "counts[band]>descriptor_limit",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(meta_valid)begin\n        assert(&threshold_live)else $fatal(1,\"count threshold not live before metadata\");\n        assert(meta_threshold1==meta_count1/32'd5+32'(meta_count1%32'd5!=0))else $fatal(1,\"count threshold1 stale owner\");\n        assert(meta_threshold2==meta_count2/32'd15+32'(meta_count2%32'd15!=0))else $fatal(1,\"count threshold2 stale owner\");\n        assert(meta_threshold3==meta_count3/32'd43+32'(meta_count3%32'd43!=0))else $fatal(1,\"count threshold3 stale owner\");\n    end\n    always_ff @(posedge clk)if(!cancelled&&!context_failure&&!(context_active&&ctx_done)&&state==DESCRIPTOR&&band!=0)begin\n        assert(threshold_live[band-1'b1])else $fatal(1,\"descriptor count threshold not live\");\n        assert(descriptor_count_bad==(counts[band]>descriptor_limit))else $fatal(1,\"descriptor count threshold mismatch\");\n    end\n    assert property (@(posedge clk) disable iff(cancelled)\n        meta_valid&&!meta_ready |=> cancelled || (meta_valid&&$stable({meta_threshold1,meta_threshold2,meta_threshold3})))\n        else $fatal(1,\"held count threshold changed\");\n    always_ff @(posedge clk)if(meta_valid)begin",
+          "before": "`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(meta_valid)begin",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-plan-prefix/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "f7e05105dc7b00f7ed6ef493a188ede0252ae12c7a344854729848813d00327f"
+    },
+    "br88_packet_ingress_v91h.sv": {
+      "candidate_sha256": "2c4a0ab1ba74b8ede056c6ce9958e6401f35beabcaaeeb681a90abe8947db5e4",
+      "edits": [
+        {
+          "after": "    output logic [31:0] meta_prefix1, meta_prefix12, meta_prefix123,\n    output logic [31:0] meta_threshold1, meta_threshold2, meta_threshold3,",
+          "before": "    output logic [31:0] meta_prefix1, meta_prefix12, meta_prefix123,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        // Exact legacy fallback has no timing claim and avoids n+d-1 overflow.\n        assign meta_threshold1=meta_count1/32'd5+32'(meta_count1%32'd5!=0);\n        assign meta_threshold2=meta_count2/32'd15+32'(meta_count2%32'd15!=0);\n        assign meta_threshold3=meta_count3/32'd43+32'(meta_count3%32'd43!=0);\n        // Legacy branch has no header-fetch cache; preserve exact count algebra.",
+          "before": "        // Legacy branch has no header-fetch cache; preserve exact count algebra.",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "            .meta_prefix1(meta_prefix1),.meta_prefix12(meta_prefix12),.meta_prefix123(meta_prefix123),\n            .meta_threshold1(meta_threshold1),.meta_threshold2(meta_threshold2),.meta_threshold3(meta_threshold3),",
+          "before": "            .meta_prefix1(meta_prefix1),.meta_prefix12(meta_prefix12),.meta_prefix123(meta_prefix123),",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-plan-prefix/br88_packet_ingress_v91h.sv",
+      "original_sha256": "83577ff7278102040bc0315457be9c7bd8c1e4dd5467a425b8c58eb1bcf31164"
+    },
+    "br88_pipeline_v91h.sv": {
+      "candidate_sha256": "a5d8a86d4bccca42377423abf8a318fc3acb8bfe9de38fcda9e5dd8eb46a5cc4",
+      "edits": [
+        {
+          "after": "    logic [31:0] meta_prefix1, meta_prefix12, meta_prefix123;\n    logic [31:0] meta_threshold1, meta_threshold2, meta_threshold3;",
+          "before": "    logic [31:0] meta_prefix1, meta_prefix12, meta_prefix123;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        .meta_prefix1(meta_prefix1),.meta_prefix12(meta_prefix12),.meta_prefix123(meta_prefix123),\n        .meta_threshold1(meta_threshold1),.meta_threshold2(meta_threshold2),.meta_threshold3(meta_threshold3),",
+          "before": "        .meta_prefix1(meta_prefix1),.meta_prefix12(meta_prefix12),.meta_prefix123(meta_prefix123),",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        .begin_prefix1(meta_prefix1),.begin_prefix12(meta_prefix12),.begin_prefix123(meta_prefix123),\n        .begin_threshold1(meta_threshold1),.begin_threshold2(meta_threshold2),.begin_threshold3(meta_threshold3),",
+          "before": "        .begin_prefix1(meta_prefix1),.begin_prefix12(meta_prefix12),.begin_prefix123(meta_prefix123),",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-plan-prefix/br88_pipeline_v91h.sv",
+      "original_sha256": "d00f774fd8c4900ad98c40f5ac1e3b17be40b07ea62ebe71ef2c33efff156947"
+    },
+    "packed_scratch_v91g2.sv": {
+      "candidate_sha256": "f0bab2ba60d290405b9726f69fab3e6c2aabb7a474ef1255d3857293b977097f",
+      "edits": [
+        {
+          "after": "    input logic [31:0] begin_prefix1, begin_prefix12, begin_prefix123,\n    input logic [31:0] begin_threshold1, begin_threshold2, begin_threshold3,",
+          "before": "    input logic [31:0] begin_prefix1, begin_prefix12, begin_prefix123,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "32'(begin_blocks)<begin_threshold1 || 32'(begin_blocks)<begin_threshold2 ||\n                        32'(begin_blocks)<begin_threshold3",
+          "before": "begin_count1>32'(begin_blocks)*5 || begin_count2>32'(begin_blocks)*15 ||\n                        begin_count3>begin_limit43",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "    always_ff @(posedge clk)if(begin_valid&&begin_ready)begin\n        assert(begin_threshold1==begin_count1/32'd5+32'(begin_count1%32'd5!=0))else $fatal(1,\"scratch threshold1 ownership mismatch\");\n        assert(begin_threshold2==begin_count2/32'd15+32'(begin_count2%32'd15!=0))else $fatal(1,\"scratch threshold2 ownership mismatch\");\n        assert(begin_threshold3==begin_count3/32'd43+32'(begin_count3%32'd43!=0))else $fatal(1,\"scratch threshold3 ownership mismatch\");\n        assert((32'(begin_blocks)<begin_threshold3)==(begin_count3>begin_limit43))else $fatal(1,\"scratch43 threshold predicate mismatch\");",
+          "before": "    always_ff @(posedge clk)if(begin_valid&&begin_ready)begin",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-plan-prefix/packed_scratch_v91g2.sv",
+      "original_sha256": "4d06f2c15b85091640e181a83e27d6072ec680f4ec8fe62245ee9398337ae622"
+    }
+  },
+  "public_added_cycles": 0,
+  "registered_positions": 8,
+  "schema": "v107-count-threshold-exact-four-source-v1",
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

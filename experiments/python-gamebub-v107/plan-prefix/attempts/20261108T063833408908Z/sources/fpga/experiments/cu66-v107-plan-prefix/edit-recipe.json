@@ -1,0 +1,113 @@
+{
+  "files": [
+    {
+      "candidate": "fpga/experiments/cu66-v107-plan-prefix/br88_packet_ingress_sync_v91h.sv",
+      "candidate_sha256": "f7e05105dc7b00f7ed6ef493a188ede0252ae12c7a344854729848813d00327f",
+      "edits": [
+        {
+          "after": "    output logic [31:0] meta_count1, meta_count2, meta_count3, meta_epoch,\n    output logic [31:0] meta_prefix1, meta_prefix12, meta_prefix123,",
+          "before": "    output logic [31:0] meta_count1, meta_count2, meta_count3, meta_epoch,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "    // Unowned until this packet reaches METADATA; no payload reset.\n    logic [31:0] plan_align1, plan_align2, plan_align3;\n    logic [31:0] plan_prefix12, plan_prefix123;\n    logic prefix_header_capture;\n    function automatic logic [31:0] count_aligned(input logic [31:0] n);\n        return ((n<<2)+32'd15)&32'hfffffff0;\n    endfunction\n    assign meta_prefix1=plan_align1;\n    assign meta_prefix12=plan_prefix12;\n    assign meta_prefix123=plan_prefix123;\n    // Match the actual FETCH_WAIT store guard, including wrong-response and\n    // active context done/failure priority. Forward the current high byte.\n    assign prefix_header_capture=!cancelled&&!context_failure&&\n        !(context_active&&ctx_done)&&state==FETCH_WAIT&&stage_read_rsp&&\n        ram_epoch==context_epoch&&ram_addr==fetch_address&&fetch_kind==F_HEADER;\n    always_ff @(posedge clk)begin\n        if(prefix_header_capture)begin\n            if(fetch_index==6'd33)plan_align1<=count_aligned({ram_data,fetch_bytes[32],fetch_bytes[31],fetch_bytes[30]});\n            if(fetch_index==6'd37)plan_align2<=count_aligned({ram_data,fetch_bytes[36],fetch_bytes[35],fetch_bytes[34]});\n            if(fetch_index==6'd41)plan_align3<=count_aligned({ram_data,fetch_bytes[40],fetch_bytes[39],fetch_bytes[38]});\n        end\n        plan_prefix12<=plan_align1+plan_align2;\n        plan_prefix123<=plan_prefix12+plan_align3;\n    end\n\n    function automatic logic [31:0] cached32(input integer at);",
+          "before": "    function automatic logic [31:0] cached32(input integer at);",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(meta_valid)begin\n        assert(meta_prefix1==count_aligned(meta_count1))else $fatal(1,\"prefix1 stale metadata owner\");\n        assert(meta_prefix12==count_aligned(meta_count1)+count_aligned(meta_count2))else $fatal(1,\"prefix12 stale metadata owner\");\n        assert(meta_prefix123==count_aligned(meta_count1)+count_aligned(meta_count2)+count_aligned(meta_count3))else $fatal(1,\"prefix123 stale metadata owner\");\n    end\n    assert property (@(posedge clk)disable iff(cancelled)\n        meta_valid&&!meta_ready |=> cancelled || (meta_valid&&$stable({meta_prefix1,meta_prefix12,meta_prefix123})))\n        else $fatal(1,\"held metadata prefixes changed\");\n",
+          "before": "`ifndef SYNTHESIS\n",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-guard-dsp/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "feeae3ffff6a8da705806ac7785a1f8da68c3c2599101f40da191f4185b53cf1"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v107-plan-prefix/br88_packet_ingress_v91h.sv",
+      "candidate_sha256": "83577ff7278102040bc0315457be9c7bd8c1e4dd5467a425b8c58eb1bcf31164",
+      "edits": [
+        {
+          "after": "    output logic [31:0] meta_count1, meta_count2, meta_count3, meta_epoch,\n    output logic [31:0] meta_prefix1, meta_prefix12, meta_prefix123,",
+          "before": "    output logic [31:0] meta_count1, meta_count2, meta_count3, meta_epoch,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        // Legacy branch has no header-fetch cache; preserve exact count algebra.\n        assign meta_prefix1=((meta_count1<<2)+32'd15)&32'hfffffff0;\n        assign meta_prefix12=meta_prefix1+(((meta_count2<<2)+32'd15)&32'hfffffff0);\n        assign meta_prefix123=meta_prefix12+(((meta_count3<<2)+32'd15)&32'hfffffff0);\n        assign stage_read_req='0;",
+          "before": "        assign stage_read_req='0;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        br88_packet_ingress_sync_v91h #(.MAX_PACKET_BYTES(MAX_PACKET_BYTES)) ingress (\n            .meta_prefix1(meta_prefix1),.meta_prefix12(meta_prefix12),.meta_prefix123(meta_prefix123),",
+          "before": "        br88_packet_ingress_sync_v91h #(.MAX_PACKET_BYTES(MAX_PACKET_BYTES)) ingress (",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v91h/br88_packet_ingress_v91h.sv",
+      "original_sha256": "1dece92fc0472d44c68cde62868f5f9d2b251575ca042a0d460c9e80a3501d11"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v107-plan-prefix/br88_pipeline_v91h.sv",
+      "candidate_sha256": "d00f774fd8c4900ad98c40f5ac1e3b17be40b07ea62ebe71ef2c33efff156947",
+      "edits": [
+        {
+          "after": "    logic [31:0] meta_count1, meta_count2, meta_count3, meta_epoch;\n    logic [31:0] meta_prefix1, meta_prefix12, meta_prefix123;",
+          "before": "    logic [31:0] meta_count1, meta_count2, meta_count3, meta_epoch;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        .meta_count3(meta_count3), .meta_epoch(meta_epoch), .meta_raw(meta_raw),\n        .meta_prefix1(meta_prefix1),.meta_prefix12(meta_prefix12),.meta_prefix123(meta_prefix123),",
+          "before": "        .meta_count3(meta_count3), .meta_epoch(meta_epoch), .meta_raw(meta_raw),",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        .begin_count1(meta_count1), .begin_count2(meta_count2), .begin_count3(meta_count3),\n        .begin_prefix1(meta_prefix1),.begin_prefix12(meta_prefix12),.begin_prefix123(meta_prefix123),",
+          "before": "        .begin_count1(meta_count1), .begin_count2(meta_count2), .begin_count3(meta_count3),",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v106-telemetry/br88_pipeline_v91h.sv",
+      "original_sha256": "c6f839570988768ac2a373302d8980ce9a6532ccbcf3c09415f9ca1c05959577"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v107-plan-prefix/packed_scratch_v91g2.sv",
+      "candidate_sha256": "4d06f2c15b85091640e181a83e27d6072ec680f4ec8fe62245ee9398337ae622",
+      "edits": [
+        {
+          "after": "    input logic [31:0] begin_count1, begin_count2, begin_count3, begin_epoch,\n    input logic [31:0] begin_prefix1, begin_prefix12, begin_prefix123,",
+          "before": "    input logic [31:0] begin_count1, begin_count2, begin_count3, begin_epoch,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "plan_start2=plan_start1+begin_prefix1;",
+          "before": "plan_start2=sum3(32,aligned(32'(begin_blocks)*2),aligned(begin_count1*4));",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "plan_start3=plan_start1+begin_prefix12;",
+          "before": "plan_start3=sum4(32,aligned(32'(begin_blocks)*2),aligned(begin_count1*4),aligned(begin_count2*4));",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "plan_start1+begin_prefix123;",
+          "before": "sum5(32,aligned(32'(begin_blocks)*2),aligned(begin_count1*4),aligned(begin_count2*4),aligned(begin_count3*4));",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(begin_valid&&begin_ready)begin\n        assert(begin_prefix1==aligned(begin_count1*4))else $fatal(1,\"scratch prefix1 ownership mismatch\");\n        assert(begin_prefix12==aligned(begin_count1*4)+aligned(begin_count2*4))else $fatal(1,\"scratch prefix12 ownership mismatch\");\n        assert(begin_prefix123==aligned(begin_count1*4)+aligned(begin_count2*4)+aligned(begin_count3*4))else $fatal(1,\"scratch prefix123 ownership mismatch\");\n    end\n",
+          "before": "`ifndef SYNTHESIS\n",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-guard-dsp/packed_scratch_v91g2.sv",
+      "original_sha256": "2a468e5566d7b24fb68f663fbffa3989f8f56c9da85cc2b42880e30ccbd2c090"
+    }
+  ],
+  "metadata_prefix_ports": 3,
+  "precondition": "METADATA cache freshness invariant from actual full-header fetch; private outputs outside owned metadata unspecified; full32 count/epoch/blocks guards retained.",
+  "private_unreset_data_bits": 160,
+  "public_added_cycles": 0,
+  "rtl_files_required": 4,
+  "schema": "v107-plan-count-prefix-recipe-v1",
+  "status": "PREPARED_NOT_QUALIFIED"
+}
