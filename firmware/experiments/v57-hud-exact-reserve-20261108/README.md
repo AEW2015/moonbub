@@ -1,0 +1,13 @@
+# V57 exact HUD output reserves
+
+V57 fixes a hardware-proven ESP32 allocation-growth failure without changing V029 FPGA, DYN1v3, arena98,304, physical reserve8,192 or worker stack16,384. Four already-validated output shapes are reserved explicitly. The V56 frame8 request16,384 was vector geometric growth for7,680pixels needing15,360bytes. Original12 and new40 native goldens and rollback checks pass; a source-copy constrained-allocation model now passes the old failure. Target build and production UF2/parser/configuration checks pass.
+
+Hardware remains **partial/failed**, not continuous-video qualified. V56 presented8frames then failed frame8. V57 passed that frame and presented17frames, then frame17 failed a different exact7,680byte allocation with27,476bytes free but largest7,168. Both failures occur during native HUD Prepare, after complete packet staging. Passive FPGA counters at failure show matching accepted/presented counts and zero rejects/underruns. Those are time-local snapshots, not all-core fault clearance.
+
+The source covers a20second interval of a local rendering-breakdown clip, sampled2fps, cropped16:9, RGB444 and uniformq32; notMassEffect/live capture or an FPS comparison. No deliberate inter-frame pauses. Both senders stopped at matchingstatus3; no whole-run retry. The full40/20second playback goal is not passed. V57 remains installed with the final image/endpoint quarantined and held; an explicit reviewed restart is needed before reconfiguration.
+
+Exact ELF:c2f4fbef591d85409aed7908e90ab132f1b4348c72379881fd1067dc66fc8ae0. BIN:38aff3d8dba66393e07df5efdf6d22536c33e0a1d9b3d50bb95717255ffdf013. Native HUD:92171e1573dc78173b12f5739dc632d09d473daefa3186e286344bdd57b784e0. FPGA remains V029 BIT59a2439488c529941661debcf3f3c75f8fd2f6e61418c3c63a45e377e971e7c3, DONE1/USER44593741, user-accepted setup0.000ns. No FPGA rebuild occurred.
+
+Source, actual BIN/ELF/UF2 and build evidence are preserved here. The exact forty-packet sender replay and compressed independent oracles are at host/dy71-clip40-20261108. Raw flash backups and full Wi-Fi logs remain private under C:/moon. Software DFU entry worked, but Windows lost its driver binding on each transition; fresh reviewed UAC-bound rebinding restored access. Original helper post-description errors are preserved locally; independent PnP/readback checks established access. All app writes were readback verified, with updater/table unchanged. No updater partition or SD file was written.
+
+Next memory work must address allocation lifetime, reuse or scratch streaming while preserving accepted-reference rollback. Do not lower valid output sizes or weaken reserve/caps. Full-frame native totals and ideal byte-budget models do not establish physical TLSF contiguous capacity.

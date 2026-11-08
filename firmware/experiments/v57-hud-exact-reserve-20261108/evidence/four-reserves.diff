@@ -1,0 +1,34 @@
+--- V56/native/hud.hpp
++++ V57/native/hud.hpp
+@@ -309,6 +309,7 @@
+   cu66_port::Set<unsigned> used;
+   if (mode == 0) {
+     need(!colors && length == 2 * pixels, "HUD full raw");
++    out.reserve(pixels);
+     Reader a(data);
+     for (unsigned i = 0; i < pixels; i++)
+       out.push_back(a.u16());
+@@ -321,6 +322,7 @@
+                                        : 8;
+     need(colors && mode == expected, "HP01 palette mode");
+     Bits bits(data, pixels * mode);
++    out.reserve(pixels);
+     for (unsigned i = 0; i < pixels; i++) {
+       auto idx = bits.get(mode);
+       need(idx < colors, "HP01 index");
+@@ -333,6 +335,7 @@
+              length <= hh * (2 + 3 * w),
+          "HR01 mode/bounds");
+     need(mode == 2 ? colors > 0 : colors == 0, "HR01 palette presence");
++    out.reserve(pixels);
+     Reader a(data);
+     for (unsigned y = 0; y < hh; y++) {
+       unsigned n = a.u16();
+@@ -449,6 +452,7 @@
+     switch (mode) {
+     case 0: {
+       need(data.n == 2 * w * hh, "HD25 raw size");
++      out.reserve(w * hh);
+       Reader a(data);
+       for (unsigned i = 0; i < w * hh; i++)
+         out.push_back(a.u16());
