@@ -10,6 +10,29 @@ and timing closure**, including DSP48E1, BRAM/SRL, LUT/carry logic, fanout, CDC
 and complete routed-design qualification. These phases are planned work, not
 new literature benchmark results or completed implementation milestones.
 
+V105 implementation follow-up: [admission recurrence and mode RAM](../cu66-v105/README.md)
+tests the review's bounded-control and explicit-memory-inference principles
+on actual component RTL. Focused probes pass 6,692,564 clock edges with
+independent replay; eight integrated lanes preserve cycles/events and
+canonical bytes across 512 case/profile runs and 576 directed checks.
+Full-width validation and ownership/cancellation checks remain. Consolidating
+the mode-store port maps one RAMB18 and removes 1,524 LUTRAMs, reducing
+same-stage synthesis LUTs from 49,040 to 47,482. Actual physical selection is
+reported in the [native comparison](../cu66-v105/vendor-comparison.md), including
+joint coordinate-cache and DSP-prefetch variants. The memory ledger separates
+source read/collision semantics from primitive mapping and external-memory
+unknowns. These results add no codec quality/bitrate, hardware frame-rate,
+complete decode-latency, power or HEVC/AV1 benchmark claim.
+
+Final V105 routed selection is `geometry`: 46,115 LUTs, 27 DSPs and
+−13.124 ns WNS versus V102's 48,522 / 28 / −13.976 ns. It routes all 69,998
+routable nets without errors. This records a 4.96% LUT reduction and 0.852 ns
+WNS gain in one run, while the 10 ns target remains unmet. Mode RAM also
+survives routing in the full locality variant, but that variant's −13.956 ns
+WNS does not win selection. The next experiments separate RAM from DSP-prefetch
+context and target the remaining measured coefficient-validation/write-enable
+cone, preserving fault-before-write and full helper-domain semantics.
+
 V104 implementation follow-up: [registered control and product prefetch](../cu66-v104/README.md)
 now have clocked component parity (3,024,861 focused edges, 288 paired
 case/profile runs and 304 directed checks). Native synthesis confirms all

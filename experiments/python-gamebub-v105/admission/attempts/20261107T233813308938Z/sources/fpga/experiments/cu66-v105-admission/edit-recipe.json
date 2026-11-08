@@ -1,0 +1,87 @@
+{
+  "schema": "v105-edit-recipe-v1",
+  "originalpath": "fpga/experiments/cu66-v102-memory/cs88_admission_v91i2a.sv",
+  "originalhash": "c300f1bd819a906bfebd64e47648fe08d71f072d88d25cccc15c9a197d305187",
+  "candidatepath": "fpga/experiments/cu66-v105-admission/cs88_admission_v91i2a.sv",
+  "candidatehash": "a03a88ec25a1792b5ba5c970bb47cb66ae8b5277ec1f2680caba460e61af1d4a",
+  "edits": [
+    {
+      "name": "cached_coordinate_declarations",
+      "before": "    logic [1:0] plane, group_tag;",
+      "after": "    logic [1:0] plane, group_tag;\n    // V105: reachable parser coordinates; tile/group_end remain 32-bit state.\n    logic coord_valid;\n    logic [10:0] coord_cell, coord_pair_base;\n    logic [6:0] coord_y_column;\n    logic coord_y_odd;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "helper_insert",
+      "before": "    task automatic residual_tile;",
+      "after": "    task automatic clear_coordinate;\n        coord_cell<=0;coord_pair_base<=0;coord_y_column<=0;coord_y_odd<=0;\n    endtask\n    task automatic advance_coordinate(input logic [4:0] delta);\n        logic [6:0] next_column;\n        logic [10:0] next_base;\n        logic next_odd;\n        begin\n`ifndef SYNTHESIS\n            assert(coord_valid && plane<=2 && tile<tile_count(plane));\n            assert(delta>=1 && delta<=16 && tile+32'(delta)<=tile_count(plane));\n`endif\n            if(plane==0)begin\n                next_column=coord_y_column+7'(delta);\n                next_base=coord_pair_base;next_odd=coord_y_odd;\n                if(next_column>=90)begin\n                    next_column=next_column-7'd90;next_odd=!coord_y_odd;\n                    if(coord_y_odd)next_base=coord_pair_base+11'd45;\n                end\n                coord_y_column<=next_column;coord_y_odd<=next_odd;\n                coord_pair_base<=next_base;coord_cell<=next_base+{5'd0,next_column[6:1]};\n            end else coord_cell<=coord_cell+11'(delta);\n        end\n    endtask\n`ifndef SYNTHESIS\n    // Reachable-state oracle only: no arbitrary 32-bit tile-state equivalence claim.\n    always_ff @(posedge clk)begin\n        if(!reset&&!start&&!abort_packet&&coord_valid)begin\n            assert(plane<=2 && tile<=tile_count(plane));\n            assert(32'(coord_cell)==cell_index(plane,tile));\n            if(plane==0)begin\n                assert(32'(coord_y_column)==tile%90);\n                assert(32'(coord_y_odd)==(tile/90)%2);\n                assert(32'(coord_pair_base)==(tile/180)*45);\n            end else begin\n                assert(coord_y_column==0 && !coord_y_odd && coord_pair_base==0);\n            end\n        end\n    end\n`endif\n    task automatic residual_tile;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "residual_index",
+      "before": "        active_cell[11'(cell_index(plane,tile))]<=1'b1;",
+      "after": "`ifndef SYNTHESIS\n        assert(coord_valid && plane<=2 && tile<tile_count(plane));\n        assert(coord_cell<1350 && 32'(coord_cell)==cell_index(plane,tile));\n`endif\n        active_cell[coord_cell]<=1'b1;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "kill_invalidate",
+      "before": "        if(reset||start||abort_packet)begin\n            state<=IDLE;",
+      "after": "        if(reset||start||abort_packet)begin\n            coord_valid<=0;\n            state<=IDLE;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "qualified_header_initialize",
+      "before": "                        plane<=0;tile<=0;mode_cursor<=128;bits_left<=0;bit_cache<=0;",
+      "after": "                        clear_coordinate();coord_valid<=1;\n                        plane<=0;tile<=0;mode_cursor<=128;bits_left<=0;bit_cache<=0;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "key_plane_reset",
+      "before": "                    if(tile==tile_count(plane))begin\n                        tile<=0;",
+      "after": "                    if(tile==tile_count(plane))begin\n                        clear_coordinate();\n                        tile<=0;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "key_advance",
+      "before": "                        if(!hidden(plane,tile))residual_tile();\n                        tile<=tile+1;",
+      "after": "                        if(!hidden(plane,tile))residual_tile();\n                        advance_coordinate(1);tile<=tile+1;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "mixed_advance",
+      "before": "                            tile<=tile+1;state<=GROUP_TILE;",
+      "after": "                            advance_coordinate(1);tile<=tile+1;state<=GROUP_TILE;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "empty_group_jump",
+      "before": "                                else begin tile<=group_end;state<=GROUP_NEXT;end",
+      "after": "                                else begin advance_coordinate(5'(group_end-tile));tile<=group_end;state<=GROUP_NEXT;end",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "copy_or_hidden_advance",
+      "before": "                        tile<=tile+1;\n                    end else if(group_tag==1)begin",
+      "after": "                        advance_coordinate(1);tile<=tile+1;\n                    end else if(group_tag==1)begin",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "all_residual_advance",
+      "before": "                        residual_tile();tile<=tile+1;",
+      "after": "                        residual_tile();advance_coordinate(1);tile<=tile+1;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "predictive_plane_reset",
+      "before": "                        else begin plane<=plane+1;tile<=0;state<=GROUP_BEGIN;end",
+      "after": "                        else begin clear_coordinate();plane<=plane+1;tile<=0;state<=GROUP_BEGIN;end",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "mode_end_invalidate",
+      "before": "                MODE_END:begin\n                    if(!key_frame",
+      "after": "                MODE_END:begin\n                    coord_valid<=0;\n                    if(!key_frame",
+      "expected_occurrences": 1
+    }
+  ]
+}

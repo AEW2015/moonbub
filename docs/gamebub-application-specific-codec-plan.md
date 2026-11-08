@@ -2,6 +2,39 @@
 
 ## Active roadmap after V90 and the literature review — 2026-11-07
 
+**V105 partial checkpoint: admission recurrence and mode-table RAM inference.**
+[V105](cu66-v105/README.md) preserves the selected codec/profile, 720×480
+resolution, 49,152-byte cap and tested schedule. Full-width admission metadata
+and validation remain while a reachable coordinate cache replaces active-cell
+index arithmetic. Five guarded mode writes are consolidated into one clocked
+port, retaining the original lookup hold/latency. Exact edit recipes compose
+identically in either order. Focused probes pass 6,692,564 clock edges with
+independent Python replay; eight integrated lanes pass 512 case/profile runs
+and 576 directed checks, with exact cycles/events and canonical bytes where
+applicable. The prepared-state memory probe is distinct from packet protocol
+proof; undefined invalid lookup addresses remain unqualified.
+The independent source/evidence audit passes 24/24 checks on two deterministic
+runs, with no missing lanes or source edits hidden by the receipts.
+
+Mode RAM maps to one RAMB18 and removes 1,524 LUTRAMs: same-stage synthesis
+LUTs fall from 49,040 to 47,482. Admission alone saves one DSP at a cost of
+392 LUTs and has synthesis WNS −11.108 ns. The
+[matched native comparisons](cu66-v105/vendor-comparison.md) govern the
+next-study selection, including the verified V104 reconstruction/DSP blocks.
+This is hardware-oriented representation work with unchanged host/ESP32
+format and no new HEVC/AV1 quality/bitrate claim. Actual external-memory and
+display service, parent timing/CDC, complete-path integration, hardware 30 fps
+and validated complete FPGA decode below 10 ms remain open.
+
+Final V105 selection is `geometry`: 46,115 routed LUTs, 27 DSPs and WNS
+−13.124 ns, with 69,998/69,998 routable nets and zero routing errors. Relative
+to V102 this saves 2,407 LUTs (4.96%) and improves WNS 0.852 ns in one run;
+100 MHz timing still fails. The full RAM/cache/DSP variant retains its mode
+RAMB18 and 1,194 LUTRAMs but routes at −13.956 ns, so it does not replace
+geometry. Compare geometry plus mode RAM without DSP prefetch next, then
+isolate the [coefficient metadata validation cone](cu66-v105/next-cone-review.md)
+with an exhaustive 4×8,192-input helper proof and complete owner/fault replay.
+
 **V104 partial checkpoint: registered control and measured DSP absorption.**
 [V104](cu66-v104/README.md) caches reconstruction coordinates and prefetches
 dequantizer products within the existing cycle schedule. Focused clocked RTL

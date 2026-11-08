@@ -15,6 +15,47 @@ RTL for **7-series technology mapping, placement, routing and timing closure**.
 Freeze the selected codec before that phase so a physical implementation change
 can be compared against a stable function and workload.
 
+**V105 partial checkpoint: admission coordinates and actual mode RAM.**
+The [V105 handoff](cu66-v105/README.md) keeps the selected V102 baseline,
+720×480 profile, 49,152-byte cap and tested public cycle schedule. A live
+admission coordinate cache replaces repeated active-cell indexing while
+retaining full 32-bit tile/group counters and validation. Its clocked packet
+tests cover header entry, plane/sentinel/group transitions, replacement start,
+abort/reset, held metadata and inactive-cache perturbation. A separate edit
+consolidates the five guarded mode writes into one synchronous port with the
+original registered lookup. Both recipes compose identically in either order.
+The focused probes pass 6,692,564 edges in total with independent Python replay;
+the eight integrated lanes pass 512 case/profile runs and 576 directed checks,
+including exact canonical bytes where applicable. Counts include both
+implementations, seeds/profiles and expected rejects, not displayed frames.
+The independent source/evidence audit passes 24/24 checks on two deterministic
+runs, including both recipe orders and every required lane.
+
+The mode-table experiment maps one RAMB18, eliminating 1,524 LUTRAMs and
+reducing synthesis LUTs from 49,040 to 47,482. Admission recurrence alone uses
+49,432 LUTs and 27 DSPs versus 28, with synthesis WNS −11.108 ns. These are
+same-stage component measurements; [native comparisons](cu66-v105/vendor-comparison.md)
+and the recorded source selection govern the successor. The
+[memory inventory](cu66-v105/memory-inventory.md) separates source port/latency/
+collision contracts, actual primitives and excluded external frame/display
+storage. Whole-device service/refresh/display contention, real parent
+clock/I/O/CDC, sustained hardware 30 fps and complete under-10-ms decoding
+remain open. Existing host/ESP32 wire format and codec quality remain unchanged.
+
+**V105 physical selection:** `geometry` (V105 admission recurrence plus V104
+reconstruction cache) routes at 46,115 LUTs / 27 DSPs / WNS −13.124 ns, versus
+V102's 48,522 / 28 / −13.976 ns. All 69,998 routable nets are routed with zero
+routing errors. This single run saves 2,407 LUTs (4.96%) and improves WNS
+0.852 ns; the 10 ns setup target remains unmet. `combined` routes at 49,040
+LUTs / −13.653 ns; `locality` retains one mode RAMB18 at 47,966 / −13.956 ns.
+The [selection manifest](../experiments/python-gamebub-v105/selection.json)
+chooses the best measured point, while retaining the verified RAM/DSP blocks.
+Next compare geometry plus RAM without DSP prefetch, and separately target
+the [measured coefficient-validation/write-enable cone](cu66-v105/next-cone-review.md).
+Its 13-bit tile domain permits a fully exhaustive helper proof before any
+owner-based cache or write-control locality change. Complete device/service
+and hardware goals remain open.
+
 **V104 partial checkpoint: registered geometry and DSP product prefetch.**
 The [V104 handoff](cu66-v104/README.md) starts from V103's retained V102 RTL.
 Reconstruction caches quantization-cell coordinates through accepted tile
@@ -41,9 +82,9 @@ Both route without errors; combined retains eight dequantizer PREGs. Its
 2-ps difference from V102's −13.976 ns establishes no routed timing gain
 in this single run. The [source selection](../experiments/python-gamebub-v104/selection.json)
 retains V102. Admission indexing remains the measured control bottleneck;
-V105 should establish real state/owner bounds before replacing that path.
+V105 establishes scoped state/owner bounds before replacing that path.
 
-V105's matched matrix should include admission recurrence alone, recurrence
+V105's matched matrix includes admission recurrence alone, recurrence
 plus the verified V104 reconstruction cache, and recurrence plus both V104
 cache/product-prefetch changes. Keeping V102 as the control does not discard
 those verified building blocks: a worst-path selection can mask a useful
@@ -573,8 +614,8 @@ replace their target-part, constraints, signoff or evidence requirements.
 | **V102** pipeline/control timing — **partial** | **Fit restored:** single registered admission-memory read maps to BRAM. Frozen profile/cap and historical sources unchanged. | **Measured:** isolated predicate rewrite and combined synthesis: 49,040 LUTs, 3,854 LUT RAMs, 32 RAMB36, 28 DSPs. | **Passed:** 288 paired case/profile runs, 304 directed checks, 19,072 clocked RAM cases and all 32,768 predicate inputs, with unchanged cycles/canonical bytes. | **Routed:** 48,522 LUTs, 2,718 LUT RAMs, 72,867/72,867 routable nets, zero routing errors. **Open:** WNS −13.976 ns at 10 ns, parent I/O/clock contracts, methodology and hardware goals. [Evidence](cu66-v102/README.md). |
 | **V103** geometry mapping and parser study — **partial** | **Implemented:** isolated exact reconstruction/admission function rewrites with frozen codec/profile/cap. **Inventoried:** Rice/context/ingress mapping and parser widths. | **Measured:** reconstruction synthesis improves modestly; admission/combined regress synthesis timing. **Modeled:** aligned prefix network, 1,548,910 Python comparisons. | **Passed:** 288 paired case/profile runs, 304 directed checks, two focused actual-RTL probes, independent traces and 19 source/provenance checks. Stopped resource-gate attempt preserved. | **Routed:** reconstruction 48,179 LUT / WNS −14.036 ns; combined 47,740 / −17.586 ns, both zero routing errors. **Retain V102:** neither beats its −13.976-ns slack. Parser-native variants, registered control, timing/full-system/hardware gates remain open. [Evidence](cu66-v103/vendor-comparison.md). |
 | **V104** registered control and DSP mapping — **partial** | **Implemented:** reachable coordinate cache and cycle-preserving product prefetch from selected V102. Codec/ports/widths/diagnostics retained. | **Mapped:** eight dequantizer PREGs, eight local DSPs; global count 29. **Routed:** control 47,588 LUT / WNS −14.750 ns; combined 48,868 / −13.978 ns, both zero routing errors. | **Passed:** 3,024,861 focused edges, 288 integrated case/profile runs, 304 directed checks, independent traces and 22 audit checks. **Modeled:** 137,343 conditional admission-coordinate transitions. | **Retain V102:** no demonstrated routed setup gain over −13.976 ns; combined's 2-ps difference is not a robustness result. Parent clock/I/O, complete service/hardware goals remain open. [Evidence](cu66-v104/vendor-comparison.md). |
-| **V105** memory mapping/locality and remaining admission control | Inventory every memory's depth/width, ports, latency and collision policy. If native paths still identify admission indexing, establish the [coordinate model's](cu66-v104/admission-coordinate-model.md) real header-entry/epoch/abort/drain invariant before an isolated RTL recurrence. | Map packet/coefficient/table/line storage to appropriate RAMB18/36, LUTRAM or SRL structures; bank active-cell/scales access and eliminate large muxes without deleting validation. | Replay with actual read latency, collision policy, arbitration/refresh and display consumers. Test invalid headers, sentinel/group jumps, old-owner cancellation and late writes explicitly. | Prove whole-device memory fit and service bounds using actual external-memory contracts. Preserve full 32-bit admission semantics until a scoped reachable-state refinement is justified; no false-path workaround. |
-| **V106** fanout/congestion | Capture high-fanout, control-set and congestion evidence. | Localize grants/valid/epoch/reset and register long credit distribution where needed. | Compare narrowly justified replication/hierarchy/placement changes. | Route and keep demonstrated fixes with ownership/reset parity; avoid uncontrolled placement directives. |
+| **V105** memory mapping/locality and admission recurrence — **partial** | **Implemented:** scoped live-coordinate cache with full-width counters/guards; five mode writes become one clocked port, preserving held lookups. All component buffers/ports/latencies inventoried. | **Mapped:** one mode RAMB18 removes 1,524 LUTRAMs; isolated synthesis uses 47,482 LUTs. Admission alone saves one DSP at +392 LUTs. Native joint variants and source selection are recorded separately. | **Passed:** 6,692,564 focused edges with independent replay; eight lanes, 512 case/profile runs and 576 directed checks, exact cycles/events/canonical bytes. Both-order source composition passes. | **Open:** further scales/coefficient/line banking, technology collision proof, actual external arbitration/refresh/display service and whole-device qualification. No invented timing cuts. [Evidence](cu66-v105/README.md). |
+| **V106** fanout/congestion | Start from the V105 selected source; compare geometry + RAM without DSP prefetch and the separately bounded coefficient `quant_cell`/write-enable cone. Capture high-fanout, control-set and congestion evidence. | Localize grants/valid/epoch/reset and register long credit distribution where needed. | Compare narrowly justified replication/hierarchy/placement changes. | Route and keep demonstrated fixes with ownership/reset parity; avoid uncontrolled placement directives. |
 | **V107** board/CDC integration | Wire the selected controller, transport and display interfaces with their real clocks. | Implement/review crossings, async FIFOs and synchronized reset release. | Exercise reset, clock start, traffic and hardware smoke tests when access exists. | Close CDC/interface timing and board integration; unavailable hardware tests remain pending. |
 | **V108** placement/routing study | Freeze one source/constraint baseline and a small recorded strategy matrix. | Run at most six initial combinations, retaining failures, runtime and memory usage. | Cleanly repeat the selected winner. | Choose a reproducible routed frontier; expand trials only for a stated unresolved hypothesis. |
 | **V109** integrated closure | Merge only qualified physical changes into the complete top. | Route and check setup/hold, pulse width, I/O, CDC, exceptions and methodology. | Replay full pixel/reference/HUD/hash workloads with actual primitive/controller costs and counter calibration. | Freeze the qualification candidate and fallback, with no unexplained functional paths or missing full-system endpoints. |
@@ -722,8 +763,8 @@ Do not import DSP48E2, CARRY8, UltraRAM or UltraScale-specific packing assumptio
 | **V102 — partial** | **Memory inference and fixed-geometry control.** Single registered packet-RAM read and exact `safe_hidden` intervals restore component fit and routing; paired RTL preserves cycles/canonical bytes. See [measured results](cu66-v102/README.md). | Resource-fit gate passed; 10-ns setup timing remains open (routed WNS −13.976 ns). Follow-up registered/tagged tile/index control moves to V103's isolated experiments. Preserve exact transaction/epoch ordering under stalls, reset and abort; measure new latency/occupancy explicitly and retain all parent clock/I/O obligations. |
 | **V103 — partial** | **Exact geometry mapping and parser-prefix study.** Two isolated function candidates preserve cycles and pixels; Rice/context/ingress footprint is inventoried and a factored-prefix Python model passes. Native source selection uses matched routed evidence rather than area-only synthesis wins. | Focused actual RTL, paired pipeline/canonical bytes and source audit pass. Parser-native mapping and new pipeline/coordinate state remain open; retain the complete clock/I/O/integration/hardware goals. See [V103](cu66-v103/README.md). |
 | **V104 — partial** | **Registered coordinates and product prefetch.** Full clocked tests preserve lookup/validation and public packed-output timing. Native DSP-only mapping confirms eight dequantizer PREGs; global resource effects and routed timing are recorded separately. | [V104 evidence](cu66-v104/README.md): 3,024,861 focused edges, 288 paired case/profile runs, 304 directed checks, 22 audit checks. Physical clock/I/O/full-system/hardware gates remain open; other DSP/parallel-lane and parser variants are still optional measured follow-ups. |
-| **V105** | **Memory inference/locality and admission indexing.** Bank tables/coefficient buffers and replace accidental register muxes with suitable RAM resources. Derive an owner-safe admission recurrence from the conditional model only if the native critical path warrants it. | Per-memory depth/width/port/collision/latency ledger and physical footprint; actual read latency, arbitration, refresh and display contention. Verify header-entry, group jumps, sentinels, cancellation and drain rather than assuming valid packets. |
-| **V106** | **Fanout, control sets and congestion.** Localize grants, epoch/valid/reset distribution, descriptor selection and memory interfaces. Compare hierarchy boundaries and measured driver replication. | Before/after fanout, control-set and congestion reports plus routed path delay. Do not spread MAX_FANOUT, DONT_TOUCH or manual placement constraints without path evidence. |
+| **V105 — partial** | **Memory inference/locality and admission indexing.** Actual coordinate recurrence and canonical mode-table write/read template preserve the tested schedule. Joint variants include the verified V104 cache and DSP prefetch. | [V105 evidence](cu66-v105/README.md): 6,692,564 focused edges, 512 paired case/profile runs, 576 directed checks and exact composition. One RAMB18 replaces 1,524 LUTRAMs in isolated synthesis. Native stage-matched results govern selection; other buffer banking, mapped collisions, external arbitration/refresh/display contention and whole-device service remain open. |
+| **V106** | **Fanout, control sets and congestion.** Use [V105 routed evidence](cu66-v105/next-cone-review.md) for an isolated 13-bit coefficient/inverse metadata evaluator (all 4×8,192 inputs) and write-control locality comparison; preserve first-beat validation and fault-before-write. Separately compare geometry plus RAM without DSP prefetch. Localize grants, epoch/valid/reset distribution, descriptor selection and memory interfaces. Compare hierarchy boundaries and measured driver replication. | Before/after fanout, control-set and congestion reports plus routed path delay. Do not spread MAX_FANOUT, DONT_TOUCH or manual placement constraints without path evidence. |
 | **V107** | **Clock/reset/CDC integration.** Close transport, decoder, memory and display crossings with proper synchronizers/async FIFOs and synchronized reset release. Treat any new decoder-clock option as a separate integration variant. | CDC inventory and reviewed exceptions, stable tags across crossings, reset/abort/clock-start tests, interface timing and metastability assumptions documented. Preserve memory/LCD clocks unless separately qualified. |
 | **V108** | **Bounded placement/routing study.** Compare a recorded small set of synthesis/place/physical-opt/route strategies from the same source/constraints. Try soft hierarchy/pblocks or local placement only for measured locality/congestion problems. | Full trial matrix including failures, exact directives/tool version and route completion. Repeat the winner from a clean build; no unsupported random-seed knob or lucky single run as robustness evidence. |
 | **V109** | **Integrated closure and calibrated decode.** Merge only individually qualified changes, re-route the complete top, and replay the fixed workloads with real primitive latencies and finite interfaces. Run targeted post-route simulation where it resolves implementation risks. | Setup/hold/pulse-width and route/methodology signoff, native/pixel/hash/HUD parity, full decoded-frame latency distribution and stall/queue accounting. OOC timing and zero-time software endpoints cannot pass full-system gates. |

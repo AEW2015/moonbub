@@ -1,0 +1,51 @@
+{
+  "schema": "v105-edit-recipe-v1",
+  "original_path": "fpga/experiments/cu66-v102-memory/cs88_admission_v91i2a.sv",
+  "original_sha256": "c300f1bd819a906bfebd64e47648fe08d71f072d88d25cccc15c9a197d305187",
+  "candidate_path": "fpga/experiments/cu66-v105-memory/cs88_admission_v91i2a.sv",
+  "candidate_sha256": "cf4a21871436284fa542911b17c0f1f82dea133b01705529e3f748f68e6ad3de",
+  "edits": [
+    {
+      "name": "canonical-mode-write-read-port",
+      "before": "    assign replay_ready=state==FINISHED&&!reset&&!start&&!abort_packet&&replay_addr<size_bytes;",
+      "after": "    // Canonical single mode-store write port. The full-width parser address\n    // arithmetic and branch guards retain the original source semantics.\n    logic mode_write_enable;\n    logic [12:0] mode_write_address;\n    logic [1:0] mode_write_data;\n    always_comb begin\n        mode_write_enable=1'b0;\n        mode_write_address=13'd0;\n        mode_write_data=2'd0;\n        if(!reset&&!start&&!abort_packet)begin\n            if(state==ACTIVE_CLEAR&&active_index!=8100)begin\n                mode_write_enable=1'b1;\n                mode_write_address=active_index[12:0];\n                mode_write_data=2'd1;\n            end else if(state==KEY_TILE&&tile!=tile_count(plane))begin\n                mode_write_enable=1'b1;\n                mode_write_address=13'((plane==0?0:plane==1?5400:6750)+tile);\n                mode_write_data=hidden(plane,tile)?2'd1:2'd2;\n            end else if(state==MODE_BIT&&bits_left!=0&&mixed_bit)begin\n                mode_write_enable=1'b1;\n                mode_write_address=13'((plane==0?0:plane==1?5400:6750)+tile);\n                mode_write_data=bit_cache[7]?2'd2:2'd0;\n            end else if(state==GROUP_TILE&&tile!=group_end)begin\n                if(hidden(plane,tile)||group_tag==0)begin\n                    mode_write_enable=1'b1;\n                    mode_write_address=13'((plane==0?0:plane==1?5400:6750)+tile);\n                    mode_write_data=hidden(plane,tile)?2'd1:2'd0;\n                end else if(group_tag==1)begin\n                    mode_write_enable=1'b1;\n                    mode_write_address=13'((plane==0?0:plane==1?5400:6750)+tile);\n                    mode_write_data=2'd2;\n                end\n            end\n        end\n    end\n    // FINISHED lookups cannot coincide with parser writes in legitimate states.\n    // Output holds during reset/start/abort, exactly as in the original parser.\n    always_ff @(posedge clk) begin\n        if(mode_write_enable)modes[mode_write_address]<=mode_write_data;\n        if(lookup_req&&state==FINISHED&&!reset&&!start&&!abort_packet)\n            lookup_mode<=modes[lookup_tile];\n    end\n\n    assign replay_ready=state==FINISHED&&!reset&&!start&&!abort_packet&&replay_addr<size_bytes;",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "move-only-mode-lookup",
+      "before": "lookup_mode<=modes[lookup_tile];lookup_scale<=scales[lookup_cell];",
+      "after": "lookup_scale<=scales[lookup_cell];",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "extract-clear",
+      "before": "modes[active_index[12:0]]<=1;",
+      "after": "",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "extract-key",
+      "before": "modes[13'((plane==0?0:plane==1?5400:6750)+tile)]<=hidden(plane,tile)?2'd1:2'd2;",
+      "after": "",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "extract-mixed",
+      "before": "modes[13'((plane==0?0:plane==1?5400:6750)+tile)]<=bit_cache[7]?2'd2:2'd0;",
+      "after": "",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "extract-group-hidden-copy",
+      "before": "modes[13'((plane==0?0:plane==1?5400:6750)+tile)]<=hidden(plane,tile)?2'd1:2'd0;",
+      "after": "",
+      "expected_occurrences": 1
+    },
+    {
+      "name": "extract-group-residual",
+      "before": "modes[13'((plane==0?0:plane==1?5400:6750)+tile)]<=2'd2;",
+      "after": "",
+      "expected_occurrences": 1
+    }
+  ]
+}
