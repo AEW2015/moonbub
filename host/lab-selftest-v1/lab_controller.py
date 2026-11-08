@@ -9,6 +9,7 @@ RECEIVER = '192.168.0.157'
 SHA = re.compile(r'^[0-9a-f]{64}$')
 
 class Refused(RuntimeError): pass
+class PortOpenPending(OSError): pass
 
 def require(ok, why):
     if not ok: raise Refused(why)
@@ -82,11 +83,22 @@ def prerequisites(args, now_us, is_alive=alive):
 class SerialLog:
     def __init__(self, port, output):
         import serial
-        self.raw = (output/'serial.raw').open('xb'); self.lines=[]; self.lock=threading.Lock(); self.inbox=queue.Queue(); self.closed=False
-        # Set inactive states BEFORE open; never toggle DTR/RTS or use them to reset.
+        self.lines=[]; self.lock=threading.Lock(); self.inbox=queue.Queue(); self.closed=False
+        # Inactive states are configured BEFORE open. No log file is reserved until open succeeds.
         self.port=serial.Serial(port=None, baudrate=115200, timeout=0.2)
-        self.port.dtr=False; self.port.rts=False; self.port.port=port; self.port.open()
-        self.thread=threading.Thread(target=self._reader, daemon=True); self.thread.start()
+        try:
+            self.port.dtr=False; self.port.rts=False; self.port.port=port; self.port.open()
+        except OSError as exc:
+            try:self.port.close()
+            except Exception as cleanup:raise Refused('port-open cleanup failed: '+str(cleanup)) from exc
+            raise PortOpenPending(type(exc).__name__+': '+str(exc)) from exc
+        try:
+            self.raw=(output/'serial.raw').open('xb')
+            self.thread=threading.Thread(target=self._reader, daemon=True);self.thread.start()
+        except Exception:
+            self.closed=True;self.port.close()
+            if hasattr(self,'raw'):self.raw.close()
+            raise
     def _reader(self):
         pending=b''
         try:
@@ -115,12 +127,95 @@ class SerialLog:
         raise Refused('serial observation timed out')
     def close(self):
         self.closed=True
-        try: self.port.close()
-        finally: self.thread.join(timeout=2); self.raw.close()
+        try:
+            cancel=getattr(self.port,'cancel_read',None)
+            if cancel is not None:
+                try:cancel()
+                except Exception:pass
+            self.port.close()
+        finally:
+            self.thread.join(timeout=2)
+            require(not self.thread.is_alive(),'serial reader did not stop; raw log left open')
+            self.raw.close()
+
+class PresenceMonitor:
+    """Observe exact-serial disappearance/return concurrently with ACK/serial close."""
+    def __init__(self, initial_port, enumerate_ports=None, interval=.025):
+        require(0 < interval <= .05, 'presence polling must be at most50ms')
+        self.initial_port=initial_port;self.enumerate=enumerate_ports or matching_ports;self.interval=interval
+        self.stop_event=threading.Event();self.ready=threading.Event();self.returned=threading.Event();self.lock=threading.Lock()
+        self.events=[];self.error=None;self.command_us=None;self.return_port=None;self.samples=0;self.max_gap_us=0;self.thread=None
+    def _record(self,kind,ports,now):
+        self.events.append({'event':kind,'ports':ports,'monotonic_us':now,'unix_us':time.time_ns()//1000})
+    def _watch(self):
+        last=None;gone=False
+        try:
+            while not self.stop_event.is_set():
+                ports=sorted(self.enumerate());now=time.monotonic_ns()//1000
+                with self.lock:
+                    self.samples+=1
+                    if last is not None:self.max_gap_us=max(self.max_gap_us,now-last)
+                    last=now
+                    if self.samples==1:
+                        require(ports==[self.initial_port], 'initial exact-serial presence changed')
+                        self._record('initial',ports,now);self.ready.set()
+                    elif self.command_us is not None:
+                        require(len(ports)<=1,'multiple exact-serial interfaces during reboot')
+                        if not ports and not gone:
+                            gone=True;self._record('gone',ports,now)
+                        elif ports and gone:
+                            self.return_port=ports[0];self._record('returned',ports,now);self.returned.set();return
+                self.stop_event.wait(self.interval)
+        except Exception as exc:
+            with self.lock:self.error=str(exc)
+            self.ready.set();self.returned.set()
+    def start(self):
+        self.thread=threading.Thread(target=self._watch,daemon=True);self.thread.start()
+        require(self.ready.wait(5),'presence monitor failed to start')
+        require(self.error is None,self.error or 'presence monitor failed')
+    def mark_command(self):
+        with self.lock:
+            require(self.command_us is None,'reboot command already marked')
+            self.command_us=time.monotonic_ns()//1000;self._record('command',[],self.command_us)
+    def wait_return(self,timeout=90):
+        require(self.returned.wait(timeout),'USB disappearance/return not observed; no reset retry')
+        with self.lock:
+            require(self.error is None,self.error or 'presence monitor failed')
+            require(self.return_port is not None,'USB return unverified')
+            return self.return_port
+    def snapshot(self):
+        with self.lock:return {'serial':SERIAL,'events':list(self.events),'samples':self.samples,'max_sample_gap_us':self.max_gap_us,'error':self.error,'return_port':self.return_port}
+    def stop(self):
+        self.stop_event.set()
+        if self.thread is not None:
+            self.thread.join(timeout=2);require(not self.thread.is_alive(),'presence monitor did not stop')
+
+def matching_ports():
+    from serial.tools import list_ports
+    return [p.device for p in list_ports.comports() if p.serial_number==SERIAL]
+
+def open_returned_serial(output,deadline,attempts,enumerate_ports=None,open_log=None,clock=time.monotonic,sleep=time.sleep):
+    """Retry only opening the exact returned serial; never send a reset or reuse stale COM."""
+    require(output.is_dir(),'reboot evidence directory must already exist')
+    enumerate_ports=enumerate_ports or matching_ports;open_log=open_log or SerialLog
+    while clock()<deadline:
+        row={'attempt':len(attempts)+1,'unix_us':time.time_ns()//1000,'monotonic_us':int(clock()*1000000),'remaining_ms':max(0,int((deadline-clock())*1000))}
+        attempts.append(row)
+        try:
+            ports=sorted(enumerate_ports());row['ports']=ports
+            require(len(ports)<=1,'multiple exact-serial interfaces while opening')
+            if not ports:row['result']='not_enumerated'
+            else:
+                row['port']=ports[0]
+                try:
+                    log=open_log(ports[0],output);row['result']='opened';return log
+                except PortOpenPending as exc:row['result']='temporarily_unopenable';row['error']=str(exc)
+        except Refused:row['result']='refused';raise
+        sleep(min(.1,max(0,deadline-clock())))
+    raise Refused('returned serial remained unopenable before existing reboot deadline; no reset retry')
 
 def find_port(requested=None):
-    from serial.tools import list_ports
-    ports=[p.device for p in list_ports.comports() if p.serial_number == SERIAL and (requested is None or p.device == requested)]
+    ports=[p for p in matching_ports() if requested is None or p==requested]
     require(len(ports)==1, 'need exactly one matching USB serial/port')
     return ports[0]
 
@@ -143,20 +238,33 @@ def stop_owned(p):
         try: p.wait(timeout=5)
         except subprocess.TimeoutExpired: p.kill(); p.wait(timeout=5)
 
-def read_session(p, stdout, output, timeout):
-    q=queue.Queue()
-    def reader():
+class SenderPump:
+    def __init__(self, process, output):
+        self.process=process;self.output=output;self.inbox=queue.Queue();self.lock=threading.Lock();self.discard=threading.Event();self.error=None
+        self.thread=threading.Thread(target=self._reader,daemon=True);self.thread.start()
+    def _reader(self):
         try:
-            for line in p.stdout:
-                stdout.write(line); stdout.flush()
-                try: q.put(json.loads(line))
-                except json.JSONDecodeError: pass
-        except Exception as exc:q.put(exc)
-    threading.Thread(target=reader,daemon=True).start()
+            for line in self.process.stdout:
+                with self.lock:
+                    if self.discard.is_set():return
+                    self.output.write(line);self.output.flush()
+                try:self.inbox.put(json.loads(line))
+                except json.JSONDecodeError:pass
+        except Exception as exc:self.error=str(exc);self.inbox.put(exc)
+    def finish(self,timeout=5):
+        self.thread.join(timeout=timeout)
+        if self.thread.is_alive():
+            # Block late writes before caller closes the evidence file.
+            with self.lock:self.discard.set()
+            raise Refused('sender stdout reader did not stop; tail incomplete')
+        require(self.error is None,'sender stdout reader failed: '+str(self.error))
+        self.process.stdout.close()
+
+def read_session(p,pump,timeout):
     deadline=time.monotonic()+timeout
     while time.monotonic()<deadline:
         require(p.poll() is None, 'sender exited before session readiness')
-        try: row=q.get(timeout=.1)
+        try:row=pump.inbox.get(timeout=.1)
         except queue.Empty:continue
         if isinstance(row,Exception):raise Refused('sender stdout failed')
         if isinstance(row,dict) and row.get('event')=='session':return row
@@ -170,13 +278,14 @@ def run_trial(args, serial, gate, output):
     control(serial,gate,'HOST33',args.ack_success)
     command=[sys.executable,str(args.sender),'--profile','dy71-sequence-v3','--count','12','--manifest',str(args.manifest),'--receiver',RECEIVER,'--bind',LOCAL,'--initial-wait-seconds','600','--log',str(output/'sender.jsonl')]
     (output/'command.json').write_text(json.dumps(command,indent=2))
-    p=None; export_complete=False
+    p=None; pump=None; export_complete=False; result=None
     with (output/'sender.stdout').open('x',encoding='utf-8') as out,(output/'sender.stderr').open('x',encoding='utf-8') as err:
         try:
             started=time.time_ns()//1000
             p=subprocess.Popen(command,stdout=subprocess.PIPE,stderr=err,text=True,bufsize=1)
             (output/'owned-sender.json').write_text(json.dumps({'pid':p.pid,'started_unix_us':started}))
-            row=read_session(p,out,output,20)
+            pump=SenderPump(p,out)
+            row=read_session(p,pump,20)
             require(row.get('manifest_sha256')==args.manifest_sha256, 'sender manifest differs')
             ready=prerequisites(args,time.time_ns()//1000)
             beginning=serial.checkpoint()
@@ -194,10 +303,12 @@ def run_trial(args, serial, gate, output):
             rows=[json.loads(x) for x in (output/'sender.jsonl').read_text().splitlines()]
             require(any(x.get('event')=='complete' and x.get('presented')==12 and x.get('sequence_count')==12 for x in rows), 'sender lacks complete12 result')
             result={'status':'pass','sender_stopped':True,'sender_pid':p.pid,'export_complete':True,'elf':args.expected_elf,'serial':SERIAL,'one_arm':True}
-            (output/'result.json').write_text(json.dumps(result,indent=2));return result
+            return result
         finally:
             stop_owned(p)
+            if pump is not None:pump.finish()
             (output/'quiescence.json').write_text(json.dumps({'sender_stopped':p is None or p.poll() is not None,'sender_pid':p.pid if p else None,'export_complete':export_complete,'elf':args.expected_elf,'serial':SERIAL},indent=2))
+            if result is not None:(output/'result.json').write_text(json.dumps(result,indent=2))
 
 def parser():
     p=argparse.ArgumentParser(__doc__);p.add_argument('action',choices=['run','ping','reboot','dfu']);p.add_argument('--expected-elf',required=True);p.add_argument('--serial',default=SERIAL);p.add_argument('--port');p.add_argument('--output',type=Path,required=True);p.add_argument('--ack-success',default='OK')
@@ -208,6 +319,9 @@ def main():
     args=parser().parse_args();gate=Gate(args.expected_elf,args.serial);require(30<=args.run_timeout<=1800,'bounded run timeout required');require(1<=args.prereq_max_age<=300,'bounded marker age required')
     args.output=args.output.resolve();require(args.output.is_relative_to(Path('C:/moon').resolve()),'evidence must stay under C:/moon');require(not args.output.exists(),'unique evidence output required');args.output.mkdir(parents=True)
     (args.output/'arguments.json').write_text(json.dumps(vars(args),default=str,indent=2));serial=None
+    source=Path(__file__).read_bytes()
+    (args.output/'executed-controller.py').write_bytes(source)
+    (args.output/'controller-source-sha256.txt').write_text(hashlib.sha256(source).hexdigest()+'\n')
     try:
         serial=SerialLog(find_port(args.port),args.output);control(serial,gate,'PING',args.ack_success);fresh_identity(serial,gate)
         if args.action=='run':run_trial(args,serial,gate,args.output)
@@ -217,22 +331,24 @@ def main():
                 prior=json.loads(args.completed_run.read_text());require(prior.get('sender_stopped') is True and prior.get('export_complete') is True,'sender/export not complete')
                 require(not alive(prior.get('sender_pid')),'previous sender PID still live')
                 require(prior.get('elf')==args.expected_elf and prior.get('serial')==SERIAL,'receipt identity mismatch')
-            nonce=control(serial,gate,args.action.upper(),args.ack_success)
-            if args.action=='reboot':
-                serial.close();serial=None;deadline=time.monotonic()+90
-                reboot_output=args.output/'reboot';reboot_output.mkdir()
-                # Require an observed disappearance; never issue a second reset.
-                gone=False
-                while time.monotonic()<deadline-60:
-                    try: find_port(args.port)
-                    except Refused:gone=True;break
-                    time.sleep(.05)
-                require(gone,'USB disappearance not observed; reboot remains unverified')
-                while time.monotonic()<deadline:
-                    try: port=find_port(args.port)
-                    except Refused:time.sleep(.5);continue
-                    serial=SerialLog(port,reboot_output);break
-                require(serial is not None,'device did not reenumerate');reboot_gate=Gate(args.expected_elf,args.serial);control(serial,reboot_gate,'PING',args.ack_success);fresh_identity(serial,reboot_gate)
+            monitor=None;open_attempts=[];reboot_deadline=None
+            try:
+                if args.action=='reboot':
+                    monitor=PresenceMonitor(serial.port.port);monitor.start();reboot_deadline=time.monotonic()+90;monitor.mark_command()
+                nonce=control(serial,gate,args.action.upper(),args.ack_success)
+                if args.action=='reboot':
+                    serial.close();serial=None
+                    # Exact serial alone after reboot; COM numbers may change.
+                    monitor.wait_return(max(.001,reboot_deadline-time.monotonic()))
+                    reboot_output=args.output/'reboot';reboot_output.mkdir()
+                    serial=open_returned_serial(reboot_output,reboot_deadline,open_attempts)
+                    reboot_gate=Gate(args.expected_elf,args.serial);control(serial,reboot_gate,'PING',args.ack_success);fresh_identity(serial,reboot_gate)
+            finally:
+                if monitor is not None:
+                    try:monitor.stop()
+                    finally:
+                        (args.output/'reboot-presence.json').write_text(json.dumps(monitor.snapshot(),indent=2))
+                        (args.output/'reboot-open-attempts.json').write_text(json.dumps(open_attempts,indent=2))
             (args.output/'result.json').write_text(json.dumps({'status':'acknowledged','action':args.action,'nonce':nonce,'rail_power_cycle':False}))
     except Exception as exc:
         (args.output/'failure.json').write_text(json.dumps({'error':str(exc),'automatic_retry':False,'automatic_reset':False},indent=2));raise

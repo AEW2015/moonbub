@@ -107,7 +107,11 @@ Do not start a long run if encoding support, receiver continuous lifecycle or me
 
 ## Immediate deliverables and coordination
 
-Next candidate: [V47 allocation-order hardware handoff](V47-HARDWARE-HANDOFF-20261107.md), with [change/test plan](V47-HUD-ORDER-PLAN-20261107.md). Offline exact-output/rollback tests, bounded actual-TLSF comparisons, target build and updater checks passed. Physical CPU12/network cached12 remain pending. This candidate improves some synthetic heap layouts but is not a universal fragmentation cure; no V027/wire/cap/reserve change.
+Latest physical milestone: [V48 local12 hardware PASS](V48-LOCAL12-HARDWARE-RESULT-20261107.md):12accepted/12presented,253,440HUDwords verified, zero rejects/underruns/native allocation failures. V48 preserves V47's native decoder and V027, adds local serial control/WinUSB descriptors, and uses the local`.33`sender. Both checksummed exports match. This is a bounded correctness result, not30fps or the full120-second clip; changed host/control layout prevents isolated allocation-order attribution.
+
+Current work: qualify fully automatic software recovery and protected app-only vendor updates, then longer distinct sequences and measured decoder/QSPI improvements. See [V48 bootstrap](V48-SELFTEST-BOOTSTRAP-20261107.md). The first software reboot occurred and was independently verified after a host COM-open race; preserve that failure and qualify the corrected controller separately. No true battery-level cold cycle is claimed.
+
+Previous candidate: [V47 allocation-order hardware handoff](V47-HARDWARE-HANDOFF-20261107.md), with [change/test plan](V47-HUD-ORDER-PLAN-20261107.md). Its direct network attempt had expired sender/receiver windows and never exercised the codec; V48 subsequently ran the decoder successfully locally. This candidate improves some synthetic heap layouts but is not a universal fragmentation cure; no V027/wire/cap/reserve change.
 
 Current physical result: [V46 cold CPU12 passed](V46-CPU12-HARDWARE-RESULT-20261107.md), then [V46 network cached12 located frame3's failed11,520-byte malloc](V46-V027-CACHED12-FAILURE-20261107.md):35,284total free but7,680largest internal block. The wrapper identifies Prepare opcode1/native reply4; FPGA passive samples show3accepted/3presented/0rejected/0underruns. Keep the failed endpoint quarantined until coordinated update; no V027 rebuild is indicated by this immediate cause. V45's similar failure had no allocator detail, so its exact cause remains unproven.
 
