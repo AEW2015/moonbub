@@ -1,0 +1,117 @@
+﻿{
+    "status":  "PASS_ASAN_UBSAN_HOST_NATIVE_ORACLE",
+    "createdUtc":  "2026-11-08T10:30:20.3770963Z",
+    "environment":  {
+                        "wslDistribution":  "MRS-HDL-Research",
+                        "distributionRelease":  "Ubuntu 22.04",
+                        "compiler":  "/usr/bin/g++ 11.4.0",
+                        "asanRuntime":  "/usr/lib/gcc/x86_64-linux-gnu/11/libasan.so",
+                        "ubsanRuntime":  "/usr/lib/gcc/x86_64-linux-gnu/11/libubsan.so",
+                        "sanitizerOptions":  "ASAN_OPTIONS=detect_leaks=1:halt_on_error=1; UBSAN_OPTIONS=print_stacktrace=1:halt_on_error=1"
+                    },
+    "harness":  {
+                    "path":  "C:\\moon\\dev\\experiments\\v55-stb1-performance-20261108\\tools\\endpoint_check.cpp",
+                    "linkedNativeTranslationUnit":  "C:\\moon\\dev\\experiments\\v55-stb1-performance-20261108\\native\\endpoint.cpp",
+                    "runner":  "C:\\moon\\dev\\experiments\\v55-stb1-performance-20261108\\tools\\check_native_oracles.py",
+                    "frameFixtureRoot":  "C:\\moon\\dev\\experiments\\cu66-source-bridge-20261108\\video12",
+                    "prepareFixtureCount":  12,
+                    "hudGoldenCount":  12,
+                    "arenaCapBytes":  98304,
+                    "faultCases":  "Malformed HC rollback, HUD late-failure rollback, accepted-state preservation and fresh-generation recovery",
+                    "modifiedHarness":  false
+                },
+    "runs":  [
+                 {
+                     "optimization":  "-Os",
+                     "compileExit":  0,
+                     "compileSeconds":  12.7241,
+                     "runExit":  0,
+                     "runSeconds":  1.492,
+                     "runOutput":  "{\"frames\":12,\"HUD_words\":253440,\"arena_cap\":98304,\"arena_peak\":95053,\"allocation_failures\":0,\"malformed_and_late_failure_checks\":24,\"recovery_checks\":12}",
+                     "compileLog":  "Os/endpoint-compile.log",
+                     "runLog":  "Os/endpoint-run.log"
+                 },
+                 {
+                     "optimization":  "-O2",
+                     "compileExit":  0,
+                     "compileSeconds":  26.6295,
+                     "runExit":  0,
+                     "runSeconds":  1.1756,
+                     "runOutput":  "{\"frames\":12,\"HUD_words\":253440,\"arena_cap\":98304,\"arena_peak\":95053,\"allocation_failures\":0,\"malformed_and_late_failure_checks\":24,\"recovery_checks\":12}",
+                     "compileLog":  "O2/endpoint-compile.log",
+                     "runLog":  "O2/endpoint-run.log"
+                 }
+             ],
+    "old3SanitizerRuns":  [
+                              {
+                                  "optimization":  "-Os",
+                                  "exit":  0,
+                                  "output":  {
+                                                 "frames":  3,
+                                                 "HUD_words":  63360,
+                                                 "arena_cap":  98304,
+                                                 "arena_peak":  95053,
+                                                 "allocation_failures":  0,
+                                                 "malformed_and_late_failure_checks":  6,
+                                                 "recovery_checks":  3
+                                             }
+                              },
+                              {
+                                  "optimization":  "-O2",
+                                  "exit":  0,
+                                  "output":  {
+                                                 "frames":  3,
+                                                 "HUD_words":  63360,
+                                                 "arena_cap":  98304,
+                                                 "arena_peak":  95053,
+                                                 "allocation_failures":  0,
+                                                 "malformed_and_late_failure_checks":  6,
+                                                 "recovery_checks":  3
+                                             }
+                              }
+                          ],
+    "expectedChecks":  {
+                           "new12":  {
+                                         "malformed_and_late_failure_checks":  24,
+                                         "allocation_failures":  0,
+                                         "arena_peak":  95053,
+                                         "recovery_checks":  12,
+                                         "arena_cap":  98304,
+                                         "HUD_words":  253440,
+                                         "frames":  12
+                                     },
+                           "old3":  {
+                                        "malformed_and_late_failure_checks":  6,
+                                        "allocation_failures":  0,
+                                        "arena_peak":  95053,
+                                        "recovery_checks":  3,
+                                        "arena_cap":  98304,
+                                        "HUD_words":  63360,
+                                        "frames":  3
+                                    }
+                       },
+    "sanitizerFindings":  [
+
+                          ],
+    "nativeSourceHashesUnchanged":  true,
+    "initialAttempts":  [
+                            {
+                                "attempt":  "MSYS2 UCRT compiler runtime probe",
+                                "outcome":  "No sanitizer runtime; later superseded by available WSL GCC runtime."
+                            },
+                            {
+                                "attempt":  "prepare12_native.cpp against padded frameNNN golden files",
+                                "outcome":  "Aborted after Prepare 0 with input exception because this harness expects frame0.hud naming; not a sanitizer finding. Log retained."
+                            },
+                            {
+                                "attempt":  "endpoint_check.cpp compile without native include path",
+                                "outcome":  "Compile failed missing endpoint.hpp; log retained. Correct -I native compile and runs follow."
+                            }
+                        ],
+    "notes":  [
+                  "These are host ASan/UBSan checks; not Xtensa stack/runtime proof.",
+                  "No firmware source, shared SDK target, linked firmware image, Vivado, or hardware was modified.",
+                  "A passing host sanitizer run does not resolve GCC Xtensa -Werror=maybe-uninitialized diagnostics or prove physical safety/performance.",
+                  "The initial WSL skip file was based on a Windows PowerShell UTF-16 output misread; current verified WSL toolchain and test results supersede it."
+              ]
+}

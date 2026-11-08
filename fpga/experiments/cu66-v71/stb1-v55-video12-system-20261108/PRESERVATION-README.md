@@ -1,0 +1,7 @@
+# Preserved actual-Rust/RTL twelve-frame result
+
+Selected result is layout-v2/result.json, with the independently qualified tile-layout conversion. Original planar oracle files and mismatch receipts remain under layout-initial-mismatch/; their failure is not erased. README.md records executed scope and limitations.
+
+Canonical banks, raster captures and reference plane/HUD/display payloads are stored as deterministic gzip files. preservation.json records both stored and uncompressed SHA256/size for each file. To rerun original comparison scripts, expand gzip files into a NEW replay workspace at each relative path with only the final .gz removed. Do not overwrite selected evidence. Native/RTL source, binding, compile and run records are preserved; generated simulator/compiler objects and host executables/DLLs are excluded. Original commands contain historical C:/moon paths and require rebasing if replayed elsewhere. The selected V55 source/release and exact board source snapshot are preserved separately alongside this experiment.
+
+This is12newsourceframes, not the120secondMassEffectclip or physical30fps. Model assumptions include zero-initialized Verilator SDRAM, accelerated powerup, direct CSR RPC,100us modeled yields and200ms modeled Prepare service perframe. Physical SPI/IDF/RTOS/radio/ESP32CPU/heapfragmentation/stack and bank2 are unqualified. Front banks alternate0/1.

@@ -1,0 +1,977 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Sun Nov  8 02:13:34 2026
+| Host         : DESKTOP-I75K8PP running 64-bit major release  (build 9200)
+| Command      : report_timing -delay_type max -through [get_pins -quiet -leaf -of_objects [get_nets -quiet -of_objects [get_pins -quiet -hier -filter {NAME == "control_plane/hud_ticket_reg[4]/CE"}]] -filter {DIRECTION == OUT}] -max_paths 12 -file C:/moon/builds/stb1-margin-v003/target-through-setup-before.rpt
+| Design       : moonshine_top_dy71
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Physopt postPlace
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -0.387ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[0]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.035ns  (logic 1.771ns (17.648%)  route 8.264ns (82.352%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.586    15.259    control_plane/E[0]
+    SLICE_X13Y97         FDRE                                         r  control_plane/hud_ticket_reg[0]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y97         FDRE                                         r  control_plane/hud_ticket_reg[0]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y97         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[0]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.259    
+  -------------------------------------------------------------------
+                         slack                                 -0.387    
+
+Slack (VIOLATED) :        -0.387ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[1]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.035ns  (logic 1.771ns (17.648%)  route 8.264ns (82.352%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.586    15.259    control_plane/E[0]
+    SLICE_X13Y97         FDRE                                         r  control_plane/hud_ticket_reg[1]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y97         FDRE                                         r  control_plane/hud_ticket_reg[1]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y97         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[1]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.259    
+  -------------------------------------------------------------------
+                         slack                                 -0.387    
+
+Slack (VIOLATED) :        -0.387ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[2]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.035ns  (logic 1.771ns (17.648%)  route 8.264ns (82.352%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.586    15.259    control_plane/E[0]
+    SLICE_X13Y97         FDRE                                         r  control_plane/hud_ticket_reg[2]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y97         FDRE                                         r  control_plane/hud_ticket_reg[2]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y97         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[2]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.259    
+  -------------------------------------------------------------------
+                         slack                                 -0.387    
+
+Slack (VIOLATED) :        -0.387ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[3]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.035ns  (logic 1.771ns (17.648%)  route 8.264ns (82.352%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.586    15.259    control_plane/E[0]
+    SLICE_X13Y97         FDRE                                         r  control_plane/hud_ticket_reg[3]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y97         FDRE                                         r  control_plane/hud_ticket_reg[3]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y97         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[3]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.259    
+  -------------------------------------------------------------------
+                         slack                                 -0.387    
+
+Slack (VIOLATED) :        -0.381ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[4]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.029ns  (logic 1.771ns (17.659%)  route 8.258ns (82.341%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.580    15.253    control_plane/E[0]
+    SLICE_X13Y98         FDRE                                         r  control_plane/hud_ticket_reg[4]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y98         FDRE                                         r  control_plane/hud_ticket_reg[4]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y98         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[4]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.253    
+  -------------------------------------------------------------------
+                         slack                                 -0.381    
+
+Slack (VIOLATED) :        -0.381ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[5]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.029ns  (logic 1.771ns (17.659%)  route 8.258ns (82.341%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.580    15.253    control_plane/E[0]
+    SLICE_X13Y98         FDRE                                         r  control_plane/hud_ticket_reg[5]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y98         FDRE                                         r  control_plane/hud_ticket_reg[5]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y98         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[5]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.253    
+  -------------------------------------------------------------------
+                         slack                                 -0.381    
+
+Slack (VIOLATED) :        -0.381ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[6]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.029ns  (logic 1.771ns (17.659%)  route 8.258ns (82.341%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.580    15.253    control_plane/E[0]
+    SLICE_X13Y98         FDRE                                         r  control_plane/hud_ticket_reg[6]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y98         FDRE                                         r  control_plane/hud_ticket_reg[6]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y98         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[6]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.253    
+  -------------------------------------------------------------------
+                         slack                                 -0.381    
+
+Slack (VIOLATED) :        -0.381ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[7]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.029ns  (logic 1.771ns (17.659%)  route 8.258ns (82.341%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.580    15.253    control_plane/E[0]
+    SLICE_X13Y98         FDRE                                         r  control_plane/hud_ticket_reg[7]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y98         FDRE                                         r  control_plane/hud_ticket_reg[7]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y98         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[7]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.253    
+  -------------------------------------------------------------------
+                         slack                                 -0.381    
+
+Slack (VIOLATED) :        -0.355ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[10]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.003ns  (logic 1.771ns (17.705%)  route 8.232ns (82.295%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.554    15.227    control_plane/E[0]
+    SLICE_X13Y99         FDRE                                         r  control_plane/hud_ticket_reg[10]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y99         FDRE                                         r  control_plane/hud_ticket_reg[10]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y99         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[10]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.227    
+  -------------------------------------------------------------------
+                         slack                                 -0.355    
+
+Slack (VIOLATED) :        -0.355ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[11]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.003ns  (logic 1.771ns (17.705%)  route 8.232ns (82.295%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.554    15.227    control_plane/E[0]
+    SLICE_X13Y99         FDRE                                         r  control_plane/hud_ticket_reg[11]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y99         FDRE                                         r  control_plane/hud_ticket_reg[11]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y99         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[11]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.227    
+  -------------------------------------------------------------------
+                         slack                                 -0.355    
+
+Slack (VIOLATED) :        -0.355ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[8]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.003ns  (logic 1.771ns (17.705%)  route 8.232ns (82.295%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.554    15.227    control_plane/E[0]
+    SLICE_X13Y99         FDRE                                         r  control_plane/hud_ticket_reg[8]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y99         FDRE                                         r  control_plane/hud_ticket_reg[8]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y99         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[8]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.227    
+  -------------------------------------------------------------------
+                         slack                                 -0.355    
+
+Slack (VIOLATED) :        -0.355ns  (required time - arrival time)
+  Source:                 control_plane/hud_ref_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            control_plane/hud_ticket_reg[9]/CE
+                            (rising edge-triggered cell FDRE clocked by raw100  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             raw100
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (raw100 rise@10.000ns - raw100 rise@0.000ns)
+  Data Path Delay:        10.003ns  (logic 1.771ns (17.705%)  route 8.232ns (82.295%))
+  Logic Levels:           9  (LUT4=4 LUT6=5)
+  Clock Path Skew:        -0.100ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    4.946ns = ( 14.946 - 10.000 ) 
+    Source Clock Delay      (SCD):    5.224ns
+    Clock Pessimism Removal (CPR):    0.177ns
+  Clock Uncertainty:      0.047ns  ((TSJ^2 + DJ^2)^1/2) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Discrete Jitter          (DJ):    0.063ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock raw100 rise edge)     0.000     0.000 r  
+    P17                                               0.000     0.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000     0.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.488     1.488 r  input_buffer/O
+                         net (fo=1, estimated)        2.016     3.504    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.096     3.600 r  base_clock/O
+                         net (fo=9, estimated)        1.896     5.496    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -4.005     1.491 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        2.012     3.503    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.096     3.599 r  memory_clock/O
+                         net (fo=31900, estimated)    1.625     5.224    control_plane/clk100
+    SLICE_X30Y106        FDRE                                         r  control_plane/hud_ref_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X30Y106        FDRE (Prop_fdre_C_Q)         0.478     5.702 r  control_plane/hud_ref_reg[1]/Q
+                         net (fo=2, estimated)        1.002     6.704    control_plane/hud_match/eq18_orig0_inferred__0/i__0[1]
+    SLICE_X32Y106        LUT6 (Prop_lut6_I1_O)        0.301     7.005 f  control_plane/hud_match/eq3_inferred_i_43/O
+                         net (fo=1, estimated)        0.990     7.995    control_plane/hud_match/eq3[1]
+    SLICE_X31Y106        LUT6 (Prop_lut6_I0_O)        0.124     8.119 f  control_plane/hud_match/eq18_orig0/O
+                         net (fo=1, estimated)        0.939     9.058    control_plane/hud_match/eq18[0]
+    SLICE_X31Y105        LUT6 (Prop_lut6_I1_O)        0.124     9.182 f  control_plane/hud_match/eq108_orig0/O
+                         net (fo=2, estimated)        0.426     9.608    control_plane/hud_match/eq108[0]
+    SLICE_X35Y105        LUT4 (Prop_lut4_I1_O)        0.124     9.732 f  control_plane/hud_match/bulk_i_25/O
+                         net (fo=12, estimated)       0.825    10.557    control_plane/hud_match/hud_pending_reg
+    SLICE_X50Y106        LUT6 (Prop_lut6_I5_O)        0.124    10.681 f  control_plane/hud_match/hud_access_allowed_i_6/O
+                         net (fo=5, estimated)        0.458    11.139    system_core/receiver/banks/hud_drain_valid
+    SLICE_X50Y107        LUT4 (Prop_lut4_I3_O)        0.124    11.263 f  system_core/receiver/banks/presentation_cache_slot_i_10/O
+                         net (fo=2, estimated)        0.576    11.839    control_plane/presentation_frame_id_reg[0]
+    SLICE_X50Y109        LUT6 (Prop_lut6_I0_O)        0.124    11.963 f  control_plane/presentation_cache_slot_i_3/O
+                         net (fo=9, estimated)        0.836    12.799    system_core/receiver/base/event_record_pending_reg[211]_0
+    SLICE_X55Y114        LUT4 (Prop_lut4_I2_O)        0.124    12.923 f  system_core/receiver/base/event_record_pending[210]_i_2/O
+                         net (fo=11, estimated)       0.626    13.549    system_core/receiver/base/state_reg[0]_0
+    SLICE_X47Y114        LUT4 (Prop_lut4_I2_O)        0.124    13.673 r  system_core/receiver/base/hud_bank[1]_i_1/O
+                         net (fo=324, estimated)      1.554    15.227    control_plane/E[0]
+    SLICE_X13Y99         FDRE                                         r  control_plane/hud_ticket_reg[9]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock raw100 rise edge)    10.000    10.000 r  
+    P17                                               0.000    10.000 r  clk_50mhz (IN)
+                         net (fo=0)                   0.000    10.000    clk_50mhz
+    P17                  IBUF (Prop_ibuf_I_O)         1.417    11.417 r  input_buffer/O
+                         net (fo=1, estimated)        1.915    13.332    inclk
+    BUFGCTRL_X0Y5        BUFG (Prop_bufg_I_O)         0.091    13.423 r  base_clock/O
+                         net (fo=9, estimated)        1.767    15.190    clk50
+    PLLE2_ADV_X0Y0       PLLE2_ADV (Prop_plle2_adv_CLKIN1_CLKOUT1)
+                                                     -3.771    11.419 r  service_pll/CLKOUT1
+                         net (fo=1, estimated)        1.911    13.330    raw100
+    BUFGCTRL_X0Y0        BUFG (Prop_bufg_I_O)         0.091    13.421 r  memory_clock/O
+                         net (fo=31900, estimated)    1.525    14.946    control_plane/clk100
+    SLICE_X13Y99         FDRE                                         r  control_plane/hud_ticket_reg[9]/C
+                         clock pessimism              0.177    15.124    
+                         clock uncertainty           -0.047    15.076    
+    SLICE_X13Y99         FDRE (Setup_fdre_C_CE)      -0.205    14.871    control_plane/hud_ticket_reg[9]
+  -------------------------------------------------------------------
+                         required time                         14.871    
+                         arrival time                         -15.227    
+  -------------------------------------------------------------------
+                         slack                                 -0.355    
+
+
+
+

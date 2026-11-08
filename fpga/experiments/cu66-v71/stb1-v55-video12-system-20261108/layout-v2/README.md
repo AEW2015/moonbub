@@ -1,0 +1,11 @@
+# Separate canonical bank-layout correction
+
+The original new-video references contain manifest-defined planar Y/U/V bytes. They were initially given a misleading `.canonical.u16` filename and compared directly with a physical bank dump. That initial comparison failed, even though every displayed pixel and HUD word matched. The original planar files, initial failing comparison/log, and original post-checker remain preserved; no running Rust/C++/RTL source, packet or setting changed.
+
+The bank storage layout is independently specified by selected `cu71_tile_memory_direct.sv` lines72–73 and `cu70_memory_map.svh`: each plane uses 8x8 tile-major order, 64 bytes/32 words per tile. Plane word offsets are 0, 172800 and 216000 for Y 720x480/U 360x240/V 360x240. Adjacent x pixels are the low/high bytes of a little-endian 16-bit word. A planar canonical hash is therefore not directly a raw bank-byte hash.
+
+Before generating corrected new references, two serializer implementations (explicit standard-Python tile loops and NumPy reshape/transpose) each reproduced both original prequalified KEY/P `.yuv` to `.canonical.u16` reference-bank goldens byte-for-byte. Both agree on all 12 new manifest-validated planar frames. An independent inverse mapping restores every planar byte, including a 518,400-byte deterministic random-coordinate test. These are prequalified reference goldens, not a new physical measurement. The mapper reads no new DUT output. Source/manifest/RTL/map/golden hashes are in `independent-layout-proof.json`.
+
+Corrected files are isolated under `layout-v2/goldens`; original planar references remain under the parent `goldens` directory. `compare.py --prefix` checks only completed presentation snapshots and marks `prefix_only=true`; it is not a full 12-frame pass. The full `compare.py` and `finalize.py` require all 12 real presentations, all native/HBU/counter checks and every independent source/golden hash. They produce separate layout-v2 comparison/result receipts. The original finite replay continues unchanged.
+
+No SDF, hardware throughput, target heap fragmentation, physical margin/porch or app-only failure-hook coverage is claimed. This correction addresses oracle serialization only; it selects no firmware or FPGA fix.
