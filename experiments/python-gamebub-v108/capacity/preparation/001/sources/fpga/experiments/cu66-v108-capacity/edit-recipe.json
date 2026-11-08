@@ -1,0 +1,105 @@
+{
+  "earliest_header": "E9 after WAIT41",
+  "latest_capture": "F_HEADER WAIT41",
+  "latest_commit": "F_HEADER WAIT43",
+  "post_capture_edges": 4,
+  "production": {
+    "br88_packet_ingress_sync_v91h.sv": {
+      "candidate_sha256": "fac148d58d7a27299eb3909067d1bb92d135e88636f8f1125d8947fccdf7b480",
+      "edits": [
+        {
+          "after": "    output logic [31:0] meta_threshold1, meta_threshold2, meta_threshold3,\n    output logic [31:0] meta_capacity_upper, meta_capacity_lower,\n    output logic meta_capacity_wrap,",
+          "before": "    output logic [31:0] meta_threshold1, meta_threshold2, meta_threshold3,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "\n    // CAPACITY_BOUND_PIPELINE_BEGIN: E0 capture through E4 owned commit.\n    // P12 is settled before WAIT41. Forward count3's current high byte.\n    // Actual plan/start/used_bytes arithmetic remains unchanged downstream.\n    logic [31:0] capacity_prefix12_s0, capacity_align3_s0, capacity_prefix_s1;\n    logic [27:0] capacity_a_s2, capacity_upper_s3, capacity_lower_s3;\n    logic capacity_wrap_s3;\n    logic [31:0] capacity_upper, capacity_lower;\n    logic capacity_wrap, capacity_live;\n    logic [3:0] capacity_valid_pipe;\n    logic capacity_capture, capacity_flush;\n    assign capacity_capture=prefix_header_capture&&fetch_index==6'd41;\n    assign capacity_flush=cancelled||context_failure||(context_active&&ctx_done);\n    assign meta_capacity_upper=capacity_upper;\n    assign meta_capacity_lower=capacity_lower;\n    assign meta_capacity_wrap=capacity_wrap;\n    always_ff @(posedge clk)begin\n        if(capacity_flush)begin capacity_valid_pipe<=0;capacity_live<=0;end\n        else begin\n            capacity_valid_pipe<={capacity_valid_pipe[2:0],capacity_capture};\n            if(capacity_valid_pipe[3])capacity_live<=1;\n        end\n    end\n    always_ff @(posedge clk)begin\n        // E0: capture owned operands separately, with no input carry chain added.\n        capacity_prefix12_s0<=plan_prefix12;\n        capacity_align3_s0<=count_aligned({ram_data,fetch_bytes[40],fetch_bytes[39],fetch_bytes[38]});\n        // E1: exact modulo32 prefix, including malformed high-count wrapping.\n        capacity_prefix_s1<=capacity_prefix12_s0+capacity_align3_s0;\n        // E2: add the32-byte scratch header in units of16, modulo2^28.\n        capacity_a_s2<=capacity_prefix_s1[31:4]+28'd2;\n        // E3: a normal or wrapped interval; the strict lower bound is essential.\n        capacity_upper_s3<=28'd16384-capacity_a_s2;\n        capacity_lower_s3<=~capacity_a_s2;\n        capacity_wrap_s3<=capacity_a_s2>28'd16384;\n        // E4: cache the whole tuple. A simultaneous flush makes it unowned.\n        if(capacity_valid_pipe[3])begin\n            capacity_upper<={1'b0,capacity_upper_s3,3'd0};\n            capacity_lower<={1'b0,capacity_lower_s3,3'd0};\n            capacity_wrap<=capacity_wrap_s3;\n        end\n    end\n    // CAPACITY_BOUND_PIPELINE_END\n\n    function automatic logic [31:0] cached32(input integer at);",
+          "before": "    function automatic logic [31:0] cached32(input integer at);",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    function automatic logic [31:0] capacity_expected_upper(input logic [31:0] p);\n        logic [27:0] a,u;\n        begin a=p[31:4]+28'd2;u=28'd16384-a;return {1'b0,u,3'd0};end\n    endfunction\n    function automatic logic [31:0] capacity_expected_lower(input logic [31:0] p);\n        logic [27:0] a,l;\n        begin a=p[31:4]+28'd2;l=~a;return {1'b0,l,3'd0};end\n    endfunction\n    function automatic logic capacity_expected_wrap(input logic [31:0] p);\n        logic [27:0] a;\n        begin a=p[31:4]+28'd2;return a>28'd16384;end\n    endfunction\n    always_ff @(posedge clk)if(meta_valid)begin\n        assert(capacity_live)else $fatal(1,\"capacity bounds not live before metadata\");\n        assert(meta_capacity_upper==capacity_expected_upper(meta_prefix123))else $fatal(1,\"capacity upper stale owner\");\n        assert(meta_capacity_lower==capacity_expected_lower(meta_prefix123))else $fatal(1,\"capacity lower stale owner\");\n        assert(meta_capacity_wrap==capacity_expected_wrap(meta_prefix123))else $fatal(1,\"capacity wrap stale owner\");\n    end\n    assert property (@(posedge clk)disable iff(cancelled)\n        meta_valid&&!meta_ready |=> cancelled || (meta_valid&&$stable({meta_capacity_upper,meta_capacity_lower,meta_capacity_wrap})))\n        else $fatal(1,\"held capacity tuple changed\");\n    always_ff @(posedge clk)if(meta_valid)begin",
+          "before": "`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(meta_valid)begin",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-count-threshold/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "079381563a110d26886829c9ebb7b4655c232af6886a86d3f42b7cf4e94b2063"
+    },
+    "br88_packet_ingress_v91h.sv": {
+      "candidate_sha256": "98f5676271e92e15a6e3aea141899c5e77cdafb7843af2fb7df1922305da2d54",
+      "edits": [
+        {
+          "after": "    output logic [31:0] meta_threshold1, meta_threshold2, meta_threshold3,\n    output logic [31:0] meta_capacity_upper, meta_capacity_lower,\n    output logic meta_capacity_wrap,",
+          "before": "    output logic [31:0] meta_threshold1, meta_threshold2, meta_threshold3,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "    function automatic logic [31:0] capacity_legacy_upper(input logic [31:0] p);\n        logic [27:0] a,u;\n        begin a=p[31:4]+28'd2;u=28'd16384-a;return {1'b0,u,3'd0};end\n    endfunction\n    function automatic logic [31:0] capacity_legacy_lower(input logic [31:0] p);\n        logic [27:0] a,l;\n        begin a=p[31:4]+28'd2;l=~a;return {1'b0,l,3'd0};end\n    endfunction\n    function automatic logic capacity_legacy_wrap(input logic [31:0] p);\n        logic [27:0] a;\n        begin a=p[31:4]+28'd2;return a>28'd16384;end\n    endfunction\n        // Legacy has no header staging; preserve exact modular capacity bounds.\n        assign meta_capacity_upper=capacity_legacy_upper(meta_prefix123);\n        assign meta_capacity_lower=capacity_legacy_lower(meta_prefix123);\n        assign meta_capacity_wrap=capacity_legacy_wrap(meta_prefix123);\n        // Exact legacy fallback has no timing claim and avoids n+d-1 overflow.",
+          "before": "        // Exact legacy fallback has no timing claim and avoids n+d-1 overflow.",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "            .meta_threshold1(meta_threshold1),.meta_threshold2(meta_threshold2),.meta_threshold3(meta_threshold3),\n            .meta_capacity_upper(meta_capacity_upper),.meta_capacity_lower(meta_capacity_lower),.meta_capacity_wrap(meta_capacity_wrap),",
+          "before": "            .meta_threshold1(meta_threshold1),.meta_threshold2(meta_threshold2),.meta_threshold3(meta_threshold3),",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-count-threshold/br88_packet_ingress_v91h.sv",
+      "original_sha256": "2c4a0ab1ba74b8ede056c6ce9958e6401f35beabcaaeeb681a90abe8947db5e4"
+    },
+    "br88_pipeline_v91h.sv": {
+      "candidate_sha256": "cb440ed9c12c6fa3eac579aea99f2c03716e33b97ce50822ab00b93de08a4360",
+      "edits": [
+        {
+          "after": "    logic [31:0] meta_threshold1, meta_threshold2, meta_threshold3;\n    logic [31:0] meta_capacity_upper, meta_capacity_lower;logic meta_capacity_wrap;",
+          "before": "    logic [31:0] meta_threshold1, meta_threshold2, meta_threshold3;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        .meta_threshold1(meta_threshold1),.meta_threshold2(meta_threshold2),.meta_threshold3(meta_threshold3),\n        .meta_capacity_upper(meta_capacity_upper),.meta_capacity_lower(meta_capacity_lower),.meta_capacity_wrap(meta_capacity_wrap),",
+          "before": "        .meta_threshold1(meta_threshold1),.meta_threshold2(meta_threshold2),.meta_threshold3(meta_threshold3),",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "        .begin_threshold1(meta_threshold1),.begin_threshold2(meta_threshold2),.begin_threshold3(meta_threshold3),\n        .begin_capacity_upper(meta_capacity_upper),.begin_capacity_lower(meta_capacity_lower),.begin_capacity_wrap(meta_capacity_wrap),",
+          "before": "        .begin_threshold1(meta_threshold1),.begin_threshold2(meta_threshold2),.begin_threshold3(meta_threshold3),",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-count-threshold/br88_pipeline_v91h.sv",
+      "original_sha256": "a5d8a86d4bccca42377423abf8a318fc3acb8bfe9de38fcda9e5dd8eb46a5cc4"
+    },
+    "packed_scratch_v91g2.sv": {
+      "candidate_sha256": "bc00639929bc2cf62271e3569c07f58e538bbf5b41e5ca2bd1fb21fd02fdab80",
+      "edits": [
+        {
+          "after": "    input logic [31:0] begin_threshold1, begin_threshold2, begin_threshold3,\n    input logic [31:0] begin_capacity_upper, begin_capacity_lower,\n    input logic begin_capacity_wrap,",
+          "before": "    input logic [31:0] begin_threshold1, begin_threshold2, begin_threshold3,",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "    logic cancel;\n    logic capacity_bad;\n    assign capacity_bad=begin_raw ? begin_blocks>17'd2047 :\n        (32'(begin_blocks)>begin_capacity_upper ||\n         (begin_capacity_wrap && 32'(begin_blocks)<=begin_capacity_lower));",
+          "before": "    logic cancel;",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "                        capacity_bad) begin error<=1; state<=FAILED; end",
+          "before": "                        plan_used>262144) begin error<=1; state<=FAILED; end",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    function automatic logic [31:0] capacity_expected_upper(input logic [31:0] p);\n        logic [27:0] a,u;\n        begin a=p[31:4]+28'd2;u=28'd16384-a;return {1'b0,u,3'd0};end\n    endfunction\n    function automatic logic [31:0] capacity_expected_lower(input logic [31:0] p);\n        logic [27:0] a,l;\n        begin a=p[31:4]+28'd2;l=~a;return {1'b0,l,3'd0};end\n    endfunction\n    function automatic logic capacity_expected_wrap(input logic [31:0] p);\n        logic [27:0] a;\n        begin a=p[31:4]+28'd2;return a>28'd16384;end\n    endfunction\n    always_ff @(posedge clk)if(begin_valid&&begin_ready)begin\n        assert(begin_capacity_upper==capacity_expected_upper(begin_prefix123))else $fatal(1,\"scratch capacity upper ownership mismatch\");\n        assert(begin_capacity_lower==capacity_expected_lower(begin_prefix123))else $fatal(1,\"scratch capacity lower ownership mismatch\");\n        assert(begin_capacity_wrap==capacity_expected_wrap(begin_prefix123))else $fatal(1,\"scratch capacity wrap ownership mismatch\");\n        assert(capacity_bad==(plan_used>32'd262144))else $fatal(1,\"scratch capacity predicate mismatch\");\n    end\n    always_ff @(posedge clk)if(begin_valid&&begin_ready)begin",
+          "before": "`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(begin_valid&&begin_ready)begin",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-count-threshold/packed_scratch_v91g2.sv",
+      "original_sha256": "f0bab2ba60d290405b9726f69fab3e6c2aabb7a474ef1255d3857293b977097f"
+    }
+  },
+  "public_added_cycles": 0,
+  "registered_positions": 5,
+  "schema": "v108-capacity-exact-four-source-v1",
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

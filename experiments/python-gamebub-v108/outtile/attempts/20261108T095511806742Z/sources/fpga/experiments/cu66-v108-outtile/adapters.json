@@ -1,0 +1,70 @@
+{
+  "actual_RTL_run": false,
+  "adapters": [
+    {
+      "candidate_extra_assignments": null,
+      "candidate_extra_ports": null,
+      "extra_assignments": "\n    assign verify_state=state;assign verify_k=k;assign verify_group=group_index;\n    for(genvar p=0;p<8;p=p+1)begin: observation\n        assign verify_products[p*38+:38]=products[p];\n        assign verify_samples[p*24+:24]=samples[p];\n        assign verify_basis[p*14+:14]=basis(k,2'(p%4));\n    end\n    assign verify_source_tile=source_tile;\n",
+      "extra_ports": ",\n    output logic [3:0] verify_state,\n    output logic [2:0] verify_k,\n    output logic [1:0] verify_group,\n    output logic [303:0] verify_products,\n    output logic [191:0] verify_samples,\n    output logic [111:0] verify_basis,\n    output logic [1279:0] verify_source_tile\n);",
+      "module_rename": [
+        "module cu66_idct8x8 (",
+        "module idct_original ("
+      ],
+      "path": "fpga/experiments/cu66-v108-outtile/idct_original.sv",
+      "sha256": "a5b77fabb3224524836a5bad2106a92050a0a76cb549cc609bdf756a96e34dd3",
+      "source": "fpga/experiments/cu66-v107-idct-reset/cu66_idct8x8.sv",
+      "source_sha256": "2495e1d5461771cd2d09ce8770ea7818f4f38703bf035bbed4049cdd4226d44f"
+    },
+    {
+      "candidate_extra_assignments": "\n    assign verify_written=out_written;\n    for(genvar w=0;w<64;w=w+1)begin: output_observation\n        assign verify_payload[w*24+:24]=output_words[w].payload;\n        assign verify_payload_write[w]=(state==DC_SECOND_ACC)||\n            (state==SECOND_ACC&&k==7&&group_index==2'((w%8)/2));\n    end\n",
+      "candidate_extra_ports": ",\n    output logic [63:0] verify_written,verify_payload_write,\n    output logic [1535:0] verify_payload\n);",
+      "extra_assignments": "\n    assign verify_state=state;assign verify_k=k;assign verify_group=group_index;\n    for(genvar p=0;p<8;p=p+1)begin: observation\n        assign verify_products[p*38+:38]=products[p];\n        assign verify_samples[p*24+:24]=samples[p];\n        assign verify_basis[p*14+:14]=basis(k,2'(p%4));\n    end\n    assign verify_source_tile=source_tile;\n",
+      "extra_ports": ",\n    output logic [3:0] verify_state,\n    output logic [2:0] verify_k,\n    output logic [1:0] verify_group,\n    output logic [303:0] verify_products,\n    output logic [191:0] verify_samples,\n    output logic [111:0] verify_basis,\n    output logic [1279:0] verify_source_tile\n);",
+      "module_rename": [
+        "module cu66_idct8x8 (",
+        "module idct_candidate ("
+      ],
+      "path": "fpga/experiments/cu66-v108-outtile/idct_candidate.sv",
+      "sha256": "690777f999eb796e64e837c02ca67f809f62a05dc9a00307d9746a16727c6897",
+      "source": "fpga/experiments/cu66-v108-outtile/cu66_idct8x8.sv",
+      "source_sha256": "3a30e2c527755ee5e34480274a7998795a773e23fef6cec8471fdd89c31a7808"
+    }
+  ],
+  "all_original_public_and_golden_checks_kept": true,
+  "bench_edits": [
+    {
+      "after": "#include \"Vidct_probe.h\"\n#include \"Vidct_probe___024root.h\"",
+      "before": "#include \"Vidct_probe.h\""
+    },
+    {
+      "after": " uint64_t expected_written=0,poison_words=0,public_word_checks=0,exposed_word_commits=0,kill_payload_collisions=0,clear_edges=0;\n std::mt19937 poison_rng;\n void check_words(){need(d.verify_written==expected_written,\"independent exact public-word written-mask owner\");for(unsigned word=0;word<64;++word){const auto p=bits(d.verify_payload,word*24,24);const auto o=bits(d.out_tile,word*24,24);need(o==((expected_written>>word&1U)?p:0U),\"every public invalid/partial word visibility\");++public_word_checks;}}\n void poison_hidden(){auto&r=*d.rootp;for(unsigned word=0;word<64;++word)if(!(expected_written>>word&1U)){const uint32_t noise=poison_rng()&0xffffffU;switch(word){\n case 0:r.idct_probe__DOT__candidate__DOT__output_words__BRA__0__KET____DOT__payload=noise;break;\n case 1:r.idct_probe__DOT__candidate__DOT__output_words__BRA__1__KET____DOT__payload=noise;break;\n case 2:r.idct_probe__DOT__candidate__DOT__output_words__BRA__2__KET____DOT__payload=noise;break;\n case 3:r.idct_probe__DOT__candidate__DOT__output_words__BRA__3__KET____DOT__payload=noise;break;\n case 4:r.idct_probe__DOT__candidate__DOT__output_words__BRA__4__KET____DOT__payload=noise;break;\n case 5:r.idct_probe__DOT__candidate__DOT__output_words__BRA__5__KET____DOT__payload=noise;break;\n case 6:r.idct_probe__DOT__candidate__DOT__output_words__BRA__6__KET____DOT__payload=noise;break;\n case 7:r.idct_probe__DOT__candidate__DOT__output_words__BRA__7__KET____DOT__payload=noise;break;\n case 8:r.idct_probe__DOT__candidate__DOT__output_words__BRA__8__KET____DOT__payload=noise;break;\n case 9:r.idct_probe__DOT__candidate__DOT__output_words__BRA__9__KET____DOT__payload=noise;break;\n case 10:r.idct_probe__DOT__candidate__DOT__output_words__BRA__10__KET____DOT__payload=noise;break;\n case 11:r.idct_probe__DOT__candidate__DOT__output_words__BRA__11__KET____DOT__payload=noise;break;\n case 12:r.idct_probe__DOT__candidate__DOT__output_words__BRA__12__KET____DOT__payload=noise;break;\n case 13:r.idct_probe__DOT__candidate__DOT__output_words__BRA__13__KET____DOT__payload=noise;break;\n case 14:r.idct_probe__DOT__candidate__DOT__output_words__BRA__14__KET____DOT__payload=noise;break;\n case 15:r.idct_probe__DOT__candidate__DOT__output_words__BRA__15__KET____DOT__payload=noise;break;\n case 16:r.idct_probe__DOT__candidate__DOT__output_words__BRA__16__KET____DOT__payload=noise;break;\n case 17:r.idct_probe__DOT__candidate__DOT__output_words__BRA__17__KET____DOT__payload=noise;break;\n case 18:r.idct_probe__DOT__candidate__DOT__output_words__BRA__18__KET____DOT__payload=noise;break;\n case 19:r.idct_probe__DOT__candidate__DOT__output_words__BRA__19__KET____DOT__payload=noise;break;\n case 20:r.idct_probe__DOT__candidate__DOT__output_words__BRA__20__KET____DOT__payload=noise;break;\n case 21:r.idct_probe__DOT__candidate__DOT__output_words__BRA__21__KET____DOT__payload=noise;break;\n case 22:r.idct_probe__DOT__candidate__DOT__output_words__BRA__22__KET____DOT__payload=noise;break;\n case 23:r.idct_probe__DOT__candidate__DOT__output_words__BRA__23__KET____DOT__payload=noise;break;\n case 24:r.idct_probe__DOT__candidate__DOT__output_words__BRA__24__KET____DOT__payload=noise;break;\n case 25:r.idct_probe__DOT__candidate__DOT__output_words__BRA__25__KET____DOT__payload=noise;break;\n case 26:r.idct_probe__DOT__candidate__DOT__output_words__BRA__26__KET____DOT__payload=noise;break;\n case 27:r.idct_probe__DOT__candidate__DOT__output_words__BRA__27__KET____DOT__payload=noise;break;\n case 28:r.idct_probe__DOT__candidate__DOT__output_words__BRA__28__KET____DOT__payload=noise;break;\n case 29:r.idct_probe__DOT__candidate__DOT__output_words__BRA__29__KET____DOT__payload=noise;break;\n case 30:r.idct_probe__DOT__candidate__DOT__output_words__BRA__30__KET____DOT__payload=noise;break;\n case 31:r.idct_probe__DOT__candidate__DOT__output_words__BRA__31__KET____DOT__payload=noise;break;\n case 32:r.idct_probe__DOT__candidate__DOT__output_words__BRA__32__KET____DOT__payload=noise;break;\n case 33:r.idct_probe__DOT__candidate__DOT__output_words__BRA__33__KET____DOT__payload=noise;break;\n case 34:r.idct_probe__DOT__candidate__DOT__output_words__BRA__34__KET____DOT__payload=noise;break;\n case 35:r.idct_probe__DOT__candidate__DOT__output_words__BRA__35__KET____DOT__payload=noise;break;\n case 36:r.idct_probe__DOT__candidate__DOT__output_words__BRA__36__KET____DOT__payload=noise;break;\n case 37:r.idct_probe__DOT__candidate__DOT__output_words__BRA__37__KET____DOT__payload=noise;break;\n case 38:r.idct_probe__DOT__candidate__DOT__output_words__BRA__38__KET____DOT__payload=noise;break;\n case 39:r.idct_probe__DOT__candidate__DOT__output_words__BRA__39__KET____DOT__payload=noise;break;\n case 40:r.idct_probe__DOT__candidate__DOT__output_words__BRA__40__KET____DOT__payload=noise;break;\n case 41:r.idct_probe__DOT__candidate__DOT__output_words__BRA__41__KET____DOT__payload=noise;break;\n case 42:r.idct_probe__DOT__candidate__DOT__output_words__BRA__42__KET____DOT__payload=noise;break;\n case 43:r.idct_probe__DOT__candidate__DOT__output_words__BRA__43__KET____DOT__payload=noise;break;\n case 44:r.idct_probe__DOT__candidate__DOT__output_words__BRA__44__KET____DOT__payload=noise;break;\n case 45:r.idct_probe__DOT__candidate__DOT__output_words__BRA__45__KET____DOT__payload=noise;break;\n case 46:r.idct_probe__DOT__candidate__DOT__output_words__BRA__46__KET____DOT__payload=noise;break;\n case 47:r.idct_probe__DOT__candidate__DOT__output_words__BRA__47__KET____DOT__payload=noise;break;\n case 48:r.idct_probe__DOT__candidate__DOT__output_words__BRA__48__KET____DOT__payload=noise;break;\n case 49:r.idct_probe__DOT__candidate__DOT__output_words__BRA__49__KET____DOT__payload=noise;break;\n case 50:r.idct_probe__DOT__candidate__DOT__output_words__BRA__50__KET____DOT__payload=noise;break;\n case 51:r.idct_probe__DOT__candidate__DOT__output_words__BRA__51__KET____DOT__payload=noise;break;\n case 52:r.idct_probe__DOT__candidate__DOT__output_words__BRA__52__KET____DOT__payload=noise;break;\n case 53:r.idct_probe__DOT__candidate__DOT__output_words__BRA__53__KET____DOT__payload=noise;break;\n case 54:r.idct_probe__DOT__candidate__DOT__output_words__BRA__54__KET____DOT__payload=noise;break;\n case 55:r.idct_probe__DOT__candidate__DOT__output_words__BRA__55__KET____DOT__payload=noise;break;\n case 56:r.idct_probe__DOT__candidate__DOT__output_words__BRA__56__KET____DOT__payload=noise;break;\n case 57:r.idct_probe__DOT__candidate__DOT__output_words__BRA__57__KET____DOT__payload=noise;break;\n case 58:r.idct_probe__DOT__candidate__DOT__output_words__BRA__58__KET____DOT__payload=noise;break;\n case 59:r.idct_probe__DOT__candidate__DOT__output_words__BRA__59__KET____DOT__payload=noise;break;\n case 60:r.idct_probe__DOT__candidate__DOT__output_words__BRA__60__KET____DOT__payload=noise;break;\n case 61:r.idct_probe__DOT__candidate__DOT__output_words__BRA__61__KET____DOT__payload=noise;break;\n case 62:r.idct_probe__DOT__candidate__DOT__output_words__BRA__62__KET____DOT__payload=noise;break;\n case 63:r.idct_probe__DOT__candidate__DOT__output_words__BRA__63__KET____DOT__payload=noise;break;\n default:throw std::runtime_error(\"private word index\");}++poison_words;}d.eval();need(d.probe_equal,\"arbitrary masked private payload became public\");check_words();}\n explicit Bench(unsigned seed,const std::string&path):rng(seed),trace(path),poison_rng(seed^0x10800000U)",
+      "before": " explicit Bench(unsigned seed,const std::string&path):rng(seed),trace(path)"
+    },
+    {
+      "after": "  d.clk=0;d.eval();need(d.probe_equal,\"whole IDCT preedge mismatch\");check_words();poison_hidden();unsigned state=d.verify_state;",
+      "before": "  d.clk=0;d.eval();need(d.probe_equal,\"whole IDCT preedge mismatch\");unsigned state=d.verify_state;"
+    },
+    {
+      "after": "  uint64_t writes=0;\n  if(state==8)writes=~uint64_t(0);\n  else if(state==4&&d.verify_k==7)for(unsigned row=0;row<8;++row)for(unsigned col=2U*d.verify_group;col<2U*d.verify_group+2;++col)writes|=uint64_t(1)<<(row*8+col);\n  need(d.verify_payload_write==writes,\"independent original group/DC payload write schedule\");\n  bool input_bad=false,input_zero=true;for(unsigned word=0;word<64;++word){const int64_t value=signed_bits(bits(d.in_tile,word*20,20),20);input_bad|=value>522240||value< -522240;input_zero&=value==0;}\n  const bool clear=kill||(state==0&&d.in_valid&&d.in_ready&&(input_bad||input_zero));\n  if(kill&&writes)++kill_payload_collisions;\n  if(clear){expected_written=0;++clear_edges;}else{exposed_word_commits+=uint64_t(__builtin_popcountll(writes&~expected_written));expected_written|=writes;}\n  d.clk=1;d.eval();need(d.probe_equal,\"whole IDCT postedge mismatch\");check_words();",
+      "before": "  d.clk=1;d.eval();need(d.probe_equal,\"whole IDCT postedge mismatch\");"
+    },
+    {
+      "after": "  d.clk=0;d.eval();need(d.probe_equal,\"whole IDCT falling evaluation mismatch\");check_words();",
+      "before": "  d.clk=0;d.eval();need(d.probe_equal,\"whole IDCT falling evaluation mismatch\");"
+    },
+    {
+      "after": " need(abort_mask==1023&&b.states==1023,\"all FSM states coverage\");need(b.poison_words>1000&&b.kill_payload_collisions>=3&&b.exposed_word_commits>1000,\"arbitrary hidden-word/kill collision/exposure coverage\");",
+      "before": " need(abort_mask==1023&&b.states==1023,\"all FSM states coverage\");"
+    },
+    {
+      "after": "<<b.clocks<<\",\\\"masked_private_word_poisons\\\":\"<<b.poison_words<<\",\\\"all_cycle_public_word_checks\\\":\"<<b.public_word_checks<<\",\\\"exposed_word_commits\\\":\"<<b.exposed_word_commits<<\",\\\"kill_payload_write_collisions\\\":\"<<b.kill_payload_collisions<<\",\\\"clear_edges\\\":\"<<b.clear_edges<<\",\\\"multiply_edges\\\":\"",
+      "before": "<<b.clocks<<\",\\\"multiply_edges\\\":\""
+    }
+  ],
+  "bench_original": "fpga/experiments/cu66-v107-idct-reset/tb_idct.cpp",
+  "bench_original_sha256": "ccbce904565ccddabc85d39e34ce0bc436c55b97f0896a398bede2a782506948",
+  "original_probe_expression_kept": true,
+  "probe_original": "fpga/experiments/cu66-v107-idct-reset/idct_probe.sv",
+  "probe_original_sha256": "47c00650aa977bf68c427c217e879969d94d35d4c377933ce0b471b317e8339e",
+  "schema": "v108-outtile-lossless-whole-body-adapters-v1"
+}

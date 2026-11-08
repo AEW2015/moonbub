@@ -1,5 +1,31 @@
 # Game Bub V91–V110: codec selection and 7-series implementation
 
+<!-- V108-CHECKPOINT-START -->
+**V108 partial: experiments finished; 100-MHz setup timing remains open.**
+The [V108 report](cu66-v108/README.md) records all six frozen-source strategies, a clean RTL
+repeat and a five-source control/reset composition at the unchanged 10-ns clock.
+The composed fresh route has WNS **−2.020 ns**, versus **−2.342 ns** for the fresh
+original source; absolute TNS falls **34.6%** and setup failures fall **28.7%**.
+All eight routes complete with passing hold/pulse checks and zero routing errors,
+but every route still fails setup. The −2.038-ns checkpoint frontier did not
+reproduce in its fresh RTL repeat. No reproducible clock-closure claim is made.
+
+Capacity RTL passed **31,856,511** paired public-cycle edges. The output-word
+visibility mask passed two **4,303-tile** unit seeds, plus all twelve actual AC
+write/reset/abort combinations and successful retries per seed. Both the capacity
+change alone and its composition with the mask passed the full canonical
+regression: **44 case profiles and 42 directed checks each**, with exact V107
+pixels, public events and cycles. All five proofs were independently audited.
+
+The new worst route is error/abort control to the Rice reservoir CE: 14 logic
+levels, 11.731-ns data delay, **81.3% routing**. Continue V108 timing closure on
+that measured control/ownership boundary and the remaining scratch selector
+cones before declaring V109 integrated closure. The 720×480 format and
+49,152-byte cap stay unchanged. Parent I/O/clock/CDC integration, sustained
+hardware 30 fps and complete validated decoding below 10 ms remain open.
+<!-- V108-CHECKPOINT-END -->
+
+
 Updated 2026-11-08. This is the active forward plan after V90 and the
 [literature review](literature-review-2026-11-06/README.md). Version numbers below
 reserve work phases; they are not completed results or promised calendar dates.
@@ -924,7 +950,7 @@ Do not import DSP48E2, CARRY8, UltraRAM or UltraScale-specific packing assumptio
 | **V105 — partial** | **Memory inference/locality and admission indexing.** Actual coordinate recurrence and canonical mode-table write/read template preserve the tested schedule. Joint variants include the verified V104 cache and DSP prefetch. | [V105 evidence](cu66-v105/README.md): 6,692,564 focused edges, 512 paired case/profile runs, 576 directed checks and exact composition. One RAMB18 replaces 1,524 LUTRAMs in isolated synthesis. Native stage-matched results govern selection; other buffer banking, mapped collisions, external arbitration/refresh/display contention and whole-device service remain open. |
 | **V106 — partial** | **Measured datapath and control locality.** Exact private caches, arithmetic/table identities, storage and guard-specific paths with clocked/golden/source proofs; rejected fit/lint point retained. | [V106 evidence](cu66-v106/README.md): 24 required paired lanes; selected `closure`, WNS -4.034 ns at 10 ns. Parent clock/input capture, whole-device service and hardware goals remain open. |
 | **V107** | **Clock/reset/CDC integration.** Close transport, decoder, memory and display crossings with proper synchronizers/async FIFOs and synchronized reset release. Treat any new decoder-clock option as a separate integration variant. | CDC inventory and reviewed exceptions, stable tags across crossings, reset/abort/clock-start tests, interface timing and metastability assumptions documented. Preserve memory/LCD clocks unless separately qualified. |
-| **V108** | **Bounded placement/routing study.** Compare a recorded small set of synthesis/place/physical-opt/route strategies from the same source/constraints. Try soft hierarchy/pblocks or local placement only for measured locality/congestion problems. | Full trial matrix including failures, exact directives/tool version and route completion. Repeat the winner from a clean build; no unsupported random-seed knob or lucky single run as robustness evidence. |
+| **V108 — partial** | **Bounded placement/routing study.** Compare a recorded small set of synthesis/place/physical-opt/route strategies from the same source/constraints. Try soft hierarchy/pblocks or local placement only for measured locality/congestion problems. | Full trial matrix including failures, exact directives/tool version and route completion. Repeat the winner from a clean build; no unsupported random-seed knob or lucky single run as robustness evidence. |
 | **V109** | **Integrated closure and calibrated decode.** Merge only individually qualified changes, re-route the complete top, and replay the fixed workloads with real primitive latencies and finite interfaces. Run targeted post-route simulation where it resolves implementation risks. | Setup/hold/pulse-width and route/methodology signoff, native/pixel/hash/HUD parity, full decoded-frame latency distribution and stall/queue accounting. OOC timing and zero-time software endpoints cannot pass full-system gates. |
 | **V110** | **Hardware qualification and handoff.** Freeze the clean rebuild, routed candidate, fallback, bitstream hashes, constraints and device counter map. Test on the hardware system when accessible. | 60-second then 600-second distinct-frame 30-fps evidence, followed by strict validated-decode <10-ms evidence. If hardware is elsewhere/unavailable, deliver the exact test bundle and leave those gates pending rather than calling simulation a hardware pass. |
 

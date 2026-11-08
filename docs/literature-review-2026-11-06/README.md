@@ -1,5 +1,31 @@
 # Game Bub codec literature review after V90
 
+<!-- V108-CHECKPOINT-START -->
+**V108 partial: experiments finished; 100-MHz setup timing remains open.**
+The [V108 report](../cu66-v108/README.md) records all six frozen-source strategies, a clean RTL
+repeat and a five-source control/reset composition at the unchanged 10-ns clock.
+The composed fresh route has WNS **−2.020 ns**, versus **−2.342 ns** for the fresh
+original source; absolute TNS falls **34.6%** and setup failures fall **28.7%**.
+All eight routes complete with passing hold/pulse checks and zero routing errors,
+but every route still fails setup. The −2.038-ns checkpoint frontier did not
+reproduce in its fresh RTL repeat. No reproducible clock-closure claim is made.
+
+Capacity RTL passed **31,856,511** paired public-cycle edges. The output-word
+visibility mask passed two **4,303-tile** unit seeds, plus all twelve actual AC
+write/reset/abort combinations and successful retries per seed. Both the capacity
+change alone and its composition with the mask passed the full canonical
+regression: **44 case profiles and 42 directed checks each**, with exact V107
+pixels, public events and cycles. All five proofs were independently audited.
+
+The new worst route is error/abort control to the Rice reservoir CE: 14 logic
+levels, 11.731-ns data delay, **81.3% routing**. Continue V108 timing closure on
+that measured control/ownership boundary and the remaining scratch selector
+cones before declaring V109 integrated closure. The 720×480 format and
+49,152-byte cap stay unchanged. Parent I/O/clock/CDC integration, sustained
+hardware 30 fps and complete validated decoding below 10 ms remain open.
+<!-- V108-CHECKPOINT-END -->
+
+
 Reviewed 2026-11-06 against baseline commit
 `7c24b4d80b2a79a45a9a06ddc82a9ef8f83ce030`.
 

@@ -1,0 +1,14 @@
+# V108 methodology resolution report
+
+Trial `m4`, mode `checkpoint`; part `xc7a100tcsg324-1`.
+The unchanged clock is 10.000 ns. Directives: {'opt': 'Default', 'phys_opt': 'AggressiveFanoutOpt', 'phys_opt_stage': 'pre_route', 'place': 'Default', 'route': 'Default'}.
+No constraint was edited or waived. Parent board I/O timing and complete custom
+parent integration remain open. The native reports retain methodology/DRC, clocks,
+exceptions, setup/hold/pulse, high fanout and control-set findings.
+
+Status: COMPONENT_ROUTE_FINISHED_SIGNOFF_OPEN.
+
+Measured timing: {"THS_ns": 0.0, "TNS_ns": -21278.961, "TPWS_ns": 0.0, "WHS_ns": 0.096, "WNS_ns": -2.758, "WPWS_ns": 3.75, "hold_failing": 0, "hold_total": 89258, "pulse_failing": 0, "pulse_total": 36102, "setup_failing": 24107, "setup_total": 89258}
+
+Internal component 100 MHz: False.
+Setup remains unresolved; positive hold/pulse alone is insufficient.

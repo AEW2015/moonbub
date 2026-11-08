@@ -1,0 +1,45 @@
+{
+  "candidate_path": "fpga/experiments/cu66-v108-outtile/cu66_idct8x8.sv",
+  "candidate_sha256": "3a30e2c527755ee5e34480274a7998795a773e23fef6cec8471fdd89c31a7808",
+  "edits": [
+    {
+      "after": "    integer lane;\n",
+      "before": "    integer lane;\n    integer index;\n",
+      "expected_occurrences": 1
+    },
+    {
+      "after": "    // OUTTILE_PRIVATE_WORDS_BEGIN: public zero/partial-word visibility is exact.\n    logic [63:0] out_written;\n    for(genvar out_word=0;out_word<64;out_word=out_word+1)begin: output_words\n        localparam integer ROW=out_word/8, COL=out_word%8;\n        localparam integer RESULT_LANE=(ROW<4?ROW:7-ROW)+4*(COL%2);\n        logic [23:0] payload;\n        // This storage has local math-state enables only. A simultaneous kill\n        // clears visibility below; a future visible word is replaced completely.\n        always_ff @(posedge clk)begin\n            if(state==DC_SECOND_ACC)\n                payload<=rounded({{2{products[0][37]}},products[0]});\n            else if(state==SECOND_ACC && k==7 && group_index==2'(COL/2))begin\n                if(ROW<4)payload<=rounded(next_even[RESULT_LANE]+next_odd[RESULT_LANE]);\n                else payload<=rounded(next_even[RESULT_LANE]-next_odd[RESULT_LANE]);\n            end\n        end\n        assign out_tile[out_word*24+:24]=out_written[out_word]?payload:24'd0;\n`ifndef SYNTHESIS\n        assert property (@(posedge clk)disable iff(rst||abort_frame)\n            $rose(out_written[out_word]) |-> $past(state==DC_SECOND_ACC ||\n                (state==SECOND_ACC&&k==7&&group_index==2'(COL/2))))\n            else $fatal(1,\"output word exposed without complete replacement\");\n`endif\n    end\n    // OUTTILE_PRIVATE_WORDS_END\n\n    always_ff @(posedge clk) begin\n        if (rst || abort_frame) begin",
+      "before": "    always_ff @(posedge clk) begin\n        if (rst || abort_frame) begin",
+      "expected_occurrences": 1
+    },
+    {
+      "after": "            out_written<='0;",
+      "before": "            out_tile<='0;",
+      "expected_occurrences": 1
+    },
+    {
+      "after": "                        out_written<=0;",
+      "before": "                        out_tile<=0;",
+      "expected_occurrences": 1
+    },
+    {
+      "after": "                    out_written<='1;",
+      "before": "                    for (index=0; index<64; index=index+1)\n                        out_tile[index*24 +:24]<=rounded({{2{products[0][37]}},products[0]});",
+      "expected_occurrences": 1
+    },
+    {
+      "after": "                                out_written[(lane%4)*8+int'(group_index)*2+lane/4]<=1;\n                                out_written[(7-lane%4)*8+int'(group_index)*2+lane/4]<=1;",
+      "before": "                                out_tile[((lane%4)*8+int'(group_index)*2+lane/4)*24 +:24]\n                                    <=rounded(next_even[lane]+next_odd[lane]);\n                                out_tile[((7-lane%4)*8+int'(group_index)*2+lane/4)*24 +:24]\n                                    <=rounded(next_even[lane]-next_odd[lane]);",
+      "expected_occurrences": 1
+    }
+  ],
+  "mask_reset_bits": 64,
+  "old_out_tile_reset_bits": 1536,
+  "original_path": "fpga/experiments/cu66-v107-idct-reset/cu66_idct8x8.sv",
+  "original_sha256": "2495e1d5461771cd2d09ce8770ea7818f4f38703bf035bbed4049cdd4226d44f",
+  "private_payload_reset": false,
+  "public_added_cycles": 0,
+  "public_output_mask": "Each of64 public24-bit words is zero unless its written bit is owned; every visible nonzero word has a same-edge complete payload write before first exposure.",
+  "schema": "v108-idct-output-payload-exact-recipe-v1",
+  "status": "PREPARED_NOT_RTL_QUALIFIED"
+}

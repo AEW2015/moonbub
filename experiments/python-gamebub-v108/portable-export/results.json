@@ -1,0 +1,52 @@
+{
+  "actual_RTL_run": false,
+  "actual_native_run": false,
+  "export_script_sha256": "4ae96f9b31a19498fc49907b08f583430e28443e6650b37c7b37b25cfb7ba090",
+  "hardware_contact": false,
+  "probe_Tcl": "set build [file normalize [lindex $argv 0]]\nsource [file join $build inputs.tcl]\nif {[llength $rtl_sources] != 17} {error \"bad source count\"}\nforeach f $rtl_sources {if {![file isfile $f]} {error \"missing RTL $f\"}}\nforeach d $include_dirs {if {![file isfile [file join $d cu66_quant_rom.svh]]} {error \"missing header\"}}\nset clocks {}\nproc get_ports {name} {if {$name ne \"clk\"} {error \"clock port changed\"};return $name}\nproc create_clock {args} {global clocks;if {[lindex $args [expr {[lsearch -exact $args -period]+1}]]!=10.0} {error \"clock period changed\"};lappend clocks $args}\nsource $constraint_file\nif {[llength $clocks]!=1 || $start_mode ne \"rtl\" || $part ne \"xc7a100tcsg324-1\"} {error \"bad replay setup\"}\nputs \"PASS_PORTABLE_INPUTS_AND_XDC_TCL_ONLY\"\n",
+  "records": [
+    {
+      "Tcl_probe": "PASS_PORTABLE_INPUTS_AND_XDC_TCL_ONLY",
+      "export_command": [
+        "python3",
+        "scripts/cu66-v108/export_replay.py",
+        "--variant",
+        "original",
+        "--dest",
+        "/home/lori/gamebub-build/cu66-v69/v108-portable-smoke-c95c0ef232/original"
+      ],
+      "manifest_sha256": "5b26ceea8147fcb3ca2a009731b781177df1538ff011e02dd729614cccafecd0",
+      "result": {
+        "directory": "/home/lori/gamebub-build/cu66-v69/v108-portable-smoke-c95c0ef232/original",
+        "original_checkpoint_required": false,
+        "source_count": 18,
+        "status": "PREPARED_NOT_RUN",
+        "variant": "original"
+      },
+      "variant": "original"
+    },
+    {
+      "Tcl_probe": "PASS_PORTABLE_INPUTS_AND_XDC_TCL_ONLY",
+      "export_command": [
+        "python3",
+        "scripts/cu66-v108/export_replay.py",
+        "--variant",
+        "composite",
+        "--dest",
+        "/home/lori/gamebub-build/cu66-v69/v108-portable-smoke-c95c0ef232/composite"
+      ],
+      "manifest_sha256": "b9ca10bb4df728a6a010995218f00cf06c2ef5a21795f10e4495bd8c5dde604f",
+      "result": {
+        "directory": "/home/lori/gamebub-build/cu66-v69/v108-portable-smoke-c95c0ef232/composite",
+        "original_checkpoint_required": false,
+        "source_count": 18,
+        "status": "PREPARED_NOT_RUN",
+        "variant": "composite"
+      },
+      "variant": "composite"
+    }
+  ],
+  "schema": "v108-portable-export-source-only-check-v1",
+  "scope": "Both 18-source exports hash-match snapshots; real Tcl resolves source/include paths and XDC mockclock. No Vivado or HDL compilation; current native runs are separate.",
+  "status": "PASS_SOURCE_AND_TCL_PATHS_ONLY"
+}

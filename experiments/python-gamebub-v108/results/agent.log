@@ -1,0 +1,8 @@
+TIMING-16 understanding, V108 fixed-clock component scope
+Problem: actual sequential setup fails at requirement10ns. Parent V107 runtime route WNS-2.333ns; no_clock/internal-unconstrained/loops0, routingcomplete/0errors.
+Cause supported by retained path: scratch read_segment[1] to state_reg[3] control;13logic levels,2.956nslogic+9.325nsrouting. Skew-0.049ns,uncertainty0.035ns do not explain the12.281ns data path.
+Intent: user explicitly requires meeting100MHz, preserving exact intended canonical/reference pixels and functional handshakes/ownership/fault/cancel semantics.
+Authorized resolution: bounded implementation strategy/locality study on identical source/checkpoint/timing constraints, with cleanfromRTLrepeat. Separate RTL fallback first proves full source behavior before native use.
+No constraint correction or waiver is justified. Board I/O timing remains an unprovided parent integration contract, not a guessed number or waiver.
+Safety/limits: record failures and toolcrashes, no clock relaxation/falsepaths/multicycle/HD.CLK_SRC guesses, no unsupported seed. Hardware30fps/full<10ms remainsopen.
+Confidence: high evidence provenance; no promise of clock closure before completed route and repeat.

@@ -1,0 +1,60 @@
+{
+  "actual_RTL_run": false,
+  "adapters": [
+    {
+      "candidate_extra_assignments": null,
+      "candidate_extra_ports": null,
+      "extra_assignments": "\n    assign verify_state=state;assign verify_k=k;assign verify_group=group_index;\n    for(genvar p=0;p<8;p=p+1)begin: observation\n        assign verify_products[p*38+:38]=products[p];\n        assign verify_samples[p*24+:24]=samples[p];\n        assign verify_basis[p*14+:14]=basis(k,2'(p%4));\n    end\n    assign verify_source_tile=source_tile;\n",
+      "extra_ports": ",\n    output logic [3:0] verify_state,\n    output logic [2:0] verify_k,\n    output logic [1:0] verify_group,\n    output logic [303:0] verify_products,\n    output logic [191:0] verify_samples,\n    output logic [111:0] verify_basis,\n    output logic [1279:0] verify_source_tile\n);",
+      "module_rename": [
+        "module cu66_idct8x8 (",
+        "module idct_original ("
+      ],
+      "path": "fpga/experiments/cu66-v108-outtile-kill-collisions/idct_original.sv",
+      "sha256": "a5b77fabb3224524836a5bad2106a92050a0a76cb549cc609bdf756a96e34dd3",
+      "source": "fpga/experiments/cu66-v107-idct-reset/cu66_idct8x8.sv",
+      "source_sha256": "2495e1d5461771cd2d09ce8770ea7818f4f38703bf035bbed4049cdd4226d44f"
+    },
+    {
+      "candidate_extra_assignments": "\n    assign verify_written=out_written;\n    for(genvar w=0;w<64;w=w+1)begin: output_observation\n        assign verify_payload[w*24+:24]=output_words[w].payload;\n        assign verify_payload_write[w]=(state==DC_SECOND_ACC)||\n            (state==SECOND_ACC&&k==7&&group_index==2'((w%8)/2));\n    end\n",
+      "candidate_extra_ports": ",\n    output logic [63:0] verify_written,verify_payload_write,\n    output logic [1535:0] verify_payload\n);",
+      "extra_assignments": "\n    assign verify_state=state;assign verify_k=k;assign verify_group=group_index;\n    for(genvar p=0;p<8;p=p+1)begin: observation\n        assign verify_products[p*38+:38]=products[p];\n        assign verify_samples[p*24+:24]=samples[p];\n        assign verify_basis[p*14+:14]=basis(k,2'(p%4));\n    end\n    assign verify_source_tile=source_tile;\n",
+      "extra_ports": ",\n    output logic [3:0] verify_state,\n    output logic [2:0] verify_k,\n    output logic [1:0] verify_group,\n    output logic [303:0] verify_products,\n    output logic [191:0] verify_samples,\n    output logic [111:0] verify_basis,\n    output logic [1279:0] verify_source_tile\n);",
+      "module_rename": [
+        "module cu66_idct8x8 (",
+        "module idct_candidate ("
+      ],
+      "path": "fpga/experiments/cu66-v108-outtile-kill-collisions/idct_candidate.sv",
+      "sha256": "690777f999eb796e64e837c02ca67f809f62a05dc9a00307d9746a16727c6897",
+      "source": "fpga/experiments/cu66-v108-outtile/cu66_idct8x8.sv",
+      "source_sha256": "3a30e2c527755ee5e34480274a7998795a773e23fef6cec8471fdd89c31a7808"
+    }
+  ],
+  "all_original_public_and_golden_checks_kept": true,
+  "bench_edits": [
+    {
+      "after": "unsigned directed=0,abort_mask=0;unsigned boundary_cases=0,boundary_groups=0,boundary_guards=0,boundary_matrix=0,boundary_retries=0;",
+      "before": "unsigned directed=0,abort_mask=0;"
+    },
+    {
+      "after": " // All original fixtures finish before this additional matrix; their RNG sequence is unchanged.\n for(unsigned group=0;group<4;++group)for(unsigned guards=1;guards<=3;++guards){\n  b.flush(1);b.send(*ac);unsigned watchdog=0;\n  while(!(b.d.verify_state==4&&b.d.verify_k==7&&b.d.verify_group==group)){need(++watchdog<=130,\"final-pass write boundary unreachable\");b.tick();}\n  uint64_t selected=0;for(unsigned row=0;row<8;++row)for(unsigned col=group*2;col<group*2+2;++col)selected|=uint64_t(1)<<(row*8+col);\n  b.d.clk=0;b.d.eval();need(b.d.verify_payload_write==selected&&__builtin_popcountll(selected)==16,\"target actual sixteen-word AC write collision\");\n  const uint64_t old_collisions=b.kill_payload_collisions,old_outputs=b.outputs;\n  b.d.in_valid=1;b.d.in_id=b.rng();for(unsigned i=0;i<40;++i)b.d.in_tile[i]=b.rng();b.flush(guards);\n  need(b.kill_payload_collisions==old_collisions+1&&b.d.verify_written==0,\"targeted kill must hide every concurrently written word\");\n  for(unsigned i=0;i<48;++i)need(b.d.out_tile[i]==0,\"targeted kill public output zero even invalid\");\n  ++boundary_cases;boundary_groups|=1U<<group;boundary_guards|=1U<<(guards-1);boundary_matrix|=1U<<(group*3+guards-1);\n  b.run(*ac);need(b.outputs==old_outputs+1,\"targeted kill good golden retry did not complete\");++boundary_retries;\n }\n need(boundary_cases==12&&boundary_groups==15&&boundary_guards==7&&boundary_matrix==4095&&boundary_retries==12,\"all twelve AC write-boundary kill/golden-retry cases\");\n need(abort_mask==1023&&b.states==1023,\"all FSM states coverage\");",
+      "before": " need(abort_mask==1023&&b.states==1023,\"all FSM states coverage\");"
+    },
+    {
+      "after": "  bool public_zero_after=true;for(unsigned word=0;word<64;++word)public_zero_after&=bits(d.out_tile,word*24,24)==0;\n  trace<<\",\\\"written_mask_after\\\":\"<<d.verify_written<<\",\\\"payload_write_mask\\\":\"<<writes<<\",\\\"public_zero_after\\\":\"<<(public_zero_after?\"true\":\"false\");\n  trace<<\",\\\"products\\\":[\";",
+      "before": "  trace<<\",\\\"products\\\":[\";"
+    },
+    {
+      "after": "<<b.outputs<<\",\\\"write_boundary_collision_cases\\\":\"<<boundary_cases<<\",\\\"write_boundary_group_mask\\\":\"<<boundary_groups<<\",\\\"write_boundary_guard_mask\\\":\"<<boundary_guards<<\",\\\"write_boundary_matrix_mask\\\":\"<<boundary_matrix<<\",\\\"write_boundary_good_retries\\\":\"<<boundary_retries<<\"}\\n\";",
+      "before": "<<b.outputs<<\"}\\n\";"
+    }
+  ],
+  "bench_original": "fpga/experiments/cu66-v108-outtile/tb_idct.cpp",
+  "bench_original_sha256": "45d4bf363fb3108cc8a11b42a2e77adf6d3b9011c9242dedd35ade3093de1fe4",
+  "frozen_prior_result": "experiments/python-gamebub-v108/outtile/results.json",
+  "frozen_prior_result_sha256": "8c08bc0384f6f085ec3e3567f216ed5abf3a939a7a219cb06d227a75f5af376f",
+  "original_probe_expression_kept": true,
+  "probe_original": "fpga/experiments/cu66-v108-outtile/idct_probe.sv",
+  "probe_original_sha256": "8c2ed32b8c93a069b5725242bb7f41654644fd696abc0124b5b73c339cd72745",
+  "schema": "v108-outtile-additional-kill-lossless-adapters-v1"
+}

@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""Run the separately qualified V108 capacity RTL trial; never reuse the parent DCP."""
+import argparse
+import datetime
+import hashlib
+import json
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import time
+
+ROOT=Path(__file__).resolve().parents[3]
+AREA=ROOT/'experiments/python-gamebub-v108/capacity-native'
+BUILD_ROOT=Path('/home/lori/gamebub-build/cu66-v69')
+TOOLS=Path('/home/lori/acorn-nexys4-ddr/tools')
+
+def sha(path):
+    h=hashlib.sha256()
+    with path.open('rb') as f:
+        for chunk in iter(lambda:f.read(1024*1024),b''):h.update(chunk)
+    return h.hexdigest()
+
+def write(path,value):path.write_text(json.dumps(value,indent=2,sort_keys=True)+'\n')
+
+def memory():
+    info={line.split(':')[0]:int(line.split()[1])*1024 for line in Path('/proc/meminfo').read_text().splitlines()}
+    full=next(line for line in Path('/proc/pressure/memory').read_text().splitlines() if line.startswith('full '))
+    return dict(MemAvailable_bytes=info['MemAvailable'],PSI_full_avg10=float(full.split('avg10=')[1].split()[0]))
+
+def timing(data):
+    text=data[data.index('| Design Timing Summary'):]
+    names=['WNS_ns','TNS_ns','setup_failing','setup_total','WHS_ns','THS_ns','hold_failing','hold_total','WPWS_ns','TPWS_ns','pulse_failing','pulse_total']
+    for line in text.splitlines():
+        vals=line.split()
+        if len(vals)==12 and all(re.fullmatch(r'-?\d+(?:\.\d+)?',x) for x in vals):
+            return {k:float(v) if k.endswith('_ns') else int(v) for k,v in zip(names,vals)}
+    raise ValueError('No twelve-column native design timing summary')
+
+def route_status(data):
+    counts={}
+    for line in data.splitlines():
+        m=re.match(r'^\s*(.*?)\s*:\s*([0-9,]+)\s*:',line)
+        if m:counts[re.sub(r'[.#\s]+',' ',m[1]).strip().lower()]=int(m[2].replace(',',''))
+    def one(phrase):
+        vals=[v for k,v in counts.items() if re.search(r'\b'+re.escape(phrase)+r'\b',k)]
+        assert len(vals)==1,(phrase,counts)
+        return vals[0]
+    routable,fully,errors=one('routable nets'),one('fully routed nets'),one('routing errors')
+    return dict(reported_net_counts=counts,routable_nets=routable,fully_routed_nets=fully,routing_errors=errors,
+                all_routable_nets_routed=routable==fully,zero_routing_errors=errors==0)
+
+def timing_checks(data):
+    found={}
+    for key,value in re.findall(r'checking (\w+) \((\d+)\)',data):found.setdefault(key,set()).add(int(value))
+    assert found and all(len(values)==1 for values in found.values()),found
+    result={key:next(iter(values)) for key,values in found.items()}
+    for key in ('no_clock','unconstrained_internal_endpoints','loops','latch_loops'):assert key in result,key
+    return result
+
+def worst_path(data):
+    answer={}
+    patterns=dict(slack_ns=r'^Slack \([^\n]+\)\s*:\s*(-?\d+\.\d+)ns',source=r'^\s*Source:\s*(\S+)',destination=r'^\s*Destination:\s*(\S+)',data_path_delay_ns=r'^\s*Data Path Delay:\s*(\d+\.\d+)ns',logic_levels=r'^\s*Logic Levels:\s*(\d+)')
+    for key,pattern in patterns.items():
+        m=re.search(pattern,data,re.M);assert m,(key,pattern)
+        answer[key]=float(m[1]) if key.endswith('_ns') else int(m[1]) if key=='logic_levels' else m[1]
+    return answer
+
+def parse_reports(folder):
+    summary=timing((folder/'route-timing-summary.rpt').read_text())
+    checks=timing_checks((folder/'route-check-timing.rpt').read_text())
+    routing=route_status((folder/'route-status.rpt').read_text())
+    clocks=(folder/'route-clocks.rpt').read_text()
+    clock_rows=re.findall(r'^component_clk\s+([\d.]+)\s+\{([\d.]+)\s+([\d.]+)\}',clocks,re.M)
+    clock_ok=len(clock_rows)==1 and [float(x) for x in clock_rows[0]]==[10.0,0.0,5.0]
+    passed=(clock_ok and min(summary['WNS_ns'],summary['WHS_ns'],summary['WPWS_ns'])>=0
+            and all(summary[x]==0 for x in ('setup_failing','hold_failing','pulse_failing'))
+            and all(checks[x]==0 for x in ('no_clock','unconstrained_internal_endpoints','loops','latch_loops'))
+            and routing['all_routable_nets_routed'] and routing['zero_routing_errors'])
+    return dict(timing=summary,check_timing=checks,routing=routing,clock_10ns=clock_ok,
+                worst_setup_path=worst_path((folder/'route-setup-paths.rpt').read_text()),component_internal_100MHz_pass=passed)
+
+def main():
+    ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--build',type=Path,required=True);ap.add_argument('--license-file',type=Path,required=True);ap.add_argument('--dispatch',type=Path,required=True);args=ap.parse_args()
+    build=args.build.resolve();build.relative_to(BUILD_ROOT);inputs=json.loads((build/'inputs.json').read_text())
+    assert inputs['trial_id']=='capacity-default' and inputs['start_mode']=='rtl' and inputs['clean_repeat_of'] is None
+    timeout=inputs['timeout_seconds'];assert timeout==2400 and args.license_file.is_file()
+    dispatch=json.loads(args.dispatch.read_text());assert dispatch['status']=='DISPATCHED_TO_RUNNER' and dispatch['prepared_inputs_sha256']==sha(build/'inputs.json')
+    parent=Path(inputs['parent_synthesis_checkpoint']['external_path']);parent_before=sha(parent)
+    assert parent_before==inputs['parent_synthesis_checkpoint']['sha256']
+    assert inputs['clock_period_ns']==10.0 and inputs['part']=='xc7a100tcsg324-1' and inputs['closure_files']==18
+    source_before={n:sha(build/'snapshot'/n) for n in inputs['source_sha256']};assert source_before==inputs['source_sha256']
+    recipe_before={n:sha(build/n) for n in ('run.tcl','report.tcl','component.xdc','inputs.tcl')};assert recipe_before==inputs['recipe_sha256']
+    before=memory();assert before['MemAvailable_bytes']>=8*1024**3 and before['PSI_full_avg10']<1,before
+    stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out=AREA/stamp;out.mkdir(parents=True);name='gamebub-v108-capacity-native-'+stamp.lower();mapped=Path('/build')/build.name
+    shutil.copyfile(build/'inputs.json',out/'inputs.json');shutil.copytree(build/'snapshot',out/'source-snapshot');(out/'recipe-snapshot').mkdir()
+    for n in recipe_before:shutil.copyfile(build/n,out/'recipe-snapshot'/n)
+    shutil.copyfile(Path(__file__),out/'run_native.py')
+    shutil.copyfile(args.dispatch,out/'predispatch.json')
+    image=subprocess.check_output(['docker','image','inspect','--format','{{.Id}}','acorn-nexys4-ddr:2026.1'],text=True).strip();assert image.startswith('sha256:')
+    cmd=['docker','run','--rm','--init','--name',name,'--memory','8g','--memory-swap','8g','--cpus','2','--pids-limit','2048','--network','host','--ulimit','core=0',
+         '--mount',f'type=bind,src={TOOLS},dst=/opt/amd-tools,readonly','--mount',f'type=bind,src={build},dst={mapped}',
+         '--mount',f'type=bind,src={build/"snapshot"},dst={mapped/"snapshot"},readonly','--mount',f'type=bind,src={parent},dst=/parent/synth.dcp,readonly',
+         '--mount',f'type=bind,src={args.license_file.resolve()},dst=/root/.Xilinx/license.dat,readonly',
+         '-e','LD_PRELOAD=/lib/x86_64-linux-gnu/libudev.so.1','-e','XILINXD_LICENSE_FILE=/root/.Xilinx/license.dat','-w',str(mapped),image,
+         'timeout','--signal=TERM','--kill-after=15s',str(timeout)+'s','/opt/amd-tools/2026.1/Vivado/bin/vivado','-mode','batch','-nojournal','-nolog','-notrace','-source',str(mapped/'run.tcl'),'-tclargs',str(mapped)]
+    receipt=dict(schema='v108-capacity-native-implementation-trial-v1',status='RUNNING',trial_id=inputs['trial_id'],start_mode=inputs['start_mode'],clean_repeat_of=inputs['clean_repeat_of'],directives=inputs['directives'],command=cmd,image_id=image,
+        build_external=str(build),container=name,part=inputs['part'],top=inputs['top'],clock_period_ns=10.0,max_threads=2,cpus=2,memory_limit_bytes=8*1024**3,memory_swap_limit_bytes=8*1024**3,timeout_seconds=timeout,
+        parent_synthesis_checkpoint=inputs['parent_synthesis_checkpoint'],parent_checkpoint_sha256_before=parent_before,parent_clock_loaded_before_synthesis=inputs['source_contract']['parent_clock_loaded_before_synthesis'],
+        synthesis_executed=inputs['start_mode']=='rtl',clock_inherited_from_parent_checkpoint=inputs['start_mode']=='checkpoint',clock_loaded_before_synthesis_in_this_run=True if inputs['start_mode']=='rtl' else None,
+        native_contract_path=inputs['native_contract_path'],native_contract_sha256=inputs['native_contract_sha256'],source_contract=inputs['source_contract'],source_sha256=inputs['source_sha256'],source_origins=inputs['source_origins'],source_snapshot_readonly_mount=True,
+        source_manifest_sha256=sha(build/'inputs.json'),recipe_sha256=recipe_before,runner_sha256=sha(Path(__file__)),predispatch=dict(path=str(args.dispatch.relative_to(ROOT)),sha256=sha(args.dispatch),record=dispatch),resource_before=before,
+        existing_legitimate_license_readonly=True,license_contents_logged=False,hostid_or_MAC_changed=False,tools_readonly=True,hardware_contact=False,bitstream_generated=False,board_IO_timing_qualified=False,full_custom_top_qualified=False,hardware_30fps=False,complete_validated_decode_under10ms=False)
+    write(out/'receipt.json',receipt);print('V108_CAPACITY_BUILD_STARTED',str(out.relative_to(ROOT)),inputs['trial_id'],inputs['start_mode'],flush=True)
+    samples=[];started=time.monotonic();last=-30;pressure_count=0;stop=None
+    with (out/'vivado.log').open('w') as log,(out/'memory.jsonl').open('w') as telemetry:
+        process=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT)
+        while process.poll() is None:
+            elapsed=time.monotonic()-started
+            if elapsed-last>=30:
+                sample=dict(elapsed_seconds=elapsed,**memory());stats=subprocess.run(['docker','exec',name,'cat','/sys/fs/cgroup/memory.current'],capture_output=True,text=True,timeout=8)
+                sample['container_memory_bytes']=int(stats.stdout.strip()) if stats.returncode==0 and stats.stdout.strip().isdigit() else None;samples.append(sample);telemetry.write(json.dumps(sample)+'\n');telemetry.flush();last=elapsed
+                pressure_count=pressure_count+1 if sample['PSI_full_avg10']>=5 else 0
+                if sample['MemAvailable_bytes']<4*1024**3:stop='HOST_AVAILABLE_BELOW_4GIB'
+                if pressure_count>=2:stop='SUSTAINED_HIGH_MEMORY_PRESSURE'
+            if elapsed>timeout+45:stop='HOST_WALL_TIMEOUT'
+            if stop:subprocess.run(['docker','stop','--time','10',name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=20);break
+            time.sleep(1)
+        try:code=process.wait(timeout=30)
+        except subprocess.TimeoutExpired:
+            subprocess.run(['docker','kill',name],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=15)
+            code=process.wait(timeout=15)
+    log_text=(out/'vivado.log').read_text(errors='replace');results=build/'results';artifacts={}
+    for p in sorted(results.glob('*')):
+        if p.is_file():
+            artifacts[p.name]=dict(sha256=sha(p),bytes=p.stat().st_size,external_path=str(p))
+            if p.suffix in ('.rpt','.txt','.json','.xdc','.tsv','.log') and p.stat().st_size<95*1024**2:
+                target=out/'reports'/p.name;target.parent.mkdir(exist_ok=True);shutil.copyfile(p,target)
+    for p in sorted(build.glob('hs_err_pid*.log')):
+        target=out/'crash'/p.name;target.parent.mkdir(exist_ok=True);shutil.copyfile(p,target)
+    receipt.update(observed_exit_code=code,wall_seconds=time.monotonic()-started,monitor_stop_reason=stop,memory_samples=samples,log_sha256=sha(out/'vivado.log'),artifacts=artifacts,
+        parent_checkpoint_sha256_after=sha(parent),parent_checkpoint_unchanged=sha(parent)==parent_before,
+        source_snapshot_unchanged=all(sha(build/'snapshot'/n)==h for n,h in source_before.items()),recipe_unchanged=all(sha(build/n)==h for n,h in recipe_before.items()),
+        routing_checkpoint_written=(results/'route.dcp').is_file(),synthesis_checkpoint_generated_in_this_run=(results/'synth.dcp').is_file(),component_route_finished=code==0 and 'V108_COMPONENT_ROUTE_FINISHED' in log_text)
+    receipt['status']='COMPONENT_ROUTE_FINISHED_SIGNOFF_OPEN' if receipt['component_route_finished'] else 'STOPPED_RESOURCE_OR_TIME_GATE' if stop else 'TOOL_OR_BUILD_FAILED'
+    if receipt['component_route_finished']:
+        try:receipt['result']=parse_reports(results)
+        except Exception as exc:receipt.update(status='ROUTE_FINISHED_REPORT_PARSE_FAILED',report_parse_error=repr(exc))
+    report=f'''# V108 methodology resolution report\n\nTrial `{inputs['trial_id']}`, mode `{inputs['start_mode']}`; part `{inputs['part']}`.\nThe unchanged clock is 10.000 ns. Directives: {inputs['directives']}.\nNo constraint was edited or waived. Parent board I/O timing and complete custom\nparent integration remain open. The native reports retain methodology/DRC, clocks,\nexceptions, setup/hold/pulse, high fanout and control-set findings.\n\nStatus: {receipt['status']}.\n'''
+    if 'result' in receipt:
+        report+='\nMeasured timing: '+json.dumps(receipt['result']['timing'],sort_keys=True)+'\n\nInternal component 100 MHz: '+str(receipt['result']['component_internal_100MHz_pass'])+'.\n'
+        report+=('Setup remains unresolved; positive hold/pulse alone is insufficient.\n' if receipt['result']['timing']['setup_failing'] or receipt['result']['timing']['WNS_ns']<0 else 'Setup passes in this completed route; hold/pulse, repeatability and parent qualification remain separate gates.\n')
+    (build/'METHODOLOGY_RESOLUTION_REPORT.md').write_text(report);(out/'METHODOLOGY_RESOLUTION_REPORT.md').write_text(report)
+    receipt['retained_artifact_sha256']={str(p.relative_to(out)):sha(p) for p in sorted(out.rglob('*')) if p.is_file() and p.name!='receipt.json'};write(out/'receipt.json',receipt)
+    print('V108_CAPACITY_BUILD_FINISHED',str(out.relative_to(ROOT)),receipt['status'],code,receipt.get('result',{}).get('timing'),flush=True)
+    if code!=0 or receipt['status']!='COMPONENT_ROUTE_FINISHED_SIGNOFF_OPEN':raise SystemExit(code if 0<code<256 else 1)
+
+if __name__=='__main__':main()
