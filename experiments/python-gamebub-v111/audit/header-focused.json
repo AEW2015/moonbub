@@ -1,0 +1,110 @@
+{
+  "candidate": {
+    "edit_recipe": "fpga/experiments/cu66-v111-header/edit-recipe.json",
+    "edit_recipe_sha256": "3a0c2df976d6289f356cfd0d29cf98c3e28583e20237dd404f4991934cbd730f",
+    "operational_change": "Only the original HEADER length-sum rejection predicate is replaced. Three unreset/unenabled private stages compute pair sums, total/target, then equality. The consuming HEADER branch remains on its original cycle; the independent assertion checks the prepared predicate against a widened original-expression equivalent under the actual HEADER priority/cancel guard.",
+    "path": "fpga/experiments/cu66-v111-header/br88_packet_ingress_sync_v91h.sv",
+    "priority_and_partial_write": "CRC failure remains error 3 before basic-header error 4, before length-sum error 4; raw-mode-specific rejection follows valid CRC/basic/length checks and the existing metadata assignments. Tests independently check returned error, counts/raw metadata, stored lengths, and transition state, including malformed raw partial writes.",
+    "private_payload_register_bits": 169,
+    "sha256": "6c35433093feff81946df00af016289664b13cac0d6ce2d2b7207c668bb8a4b3"
+  },
+  "evidence": {
+    "capture_inheritance_per_seed": [
+      {
+        "capture_edge_abort_restarts": 3,
+        "held_metadata_edges": 2312,
+        "high32_metadata_owners": 128,
+        "prepared_cases": 1728,
+        "raw_packets": 8,
+        "seed": 111501,
+        "separate_negative_subprocesses": 6,
+        "status": "TEST_PASS"
+      },
+      {
+        "capture_edge_abort_restarts": 3,
+        "held_metadata_edges": 2312,
+        "high32_metadata_owners": 128,
+        "prepared_cases": 1728,
+        "raw_packets": 8,
+        "seed": 111502,
+        "separate_negative_subprocesses": 6,
+        "status": "TEST_PASS"
+      }
+    ],
+    "header_per_seed": [
+      {
+        "consuming_HEADER_cancel_cases": 3,
+        "crc_priority_conflict_cases": 1346,
+        "malformed_raw_partial_metadata_failures": 31,
+        "real_received_headers": 17,
+        "request_or_response_boundary_cancel_cases": 30,
+        "seed": 111501,
+        "status": "TEST_PASS",
+        "synthetic_header_rows": 5896
+      },
+      {
+        "consuming_HEADER_cancel_cases": 3,
+        "crc_priority_conflict_cases": 1350,
+        "malformed_raw_partial_metadata_failures": 33,
+        "real_received_headers": 17,
+        "request_or_response_boundary_cancel_cases": 30,
+        "seed": 111502,
+        "status": "TEST_PASS",
+        "synthetic_header_rows": 5896
+      }
+    ],
+    "retained_negative_fixtures": {
+      "all_log_sha256_bound": true,
+      "all_show_expected_old_dut_stale_staging_response_assertion": true,
+      "classification": "Deliberate owner-contract negative controls; these expected original-assertion failures are separate from passing candidate runs.",
+      "count": 6
+    },
+    "whole_ingress_per_seed": [
+      {
+        "actual_prepared_address_requests": 8,
+        "cancel_retry_pairs": 36,
+        "golden_coefficients": 754644,
+        "packets": 76,
+        "seed": 111501,
+        "status": "TEST_PASS"
+      },
+      {
+        "actual_prepared_address_requests": 8,
+        "cancel_retry_pairs": 36,
+        "golden_coefficients": 754644,
+        "packets": 76,
+        "seed": 111502,
+        "status": "TEST_PASS"
+      }
+    ]
+  },
+  "findings": [],
+  "proof_claims_checked": {
+    "actual_RTL_run": true,
+    "all_34_attempt_artifact_hashes_match": true,
+    "all_public_ports_including_invalid_counters_compared": true,
+    "all_six_adapter_file_hashes_match": true,
+    "all_source_hashes_match_current_files": true,
+    "both_count_context_specializations_identical": true,
+    "candidate_rebuilt_exactly_by_edit_recipe": true,
+    "edit_recipe_reverses_exactly_to_v110_count_source": true,
+    "no_assertion_downgrade_or_warning_suppression": true,
+    "original_assertions_retained": true,
+    "seeds": [
+      111501,
+      111502
+    ],
+    "source_manifest_count": 17,
+    "zero_added_public_cycles": true
+  },
+  "schema": "v111-header-focused-source-audit-v1",
+  "scope_and_limits": [
+    "This independently audits focused V111 Header behavior and source bindings only; full canonical same-seed V111 Q, 100/125 MHz native routing, production parent integration, and hardware behavior remain separate gates.",
+    "The 5,896-row arithmetic suite directs the DUT to HEADER only after three real clock edges with stable header payload; it does not write candidate private pipeline registers or derive expected values from candidate state. Packet-level and whole-ingress comparisons supplement those synthetic checks."
+  ],
+  "selected_report": "experiments/python-gamebub-v111/header/attempts/20261108T182139549017Z/results.json",
+  "selected_report_sha256": "a5bb1ece67d9b40cfd6d5958a84ee42f64fdb163960087427dd3eac8adda723e",
+  "status": "PASS_V111_HEADER_FOCUSED_AUDIT",
+  "summary": "experiments/python-gamebub-v111/header/results.json",
+  "summary_sha256": "c4e7ede917cfc39a490f3619b73333d5e8de16e3dd34f737f9cdf6c63f0758a6"
+}

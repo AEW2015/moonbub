@@ -1,0 +1,28 @@
+{
+  "added_public_cycles": 0,
+  "all_original_assertions_retained": true,
+  "candidate": "fpga/experiments/cu66-v111-header/br88_packet_ingress_sync_v91h.sv",
+  "candidate_sha256": "6c35433093feff81946df00af016289664b13cac0d6ce2d2b7207c668bb8a4b3",
+  "edits": [
+    {
+      "after": "    // V111_HEADER_PIPELINE_BEGIN: private payload, never a new owner/enable.\n    // Length bytes 14..29 are stable before sixteen further header reads.\n    // No reset or cancel fanout; consume only at the original HEADER edge.\n    logic [32:0] header_length_pair01_s1, header_length_pair23_s1;\n    logic [33:0] header_length_target_s1, header_length_target_s2;\n    logic [33:0] header_length_total_s2;\n    logic header_length_match_s3;\n    always_ff @(posedge clk)begin\n        header_length_pair01_s1<={1'b0,cached32(14)}+{1'b0,cached32(18)};\n        header_length_pair23_s1<={1'b0,cached32(22)}+{1'b0,cached32(26)};\n        header_length_target_s1<={2'd0,size_bytes}-34'd46;\n        header_length_total_s2<={1'b0,header_length_pair01_s1}+{1'b0,header_length_pair23_s1};\n        header_length_target_s2<=header_length_target_s1;\n        header_length_match_s3<=header_length_total_s2==header_length_target_s2;\n    end\n    // V111_HEADER_PIPELINE_END\n\n    task automatic fail_packet",
+      "before": "    task automatic fail_packet",
+      "expected_occurrences": 1
+    },
+    {
+      "after": "else if(!header_length_match_s3) fail_packet(4);",
+      "before": "else if({2'd0,cached32(14)}+{2'd0,cached32(18)}+{2'd0,cached32(22)}+{2'd0,cached32(26)}!=({2'd0,size_bytes}-34'd46)) fail_packet(4);",
+      "expected_occurrences": 1
+    },
+    {
+      "after": "`ifndef SYNTHESIS\n    // Independent widened original predicate, checked at actual consumption.\n    always_ff @(posedge clk)if(!cancelled&&!context_failure&&\n        !(context_active&&ctx_done)&&state==HEADER)begin\n        assert(header_length_match_s3 ==\n            (({32'd0,cached32(14)}+{32'd0,cached32(18)}+\n              {32'd0,cached32(22)}+{32'd0,cached32(26)}) ==\n             {30'd0,({2'd0,size_bytes}-34'd46)}))\n            else $fatal(1,\"prepared header length predicate owner mismatch\");\n    end\n    // Independent mathematical caller contract",
+      "before": "`ifndef SYNTHESIS\n    // Independent mathematical caller contract",
+      "expected_occurrences": 1
+    }
+  ],
+  "original": "fpga/experiments/cu66-v110-count-domain/br88_packet_ingress_sync_v91h.sv",
+  "original_sha256": "38c524b52d40c1a7764ac7219582af974b8f973d94d8cff03f23c7088b2bcf28",
+  "private_payload_register_bits": 169,
+  "schema": "v111-header-existing-edge-pipeline-v1",
+  "scope": "Only original HEADER length-sum branch predicate changes; exact public invalid/error/counter/memory cycles; private preparation owned only on uncancelled HEADER consumption."
+}

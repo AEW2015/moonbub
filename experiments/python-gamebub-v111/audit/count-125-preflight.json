@@ -1,0 +1,60 @@
+{
+  "driver_sha256": "7a3a097bf3abd40db3d7b256a98daecb9beb16fe896e2463d99b93c5be761f49",
+  "findings": [
+    {
+      "detail": "The driver active-container check alone is not a global atomic semaphore. The updated policy explicitly requires Root-only serialized dispatch and treats that check as supplemental; this is adequate under the declared dispatch model, while direct concurrent CLI launches remain unsupported.",
+      "severity": "note",
+      "status": "controlled_by_policy"
+    }
+  ],
+  "limits": [
+    "This audit verifies prepared inputs and policy only; it does not claim the Count-125 native route ran or passed."
+  ],
+  "policy": "experiments/python-gamebub-v111/study-policy.json",
+  "policy_sha256": "75198c0e57abe7f7d347863b19d41fca8b61c0242469754288b0bb17eea5470e",
+  "preflight": "experiments/python-gamebub-v111/prepared/v111-count-125-20261108T182802595227Z-0493c7/preflight.json",
+  "preflight_sha256": "e82157ded34aecbca26ce387949e17edeafad4bffa7101e54afdc09587dbec5a",
+  "schema": "v111-native-preflight-audit-v1",
+  "status": "PASS_V111_NATIVE_PREFLIGHT_AUDIT",
+  "trial": {
+    "id": "count-125",
+    "part": "xc7a100tcsg324-1",
+    "period_ns": 8.0,
+    "start_mode": "rtl",
+    "status": "PREPARED_NOT_RUN",
+    "top": "cs88_pipeline_v91k"
+  },
+  "verified": {
+    "clocking": "The 8.000 ns XDC is part of the pinned recipe and is read before synth_design. Tcl asserts one component clock with exact expected period and default 50% waveform; native report parser requires [0,4] for this target. The separate 10 ns XDC remains explicit for the 100 MHz comparison.",
+    "dispatch_control": "Policy now limits native launches to Root-owned serialized dispatch, counts emulator/focused/canonical/native work in the global two-slot decision, and explicitly disallows independent concurrent CLI launchers. Docker active-name count is supplemental rather than an atomic cross-agent scheduler.",
+    "hardware_scope": "Prepared OOC component route only; bitstream generation and hardware contact are false; no board I/O/full-parent timing or FPS/decode claim.",
+    "license_and_network": "Container uses the same host network mode as the validated Count control; legitimate existing license is mounted read-only and not logged; no hostid/MAC changes.",
+    "recipe_hashes_match": 4,
+    "runtime_bounds": {
+      "cpus": 2,
+      "max_initial_trials": 3,
+      "max_positive_fresh_repeats": 1,
+      "memory_limit_bytes": 8589934592,
+      "memory_swap_limit_bytes": 8589934592,
+      "stop_gates": "Host availability and PSI gates checked before dispatch and monitored during flow; cancellation is bounded.",
+      "timeout_seconds": 3600
+    },
+    "source_composition": "Fresh RTL source set is exactly the frozen V110 Count source composition; focused V111 Header is correctly absent from this baseline trial.",
+    "source_manifest": {
+      "count": 18,
+      "include_headers": 1,
+      "prepared_snapshot_hashes_match": true,
+      "source_hashes_equal_frozen_v110_count_control": true,
+      "systemverilog": 17
+    },
+    "source_proof": {
+      "canonical_control_path": {
+        "experiments/python-gamebub-v110/canonical-count-domain/combined/results.json": "1a13ce4740b55f559cc366220868e21b7fce2fcb0000e695eed83ce9038282ac"
+      },
+      "frozen_parent_receipt_sha256": "2dfc184586be4f90281bd10d3284006ec0e73019fab2f6bab70dcfb07e9fcdf7",
+      "public_latency_delta_cycles": 0
+    },
+    "synthesis_and_flow": "OOC synthesis from RTL, no checkpoint input, default synthesis directive omitted from CLI, Default opt/route, ExtraNetDelay_high placement, and retained stage reports including checks/methodology/DRC/CDC/utilization/high-fanout/mapping.",
+    "tooling_hashes_match": 5
+  }
+}

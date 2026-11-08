@@ -1,0 +1,99 @@
+{
+  "schema": "gamebub-v111-inventory-v1",
+  "inventory_date": "2026-11-08",
+  "moonbub": {
+    "path": "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study",
+    "branch": "study/gamebub-v111-harness-timing-20261108",
+    "commit": "08e91145e0fc103c81d0b383338cfa70970ec399",
+    "worktree_note": "Pre-existing untracked fpga/experiments/throughput30/burst/marker-recovery/ was left untouched."
+  },
+  "sunshine": {
+    "path": "/home/lori/gamebub-streaming-prototype/repos/sunshine-30fps-study",
+    "branch": "handoff/gamebub-app-codec-v20-20261103",
+    "commit": "3d49c6fe87753eb5b35d693991fdff0365e4bbbf",
+    "worktree_clean": true,
+    "custom_msv1_sender": "tools/gamebub/stream_sender.py (experimental Python sender; explicitly not Sunshine integration)",
+    "standard_encoder": "src/video.cpp + src/nvenc/* and platform capture/encode code; ordinary H.264/HEVC NVENC, not CS88/JPEG custom stream",
+    "missing": [
+      "Sunshine sender hook",
+      "custom native GameBub encoder",
+      "native MSV1 capture-to-wire backend",
+      "host-output immutable trace capture"
+    ]
+  },
+  "firmware": {
+    "implemented_path": "firmware/handheld/src/streaming/mod.rs + protocol.rs; standalone MSV1 MJPEG receiver and compressed QSPI forwarding",
+    "not_implemented": [
+      "Sunshine/Moonlight pairing",
+      "discovery",
+      "audio",
+      "H.264"
+    ],
+    "protocol97_status": "Opt-in study module; research caps are not deployed production capability.",
+    "build_versions_recorded": {
+      "rust": "Espressif esp193 1.93.0.0",
+      "esp_idf": "5.4.3",
+      "cmake": "3.30.2",
+      "ninja": "1.12.1"
+    },
+    "production_receiver_emulator_boot": false,
+    "boot_blocker": "Full app trace stopped during LCD/SPI initialization; tested SPI3 polling did not complete in esp-emu. No cause proven; no production receiver packet reached RTL."
+  },
+  "emulator": {
+    "name": "Espressif esp-emu",
+    "version": "0.51.0",
+    "target": "ESP32-S3",
+    "path": "/home/lori/gamebub-tools/esp-emu-study-0510/esp-emu-0.51.0-x86_64-unknown-linux-gnu/esp-emu",
+    "provenance": "External executable/archive hash recorded in /home/lori/gamebub-tools/esp-emu-study-0510/SHA256SUMS.txt; prior tests include stub, erased-system-data negative image, and isolated SPI probes.",
+    "time_control": "No controlled coordinated stepping demonstrated; live bridge freezes RTL clock during socket waits."
+  },
+  "existing_functional_evidence": {
+    "path": "fpga/experiments/throughput30/burst/live-multiframe-bridge/README.md",
+    "classification": "Synthetic guest executes unmodified Rust receiver and forwards actual DATA bytes through bounded localhost adapter to Verilator RTL; two commits and one integrity abort/recovery.",
+    "limits": [
+      "No release production receiver",
+      "No shared clock",
+      "RTL time freezes during socket wait",
+      "modeled SDRAM/LCD",
+      "guest fixture bytes are test oracles",
+      "not target timing/performance"
+    ]
+  },
+  "fpga_source_facts": {
+    "input_clock_mhz": 50,
+    "qspi_service_clock_mhz": 200,
+    "decoder_core_clock_mhz": 100,
+    "sdram_controller_clock_mhz": 100,
+    "sdram_read_clock_mhz": 100,
+    "display_pixel_clock_mhz": 29.361979,
+    "display_active": "480x800 portrait panel; centered 720x480 landscape canvas with 40-pixel side margin via transpose",
+    "sdram": "single 16-bit, 100 MHz SDR controller, BL8/CAS3 reads and single writes; shared bus",
+    "proposed_decoder_125mhz": "Not generated or routed in production parent; new clock/CDC/constraints required.",
+    "firmware_qspi_serial_rates": "writes <=40 MHz, reads <=16 MHz documented but unqualified"
+  },
+  "selected_inputs_sha256": {
+    "sunshine/tools/gamebub/stream_sender.py": "6061e2066ed37a93ca85c24a8b1127475ce915f4ab22d5239e9d8052c90b1709",
+    "sunshine/tools/gamebub/msv1.py": "abbfe5021cdf60ab5908aae0583fcef40231869a0a25b7919eb238d9801a44d6",
+    "moonbub/firmware/README.md": "86c485489a800bbd5ca48baad02fd3eaebf39a563273e52ed060b4c14b1cddc5",
+    "moonbub/firmware/handheld/src/streaming/protocol.rs": "32a91ffaf0b39a82f11036be7e501765cd3f9fed6905c27b6efc01f358d79e64",
+    "moonbub/firmware/handheld/src/streaming/protocol97.rs": "725845b6f34f950a612793c45cd5df61e21d5bb30e56b8e77c9503538038f81b",
+    "moonbub/fpga/rtl/moonshine_top.sv": "0475af1af47d1bdc59945e63e785aac5804acbc2f0956afe314150dbfce551be",
+    "moonbub/fpga/rtl/moonshine_lcd.sv": "f6ef8c7476860c4ccc0cda18f86a1a22c267521f81f9a21f71b4b9c153e9fb27",
+    "moonbub/fpga/rtl/moonshine_qspi_endpoint.sv": "1b47f424da33b678b3811e091f481a2bdab3fad9c43a8edd6b70817853f9bb13",
+    "moonbub/fpga/evidence/lcd_pins_rev4.xdc": "e5ac4f3c8e1e55726920b297e1a451b1b6427b94b9d16ff1d414da90a97103a3"
+  },
+  "local_path_probe": {
+    "python3": "3.14.4",
+    "not_found_on_path": [
+      "esp-emu",
+      "vivado",
+      "iverilog",
+      "verilator",
+      "cargo",
+      "rustc",
+      "idf.py",
+      "xtensa-esp32s3-elf-gcc"
+    ],
+    "note": "The pinned esp-emu executable exists at its explicit external path. PATH probe is not a full-machine absence claim. No build, emulator run, or hardware access performed for this inventory."
+  }
+}
