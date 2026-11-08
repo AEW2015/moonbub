@@ -1,0 +1,111 @@
+report_incremental_reuse
+
+Description: 
+Compute achievable incremental reuse for the given design-checkpoint and report
+
+Syntax: 
+report_incremental_reuse  [-file <arg>] [-append] [-cells <args>]
+                          [-hierarchical] [-hierarchical_depth <arg>]
+                          [-return_string] [-quiet] [-verbose]
+
+Usage: 
+  Name                   Description
+  ----------------------------------
+  [-file]                Filename to output results to. (send output to 
+                         console if -file is not used)
+  [-append]              Append to existing file
+  [-cells]               Report incremental reuse of given list of cells
+  [-hierarchical]        Generates text-based hierarchical incremental reuse 
+                         report.
+  [-hierarchical_depth]  Specifies the depth level for textual hierachical 
+                         incremental reuse report
+                         Default: 0
+  [-return_string]       Return report as string
+  [-quiet]               Ignore command errors
+  [-verbose]             Suspend message limits during command execution
+
+Categories: 
+Report
+
+Description:
+
+  For use with the incremental implementation flow, this command reports on
+  the amount of design overlap between the current design and an incremental
+  checkpoint loaded using the read_checkpoint -incremental command.
+
+  This report analyzes the loaded incremental checkpoint against the current
+  design to see if the two are sufficiently correlated to drive incremental
+  placement and routing. A low correlation between the current design and the
+  checkpoint should discourage using the checkpoint as a basis for
+  incremental place and route. Refer to the Vivado Design Suite User Guide:
+  Implementation (UG904) for more information on incremental place and route.
+
+  If there is a low correlation of reuse between the current design and the
+  loaded incremental checkpoint, you will need to restore the original design
+  using open_run or read_checkpoint. Alternatively, you can overload the
+  incremental checkpoint in the current design by issuing the read_checkpoint
+  -incremental command again to specify a new incremental checkpoint.
+
+  For Dynamic Function eXchange (DFX) designs, the % of cells matching in
+  Reconfigurable Modules (RM) are reported, the % of cells reused in RMs, and
+  the % of cells fixed in RMs are also reported. There is also a
+  Reconfigurable Modules Summary table added to the report.
+
+Arguments:
+
+  -file <arg> - (Optional) Write the report into the specified file. The
+  specified file will be overwritten if one already exists, unless -append is
+  also specified. By default, the report will be written to the Tcl console.
+
+  Note: If the path is not specified as part of the file name, the file will
+  be written into the current working directory, or the directory from which
+  the tool was launched.
+
+  -append - (Optional) Append the output of the command to the specified file
+  rather than overwriting it.
+
+  Note: The -append option can only be used with the -file option.
+
+  -cells <args> - (Optional) Specifies the cells to use from the DCP file.
+
+  -hierarchical - (Optional) Generate a text-based hierarchical incremental
+  reuse report.
+
+  -hierarchical_depth <arg> - (Optional) Specifies the depth level for the
+  text-based hierarchical incremental reuse report. The default is 0.
+
+  -return_string - (Optional) Directs the output to a Tcl string rather than
+  to the standard output. The Tcl string can be captured by a variable
+  definition and parsed or otherwise processed.
+
+  Note: This argument cannot be used with the -file option.
+
+  -quiet - (Optional) Execute the command quietly, returning no messages from
+  the command. The command also returns TCL_OK regardless of any errors
+  encountered during execution.
+
+  Note: Any errors encountered on the command-line, while launching the
+  command, will be returned. Only errors occurring inside the command will be
+  trapped.
+
+  -verbose - (Optional) Temporarily override any message limits and return
+  all messages from this command.
+
+  Note: Message limits can be defined with the set_msg_config command.
+
+Examples:
+
+  The following example loads an incremental checkpoint into the current
+  design, and then reports the correlation of the loaded incremental
+  checkpoint to the current design:
+
+    read_checkpoint -incremental C:/Data/reuse_checkpoint1.dcp
+    report_incremental_reuse
+
+See Also:
+
+   *  open_run
+   *  place_design
+   *  read_checkpoint
+   *  route_design
+

@@ -1,0 +1,9 @@
+﻿# Sunshine CU66 v70 branch freshness
+
+Checked 2026-11-08 UTC using `git ls-remote` and GitHub branch/tree/raw-file APIs only. Public branch `gamebub/cu66-v70-windows-20261105` still points to `15ca34224a7f08fda274ec7e9e9af5e448071f9c`, exactly the locally recorded head. The latest branch commit is dated 2026-11-06 05:12:04 UTC, “Start isolated CU66 v70 Windows line with native qualification”; prior commit `fd0376fd152c07f563a398c89395498d39079a28` is the readiness audit/plan from 2026-11-05. There are no branch commits newer than the recorded head.
+
+The checked branch `tools/gamebub/cu66-v70/README.md` explicitly says there is no CU66 encoder or live network sender yet. The branch contents are offline native qualification/replay infrastructure and its records: `tools/gamebub/measurements/cu66-v70-windows-reference-20261105.json`, encoder helpers such as `tools/gamebub/native/composed_encoder.h`, `inner_encoder.h`, and `encoder_sequence.h`, plus offline sequence preparation. These do not offer a live capture encoder or Sunshine network uploader. The README describes a constrained CU66 reference capability and qualification state; it is not a completed live integration.
+
+Related encoder code in this repository includes CP23 independent-encoder measurements and general offline/composed encoder unit tests. Those paths do not establish CU66 live production. The readiness plan still calls for a bounded CU66 adapter, source-capture encoder, agreed framing/session/ownership contract, and stateful sender/recovery tests before live integration.
+
+One follow-up GitHub commit/tree API request returned HTTP 503. The branch ref, branch metadata, initial recursive tree listing, and raw relevant README/records were available and sufficient for this freshness conclusion. No PC network test, code change, large asset download, build, remote comment, or commit was made.

@@ -1,0 +1,49 @@
+--- C:\moon\builds\stb1-ce-v001\implementation.tcl
++++ C:\moon\builds\stb1-ce-incremental-v001\implementation.tcl
+@@ -1,6 +1,6 @@
+ set_param general.maxThreads 4
+ set out [file normalize [lindex $argv 0]]
+-open_checkpoint [file join $out constrained.dcp]
++open_checkpoint C:/moon/builds/stb1-ce-v001/constrained.dcp
+ if {[get_property PART [current_design]] ne "xc7a100tcsg324-1"} {error "Wrong part"}
+ if {[get_property REF_NAME [get_cells system_core]] ne "cu71_system_final_v023"} {error "Wrong core"}
+ set lc [get_clocks lcd_forwarded]
+@@ -12,7 +12,16 @@
+ set f [open [file join $out lcd-nominal-clock.tsv] w];puts $f "period_ns\t$period\nhigh_ns\t$high\nlow_ns\t$low\ncontroller_min_high_low_ns\t13\nengineering_reserve_ns\t1\nphysical_pin_pulse_measurement\tNOT_RUN";close $f
+ 
+ opt_design
++report_clocks -file [file join $out clocks-before-reuse.rpt]
++report_exceptions -coverage -file [file join $out exceptions-before-reuse.rpt]
++# Standard incremental mode: never force reuse; tool may choose full flow.
++read_checkpoint -incremental -directive RuntimeOptimized C:/moon/builds/stb1-v001/routed.dcp
++report_incremental_reuse -file [file join $out reuse-after-read.rpt]
++report_clocks -file [file join $out clocks-after-read.rpt]
++report_exceptions -coverage -file [file join $out exceptions-after-read.rpt]
++puts INCREMENTAL_REQUESTED_ACTUAL_MODE_MUST_BE_READ_FROM_TOOL_LOG
+ place_design -directive Explore
++report_incremental_reuse -file [file join $out reuse-postplace.rpt]
+ phys_opt_design
+ write_checkpoint -force [file join $out placed.dcp]
+ report_timing_summary -delay_type min_max -file [file join $out placed-timing-summary.rpt]
+@@ -20,6 +29,7 @@
+ route_design -directive NoTimingRelaxation
+ phys_opt_design -directive AggressiveExplore
+ route_design -directive Explore -tns_cleanup
++report_incremental_reuse -file [file join $out reuse-final.rpt]
+ write_checkpoint -force [file join $out routed.dcp]
+ report_timing_summary -delay_type min_max -report_unconstrained -file [file join $out timing-summary.rpt]
+ report_timing -delay_type max -max_paths 50 -file [file join $out setup-paths.rpt]
+@@ -30,6 +40,7 @@
+ report_drc -no_waivers -file [file join $out drc.rpt]
+ report_cdc -details -file [file join $out cdc.rpt]
+ report_exceptions -coverage -file [file join $out exceptions.rpt]
++report_clocks -file [file join $out clocks-final.rpt]
+ report_clock_interaction -file [file join $out clock-interaction.rpt]
+ report_bus_skew -file [file join $out bus-skew.rpt]
+ check_timing -verbose -file [file join $out check-timing.rpt]
+@@ -41,4 +52,4 @@
+ }
+ close $f
+ report_property [get_cells dotclock] -file [file join $out lcd-clock-cell.rpt]
+-puts STB1_BOARD_REPORTS_COMPLETE_NO_BIT_OR_HARDWARE
++puts CE_INCREMENTAL_REPORTS_COMPLETE_NO_BIT_OR_HARDWARE

@@ -1,0 +1,26 @@
+--- C:\moon\dev\experiments\stb1-v55-cefactor-real-rust-system-20261108\support\model-verilator.sv
+
++++ C:\moon\dev\experiments\stb1-v55-cefactor-poison-real-rust-system-20261108\support\model-verilator.sv
+
+@@ -2,7 +2,19 @@
+
+ // Lab-only BL8 SDR SDRAM model. Functional exercise; not timing signoff.
+ module sdram_model_burst #(parameter real T_OH_NS=0.5, T_AC_NS=2.0, CLOCK_FLIGHT_NS=4.0, parameter integer MEM_WORDS=1310721)(input wire clk,input wire[12:0]a,input wire[1:0]ba,input wire[1:0]cke,cs,
+  input wire ras,cas,we,ldqm,udqm,inout wire[15:0]dq);
+- reg[15:0]mem[0:MEM_WORDS-1];reg[12:0]rows[0:3];reg[3:0]opened=0;
++ reg[15:0]mem[0:MEM_WORDS-1];
++ // TEST MODEL ONLY: deterministic nonzero power-up SDRAM data, before first clock.
++ integer poison_index;reg[31:0]poison_mix;
++ initial begin
++  for(poison_index=0;poison_index<MEM_WORDS;poison_index=poison_index+1)begin
++   poison_mix=(32'(poison_index)*32'h045d9f3b)^32'hd14c5eed;
++   mem[poison_index]=(poison_mix[15:0]^poison_mix[31:16])|16'h0101;
++  end
++  if(MEM_WORDS!=16777216||mem[0]!==16'h8fa1||mem[1]!==16'h15c7||mem[MEM_WORDS-1]!==16'hd9c7)
++   $fatal(1,"STB1_POISON_FILL_WITNESS_MISMATCH words=%0d first=%h second=%h last=%h",MEM_WORDS,mem[0],mem[1],mem[MEM_WORDS-1]);
++  $display("STB1_POISON_FILLED words=%0d first=%h second=%h last=%h",MEM_WORDS,mem[0],mem[1],mem[MEM_WORDS-1]);
++ end
++reg[12:0]rows[0:3];reg[3:0]opened=0;
+  reg drive=0;reg[15:0]outdata;assign dq=drive ? outdata:16'bz;
+  integer reads=0,acts=0,pres=0; integer latency=0,left=0,readaddr=0,refreshes=0,mrs=0,writes=0,write_left=0,writeaddr=0,interrupts=0,masked_bytes=0;
+  integer lastact[0:3],lastpre[0:3],cycle=0,i;reg[15:0]old_word;
