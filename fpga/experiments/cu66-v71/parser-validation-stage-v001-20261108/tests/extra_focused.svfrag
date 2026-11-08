@@ -1,0 +1,31 @@
+  for(integer field=0;field<15;field++)begin
+   setup(1,0,47,47,47);dut.metadata_block_size=8'hA7;dut.metadata_plane_bytes[0]=16'hCAFE;dut.prefix0=16'hBEEF;
+   case(field)
+    0:dut.inner_header[0]=0;1:dut.inner_header[4]=2;2:dut.inner_header[5]=2;
+    3:put32(6,24);4:put32(10,dut.metadata_frame_id+1);5:put32(14,dut.metadata_reference_id-1);
+    6:dut.inner_header[18]=0;7:dut.inner_header[20]=0;8:dut.inner_header[22]=17;9:dut.inner_header[23]=17;
+    10:dut.inner_header[24]=dut.inner_header[24]^1;11:dut.inner_header[39]=dut.inner_header[39]^1;
+    12:begin dut.inner_header[0]=0;put32(48,0);end
+    13:begin dut.inner_header[24]=dut.inner_header[24]^1;put32(48,32'hFFFFFFFF);end
+    14:begin dut.inner_header[5]=2;dut.inner_length_total=0;end
+   endcase
+   decide();check(error&&done&&error_code==6&&!busy&&!metadata_valid,"header/schema/tag/frame/reference and simultaneous6/7 retain code6");
+   check(dut.metadata_block_size===8'hA7&&dut.metadata_plane_bytes[0]===16'hCAFE&&dut.prefix0===16'hBEEF,"code6 reject never captures derived fields");
+  end
+  setup(1,0,47,47,47);put32(48,0);dut.metadata_plane_bytes[0]=16'hCAFE;dut.metadata_block_size=8'hA7;dut.prefix0=16'hBEEF;
+  decide();check(error&&done&&error_code==7&&dut.metadata_plane_bytes[0]===16'hCAFE&&dut.metadata_block_size===8'hA7&&dut.prefix0===16'hBEEF,"code7 reject preserves original derived-field visibility");
+`ifdef STAGED
+  for(integer cancel=0;cancel<3;cancel++)begin
+   setup(1,0,47,47,47);dut.metadata_plane_bytes[0]=16'hCAFE;dut.metadata_block_size=8'hA7;dut.prefix0=16'hBEEF;
+   tick();check(debug_state==19&&dut.metadata_plane_bytes[0]===16'hCAFE&&dut.metadata_block_size===8'hA7&&dut.prefix0===16'hBEEF,"code6 pass only publishes state fence");
+   check(!rd_req_valid&&!dut.rd_rsp_ready&&!metadata_valid&&!commit_ready&&!qmap_req_ready&&!dut.cfg_ready&&!dut.inner_validated,"length stage admits no bus/config/metadata action");
+   @(negedge clk);test_cfg_valid=1;test_cfg_bytes=1;test_rsp_valid=1;test_rsp_data=8'hXX;
+   if(cancel==1)abort_i=1;if(cancel==2)begin rst=1;abort_i=1;end
+   tick();
+   if(cancel==0)check(debug_state==10&&!error&&dut.packet_bytes==49152&&dut.metadata_plane_bytes[0]==46,"length commit ignores new cfg/live response");
+   else if(cancel==1)check(done&&aborted&&!error&&!busy&&dut.metadata_plane_bytes[0]===16'hCAFE&&!metadata_valid,"new-stage abort prevents capture and wins over incoming cfg/rsp");
+   else check(!done&&!aborted&&!error&&!busy&&dut.metadata_plane_bytes[0]==0&&!metadata_valid,"new-stage reset dominates abort and incoming cfg/rsp");
+   @(negedge clk);test_cfg_valid=0;test_rsp_valid=0;abort_i=0;rst=0;legal(0,3,47,47,47);
+  end
+  setup(1,0,47,47,47);put32(48,0);tick();@(negedge clk);abort_i=1;tick();check(done&&aborted&&!error&&!busy,"abort beats pending code7 at new state");@(negedge clk);abort_i=0;
+`endif

@@ -1,0 +1,25 @@
+--- control/cu71_packet_rxstage_v001.sv
++++ candidate/cu71_packet_rxstage_v001.sv
+@@ -47,7 +47,7 @@
+     `include "cu66_profile.svh"
+     typedef enum logic [7:0] {
+         IDLE, READ_REQUEST, READ_RESPONSE, CHECK_OUTER, CHECK_INNER,
+-        CHECK_HUD, CHECK_CRCS, OFFER_METADATA, WAIT_COMMIT, DRAIN, PREFIX_STARTS, PREFIX_ADDRESSES, INNER_SUM_PAIRS, INNER_SUM_MERGE, INNER_SUM_TOTAL, HUD_SUM_PAIRS, HUD_SUM_MERGE, HUD_SUM_TOTAL, RX_COMMIT
++        CHECK_HUD, CHECK_CRCS, OFFER_METADATA, WAIT_COMMIT, DRAIN, PREFIX_STARTS, PREFIX_ADDRESSES, INNER_SUM_PAIRS, INNER_SUM_MERGE, INNER_SUM_TOTAL, HUD_SUM_PAIRS, HUD_SUM_MERGE, HUD_SUM_TOTAL, RX_COMMIT, CHECK_INNER_LENGTHS
+     } state_t;
+     state_t state;
+     logic [15:0] packet_bytes, scan_addr;
+@@ -289,7 +289,12 @@
+                        (inner16(18)!=16'd720)||(inner16(20)!=16'd480)||
+                        ((inner_header[22]!=8'd16)&&(inner_header[22]!=8'd32))||(inner_header[23]!=8'd18)||
+                        (inner128(24)!=metadata_reference_tag)) reject_packet(8'd6);
+-                    else if((inner32(40)!=32'd338)||(inner32(44)!=(metadata_key?32'd0:32'd3))||
++                    // State is the validation/owner fence: only a code6 pass enters.
++                    // No read is outstanding; cfg is accepted only in IDLE.
++                    else state<=CHECK_INNER_LENGTHS;
++                end
++                CHECK_INNER_LENGTHS: begin
++                    if((inner32(40)!=32'd338)||(inner32(44)!=(metadata_key?32'd0:32'd3))||
+                             (inner32(48)<32'd47)||(inner32(48)>32'(packet_bytes))||
+                             (inner32(52)<32'd47)||(inner32(52)>32'(packet_bytes))||
+                             (inner32(56)<32'd47)||(inner32(56)>32'(packet_bytes))||
