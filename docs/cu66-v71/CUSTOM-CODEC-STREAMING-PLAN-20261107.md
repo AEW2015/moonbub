@@ -107,9 +107,13 @@ Do not start a long run if encoding support, receiver continuous lifecycle or me
 
 ## Immediate deliverables and coordination
 
-Next candidate in progress: [V45 ingress cache, reliable telemetry and longer bounded host sequence](V45-INGRESS-CACHE-PLAN-20261107.md). This is ESP32+host work with unchanged V027; exact source-bound cached-system replay and physical runtime qualification remain distinct gates.
+Current physical result: [V45 cached3 passed](V45-V027-CACHED3-RESULT-20261107.md), then [cached12 stopped at frame3 with native Hud failure](V45-V027-CACHED12-FAILURE-20261107.md). Host and receiver agree on three presentations and a stored-but-failed fourth frame; frames4–11 were withheld. Keep the failed endpoint quarantined until the next coordinated update. No cause or fix has been selected.
 
-Latest physical milestone: [V44/V027 three-frame end-to-end PASS](V44-V027-HARDWARE-RESULT-20261107.md). All three host presentation replies match3receiver presentations and63,360 actual HUD comparisons. This does not qualify continuous playback. Detailed USB export still lost records in a burst; repair retained/paced diagnostics and target the measured1018/666ms scalar HU extraction before another performance trial.
+V46 is the next diagnostic candidate: retain the actual native opcode/reply/payload checks, allocator failure context and failure-only passive FPGA status, plus a separate optional cold CPU-only twelve-frame HUD probe. Keep V027, sequence-v3 and all decode/admission/reserve/ownership rules unchanged. Host checks passed; target compilation, packaging, independent review and physical checks must be recorded separately before deployment. The cold probe cannot reproduce network-time fragmentation. Do not advance to long-video or performance testing until the frame3 failure is explained.
+
+Previous candidate design: [V45 ingress cache, reliable telemetry and longer bounded host sequence](V45-INGRESS-CACHE-PLAN-20261107.md). This is ESP32+host work with unchanged V027; exact source-bound cached-system replay and physical runtime qualification remain distinct gates.
+
+Earlier physical milestone: [V44/V027 three-frame end-to-end PASS](V44-V027-HARDWARE-RESULT-20261107.md). All three host presentation replies match3receiver presentations and63,360 actual HUD comparisons. This does not qualify continuous playback. V45 subsequently passed cached3 with complete paced telemetry; cached12's native failure is the current gate.
 
 Execution has begun: see the [first offline verification results and remaining gates](OFFLINE-VERIFICATION-PROGRESS-20261107.md). The [next continuous receiver candidate design](CONTINUOUS-RECEIVER-NEXT-CANDIDATE-20261107.md) defines the bounded correctness-first implementation; it is not an installed or built release.
 
