@@ -1,0 +1,53 @@
+{
+  "schema": "v112-native-driver-independent-review-v1",
+  "status": "STATIC_REVIEW_PASS_PROOFS_PENDING",
+  "dispatch_authorized": false,
+  "review_scope": "Read-only static review. No native prepare, dispatch, build, simulation, hardware access, or edits to candidate/driver files.",
+  "pins": {
+    "scripts/cu66-v112/native.py": "6ba37304e70fc7713599041a7bb9bc064133c8e8f6d4c233b8e1fdab237eed8f",
+    "scripts/cu66-v112/canonical.py": "19ca924c8c0a50fca0667500172baebf8c2d693de3cdb0939323f04a6791c854",
+    "experiments/python-gamebub-v112/study-policy.json": "b7ede394b13ce198367fd55681a11903bb19e1460af778a09c9394b5394af96d",
+    "fpga/experiments/cu66-v112-flow/run.tcl": "d283ec2b08181ff2e3bf676b30a9012fade9922b6461048822f89d24871c6747",
+    "fpga/experiments/cu66-v112-flow/clock-100.xdc": "83686e88f375a66dc1c1ea1af0d84f37dd2ef706b72b25a6f979cd0b8c81d2de",
+    "fpga/experiments/cu66-v112-flow/clock-125.xdc": "f0780282d66b131d482120768f74b83137ef6689b8cf7554316c7c7f3229f068"
+  },
+  "checks": {
+    "frozen_v110_count_control_receipt_and_18_source_origins": true,
+    "actual_v110_100mhz_control_is_explicit": true,
+    "full_component_top_is_cs88_pipeline_v91k": true,
+    "exact_two_source_deltas_required_against_count": [
+      "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv",
+      "fpga/experiments/cu66-v91i2/cs88_admission_v91i2a.sv"
+    ],
+    "v111_header_source_rejected": true,
+    "candidate_focus_and_full_q_required_before_prepare": true,
+    "full_q_seed_profile_directed_counts_and_exact_artifacts_checked": true,
+    "fresh_rtl_ooc_8ns_or_10ns_clock_loaded_before_synthesis": true,
+    "no_timing_exception_or_io_delay_guess_in_clock_xdcs": true,
+    "budget_initial_trial_and_positive_repeat_caps": true,
+    "host_resource_image_license_and_snapshot_rechecked_before_dispatch": true,
+    "whole_parent_and_hardware_claims_remain_false": true
+  },
+  "evidence_pending": {
+    "focus_path": "experiments/python-gamebub-v112/control/results.json",
+    "focus_receipt_present": true,
+    "focus_status": "FAIL",
+    "full_canonical_path": "experiments/python-gamebub-v112/canonical/results.json",
+    "full_canonical_present": false,
+    "focus_actual_RTL_run": false,
+    "focus_failure": "AssertionError(('geometry_probe-compile.log', 1))"
+  },
+  "findings": [
+    {
+      "severity": "low",
+      "path": "scripts/cu66-v112/canonical.py",
+      "finding": "argparse advertises busy and fault variants, but main asserts that only combined is valid.",
+      "effect": "Unsupported advertised invocations fail by assertion; the intended combined V112 proof remains covered.",
+      "required_for_combined_dispatch": false
+    }
+  ],
+  "limitations": [
+    "Static review does not certify a future candidate proof, prepared card, native route or independent audit result.",
+    "OOC 125 MHz component timing is not full-parent clock/CDC, I/O, resource-fit or hardware qualification."
+  ]
+}

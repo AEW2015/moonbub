@@ -1,0 +1,44 @@
+{
+  "added_public_cycles": 0,
+  "all_original_assertions_retained": true,
+  "production": {
+    "cs88_admission_v91i2a.sv": {
+      "candidate": "fpga/experiments/cu66-v112-control/cs88_admission_v91i2a.sv",
+      "candidate_sha256": "49f23fe56894012d1f647192bb030025eb79331fe24b173c11a2252bee4ff8b7",
+      "edits": [
+        {
+          "after": "    // V112_VISIBILITY_BEGIN: private preparation on the existing predecessor\n    // edge, using the successor key when GROUP_NEXT changes plane/tile.\n    // The mask retains the generic uint32 t+k wrap and all four plane values.\n    logic [15:0] group_visibility_mask;\n    function automatic logic [15:0] visibility_mask(input logic [1:0] p,input logic [31:0] t);\n        logic [15:0] m;\n        begin\n            for(integer k=0;k<16;k=k+1)\n                m[k]=t+32'(k)<tile_count(p)&&!hidden(p,t+32'(k));\n            return m;\n        end\n    endfunction\n    function automatic logic [4:0] visibility_count(input logic [15:0] m);\n        logic [1:0] pair_count [0:7];\n        logic [2:0] quad_count [0:3];\n        logic [3:0] oct_count [0:1];\n        begin\n            for(integer k=0;k<8;k=k+1)\n                pair_count[k]={1'b0,m[2*k]}+{1'b0,m[2*k+1]};\n            for(integer k=0;k<4;k=k+1)\n                quad_count[k]={1'b0,pair_count[2*k]}+{1'b0,pair_count[2*k+1]};\n            for(integer k=0;k<2;k=k+1)\n                oct_count[k]={1'b0,quad_count[2*k]}+{1'b0,quad_count[2*k+1]};\n            return {1'b0,oct_count[0]}+{1'b0,oct_count[1]};\n        end\n    endfunction\n    always_ff @(posedge clk)begin\n        if(state==HEADER_CHECK)group_visibility_mask<=visibility_mask(2'd0,32'd0);\n        else if(state==GROUP_NEXT)begin\n            if(tile==tile_count(plane))group_visibility_mask<=visibility_mask(plane+2'd1,32'd0);\n            else group_visibility_mask<=visibility_mask(plane,tile);\n        end\n    end\n`ifndef SYNTHESIS\n    // Independent original scalar sum at the actual unchanged consume edge.\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&state==GROUP_BEGIN)\n        assert(32'(visibility_count(group_visibility_mask))==visible_group(plane,tile))\n            else $fatal(1,\"V112 prepared group visibility owner mismatch\");\n`endif\n    // V112_VISIBILITY_END\n\n    task automatic reject",
+          "before": "    task automatic reject",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "group_visible<=32'(visibility_count(group_visibility_mask));mixed_ones<=0;",
+          "before": "group_visible<=visible_group(plane,tile);mixed_ones<=0;",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-tables/cs88_admission_v91i2a.sv",
+      "original_sha256": "b149c94ba1a5dd7f1d09384126c762d0bb0de5aa664baa4b76c29c631aeb652e"
+    },
+    "packed_scratch_v91g2.sv": {
+      "candidate": "fpga/experiments/cu66-v112-control/packed_scratch_v91g2.sv",
+      "candidate_sha256": "8041ed9b7e9ff3f2ee97710f9f5d89378bebe6d51dd7ecb95b1d3bddb9d5838b",
+      "edits": [
+        {
+          "after": "    // V112_BANK_VALIDATION_BEGIN: each bank validates its own payload before\n    // read_segment selects a one-bit result. Owner/state/drain priority and\n    // selected data payload remain unchanged; no speculative failure is used.\n    logic [3:0] ac_bank_invalid;\n    for(genvar validation_bank=0;validation_bank<4;validation_bank=validation_bank+1)begin: local_ac_validation\n        wire [31:0] bank_word=32'(cache_data[validation_bank]>>(8*read_address[3:0]));\n        wire [31:0] bank_position={13'd0,cache_positions[validation_bank][read_address[3:0]]};\n        assign ac_bank_invalid[validation_bank]=17'(bank_word[31:19])>=blocks ||\n            !rank_matches(read_band,bank_position[5:0]) ||\n            $signed(bank_word[12:0])==0 || $signed(bank_word[12:0]) < -2048 ||\n            $signed(bank_word[12:0]) > 2048 ||\n            (cursors[read_band]!=0 && bank_position<={13'd0,head_positions[read_band]});\n    end\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!cancel&&!response_failure&&state==AC_EXTRACT &&\n        cache_valid[read_segment]&&cache_address[read_segment]==18'(read_address & 32'hfffffff0))\n        assert(ac_bank_invalid[read_segment]==(17'(read_word[31:19])>=blocks || !rank_matches(read_band,read_position[5:0]) ||\n                           $signed(read_word[12:0])==0 || $signed(read_word[12:0]) < -2048 ||\n                           $signed(read_word[12:0]) > 2048 ||\n                           (cursors[read_band]!=0 && read_position<={13'd0,head_positions[read_band]})))\n            else $fatal(1,\"V112 local AC validation mismatch\");\n`endif\n    // V112_BANK_VALIDATION_END\n\n    // Cursor payload is unowned",
+          "before": "    // Cursor payload is unowned",
+          "expected_occurrences": 1
+        },
+        {
+          "after": "if(ac_bank_invalid[read_segment]) begin",
+          "before": "if(17'(read_word[31:19])>=blocks || !rank_matches(read_band,read_position[5:0]) ||\n                           $signed(read_word[12:0])==0 || $signed(read_word[12:0]) < -2048 ||\n                           $signed(read_word[12:0]) > 2048 ||\n                           (cursors[read_band]!=0 && read_position<={13'd0,head_positions[read_band]})) begin",
+          "expected_occurrences": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v110-cursors/packed_scratch_v91g2.sv",
+      "original_sha256": "ebc4ca022b00e9d41613155eb80859986a8a2fbb803b4541a72511105589a218"
+    }
+  },
+  "schema": "v112-local-control-existing-edges-v1",
+  "scope": "Exact public and invalid-cycle behavior; no owner, drain, reset, metadata, counters or state transition changes. Geometry payload preparation only; scratch pure per-bank validation algebra."
+}

@@ -1,0 +1,104 @@
+{
+  "schema": "v112-independent-focused-control-audit-v1",
+  "status": "PASS_FOCUSED_SOURCE_AND_BEHAVIOR_AUDIT",
+  "scope": "Read-only independent audit of focused V112 candidate evidence and source prefix. No tests/builds run by auditor; no timing/hardware qualification.",
+  "evidence": {
+    "summary": "experiments/python-gamebub-v112/control/results.json",
+    "summary_sha256": "97f90f5a71c946ee2b76baa36ecd5baafdd3272b9e9c8146eb3bf129c4b9fa9a",
+    "selected_receipt": "experiments/python-gamebub-v112/control/attempts/20261108T193449002942Z/results.json",
+    "selected_receipt_sha256": "0f501ce57eeb2a4f33994ec2a7e3c94bf2f558d1018383bcf0e583cbdcb821b5",
+    "retained_candidate_artifacts_rehashed": 48,
+    "source_and_fixture_pins_rehashed": 28,
+    "focused_status": "PASS",
+    "actual_RTL_run": true,
+    "added_public_cycles": 0,
+    "strict_warnings": true,
+    "warning_suppression": false,
+    "assertions_disabled_or_downgraded": false,
+    "hardware_or_physical_timing_claim": false
+  },
+  "source_identity": {
+    "control_input": "experiments/python-gamebub-v111/native/20261108T183002986106Z/inputs.json",
+    "control_input_sha256": "077e60529d950b934e1e8d1e91e5a23530efb9c6969779f5dc816d0fbbb40561",
+    "v110_count_and_v111_count125_source_origins_equal": true,
+    "source_origin_count": 18,
+    "overrides_exactly": {
+      "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv": {
+        "candidate": "fpga/experiments/cu66-v112-control/packed_scratch_v91g2.sv",
+        "candidate_sha256": "8041ed9b7e9ff3f2ee97710f9f5d89378bebe6d51dd7ecb95b1d3bddb9d5838b",
+        "original": "fpga/experiments/cu66-v110-cursors/packed_scratch_v91g2.sv",
+        "original_sha256": "ebc4ca022b00e9d41613155eb80859986a8a2fbb803b4541a72511105589a218"
+      },
+      "fpga/experiments/cu66-v91i2/cs88_admission_v91i2a.sv": {
+        "candidate": "fpga/experiments/cu66-v112-control/cs88_admission_v91i2a.sv",
+        "candidate_sha256": "49f23fe56894012d1f647192bb030025eb79331fe24b173c11a2252bee4ff8b7",
+        "original": "fpga/experiments/cu66-v107-tables/cs88_admission_v91i2a.sv",
+        "original_sha256": "b149c94ba1a5dd7f1d09384126c762d0bb0de5aa664baa4b76c29c631aeb652e"
+      }
+    },
+    "header_candidate_present": false,
+    "source_prefix_scope": "The focused run pins original and candidate production modules plus 24 supporting source/proof files. Native qualification remains separately responsible for assembling/re-hashing all 18 Count component aliases and requiring the full canonical result."
+  },
+  "edit_recipe_audit": {
+    "recipe": "fpga/experiments/cu66-v112-control/edit-recipe.json",
+    "recipe_sha256": "59834134d5126ef398ada2f2928a098ba26ef7a98481a667d454f3d70e44720e",
+    "all_edits_reconstructed_exactly_from_pinned_originals": true,
+    "candidate_hashes_match_reconstruction": true,
+    "original_assertions_removed_or_changed": false,
+    "new_private_equivalence_assertions": [
+      "Admission: compare the prepared visibility count with the original generic scalar function at GROUP_BEGIN.",
+      "Scratch: compare selected per-bank validity with the original selected-word predicate on valid AC_EXTRACT consumption."
+    ],
+    "admission_edit": "Prepare a 16-bit visible mask on the existing predecessor edge, use the successor plane/tile key at GROUP_NEXT boundary, and replace only the GROUP_BEGIN scalar count with a balanced population count.",
+    "scratch_edit": "Compute the existing AC record validity predicate independently for each cache bank, then select the selected bank's one-bit result in the existing AC_EXTRACT branch. State/error priority and selected payload behavior are retained."
+  },
+  "geometry_domain_reasoning": {
+    "generic_function_semantics": "For each k=0..15, both scalar and mask paths use 32-bit t+k, compare with tile_count(p), and apply hidden(p,t+k). For p=0 tile_count is 5400; for p=1,2,3 it is 1350, and hidden() treats every nonzero plane identically. The implementations preserve modulo-2^32 wrap and p=3 behavior.",
+    "proof_partition": [
+      "All p=0..3 and t=0..65535 are checked exhaustively, including all visibility outcomes in the low range.",
+      "For 65536 <= t <= UINT32_MAX-15, no addition wraps and every t+k is at least 65536, above every tile-count bound; all visibility bits must be zero.",
+      "For t=UINT32_MAX-15 through UINT32_MAX, all 16 wrap-tail values and all four plane values are checked explicitly."
+    ],
+    "focused_measurements_per_seed": {
+      "seeds": [112301, 112302],
+      "all_16bit_masks_popcount_checked": 65536,
+      "generic_plane_tile_checks": 262208,
+      "random_uint32_plane_tile_checks": 100000,
+      "uint32_wrap_tail_checked": true,
+      "result": "TEST_PASS"
+    },
+    "balanced_popcount_widths": "Pairs use 2 bits, quads 3 bits, octets 4 bits, and final total 5 bits, enough for exact range 0..16. All 65536 input masks pass an independent C++ popcount oracle."
+  },
+  "predecessor_and_consumption_audit": {
+    "initial_mask": "On valid P-frame header completion, HEADER_CHECK captures the p0/t0 mask on the edge that enters GROUP_BEGIN; the mask is therefore valid before the first GROUP_BEGIN consume edge.",
+    "successor_mask": "GROUP_NEXT captures the same plane/current tile for ordinary continuation, or plane+1/t0 when the current tile reaches the current plane count, matching the nonblocking state transition into GROUP_BEGIN.",
+    "invalid_header_or_cancel": "The private mask can update while unowned; header validation rejects before the P-frame GROUP_BEGIN path, and every later valid consume is preceded by the normal HEADER_CHECK/GROUP_NEXT preparation edge. Cancel/reset/start changes no public state because the mask has no output use outside GROUP_BEGIN.",
+    "scratch_guard": "The selected-bank predicate is consumed only when state is AC_EXTRACT and the selected cache bank is valid for the requested aligned address, preserving the original read ownership guard."
+  },
+  "focused_behavior_evidence": {
+    "scratch_seeds": [112101, 112102],
+    "scratch_full_transactions_per_seed": 72,
+    "scratch_corrupt_response_cases_per_seed": 128,
+    "scratch_read_owner_cases_per_seed": 4,
+    "scratch_bank_mask": 15,
+    "scratch_offset_mask": 65535,
+    "admission_seeds": [112201, 112202],
+    "admission_cases_per_seed": 86,
+    "admission_positive_negative_per_seed": [52, 34],
+    "admission_directed_checks_per_seed": 44,
+    "original_reference_and_full_selected_comparisons": true,
+    "test_hierarchy_translation_semantic_checker_edits": 0,
+    "candidate_component_canonical_q_still_required": true
+  },
+  "pinned_review_artifacts": {
+    "fpga/experiments/cu66-v112-control/packaging.json": "14826f388a2c97cd59da3db1a9f1f0bee2e77df523ffef8192e00d49c4c8a150",
+    "fpga/experiments/cu66-v112-control/verification/adapters.json": "13e8ab7c4544e442bf4986ec45f91f5f83366cf87aaa78a8f75a749909bd5646",
+    "scripts/cu66-v112/control/audit.py": "9c36ee29f57815eae854150e8444a555e92732d5bf201624bf4f6baab057a24b",
+    "experiments/python-gamebub-v112/control/audit.json": "independently checked content and receipt/report pins; audit file may be regenerated and is not the focused receipt"
+  },
+  "findings": [],
+  "limitations": [
+    "This is focused source/unit evidence, not the complete 18-source canonical decode comparison; full V112 canonical qualification is pending.",
+    "No routed timing result, 100/125 MHz closure, parent integration, CDC, hardware, FPS, or latency qualification follows from this proof."
+  ]
+}
