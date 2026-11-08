@@ -107,6 +107,8 @@ Do not start a long run if encoding support, receiver continuous lifecycle or me
 
 ## Immediate deliverables and coordination
 
+Latest physical milestone: [V44/V027 three-frame end-to-end PASS](V44-V027-HARDWARE-RESULT-20261107.md). All three host presentation replies match3receiver presentations and63,360 actual HUD comparisons. This does not qualify continuous playback. Detailed USB export still lost records in a burst; repair retained/paced diagnostics and target the measured1018/666ms scalar HU extraction before another performance trial.
+
 Execution has begun: see the [first offline verification results and remaining gates](OFFLINE-VERIFICATION-PROGRESS-20261107.md). The [next continuous receiver candidate design](CONTINUOUS-RECEIVER-NEXT-CANDIDATE-20261107.md) defines the bounded correctness-first implementation; it is not an installed or built release.
 
 The first bounded implementation is now built and packaged as V44, using unchanged V027. See the [exact three-frame hardware handoff](V44-V027-HARDWARE-HANDOFF-20261107.md): final-source host/native/socket, complete selected-system replay, ELF SRAM/configuration and production UF2 parser gates passed. This is ready for a coordinated three-frame physical correctness/stage-timing test; it does not implement the120-second stream, continuous session recovery or30fps. A native prediction-copy fix restores the original98,304-byte arena cap while keeping physical guards unchanged. Current hardware identity/IP/memory must be checked after installation.
