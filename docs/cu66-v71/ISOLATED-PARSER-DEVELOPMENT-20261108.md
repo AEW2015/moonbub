@@ -23,4 +23,10 @@ The intended equivalence is qualified handshake/data behavior with one extra val
 
 ## Status
 
-At creation, source review and initial focused/sequential tests passed; strengthened packet checks, full-system replay, synthesis and routing are pending. No candidate BIT or new physical result is claimed.
+The frozen parser suite passes 57 complete packet comparisons, direct metadata assertions and 12,150 qmap-response comparisons per source. Focused candidate tests execute 68,053 checks. The actual receiver-control cutoff test confirms the documented one-cycle watchdog-boundary difference, with unchanged simultaneous-error precedence.
+
+The actual V55 Rust/native plus combined RTL KEY/P replay passes: two accepted/presented, zero rejects/underruns, 42,240 actual HUD words written/read back, exact canonical/raster/HUD comparisons and exactly two runtime visits to the new parser state. Its 443.531-second host simulation duration is not target throughput. Full-system fault injection and radio/SPI/IDF behavior are outside that replay.
+
+Synthesis passed against all 79 frozen inputs (31,593 LUTs, 31,264 FFs, 65 RAMB36, six RAMB18 and 37 DSPs). Clock definitions are unchanged and no internal endpoints lack constraints. The two inherited critical CDC endpoints remain; this is not a zero-critical CDC result. A read-only cone inspection is in progress before placement approval. The twelve-frame replay is running separately. Routing, a candidate BIT and physical qualification remain pending. V028 remains selected.
+
+The separate native-code diagnostic now reproduces the existing strict `-O2`/`-O3` warning in a reduced optional/custom-allocator lifetime example. Explicit value initialization produces the same diagnostics. No warning was suppressed and no firmware optimization change was selected; the cause remains unresolved. These compiler experiments do not establish a runtime memory fault or a false positive.

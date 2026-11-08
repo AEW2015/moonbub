@@ -1,0 +1,9 @@
+﻿# Preparation recovery and scope notes
+
+The first compile attempt failed before elaboration because the preparation script converted a pathlib.Path to a Windows-backslash string inside a WSL command. Inspecting the failure also found unchanged old CE executable/output references in main.rs/driver.cpp/run.py and support-source selection. These references were corrected before any Rust replay. Pre-correction command, binding and harness sources plus failed logs are retained in compile01-path-failure.
+
+The corrected command explicitly selects the new wrapper and driver, contains the new parser exactly once, and excludes the old parser and old CE output directory. Corrected harness files and all executed inputs were hash-checked before run. Actual old CE completed output hashes were inspected; no old replay was launched. This preparation failure is not an FPGA functional failure and no failed DUT behavior is inferred from it.
+
+The new hardware candidate includes two production RTL deltas versus selected V028: the existing HUD Prepare CE factor plus the new parser validation stage. The test-only wrapper state19 counter and C++ final exact-count assertion are separately disclosed; production RTL interfaces and constraints are unchanged. Fullsystem positive-pair qualification does not inherit malformed/watchdog/recovery coverage, which is separately scoped in the source-bound focused unit tests.
+
+All stage durations and elapsed virtual times are model choices, not physical throughput: directCSR8cycles/core100MHz, modeled yield100us versus physical thread yield without a fixed sleep, explicit200ms Prepare per frame, nativeCPU virtual timer0, SDRAM init20/refresh750/defaultzero. Canonical front-bank/raster/HUD output comparison is independent. Bank2, realSPI/IDF/radio/targetheapfragmentation, routed timing and hardware remain separate gates.

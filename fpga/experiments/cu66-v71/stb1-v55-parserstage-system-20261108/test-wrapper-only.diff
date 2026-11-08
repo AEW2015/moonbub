@@ -1,0 +1,17 @@
+--- control-wrapper
++++ stage19-test-witness-wrapper
+@@ -45,8 +45,13 @@
+  output wire  front_cache_slot,
+  output wire [31:0] profile_magic,
+  output wire [31:0] profile_abi,
+- output wire [31:0] profile_capabilities
++ output wire [31:0] profile_capabilities,
++ output reg [31:0] parser_stage19_visits
+ );
++ always @(posedge clk) begin
++  if (rst) parser_stage19_visits <= 0;
++  else if (system_core.receiver.parser.state == 8'd19) parser_stage19_visits <= parser_stage19_visits + 1;
++ end
+  glbl glbl();
+  wire [7:0] raw_red;
+  wire [7:0] raw_green;
