@@ -1,5 +1,7 @@
 # Next parser timing work - source-traced proposal, no RTL change
 
+This is the earlier proposal and stop-point record. The user's subsequent request for isolated overnight development authorized the staged candidate now tracked in [ISOLATED-PARSER-DEVELOPMENT-20261108.md](ISOLATED-PARSER-DEVELOPMENT-20261108.md); its results supersede this document's no-further-builds status. The original failed attempts and passing V028 fallback remain preserved.
+
 Selected hardware candidate remains passing V028/V001. The CE-factored fresh build fails -0.382ns globally; the incremental attempt then failed placement before final STA. These attempts do not authorize new RTL, constraints or another build tonight.
 
 ## Measured path and actual source predicate

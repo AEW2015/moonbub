@@ -1,0 +1,40 @@
+--- v001/inspect.tcl
++++ v002/inspect.tcl
+@@ -87,9 +87,35 @@
+ }
+ close $f
+ set net [get_nets -quiet -of_objects $ticketce];require_nonempty $net hud_ticket_CE_net
+-set drivers [get_pins -quiet -of_objects $net -filter {DIRECTION == OUT}];require_nonempty $drivers hud_ticket_CE_driver
++# A synthesized hierarchical net may expose only an input-facing local alias.
++# Follow every segment, then select only primitive output pins, never a
++# hierarchical port as if it were the actual physical logic driver.
++set segments [get_nets -quiet -segments -of_objects $ticketce]
++require_nonempty $segments hud_ticket_CE_net_segments
++set outputs [get_pins -quiet -of_objects $segments -filter {DIRECTION == OUT}]
++set drivers {}
++set df [open [file join $out hud-ticket-ce-driver-candidates.tsv] w]
++puts $df "net_segment\tpin\tcell\tREF_NAME\tIS_PRIMITIVE"
++foreach segment $segments {puts $df "$segment\t-\t-\t-\t-"}
++foreach pin [lsort -unique $outputs] {
++ set cell [get_cells -quiet -of_objects $pin]
++ if {[llength $cell] != 1} {puts $df "-\t$pin\t$cell\tUNKNOWN\tUNKNOWN";continue}
++ set primitive [get_property -quiet IS_PRIMITIVE $cell]
++ puts $df "-\t$pin\t$cell\t[get_property REF_NAME $cell]\t$primitive"
++ if {$primitive eq "1"} {lappend drivers $pin}
++}
++close $df
++set drivers [lsort -unique $drivers]
++if {[llength $drivers] != 1} {error "hud_ticket_CE_primitive_driver missing/ambiguous: $drivers; inspect saved segment candidates"}
++set primitive_loads {}
++foreach pin [get_pins -quiet -of_objects $segments -filter {DIRECTION == IN}] {
++ set cell [get_cells -quiet -of_objects $pin]
++ if {[llength $cell] == 1 && [get_property -quiet IS_PRIMITIVE $cell] eq "1"} {lappend primitive_loads $pin}
++}
++set primitive_loads [lsort -unique $primitive_loads]
++require_nonempty $primitive_loads hud_ticket_CE_primitive_loads
+ set f [open [file join $out hud-ticket-ce-summary.tsv] w]
+-puts $f "fanin_startpoints\t[llength $hudstarts]\nHUD_metadata_startpoints\t$metadata_count\nnet\t$net\ndriver\t$drivers\nloads\t[llength [get_pins -quiet -of_objects $net -filter {DIRECTION == IN}]]"
++puts $f "fanin_startpoints\t[llength $hudstarts]\nHUD_metadata_startpoints\t$metadata_count\nnet\t$net\ndriver\t$drivers\nnet_segments\t[llength $segments]\nlocal_segment_input_pins\t[llength [get_pins -quiet -of_objects $net -filter {DIRECTION == IN}]]\nprimitive_loads_all_segments\t[llength $primitive_loads]"
+ close $f
+ report_timing -delay_type max -to $ticketce -max_paths 20 -file [file join $out hud-ticket-ce-setup.rpt]
+ report_timing -delay_type min -to $ticketce -max_paths 10 -file [file join $out hud-ticket-ce-hold.rpt]
