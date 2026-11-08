@@ -22,6 +22,10 @@ The exact-selected V027 cached5 full-system replay passed:5accepted/5presented, 
 
 Local receipts: `C:/moon/maintenance/v45-sequence`, `v45-telemetry`, `v45-localhost`, `v45-native-inplace` and `v45-system-cached5`; target records under `C:/moon/builds/v45-target-run02`. Source/cache outputs remain under `C:/moon`, using the shared warm custom cache `t/c44`; exact V44 release images remain preserved separately and are not replaced by target-cache contents.
 
+## Latest physical result
+
+[Cached3 passed end to end](V45-V027-CACHED3-RESULT-20261107.md):3presented/0rejects/underruns,63,360 actual HUD comparisons, complete telemetry and read-only re-export validated. Native minimum free15,664 and network-worker stack low-water4,780bytes were captured. Windows confirmed all3matching presentation replies/count3. Next is the fresh-boot cached12 trial; no extra firmware update is needed.
+
 ## Next physical ladder
 
 1. After all offline gates pass, install only the selected V45 app-only package in a coordinated update window. A physical power cycle/update-mode step also clears V44's held lease. Reload unchanged V027 and verify exact ELF/DONE/USERCODE/ABI, fresh owner, IP/filter and heap/stack. Keep all senders stopped until coordinated readiness.
@@ -29,6 +33,12 @@ Local receipts: `C:/moon/maintenance/v45-sequence`, `v45-telemetry`, `v45-localh
 3. Verify complete telemetry export, including network worker stack/minimum heap and target arena peak. If output is incomplete, request retained re-export using `$`; do not rerun the video to recover diagnostics. Any ownership, memory or correctness failure stops escalation.
 4. With a fresh qualified boot/owner, run cached12 and compare all12 presentations, reference/bank reuse, actual HUD checks and complete report. Stop on unknown/rejected outcome; no automatic retry, session restart or KEY-recovery claim.
 5. Extend lifecycle/recovery and actual Windows encoding, then test a short moving-video interval and finally the120-second clip. The current slow stop-and-wait/full-readback diagnostic is not a30fps streaming release.
+
+## Separate FPGA/UI follow-up: Power menu overlay
+
+The ESP32 Power key handler still invokes `power-menu.show()` in `handheld/res/ui/main.slint`. The selected V027 top leaves the normal QSPI overlay data/bounds outputs unconnected (`overlay_xctrl`, `overlay_yctrl`, `ov_wr`, `ov_addr`, `ov_data` in the frozen reset-bufg-v027 top). Its direct DY71 scanout therefore does not display the ordinary ESP32 popup over the custom image. This explains the missing visible overlay on that image; actual physical-button event delivery was not separately measured by this source inspection.
+
+Restoring it requires a qualified FPGA overlay/composition path with the existing pixel/bounds format, memory/scanout budgeting and frame-boundary/CDC checks, plus a safe pause/exit or power action that respects the retained native owner. This is separate from V45 ingress caching. Do not alter V027 or force-release its active lease during the current comparison. V45 does not claim Power-overlay support while the custom image is active.
 
 ## Windows work required for the original two-minute clip
 
