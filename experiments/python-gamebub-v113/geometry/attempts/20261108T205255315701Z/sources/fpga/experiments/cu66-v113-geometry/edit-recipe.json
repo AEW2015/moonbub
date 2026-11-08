@@ -1,0 +1,28 @@
+{
+  "schema": "v113-private-geometry-v1",
+  "original": "fpga/experiments/cu66-v110-count-domain/br88_context.sv",
+  "candidate": "fpga/experiments/cu66-v113-geometry/br88_context.sv",
+  "original_sha256": "029e1ed9b7fd9d3cd8bdf46d0d8e87d773062e1e238001c4b8e672553bb7ab64",
+  "candidate_sha256": "4eefd41198a0fcbfd80648e702a42f179315f7378969863c778bd06686ff6775",
+  "edits": [
+    {
+      "before": "    logic [31:0] start_limit;",
+      "after": "    logic [31:0] start_limit;\n    // Private two-stage preparation; no public handshake or latency changes.\n    logic [21:0] geometry_byte0,geometry_byte1,geometry_byte2,geometry_byte3;\n    logic geometry_bytes_valid,geometry_valid;\n    logic [7:0] geometry_byte_band,geometry_band;\n    logic [31:0] geometry_byte_position,geometry_position;\n    logic [15:0] geometry_byte_emitted,geometry_emitted;\n    logic [21:0] prepared_geometry;\n"
+    },
+    {
+      "before": "    always_comb begin\n        case (band)",
+      "after": "    function automatic logic [21:0] prepared_position_geometry(\n        input logic [1:0] b,input logic [21:0] w0,w1,w2,w3);\n        logic [7:0] total,corrected;\n        logic [15:0] q0,q1,q2,q3,quotient;\n        begin\n            total=remainder_sum4({2'd0,w0[5:0]},{2'd0,w1[5:0]},{2'd0,w2[5:0]},{2'd0,w3[5:0]});\n            corrected=correction_index(b,total);\n            q0=quotient_sum5(w0[21:6],w1[21:6],w2[21:6],w3[21:6],16'd0);\n            q1=quotient_sum5(w0[21:6],w1[21:6],w2[21:6],w3[21:6],16'd1);\n            q2=quotient_sum5(w0[21:6],w1[21:6],w2[21:6],w3[21:6],16'd2);\n            q3=quotient_sum5(w0[21:6],w1[21:6],w2[21:6],w3[21:6],16'd3);\n            case(corrected[7:6])\n                0:quotient=q0;\n                1:quotient=q1;\n                2:quotient=q2;\n                3:quotient=q3;\n            endcase\n            return {quotient,corrected[5:0]};\n        end\n    endfunction\n    // At E request acceptance registers PREFIX in Rice. PREFIX at E+1 and\n    // SUFFIX at E+2 precede its response consumption at E+3, even k==0.\n    // Stage one is ready at E; stage two is ready at E+1. Request stalls\n    // repeat coherent preparation. Reset/start/abort revoke both valid bits.\n    always_ff @(posedge clk) begin\n        if (reset || abort_context || start) begin\n            geometry_bytes_valid<=0;geometry_valid<=0;\n        end else begin\n            if (state==REQ_LEVEL || state==REQ_DC) begin\n                geometry_byte0<=byte_qr(context_band[1:0],0,position[7:0]);\n                geometry_byte1<=byte_qr(context_band[1:0],1,position[15:8]);\n                geometry_byte2<=byte_qr(context_band[1:0],2,position[23:16]);\n                geometry_byte3<=byte_qr(context_band[1:0],3,position[31:24]);\n                geometry_byte_band<=context_band;geometry_byte_position<=position;\n                geometry_byte_emitted<=emitted[15:0];geometry_bytes_valid<=1;\n                geometry_valid<=0;\n            end\n            if ((state==WAIT_LEVEL || state==WAIT_DC) && geometry_bytes_valid) begin\n                case(geometry_byte_band)\n                    1,2,3:prepared_geometry<=prepared_position_geometry(geometry_byte_band[1:0],geometry_byte0,geometry_byte1,geometry_byte2,geometry_byte3);\n                    default:prepared_geometry<={geometry_byte_emitted,6'd0};\n                endcase\n                geometry_band<=geometry_byte_band;geometry_position<=geometry_byte_position;\n                geometry_emitted<=geometry_byte_emitted;geometry_valid<=1;\n            end\n            if (state!=REQ_LEVEL && state!=REQ_DC && state!=WAIT_LEVEL && state!=WAIT_DC) begin\n                geometry_bytes_valid<=0;geometry_valid<=0;\n            end\n        end\n    end\n    always_comb begin\n        case (band)"
+    },
+    {
+      "before": "                    out_block<=16'(sparse_block); out_index<=sparse_index;",
+      "after": "                    {out_block,out_index}<=prepared_geometry;"
+    },
+    {
+      "before": "`ifndef SYNTHESIS\n    always_ff",
+      "after": "`ifndef SYNTHESIS\n    function automatic logic [21:0] original_scalar_geometry(input logic [7:0] b,input logic [31:0] n,input logic [15:0] e);\n        case(b)\n            1:return {16'(n/32'd5),ZIGZAG[6'(32'd1+n%32'd5)]};\n            2:return {16'(n/32'd15),ZIGZAG[6'(32'd6+n%32'd15)]};\n            3:return {16'(n/32'd43),ZIGZAG[6'(32'd21+n%32'd43)]};\n            default:return {e,6'd0};\n        endcase\n    endfunction\n    always_ff @(posedge clk) if (!reset && !abort_context && !start &&\n        parser_valid && parser_ready && parser_error==0 && (state==WAIT_DC || state==WAIT_LEVEL)) begin\n        assert(geometry_valid) else $fatal(1,\"geometry unavailable on actual Rice response\");\n        assert(geometry_band==context_band && geometry_position==position && geometry_emitted==emitted[15:0])\n            else $fatal(1,\"geometry key mismatch\");\n        assert({sparse_block,sparse_index}==original_scalar_geometry(context_band,position,emitted[15:0]))\n            else $fatal(1,\"original byte geometry differs from scalar\");\n        assert(prepared_geometry==original_scalar_geometry(context_band,position,emitted[15:0]))\n            else $fatal(1,\"prepared geometry differs from original scalar\");\n    end\n    always_ff"
+    }
+  ],
+  "added_public_cycles": 0,
+  "all_original_assertions_retained": true,
+  "PREVALIDATED_EVENT_COUNT_scope_unchanged": true
+}

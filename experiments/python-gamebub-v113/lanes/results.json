@@ -1,0 +1,562 @@
+{
+  "DSP_formula": "17 shared coefficient/context-path DSP + lanes*(8 dequant + 17 IDCT)",
+  "actual_RTL_run_by_this_study": false,
+  "actual_V112_hierarchy": {
+    "(admission)": {
+      "dsp": 0,
+      "ffs": 6576,
+      "luts": 8424,
+      "ramb18": 0,
+      "ramb36": 16
+    },
+    "(child)": {
+      "dsp": 0,
+      "ffs": 7141,
+      "luts": 230,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "(coefficients)": {
+      "dsp": 0,
+      "ffs": 588,
+      "luts": 2191,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "(context_decoder)": {
+      "dsp": 1,
+      "ffs": 315,
+      "luts": 1098,
+      "ramb18": 2,
+      "ramb36": 0
+    },
+    "(cs88_pipeline_v91k)": {
+      "dsp": 0,
+      "ffs": 5,
+      "luts": 0,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "(reconstruction)": {
+      "dsp": 0,
+      "ffs": 3236,
+      "luts": 3448,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "(synchronous.ingress)": {
+      "dsp": 16,
+      "ffs": 2333,
+      "luts": 2085,
+      "ramb18": 0,
+      "ramb36": 16
+    },
+    "(transform)": {
+      "dsp": 0,
+      "ffs": 2715,
+      "luts": 441,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "admission": {
+      "dsp": 0,
+      "ffs": 6576,
+      "luts": 8624,
+      "ramb18": 2,
+      "ramb36": 16
+    },
+    "child": {
+      "dsp": 17,
+      "ffs": 13822,
+      "luts": 8942,
+      "ramb18": 2,
+      "ramb36": 16
+    },
+    "coefficient_boundary": {
+      "dsp": 0,
+      "ffs": 136,
+      "luts": 67,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "coefficients": {
+      "dsp": 17,
+      "ffs": 21351,
+      "luts": 19952,
+      "ramb18": 4,
+      "ramb36": 32
+    },
+    "context_decoder": {
+      "dsp": 1,
+      "ffs": 628,
+      "luts": 2288,
+      "ramb18": 2,
+      "ramb36": 0
+    },
+    "cs88_pipeline_v91k": {
+      "dsp": 42,
+      "ffs": 35438,
+      "luts": 36669,
+      "ramb18": 4,
+      "ramb36": 32
+    },
+    "dequant": {
+      "dsp": 8,
+      "ffs": 2357,
+      "luts": 4760,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "inverse": {
+      "dsp": 17,
+      "ffs": 5111,
+      "luts": 6205,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "mode_store": {
+      "dsp": 0,
+      "ffs": 0,
+      "luts": 181,
+      "ramb18": 1,
+      "ramb36": 0
+    },
+    "packet_decoder": {
+      "dsp": 17,
+      "ffs": 2961,
+      "luts": 4370,
+      "ramb18": 2,
+      "ramb36": 16
+    },
+    "parser": {
+      "dsp": 0,
+      "ffs": 313,
+      "luts": 1190,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "reconstruct": {
+      "dsp": 0,
+      "ffs": 527,
+      "luts": 1804,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "reconstruction": {
+      "dsp": 0,
+      "ffs": 3763,
+      "luts": 5248,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "refill_overlap_enabled.refill_queue": {
+      "dsp": 0,
+      "ffs": 365,
+      "luts": 216,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "scratch": {
+      "dsp": 0,
+      "ffs": 3720,
+      "luts": 4370,
+      "ramb18": 0,
+      "ramb36": 0
+    },
+    "synchronous.ingress": {
+      "dsp": 17,
+      "ffs": 2961,
+      "luts": 4370,
+      "ramb18": 2,
+      "ramb36": 16
+    },
+    "transform": {
+      "dsp": 25,
+      "ffs": 10183,
+      "luts": 11406,
+      "ramb18": 0,
+      "ramb36": 0
+    }
+  },
+  "actual_part_capacity": {
+    "Block RAM Tile": {
+      "available": 135,
+      "used": 34
+    },
+    "DSPs": {
+      "available": 240,
+      "used": 42
+    },
+    "Slice": {
+      "available": 15850,
+      "used": 14050
+    },
+    "Slice LUTs": {
+      "available": 63400,
+      "used": 36669
+    },
+    "Slice Registers": {
+      "available": 126800,
+      "used": 35438
+    }
+  },
+  "assumptions": [
+    "Shared aggregate coefficient acceptance remains II=2 for all lane counts. Alternating lane accepts to reach one coefficient/cycle would require a new dispatcher/ownership contract and is outside this sweep.",
+    "Residual output remains one value/cycle, with either always-ready or the actual bench ready pattern cycle%257<83.",
+    "DSP replication cost uses V112 mapped unchanged DQ/IDCT blocks and shared 17-DSP path conditionally; new lane control/metadata/dispatch storage and placement are not measured.",
+    "The legacy LUT replication column copies the OLD V112 whole transform linearly as a diagnostic cost only. It is not a V113 mapping estimate or a proof of fit/failure."
+  ],
+  "benchmark_rows": [
+    {
+      "case": "p0_q0_zero",
+      "coefficient_span_cycles": 1080,
+      "first_output_offset": 68,
+      "input_stalls": 56,
+      "last_output_offset": 1151,
+      "math_and_offer_cycles": 1024,
+      "max_accept_gap": 5,
+      "min_accept_gap": 1,
+      "observed_mean_tile_start_spacing_cycles": {
+        "decimal": 68.0,
+        "denominator": 1,
+        "numerator": 68
+      },
+      "output_stalls": 0,
+      "profile": 0,
+      "tiles": 16,
+      "total_cycles": 1153,
+      "type": "throughput",
+      "variant": "frozen"
+    },
+    {
+      "case": "p0_q0_zero",
+      "coefficient_span_cycles": 3165,
+      "first_output_offset": 68,
+      "input_stalls": 2141,
+      "last_output_offset": 3410,
+      "math_and_offer_cycles": 3283,
+      "max_accept_gap": 179,
+      "min_accept_gap": 1,
+      "output_stalls": 2259,
+      "profile": 1,
+      "tiles": 16,
+      "total_cycles": 3412,
+      "type": "throughput",
+      "variant": "frozen"
+    },
+    {
+      "case": "p0_q0_ac_pos_limit",
+      "coefficient_span_cycles": 2984,
+      "first_output_offset": 204,
+      "input_stalls": 1960,
+      "last_output_offset": 3327,
+      "math_and_offer_cycles": 1024,
+      "max_accept_gap": 141,
+      "min_accept_gap": 1,
+      "observed_mean_tile_start_spacing_cycles": {
+        "decimal": 204.0,
+        "denominator": 1,
+        "numerator": 204
+      },
+      "output_stalls": 0,
+      "profile": 0,
+      "tiles": 16,
+      "total_cycles": 3329,
+      "type": "throughput",
+      "variant": "frozen"
+    },
+    {
+      "case": "p0_q0_ac_pos_limit",
+      "coefficient_span_cycles": 3724,
+      "first_output_offset": 255,
+      "input_stalls": 2700,
+      "last_output_offset": 4173,
+      "math_and_offer_cycles": 1870,
+      "max_accept_gap": 194,
+      "min_accept_gap": 1,
+      "output_stalls": 846,
+      "profile": 1,
+      "tiles": 16,
+      "total_cycles": 4175,
+      "type": "throughput",
+      "variant": "frozen"
+    },
+    {
+      "case": "p0_q0_zero",
+      "coefficient_span_cycles": 2047,
+      "first_output_offset": 133,
+      "input_stalls": 1023,
+      "last_output_offset": 2116,
+      "math_and_offer_cycles": 0,
+      "max_accept_gap": 2,
+      "min_accept_gap": 2,
+      "observed_mean_tile_start_spacing_cycles": {
+        "decimal": 128.0,
+        "denominator": 1,
+        "numerator": 128
+      },
+      "output_stalls": 0,
+      "profile": 0,
+      "tiles": 16,
+      "total_cycles": 2118,
+      "type": "throughput",
+      "variant": "candidate"
+    },
+    {
+      "case": "p0_q0_zero",
+      "coefficient_span_cycles": 2720,
+      "first_output_offset": 255,
+      "input_stalls": 1696,
+      "last_output_offset": 3366,
+      "math_and_offer_cycles": 45,
+      "max_accept_gap": 112,
+      "min_accept_gap": 2,
+      "output_stalls": 2210,
+      "profile": 1,
+      "tiles": 16,
+      "total_cycles": 3368,
+      "type": "throughput",
+      "variant": "candidate"
+    },
+    {
+      "case": "p0_q0_ac_pos_limit",
+      "coefficient_span_cycles": 2216,
+      "first_output_offset": 269,
+      "input_stalls": 1192,
+      "last_output_offset": 2432,
+      "math_and_offer_cycles": 945,
+      "max_accept_gap": 15,
+      "min_accept_gap": 2,
+      "observed_mean_tile_start_spacing_cycles": {
+        "decimal": 140.0,
+        "denominator": 1,
+        "numerator": 140
+      },
+      "output_stalls": 0,
+      "profile": 0,
+      "tiles": 16,
+      "total_cycles": 2434,
+      "type": "throughput",
+      "variant": "candidate"
+    },
+    {
+      "case": "p0_q0_ac_pos_limit",
+      "coefficient_span_cycles": 2899,
+      "first_output_offset": 269,
+      "input_stalls": 1875,
+      "last_output_offset": 3409,
+      "math_and_offer_cycles": 1857,
+      "max_accept_gap": 112,
+      "min_accept_gap": 2,
+      "output_stalls": 1889,
+      "profile": 1,
+      "tiles": 16,
+      "total_cycles": 3411,
+      "type": "throughput",
+      "variant": "candidate"
+    }
+  ],
+  "candidate_lane_result_storage": {
+    "full_identity_bits_per_slot": 140,
+    "other_control_and_coefficient_storage_not_included": true,
+    "payload_bits_per_slot": 1536,
+    "payload_plus_identity_bits_per_slot": 1676,
+    "slots": 2,
+    "state_bits_per_slot": 2
+  },
+  "compute_service_identifiable": false,
+  "conclusion": "Fast candidate zero workload already reaches the retained shared-intake floor; extra lanes cannot reduce that floor under this contract. AC observed end-to-end mean is 140 cycles/tile, but independent math service is unmeasured, so no two/four-lane speedup is assigned. The bounded consumer floor is 16448/83 cycles/tile for every lane count. DSP fit alone does not qualify complete device/port/timing fit.",
+  "invariants": {
+    "1024_coefficient_acceptance_span_floor_matches_fast_row": true,
+    "DSP_capacity_boundary_checked_at_8_and_9_lanes": true,
+    "all_8_benchmark_rows_bound": true,
+    "bounded_output_pattern_count_checked_across_phases": true,
+    "result_slots_and_full_identity_counted": true,
+    "shared_intake_floor_does_not_shrink_with_lanes": true,
+    "status": "PASS"
+  },
+  "missing_information": "Benchmark receipt has whole 16-tile durations, intake/output endpoints and stalls, without per-job DQ-launch/IDCT-complete timestamps. First residual offset includes 64-coefficient intake, validation/commit, launch and result ownership; it cannot be labeled pure compute latency.",
+  "observed_candidate_always_ready_average_cadence": {
+    "AC_positive_limit_cycles": 140,
+    "zero_cycles": 128
+  },
+  "physical_BRAM_groups": [
+    {
+      "DOA_REG": 0,
+      "DOB_REG": 0,
+      "count": 16,
+      "group": "admission_packet",
+      "primitive": "RAMB36E1",
+      "read_width_A": 1,
+      "read_width_B": 1,
+      "write_width_A": 1,
+      "write_width_B": 1
+    },
+    {
+      "DOA_REG": 0,
+      "DOB_REG": 0,
+      "count": 2,
+      "group": "context_geometry",
+      "primitive": "RAMB18E1",
+      "read_width_A": 18,
+      "read_width_B": 0,
+      "write_width_A": 18,
+      "write_width_B": 0
+    },
+    {
+      "DOA_REG": 0,
+      "DOB_REG": 0,
+      "count": 16,
+      "group": "ingress_packet",
+      "primitive": "RAMB36E1",
+      "read_width_A": 1,
+      "read_width_B": 1,
+      "write_width_A": 1,
+      "write_width_B": 1
+    },
+    {
+      "DOA_REG": 0,
+      "DOB_REG": 0,
+      "count": 1,
+      "group": "mode_metadata",
+      "primitive": "RAMB18E1",
+      "read_width_A": 2,
+      "read_width_B": 2,
+      "write_width_A": 2,
+      "write_width_B": 2
+    },
+    {
+      "DOA_REG": 0,
+      "DOB_REG": 0,
+      "count": 1,
+      "group": "scale_metadata",
+      "primitive": "RAMB18E1",
+      "read_width_A": 9,
+      "read_width_B": 9,
+      "write_width_A": 9,
+      "write_width_B": 9
+    }
+  ],
+  "physical_minimum_payload_beats": {
+    "reference_512bit_over_16bit": 32,
+    "scratch_128bit_over_16bit": 8
+  },
+  "port_constraints": [
+    "Shared single upstream coefficient stream; sweep retains aggregate acceptance at one coefficient per two decoder cycles. 64 coefficients impose 128 cycles/tile steady-state and 2047 cycles for the 1024-offer acceptance span.",
+    "Both packet RAMs share each logical registered read port between parser/replay clients; physical bit/depth slices do not grant independent compute-lane reads.",
+    "Mode and scale metadata expose one current lookup request/response interface; physical TDP modes do not establish spare independent lane lookup ports.",
+    "Scratch has one 128-bit request/response channel and one outstanding physical transaction ledger; reconstruction has one 512-bit reference response channel and ref_pending owner.",
+    "Board top has one physical 16-bit SDRAM DQ bus. A 128-bit scratch payload needs at least 8 data beats and a 512-bit reference payload at least 32, before protocol/refresh/arbitration/CDC; requests per tile and calibrated bus service are unknown.",
+    "Candidate coefficient banks and two full-width result slots are fixed-word registers; V112 transform maps no RAMB36/RAMB18. No extra BRAM ports are allocated by this ledger."
+  ],
+  "schema": "v113-lane-resource-bottleneck-ledger-v1",
+  "scope": "1/2/4 compute-lane conditional resource replication and shared-service lower bounds. Two/four lanes are not implemented, simulated or routed. No FPS/clock prediction.",
+  "shared_DSP_breakdown": {
+    "context_decoder": 1,
+    "ingress_own": 16
+  },
+  "source_sha256": {
+    "experiments/python-gamebub-v112/native/20261108T195810929250Z/inputs.json": "6185e0bf9eaf323ab82ae10fb7020830c4770afea49e4ab3779313e0e00c446e",
+    "experiments/python-gamebub-v112/native/20261108T195810929250Z/reports/route-capacity.rpt": "1067164c2b7a054862882d9d0afdec9a60bd66654ed30277364e1f50e7481f64",
+    "experiments/python-gamebub-v112/native/20261108T195810929250Z/reports/route-ram-config.tsv": "46ba1f74c0d900457669103a679b44e8d7e0f564d20dfe1935cd024a84a54df9",
+    "experiments/python-gamebub-v112/native/20261108T195810929250Z/reports/route-utilization.rpt": "3c07519fa72a3198746a963b58a8d3eddea9ca5a80f1fb316fbaab5168ea186f",
+    "experiments/python-gamebub-v113/inverse/benchmark-selected.json": "0903204e36d1acd8f4c2364b5828052fa6f1f0f7de5b1072fc2aaa1fe7cf458d",
+    "experiments/python-gamebub-v113/inverse/benchmarks/20261108T205614490604Z/receipt.json": "28263d65a20102f57455c51080c4bb5ad330775572f9c37671e75aae07b330a9",
+    "experiments/python-gamebub-v91j/vectors/boundary.tsv": "4dfa95cc9ecfdc850828e2fa442af3b7dcd69cb6af00399fd35c49600fcec1ed",
+    "fpga/experiments/cu66-v108-outtile/cu66_idct8x8.sv": "3a30e2c527755ee5e34480274a7998795a773e23fef6cec8471fdd89c31a7808",
+    "fpga/experiments/cu66-v110-count-domain/br88_packet_ingress_sync_v91h.sv": "38c524b52d40c1a7764ac7219582af974b8f973d94d8cff03f23c7088b2bcf28",
+    "fpga/experiments/cu66-v110-dequant/cu66_dequant.sv": "e0a62ee4886f5690e2a0c788d20cbef1ee669ef451a4944c10c43e43788c72ac",
+    "fpga/experiments/cu66-v110-fault/cs88_pipeline_v91k.sv": "950182396c4ac6f0f31c74fd41bf66c6122727e44cacf31ae48c55098e0dd786",
+    "fpga/experiments/cu66-v110-fault/cu66_inverse_stream_v91j.sv": "e00f53b7360878455e1078b0aaa3955ee0aab4abbecefde0c1b3b1f5a90c8a41",
+    "fpga/experiments/cu66-v110-fault/cu66_reconstruct_stream_v91k.sv": "f9dc06f183010a3486f387075b702a4cc7d9b4a06c1f4b0174cddad5813bf149",
+    "fpga/experiments/cu66-v112-control/cs88_admission_v91i2a.sv": "49f23fe56894012d1f647192bb030025eb79331fe24b173c11a2252bee4ff8b7",
+    "fpga/experiments/cu66-v112-control/packed_scratch_v91g2.sv": "8041ed9b7e9ff3f2ee97710f9f5d89378bebe6d51dd7ecb95b1d3bddb9d5838b",
+    "fpga/experiments/cu66-v113-inverse/cu66_inverse_stream_v91j.sv": "c727e7a71c8da5ace352df1e9483aa87c83a5d6a95d5b3127d9578653d0b9403",
+    "fpga/experiments/cu66-v113-inverse/tb_throughput.cpp": "6c6c15c08887e6d3e7db6f216c9c0e5b5c3286894050cd7745b631da08bda466",
+    "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh": "e0d5ae446155c1e295e0add487a30fec9c765cbafc0fabb15d248285ed22dca7",
+    "fpga/rtl/moonshine_top.sv": "0475af1af47d1bdc59945e63e785aac5804acbc2f0956afe314150dbfce551be",
+    "scripts/cu66-v113/inverse/benchmark.py": "6f65ab4405aacfefb1cdd030e22de7769442dc6e7bb70534ec2f6944501016db",
+    "scripts/cu66-v113/lanes.py": "6a9027458c1eea237758a1d5aa40f3a0ebd6bbd5768edd07a9419d9271af6cb9"
+  },
+  "status": "PASS",
+  "sweep": [
+    {
+      "achieved_clock_MHz": null,
+      "additional_result_state_bits": 4,
+      "always_ready_shared_stage_floor_cycles_per_tile": 128,
+      "bounded_output_shared_stage_floor_cycles_per_tile": {
+        "decimal": 198.16867469879517,
+        "denominator": 83,
+        "numerator": 16448
+      },
+      "candidate_result_slots": 2,
+      "complete_device_fit_qualified": false,
+      "conditional_dsp_percent": 17.5,
+      "conditional_engine_dsp": 42,
+      "conditional_old_V112_whole_transform_replication_LUTs": 36669,
+      "conditional_old_replication_exceeds_LUT_capacity": false,
+      "dsp_capacity": 240,
+      "dsp_count_only_within_capacity": true,
+      "implemented_RTL": true,
+      "independent_math_service_cycles_per_tile": null,
+      "lanes": 1,
+      "predicted_FPS": null,
+      "result_identity_bits": 280,
+      "result_payload_bits": 3072,
+      "result_payload_plus_full_identity_bits": 3352,
+      "shared_aggregate_intake_floor_cycles_per_tile": 128
+    },
+    {
+      "achieved_clock_MHz": null,
+      "additional_result_state_bits": 8,
+      "always_ready_shared_stage_floor_cycles_per_tile": 128,
+      "bounded_output_shared_stage_floor_cycles_per_tile": {
+        "decimal": 198.16867469879517,
+        "denominator": 83,
+        "numerator": 16448
+      },
+      "candidate_result_slots": 4,
+      "complete_device_fit_qualified": false,
+      "conditional_dsp_percent": 27.916666666666668,
+      "conditional_engine_dsp": 67,
+      "conditional_old_V112_whole_transform_replication_LUTs": 48075,
+      "conditional_old_replication_exceeds_LUT_capacity": false,
+      "dsp_capacity": 240,
+      "dsp_count_only_within_capacity": true,
+      "implemented_RTL": false,
+      "independent_math_service_cycles_per_tile": null,
+      "lanes": 2,
+      "predicted_FPS": null,
+      "result_identity_bits": 560,
+      "result_payload_bits": 6144,
+      "result_payload_plus_full_identity_bits": 6704,
+      "shared_aggregate_intake_floor_cycles_per_tile": 128
+    },
+    {
+      "achieved_clock_MHz": null,
+      "additional_result_state_bits": 16,
+      "always_ready_shared_stage_floor_cycles_per_tile": 128,
+      "bounded_output_shared_stage_floor_cycles_per_tile": {
+        "decimal": 198.16867469879517,
+        "denominator": 83,
+        "numerator": 16448
+      },
+      "candidate_result_slots": 8,
+      "complete_device_fit_qualified": false,
+      "conditional_dsp_percent": 48.75,
+      "conditional_engine_dsp": 117,
+      "conditional_old_V112_whole_transform_replication_LUTs": 70887,
+      "conditional_old_replication_exceeds_LUT_capacity": true,
+      "dsp_capacity": 240,
+      "dsp_count_only_within_capacity": true,
+      "implemented_RTL": false,
+      "independent_math_service_cycles_per_tile": null,
+      "lanes": 4,
+      "predicted_FPS": null,
+      "result_identity_bits": 1120,
+      "result_payload_bits": 12288,
+      "result_payload_plus_full_identity_bits": 13408,
+      "shared_aggregate_intake_floor_cycles_per_tile": 128
+    }
+  ]
+}

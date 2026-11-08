@@ -1,0 +1,31 @@
+{
+  "schema": "v113-exact-phase-validation-v1",
+  "production": {
+    "packed_scratch_v91g2.sv": {
+      "original": "fpga/experiments/cu66-v112-control/packed_scratch_v91g2.sv",
+      "original_sha256": "8041ed9b7e9ff3f2ee97710f9f5d89378bebe6d51dd7ecb95b1d3bddb9d5838b",
+      "candidate": "fpga/experiments/cu66-v113-scratch/packed_scratch_v91g2.sv",
+      "candidate_sha256": "efc3e61ac94d6c336164026c2865b70dee832c53a328bce720278719f6693f0f",
+      "edits": [
+        {
+          "before": "        input_bad=coef_epoch!=active_epoch || coef_band!=phase[1:0] ||\n            coef_block>=16'(blocks) || coef_value < -2048 || coef_value > 2048 ||\n            written>=counts[phase[1:0]];",
+          "after": "        input_bad=phase_input_bad[phase];",
+          "expected_occurrences": 1
+        },
+        {
+          "before": "        if(raw_mode) input_bad=input_bad || input_position!=written;\n        else if(phase==0) input_bad=input_bad || coef_index!=0 || 32'(coef_block)!=written;\n        else input_bad=input_bad || !band_matches(coef_band,coef_index) || coef_value==0 ||\n            (previous_valid && input_position<=previous_position);",
+          "after": "",
+          "expected_occurrences": 1
+        },
+        {
+          "before": "    // V112_BANK_VALIDATION_BEGIN:",
+          "after": "    // V113_PHASE_VALIDATION: phase selects a complete one-bit decision after\n    // constant-phase count/position validation. All eight phase encodings retain\n    // the original low-two-bit count/band lookup and full phase==0 semantics.\n    logic [7:0] phase_input_bad;\n    for(genvar checking_phase=0;checking_phase<8;checking_phase=checking_phase+1)begin: phase_validation\n        wire [31:0] phase_position=raw_mode ? (32'(coef_block)*64+32'(coef_index)) :\n            (checking_phase==0 ? 32'(coef_block) : (32'(coef_block)*64+32'(input_zigzag)));\n        assign phase_input_bad[checking_phase]=coef_epoch!=active_epoch || coef_band!=2'(checking_phase) ||\n            coef_block>=16'(blocks) || coef_value < -2048 || coef_value > 2048 ||\n            written>=counts[checking_phase & 3] ||\n            (raw_mode ? phase_position!=written : checking_phase==0 ?\n             (coef_index!=0 || 32'(coef_block)!=written) :\n             (!band_matches(coef_band,coef_index) || coef_value==0 ||\n              (previous_valid && phase_position<=previous_position)));\n    end\n`ifndef SYNTHESIS\n    logic input_bad_reference;\n    always_comb begin\n        input_bad_reference=coef_epoch!=active_epoch || coef_band!=phase[1:0] ||\n            coef_block>=16'(blocks) || coef_value < -2048 || coef_value > 2048 ||\n            written>=counts[phase[1:0]];\n        if(raw_mode) input_bad_reference=input_bad_reference || input_position!=written;\n        else if(phase==0) input_bad_reference=input_bad_reference || coef_index!=0 || 32'(coef_block)!=written;\n        else input_bad_reference=input_bad_reference || !band_matches(coef_band,coef_index) || coef_value==0 ||\n            (previous_valid && input_position<=previous_position);\n    end\n    always_ff @(posedge clk)if(!reset && !cancel && !response_failure && state==INGEST && coef_valid)\n        assert(input_bad==input_bad_reference)else $fatal(1,\"V113 phase validation mismatch\");\n`endif\n\n    // V112_BANK_VALIDATION_BEGIN:",
+          "expected_occurrences": 1
+        }
+      ]
+    }
+  },
+  "added_public_cycles": 0,
+  "all_original_assertions_retained": true,
+  "scope": "Full 3-bit phase including4..7; exact input error predicate and original priority/state/physical ledgers. No new ready/drain/owner latency."
+}

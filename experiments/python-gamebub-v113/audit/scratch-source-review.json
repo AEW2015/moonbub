@@ -1,0 +1,246 @@
+{
+  "actions": {
+    "builds": false,
+    "commits": false,
+    "hardware_contact": false,
+    "native_jobs": false,
+    "proof_edits": false,
+    "source_edits": false
+  },
+  "adapter_reviews": [
+    {
+      "complete_source_body_preserved": true,
+      "edit_count": 3,
+      "source": "fpga/experiments/cu66-v112-control/packed_scratch_v91g2.sv",
+      "status": "PASS",
+      "target": "fpga/experiments/cu66-v113-scratch/verification/observed_original.sv"
+    },
+    {
+      "complete_source_body_preserved": true,
+      "edit_count": 3,
+      "source": "fpga/experiments/cu66-v113-scratch/packed_scratch_v91g2.sv",
+      "status": "PASS",
+      "target": "fpga/experiments/cu66-v113-scratch/verification/observed_candidate.sv"
+    },
+    {
+      "complete_source_body_preserved": true,
+      "edit_count": 0,
+      "source": "fpga/experiments/cu66-v112-control/verification/scratch_probe.sv",
+      "status": "PASS",
+      "target": "fpga/experiments/cu66-v113-scratch/verification/scratch_probe.sv"
+    },
+    {
+      "complete_source_body_preserved": true,
+      "edit_count": 0,
+      "source": "fpga/experiments/cu66-v112-control/verification/tb_scratch.cpp",
+      "status": "PASS",
+      "target": "fpga/experiments/cu66-v113-scratch/verification/tb_scratch.cpp"
+    },
+    {
+      "complete_source_body_preserved": true,
+      "edit_count": 0,
+      "source": "fpga/experiments/cu66-v112-control/verification/tb_bank.cpp",
+      "status": "PASS",
+      "target": "fpga/experiments/cu66-v113-scratch/verification/tb_bank.cpp"
+    },
+    {
+      "complete_source_body_preserved": true,
+      "edit_count": 0,
+      "source": "fpga/experiments/cu66-v112-control/verification/historical_hazards.cpp",
+      "status": "PASS",
+      "target": "fpga/experiments/cu66-v113-scratch/verification/historical_hazards.cpp"
+    }
+  ],
+  "complete_sequential_body_and_original_assertions_byte_exact": true,
+  "expected_candidate_sha256": "efc3e61ac94d6c336164026c2865b70dee832c53a328bce720278719f6693f0f",
+  "final_runner_review": {
+    "original_two_findings": "Historical pre-fix observations only; both fixed in this bound runner version; no edits performed by reviewer.",
+    "path": "scripts/cu66-v113/scratch/qualify.py",
+    "sha256": "4e010103fa8ae2e3d3c1f3f222cea1b4e45acc718f54984f492a583c074b58f1",
+    "verify_prepared_read_only_execution": "PASS",
+    "zigzag_and_band_matches_extraction_bounds": "PASS"
+  },
+  "findings": [
+    {
+      "detail": "For every concrete phase p in 0..7, 2-bit checking_phase equals p[1:0] and checking_phase & 3 selects counts[p[1:0]], while checking_phase==0 is true only for full phase 0. Phase 4 retains AC/non-DC behavior even though its band/count index is 0.",
+      "severity": "info",
+      "status": "PASS",
+      "topic": "all-eight-phase-algebra"
+    },
+    {
+      "detail": "Raw is block*64+raster for every phase. Nonraw full phase 0 uses block and enforces raster=0 and block=written. Every nonzero phase uses block*64+zigzag(raster), nonzero coefficient and monotonic position. No arithmetic width, truncation or comparison changed.",
+      "severity": "info",
+      "status": "PASS",
+      "topic": "raw-DC-AC-position"
+    },
+    {
+      "detail": "Both predicates retain signed logic[15:0] coefficient comparisons with inclusive -2048..2048, unsigned coef_block>=16'(blocks), uint32 written/count and previous-position comparisons, including malformed high blocks truncation.",
+      "severity": "info",
+      "status": "PASS",
+      "topic": "signed-bounds-and-index-widths"
+    },
+    {
+      "detail": "Complete original sequential suffix is byte-identical. Reset/matching-abort, wrong response, drain, prefetch/write error and INGEST priority remain unchanged. coef_valid precedes band_end_valid; epoch mismatch selects error 2 before generic coefficient error 3.",
+      "severity": "info",
+      "status": "PASS",
+      "topic": "error-and-physical-owner-priority"
+    },
+    {
+      "detail": "No new state/register/public port/ready gate. Eight speculative combinational bits are selected by full phase; unused bits do not directly issue errors or mutate memory/ownership. Existing input_position and input_zigzag remain unchanged.",
+      "severity": "info",
+      "status": "PASS",
+      "topic": "unused-private-observations"
+    },
+    {
+      "detail": "input_zigzag is assigned in the original large always_comb; continuous phase_input_bad consumes it and is read back by input_bad in that block. No semantic data feedback through input_bad exists, but coarse scheduling may trigger UNOPTFLAT. No build run or speculative fix by reviewer.",
+      "severity": "open_verification_note",
+      "status": "AWAIT_ACTUAL_TOOL",
+      "topic": "coarse-combinational-scheduling"
+    },
+    {
+      "detail": "Review covers all binary phase encodings 0..7 and binary payloads. No X/Z equivalence claimed: an unknown packed-vector phase index may propagate X differently from the previous OR expression.",
+      "severity": "info",
+      "status": "LIMITATION",
+      "topic": "four-state-scope"
+    },
+    {
+      "detail": "At first-reviewed runner version, generate_phase_unit searches for aligned after zigzag although aligned precedes zigzag; the lookup raises ValueError. Runner belongs to Luna; no edit performed.",
+      "historical_observation_only": true,
+      "observed_in_current_runner": false,
+      "runner_sha256_after_fix": "4e010103fa8ae2e3d3c1f3f222cea1b4e45acc718f54984f492a583c074b58f1",
+      "runner_sha256_at_artifact_write": "870a70a677e037be9c0415ac96a0a649b29e2624287aa194d60df432aa9f24b2",
+      "severity": "verification_runner_issue",
+      "status": "RESOLVED_IN_BOUND_FINAL_RUNNER",
+      "topic": "focused-unit-function-extraction"
+    },
+    {
+      "anchor_reconstruction_matches_original": false,
+      "current_runner_reverse_exact": "PASS",
+      "detail": "At first-reviewed runner version, reverse handling for the empty-after tail edit reinserts after prefetch_complete but retains an extra blank line before always_comb end. Forward recipe and exact-offset reversal are byte-exact. Runner belongs to Luna; no edit performed.",
+      "historical_observation_only": true,
+      "runner_sha256_after_fix": "4e010103fa8ae2e3d3c1f3f222cea1b4e45acc718f54984f492a583c074b58f1",
+      "severity": "verification_runner_issue",
+      "status": "RESOLVED_IN_BOUND_FINAL_RUNNER",
+      "topic": "reverse-deletion-whitespace"
+    }
+  ],
+  "independent_python_screen": {
+    "actual_RTL_run": false,
+    "band_rank_cases": 256,
+    "inclusive_signed_values": 4097,
+    "method": "Independent scalar/reference and constant-row Python predicates, canonical zigzag permutation and known-width boundaries; source/recipe and unchanged sequential suffix independently checked. Not an RTL simulation or formal proof.",
+    "phase_encodings": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "position_formula_cases": 6144,
+    "random_fullwidth_cases": 100000,
+    "result": "PASS",
+    "seed": 113701,
+    "signed16_values": 65536,
+    "targeted_accepted_cases": 35348,
+    "targeted_phase_raw_counts": {
+      "0:0": {
+        "accepted": 60,
+        "compared": 13824
+      },
+      "0:1": {
+        "accepted": 3840,
+        "compared": 13824
+      },
+      "1:0": {
+        "accepted": 180,
+        "compared": 13824
+      },
+      "1:1": {
+        "accepted": 3840,
+        "compared": 13824
+      },
+      "2:0": {
+        "accepted": 540,
+        "compared": 13824
+      },
+      "2:1": {
+        "accepted": 3840,
+        "compared": 13824
+      },
+      "3:0": {
+        "accepted": 1548,
+        "compared": 13824
+      },
+      "3:1": {
+        "accepted": 3840,
+        "compared": 13824
+      },
+      "4:0": {
+        "accepted": 32,
+        "compared": 13824
+      },
+      "4:1": {
+        "accepted": 3840,
+        "compared": 13824
+      },
+      "5:0": {
+        "accepted": 180,
+        "compared": 13824
+      },
+      "5:1": {
+        "accepted": 3840,
+        "compared": 13824
+      },
+      "6:0": {
+        "accepted": 540,
+        "compared": 13824
+      },
+      "6:1": {
+        "accepted": 3840,
+        "compared": 13824
+      },
+      "7:0": {
+        "accepted": 1548,
+        "compared": 13824
+      },
+      "7:1": {
+        "accepted": 3840,
+        "compared": 13824
+      }
+    },
+    "targeted_predicate_cases": 221184,
+    "zigzag_rasters": 64
+  },
+  "module_interface_byte_exact": true,
+  "production_edits": 3,
+  "recipe_forward_and_reverse_by_exact_offsets": true,
+  "remaining_gates": [
+    "Actual strict Verilator original/candidate focused and extracted full-phase unit runs by Luna",
+    "Full exact composition regression and source-bound native timing audit by Root"
+  ],
+  "reviewed_at_utc": "2026-11-08T21:05:06.974921+00:00",
+  "reviewer": "root/v113_geometry",
+  "schema": "v113-independent-scratch-source-review-v1",
+  "source_sha256": {
+    "fpga/experiments/cu66-v112-control/packed_scratch_v91g2.sv": "8041ed9b7e9ff3f2ee97710f9f5d89378bebe6d51dd7ecb95b1d3bddb9d5838b",
+    "fpga/experiments/cu66-v112-control/verification/historical_hazards.cpp": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a",
+    "fpga/experiments/cu66-v112-control/verification/scratch_probe.sv": "173f87729fde9a129291b3bd64021f4dc7160a6625b7ab75779560f360d3d9d0",
+    "fpga/experiments/cu66-v112-control/verification/tb_bank.cpp": "3d7affdc894fa032a226174858e210598c7a1b29bab9936ca006a4a0048e9636",
+    "fpga/experiments/cu66-v112-control/verification/tb_scratch.cpp": "ae181060a0e45152ef892c248285aced9ab1528153fbe28d2b10c24154cf3e86",
+    "fpga/experiments/cu66-v113-scratch/edit-recipe.json": "56a933897837d3517e7626e4a317a831564d7f35e894b7ad5dc73f066ab3c53f",
+    "fpga/experiments/cu66-v113-scratch/packed_scratch_v91g2.sv": "efc3e61ac94d6c336164026c2865b70dee832c53a328bce720278719f6693f0f",
+    "fpga/experiments/cu66-v113-scratch/verification/adapters.json": "0b0905351ea8ab2bfcffe6f9fc8b46d19e189862500cd209ed6f8111626f0255",
+    "fpga/experiments/cu66-v113-scratch/verification/historical_hazards.cpp": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a",
+    "fpga/experiments/cu66-v113-scratch/verification/observed_candidate.sv": "f15479349d0b029b2f66e1ecbc1afa9c3d7dcd2556e93de86885cb87da464e61",
+    "fpga/experiments/cu66-v113-scratch/verification/observed_original.sv": "20abfb96248e2e5a913bbd92a260024dcdf9bbf2a29f27f26df666a5718573a4",
+    "fpga/experiments/cu66-v113-scratch/verification/scratch_probe.sv": "173f87729fde9a129291b3bd64021f4dc7160a6625b7ab75779560f360d3d9d0",
+    "fpga/experiments/cu66-v113-scratch/verification/tb_bank.cpp": "3d7affdc894fa032a226174858e210598c7a1b29bab9936ca006a4a0048e9636",
+    "fpga/experiments/cu66-v113-scratch/verification/tb_scratch.cpp": "ae181060a0e45152ef892c248285aced9ab1528153fbe28d2b10c24154cf3e86",
+    "scripts/cu66-v113/scratch/qualify.py": "4e010103fa8ae2e3d3c1f3f222cea1b4e45acc718f54984f492a583c074b58f1"
+  },
+  "status": "PASS_SOURCE_REVIEW",
+  "unchanged_geometry_and_rank_helpers_byte_exact": true
+}
