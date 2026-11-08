@@ -1,0 +1,15 @@
+# Sunshine coordination: STB1/V55 offline progress
+
+No START is requested. The handheld is currently in software DFU without the required Windows driver; V48 factory firmware is preserved and no vendor flash write has occurred. Local `.33` is sufficient for the next finite tests; `.47` need not run anything now.
+
+The [candidate index](cu66-v71/OVERNIGHT-CANDIDATES-20261108.md) contains exact firmware/FPGA hashes and scope. Last physical control is V48/V027:12 accepted/presented,253,440 verified HUD words,21.923482seconds. A software reboot passed; true power-rail cycling is unavailable.
+
+New FPGA V028 adds internal STB1 compressed-staging bursts. Its ABI3/caps3f is incompatible with the old FPGA CSR profile, but **does not change the existing bounded DYN1 sequence-v3 UDP framing or presentation semantics**. Port remains5535. A stored-prefix ACK means committed byte-prefix/CRC staging; only matching status2 establishes presentation. Credits/fences on the FPGA bus are internal receiver details, not network-ready feedback.
+
+The selected V028 BIT passes routed setup/hold/pulse and full routing/zero unwaived DRC errors, with small5ps setup margin. V54 is the observability control for the new bus; V55 composes canonical Huffman, bounded native READ slicing, free-only heap callbacks and five-u32 HBU status reads. Neither is installed. Actual Rust/native/RTL/SDRAM KEY/P tests pass; native runtime stack and physical service times remain unknown. Keep live JPEG/MSV1 and AV packets separate.
+
+An offline bridge now encodes12 new local video frames rather than exporting historical fixtures. Packaged source is local motion-test.mp4 SHA`d2ef7085d11a0a43741adb052c99df9814a8994018d8ca8922dfebc9b2bef9b4`,720×405 at(0,37) in720×480. Its0.367second KEY/P chain passes native-v69 and frozen Python canonical/HUD/display references. The original Mass Effect SHA`fb01977e41e649bfb9fd53d1ee0e6db436127fb86e4b3b7ec303158e0568aff5` was not found on this PC; this is a different source, not the120second target.
+
+The existing `host/dy71-sequence-v3/sequence_sender.py` supports `--manifest` pointing to the adjacent qualified `experiments/cu66-source-bridge-20261108/package12/manifest.json`; preserve its packets unchanged. Loader compatibility was checked offline. Do not send this new sequence until its actual-Rust/RTL twelve-frame replay completes and the receiver's hardware gates pass. Keep count12; a general continuous sender/session contract and live CU66 encoder are not established by these results. JPEG Q30/Q35 has no automatic mapping to this custom codec.
+
+Next coordinated network milestone: original fixtures on V54/V028, same fixtures on V55 for stage attribution, then the new12 package with explicit START and exact source/session/identity records. Only then agree a longer sequence/recovery contract and regenerate a short Mass Effect segment from Windows. Reconcile presentation and reference integrity before a120second trial or30unique displayed frames/s acceptance.

@@ -1,0 +1,11 @@
+# Independent V51 v002 final review ? 2026-11-08
+
+PASS. This addendum supersedes the v001 image identity for future tests; all earlier review/evidence is preserved. It introduces no new physical performance claim.
+
+Compared the v001 target source-before manifest against current candidate: the sole changed handheld source is src/diag_pages.rs. Its only diff from the inherited original diagnostic text is the V51 VARIANT label replacing the erroneous V48 identity. Native sources remain hash-identical to v001, and network_usb.rs including separate callbacks/paired diagnostic snapshots is unchanged. Arena/reserve/MIN_FREE, worker allocation, transport and guard behavior therefore retain the prior reviewed implementation. The label fix is separate from the callback performance change.
+
+Fresh target receipt C:/moon/builds/v51-target-run02 reports success, no source/native changes. Built ELF and release-free-probe-v002 ELF are byte-identical SHA991d0896f120e290f85ca19ba1fd85b689d3a9564354b87ed6f583588330d0ce; UF2 hash is pinned in independent-review-v002-bindings.json (prefix4dbfd500). Production updater parser passes13690blocks with Rev4/app-address/BIN-roundtrip checks. Host02 rerun reports104passing regressions and source-check unchanged189inputs; no target rebuild or host rerun by reviewer.
+
+Fresh actual-ELF Xtensa disassembly confirms free_probe0x420ba770 has one callx8 targeting heap_caps_get_free_size0x42190da8 with caps0x804 and retains MIN_FREE load/comparison/store. largest_probe0x420ba78c has one callx8 targeting heap_caps_get_largest_free_block0x42190e44 with caps0x804. Deliberate paired heap() still calls both. Decoded ELF L32R literals and disassembly are retained separately as independent-v51-v002.disassembly.txt and independent-review-v002-bindings.json. No return to redundant per-allocation largest-block walks occurred.
+
+Prior limits remain: eliminating4520redundant heap scans for the retained2260-allocation case is a compiled/source call-count result. Target saved time, concurrency/lock impact, runtime heap/stack and physical throughput remain unmeasured for V51. V027 pairing and exact controlled fixtures/settings must remain fixed for that comparison. No hardware, driver install, firmware/native edit, shared-target build or Vivado launch occurred during this review.

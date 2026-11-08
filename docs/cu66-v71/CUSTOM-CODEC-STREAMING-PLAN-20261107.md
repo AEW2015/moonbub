@@ -1,5 +1,7 @@
 # Custom codec: continuous playback and Mass Effect replay
 
+Latest execution status (2026-11-08): [overnight candidate index and next hardware ladder](OVERNIGHT-CANDIDATES-20261108.md). It supersedes historical current-state paragraphs below: V48/V027 physical12 passed; new V028 STB1 BIT and V49–V55 firmware are offline-qualified candidates, not installed. Handheld is presently software DFU without its Windows driver; no new physical START or30fps result.
+
 Updated November 7, 2026 (America/Denver). This is the active next-development plan after the V43/V027 original KEY/P hardware pass. The earlier [implementation plan](IMPLEMENTATION-PLAN.md) remains the architecture/history reference. This document does not arm hardware or authorize a Windows sender to start.
 
 ## Goal and current boundary

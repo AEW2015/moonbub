@@ -1,0 +1,2 @@
+`timescale 1ns/1ps
+module tb_lut6;reg a=1'bx,b=1'bx,c=0,d=0,e=1'bx,f=0;wire o;LUT6 #(.INIT(64'hFFFFFFFEFFFFFFFF)) u(.I0(a),.I1(b),.I2(c),.I3(d),.I4(e),.I5(f),.O(o));initial begin #10;$display("LUT6 known selector f0 output=%b logically1",o);if(o!==1'bx)$fatal(1,"expected retained startup unknown not reproduced");c=1;#10;$display("LUT6 toggle c output=%b should1",o);if(o!==1'b1)$fatal(1,"cofactor incorrect after input transition");a=0;b=0;e=0;#10;$display("LUT6 allknown output=%b should1",o);if(o!==1'b1)$fatal(1,"known input result incorrect");$finish;end endmodule

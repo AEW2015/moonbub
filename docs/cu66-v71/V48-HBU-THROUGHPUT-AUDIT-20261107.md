@@ -1,4 +1,4 @@
-﻿# V48/V027 HUD/QSPI throughput audit
+# V48/V027 HUD/QSPI throughput audit
 
 Read-only audit, 2026-11-07. V027 remains unchanged. No RTL build, FPGA write, timing-constraint change or hardware experiment was performed by this audit.
 
@@ -62,7 +62,7 @@ An isolated endpoint change can skip nonintersecting patches and copy only the i
 Useful ABI-compatible follow-ups, after that result:
 
 - Add bounded phase aggregates for native READ CPU time, SPI payload time, mailbox completion wait, status checks, transactions and bytes. Retain maxima/counts rather than logging per transaction.
-- Read the contiguous HBU status span0x608–0x618 in one existing auto-increment SPI read (six u32, ignoring0x60c if not needed), then validate the same flags/count/span/ticket. This could replace four scalar transactions without dropping checks. It requires proving the window remains stable after done; current single-owner command flow provides that intended stability, but pin-level tests must verify it.
+- Read the contiguous HBU status span0x608–0x618 in one existing auto-increment SPI read (five u32, ignoring0x60c if not needed), then validate the same flags/count/span/ticket. This could replace four scalar transactions without dropping checks. It requires proving the window remains stable after done; current single-owner command flow provides that intended stability, but pin-level tests must verify it.
 - Keep the original full-readback path as a diagnostic control. Do not silently skip actual verification, fabricate drain ACKs or relabel ingress acceptance as presentation.
 
 ## Compressed ingress dominates whole-run transaction count

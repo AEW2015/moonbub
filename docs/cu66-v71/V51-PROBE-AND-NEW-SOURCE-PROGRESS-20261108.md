@@ -10,10 +10,10 @@ The physical twelve-frame run recorded 2,260 native allocations. Its two free sa
 
 V51 splits the callbacks. Every pre-allocation reserve check, post-allocation free sample and minimum-free update remains. Failure diagnostics still query the largest block. Initial admission and final health still query both. The native allocator/decoder, 98,304-byte arena, 8,192-byte reserve, worker stacks, wire contract and V027 are unchanged.
 
-Source: `firmware/experiments/v51-dy71-free-probe-20261108`.
+Source: `firmware/experiments/v51-dy71-free-probe-20261108`; selected release `release-free-probe-v002` corrects the variant label. Older v001 images remain historical and are superseded. Fresh target callback disassembly/review binds v002.
 
-- ELF: `83799f1197eaf8b1aedd449313204a356e509f277c4459e7ab5a96d6a69eaa82`.
-- UF2: `c02da2dc55520fb6a156b6882fb38ce0c852b5b5aec2ec1a23eed114058de80b`.
+- ELF: `991d0896f120e290f85ca19ba1fd85b689d3a9564354b87ed6f583588330d0ce`.
+- UF2: `4dbfd500ee67166749229b0e3fc31b76ceed5ea702665ec7e1c7b17e90755ac5`.
 - Target build, 104 Rust host tests, native golden/rollback checks, four source-extracted callback tests, production UF2 parser and static SRAM guard pass. Static SRAM is 132,076 bytes.
 - Independent inspection of the new ELF confirms one intended IDF call in each callback. Native sources are byte-identical to V48; only the expected Rust callback/helper code differs.
 - Runtime stack, heap fragmentation, elapsed time and display cadence remain unmeasured. This candidate is not installed.
@@ -35,3 +35,5 @@ This is a research offline encoder and a short correctness package. Live capture
 ## FPGA work
 
 An isolated STB1 prototype batches compressed ingress through a 1 KiB alias aperture, with explicit generation/ticket/prefix/CRC fences. It changes the ABI and must be rejected by V48–V51. Initial pin-level tests include the selected QSPI endpoint, CDC and native staging RAM; an independent review requested full default-FIFO and maximum-packet coverage before synthesis. Selected-source simulation, full-system behavior, implementation timing and hardware qualification remain separate gates. V027 has not been changed or reprogrammed for this work.
+
+Latest FPGA and combined candidate status: [overnight index](OVERNIGHT-CANDIDATES-20261108.md). The prototype-only status above is historical; the exact selected V028 BIT now passes final implementation gates, but is not programmed.

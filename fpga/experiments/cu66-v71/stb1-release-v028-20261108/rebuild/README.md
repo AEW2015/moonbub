@@ -1,0 +1,7 @@
+# Standalone board rebuild
+
+Use Vivado 2025.2 for xc7a100tcsg324-1. No device access is needed. In a NEW build directory under C:/moon/builds, copy this package's inputs/ unchanged. Pass that build directory as the first Tcl argument to rebuild/synth.tcl, then rebuild/implementation.tcl. Pass the build and a NEW image directory to rebuild/emit-portable.tcl. Scripts preserve the original clocks, constraints, source ordering and route directives. Do not silently relax timing or change pins. Inspect final reports and bind new hashes; a new implementation is not guaranteed to reproduce identical placement or BIT bytes.
+
+The selected image and routed checkpoint are already preserved. build-evidence and selected-image/emit.tcl retain the original executed scripts and their historical paths; emit-portable.tcl changes only path arguments. selection.json contains historical pre-image placeholders; selected-image/identity.tsv and execution.json establish final USERID/USR_ACCESS 44593740 and image hashes.
+
+Verification records include original compile lists and absolute source bindings. These are evidence/replay ingredients, not a claim that every simulation runner is portable without rebasing. Exact compiled board inputs are self-contained in inputs/. Full optimized routed-cell/SDF replay is not qualified. The separate OOC FIFO primitive replay is explicitly scoped in verification/fifo-inference/REPORT.md.

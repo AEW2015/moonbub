@@ -3,7 +3,7 @@ use core::fmt::{self, Write};
 use crate::streaming::telemetry::FrameTrace;
 pub const PAYLOAD_BYTES: usize = 192;
 pub const LOG_FRAMING_RESERVE: usize = 64;
-pub const VARIANT: &str = "v48-dy71-selftest-control-20261107";
+pub const VARIANT: &str = "v51-dy71-free-probe-20261108";
 #[derive(Clone, Copy)]
 pub struct Context {pub capture: u32,pub generation: u32,pub epoch: u32,pub frame: u32}
 pub struct Line {bytes:[u8;PAYLOAD_BYTES],length:usize}

@@ -1,0 +1,12 @@
+from pathlib import Path
+import argparse,subprocess,os,json,hashlib,time
+p=Path(__file__).resolve().parent;a=argparse.ArgumentParser();a.add_argument('--netlist',type=Path);a.add_argument('--module',default='cu71_staging_burst_v1');a.add_argument('--output',type=Path,required=True);q=a.parse_args();out=q.output.resolve();assert out.is_relative_to(Path('C:/moon').resolve());out.mkdir(exist_ok=False);env=dict(os.environ,PATH='C:/msys64/ucrt64/bin;'+os.environ['PATH'],TEMP='C:/moon/tmp',TMP='C:/moon/tmp');sha=lambda f:hashlib.sha256(Path(f).read_bytes()).hexdigest();src=[p/'native_staging.sv',q.netlist.resolve()if q.netlist else p/'burst_rtl.sv',p/'tb_stb1_blackbox.sv'];cmd=['C:/msys64/ucrt64/bin/iverilog.exe','-g2012','-Mall='+str(out/'compiled-dependencies.txt'),'-s','tb_stb1_blackbox','-D','STB_DUT='+q.module,'-o',str(out/'test.vvp')];vendor=[]
+if q.netlist:
+ lib=Path('C:/Xilinx/2025.2/Vivado/data/verilog/src');vendor=[lib/'glbl.v'];cmd+=['-s','glbl','-y',str(lib/'unisims'),'-Y','.v']
+cmd +=[str(f)for f in src+vendor];rows=[]
+for label,c in [('compile',cmd),('simulate',['C:/msys64/ucrt64/bin/vvp.exe',str(out/'test.vvp')])]:
+ t=time.monotonic();r=subprocess.run(c,capture_output=True,text=True,env=env,timeout=180);(out/(label+'.log')).write_text(r.stdout+r.stderr);rows.append({'label':label,'command':c,'returncode':r.returncode,'wall_seconds':time.monotonic()-t});(out/'execution.json').write_text(json.dumps(rows,indent=2));print(label,r.returncode,r.stdout+r.stderr)
+ if r.returncode:raise SystemExit(r.returncode)
+dependencies=[Path(line.strip())for line in(out/'compiled-dependencies.txt').read_text().splitlines()if Path(line.strip()).is_file()];
+log=(out/'simulate.log').read_text();assert 'STB1_BLACKBOX_PASS scenarios=10'in log
+(out/'bindings.json').write_text(json.dumps({'scope':'functional netlist'if q.netlist else'RTL control','module':q.module,'files_sha256':{str(f):sha(f)for f in set(src+vendor+dependencies)},'internal_DUT_hierarchy_references':False,'SDF_or_physical_timing_proof':False,'iverilog_version':subprocess.run(['C:/msys64/ucrt64/bin/iverilog.exe','-V'],capture_output=True,text=True).stdout},indent=2));(out/'result.json').write_text(json.dumps({'status':'PASS_STB1_BLACKBOX_NETLIST'if q.netlist else'PASS_STB1_BLACKBOX_RTL','scenarios':10,'scope':'same external-port harness with actual native staging RAM and CRC; no SDF or physical timing claim'},indent=2))
