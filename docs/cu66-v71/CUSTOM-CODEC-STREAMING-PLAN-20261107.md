@@ -107,6 +107,8 @@ Do not start a long run if encoding support, receiver continuous lifecycle or me
 
 ## Immediate deliverables and coordination
 
+Next candidate in progress: [V45 ingress cache, reliable telemetry and longer bounded host sequence](V45-INGRESS-CACHE-PLAN-20261107.md). This is ESP32+host work with unchanged V027; exact source-bound cached-system replay and physical runtime qualification remain distinct gates.
+
 Latest physical milestone: [V44/V027 three-frame end-to-end PASS](V44-V027-HARDWARE-RESULT-20261107.md). All three host presentation replies match3receiver presentations and63,360 actual HUD comparisons. This does not qualify continuous playback. Detailed USB export still lost records in a burst; repair retained/paced diagnostics and target the measured1018/666ms scalar HU extraction before another performance trial.
 
 Execution has begun: see the [first offline verification results and remaining gates](OFFLINE-VERIFICATION-PROGRESS-20261107.md). The [next continuous receiver candidate design](CONTINUOUS-RECEIVER-NEXT-CANDIDATE-20261107.md) defines the bounded correctness-first implementation; it is not an installed or built release.
