@@ -1,5 +1,7 @@
 # CU66 v70: ESP32 and FPGA implementation plan
 
+> Active next-development plan (November 7): [continuous CU66 playback and the two-minute Mass Effect replay](CUSTOM-CODEC-STREAMING-PLAN-20261107.md). V43/V027 has now passed the original network KEY/P pair; continuous streaming and 30 fps remain unqualified. The dated baseline below is retained as architecture/history, not current hardware readiness.
+
 Date: November 5, 2026, America/Denver. Status: proposed implementation; no
 CU66 board image, target firmware or 30 fps result is established by this plan.
 

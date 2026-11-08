@@ -1,5 +1,7 @@
 # V43 / V025 bounded bulk HUD development
 
+> Current update, November 7: V43/V027 passed the original network KEY/P trial (2 accepted/2 presented, zero rejects/underruns, 42,240 HUD words verified, 6.782169 seconds). This remains a two-frame diagnostic. Continue with the [active streaming/Mass Effect plan](CUSTOM-CODEC-STREAMING-PLAN-20261107.md); earlier candidate and installation-pending entries below are historical.
+
 This is the next development candidate after the physical V42/V023 KEY/P pass. It is not installed, timing-qualified or a live-video/30 fps result. The physical V42/V023 endpoint and final-image lease remain held and untouched.
 
 ## Measured reason for the change

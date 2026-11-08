@@ -1,3 +1,5 @@
+> November 7 current status: V43/V027 passed the original KEY/P network pair; the receiver is still a two-frame diagnostic, not a continuous streaming endpoint. Next work is tracked in the [continuous CU66 / Mass Effect plan](cu66-v71/CUSTOM-CODEC-STREAMING-PLAN-20261107.md). The V40/V41 readiness statements below are historical. Do not transmit without a fresh coordinated START.
+
 ## V41 follow-up: physical SRAM admission
 
 V40 installed and connected to.157, then cleanly refused its140000-byte guard with118116free/largest37888, before any FPGA writes. No START or network payload transmission occurred.
