@@ -107,6 +107,8 @@ Do not start a long run if encoding support, receiver continuous lifecycle or me
 
 ## Immediate deliverables and coordination
 
+Latest offline progress: [V51 heap-probe correction and new-source CU66 encoding](V51-PROBE-AND-NEW-SOURCE-PROGRESS-20261108.md). V51 preserves all reserve checks while removing unintended largest-block walks from normal allocation samples; target build and compiled-code review pass, but it is not installed. Twelve newly encoded local-video frames now pass software/native checks and the existing sequence-v3 loader. This short new source is not the original Mass Effect clip or a live encoder. Driver/backup qualification still precedes a new physical trial.
+
 Latest physical milestone: [V48 local12 hardware PASS](V48-LOCAL12-HARDWARE-RESULT-20261107.md):12accepted/12presented,253,440HUDwords verified, zero rejects/underruns/native allocation failures. V48 preserves V47's native decoder and V027, adds local serial control/WinUSB descriptors, and uses the local`.33`sender. Both checksummed exports match. This is a bounded correctness result, not30fps or the full120-second clip; changed host/control layout prevents isolated allocation-order attribution.
 
 Current work: qualify fully automatic software recovery and protected app-only vendor updates, then longer distinct sequences and measured decoder/QSPI improvements. See [V48 bootstrap](V48-SELFTEST-BOOTSTRAP-20261107.md). The first software reboot occurred and was independently verified after a host COM-open race; preserve that failure and qualify the corrected controller separately. No true battery-level cold cycle is claimed.
