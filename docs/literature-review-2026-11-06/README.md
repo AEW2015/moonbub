@@ -1,5 +1,11 @@
 # Game Bub codec literature review after V90
 
+For the current routed baseline and spatial architecture follow-up, see the
+[2026-11-09 review and proposed V121–V125 roadmap](../gamebub-v121-v125-spatial-literature-review.md).
+V120 Source B now has repeat-qualified 100 MHz component timing; the older
+checkpoint statements below describe their historical versions. Complete-parent
+timing and physical 30 fps / validated <10 ms gates remain open.
+
 <!-- V110-CHECKPOINT-START -->
 **V110 timing work: best completed WNS −1.022 ns; 100 MHz and hardware gates remain open.**
 The [V110 report](../cu66-v110/README.md) retains the fixed 10.000-ns clock on

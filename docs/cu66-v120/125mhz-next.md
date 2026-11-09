@@ -1,5 +1,11 @@
 # Continuing the 125 MHz implementation
 
+The [2026-11-09 spatial literature review and proposed V121–V125 roadmap](../gamebub-v121-v125-spatial-literature-review.md)
+connects these measured paths to elastic request stages, local memory banking,
+validation overlap and ESP32 Wi-Fi/QSPI integration. Its reproducible analytical
+budgets retain the strict latency and physical frame-rate gates; it does not
+promote a new source composition or modify the qualified 100 MHz handoff.
+
 Keep the remote 100 MHz handoff pinned while experimenting on a separate source composition. V120 A125 failed at −1.847 ns, initially dominated by admission validation. The completed B125 route improves that to −1.517 ns but still fails; its [independent mapping audit](B-native-initial-mapping.md) identifies refill address generation and admission replay readiness as the new global worst. Component timing closure, complete-parent timing, sustained hardware frame rate and validated decode latency are separate gates.
 
 ## Current bounded repair

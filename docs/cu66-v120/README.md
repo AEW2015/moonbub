@@ -1,5 +1,10 @@
 # V120 decoder development and remote hardware handoff
 
+Next research: [spatial architecture literature review and proposed V121–V125 plan](../gamebub-v121-v125-spatial-literature-review.md),
+including 125 MHz control partitioning, latency/service budgets and the real
+ESP32 Wi-Fi/QSPI endpoint work needed for 30 fps. These are proposed experiments;
+the qualified Source B below remains unchanged.
+
 Start with [remote hardware bring-up](remote-hardware-test.md). This is a source-and-evidence handoff for component integration on another Game Bub system; it is not a complete board bitstream or a production Sunshine/ESP32 update.
 
 | Source | Change from V119 | Functional evidence | 100 MHz | 125 MHz |

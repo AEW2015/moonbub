@@ -1,5 +1,14 @@
 # Game Bub application-specific codec: selected direction and gates
 
+**Current continuation, 2026-11-09:** [V120 Source B](cu66-v120/handoff.md) is
+repeat-qualified for internal component timing at 100 MHz; its 125 MHz route
+fails at −1.517 ns. Complete-parent timing, sustained hardware 30 fps and
+validated hardware decoding below 10 ms remain open. The
+[spatial literature review and proposed V121–V125 plan](gamebub-v121-v125-spatial-literature-review.md)
+is the current research entry point for registered request/control boundaries,
+banked memory, exact validation overlap and ESP32 Wi-Fi/QSPI integration.
+Older checkpoints below retain their historical scope.
+
 <!-- V110-CHECKPOINT-START -->
 **V110 timing work: best completed WNS −1.022 ns; 100 MHz and hardware gates remain open.**
 The [V110 report](cu66-v110/README.md) retains the fixed 10.000-ns clock on
