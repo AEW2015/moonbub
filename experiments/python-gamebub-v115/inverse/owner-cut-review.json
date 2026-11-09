@@ -1,0 +1,156 @@
+{
+  "actual_RTL_run": false,
+  "alternatives": [
+    {
+      "name": "Unconditional removal",
+      "reason": "Reachable Boolean equivalence is true, but changes the explicit frozen private stale-tag injection contract. Do not remove the comparator or old test unconditionally.",
+      "status": "REJECT"
+    },
+    {
+      "assertions": [
+        "certified valid implies full tag equality",
+        "each real birth captures current tag, valid1, certificate1 on the same edge",
+        "every real birth is consumed on exactly the original producer-kill edge, not merely ignored",
+        "certificate clears on command_accept/reset and cannot be created by a stale private valid injection",
+        "certificate cannot authorize a new sequence; command_pending delivery and accepted/delivered/canceled conservation unchanged"
+      ],
+      "dataflow": "Keep existing base_kill_valid and base_kill_owner observable. Add a small certificate set atomically at both real kill births, held after valid falls, cleared on reset and command_accept. Drive base_abort=abort_packet||(base_kill_valid&&certificate). Preserve immediate public mask, accepted response drain and original kill edge.",
+      "limits": "Not generic recovery from arbitrary private tag/certificate corruption. A forged valid with a corrupted tag while an old held certificate remains1 could pass the certificate; an assertion would detect it in simulation but is not silicon recovery. Define reachable-transition/declared injection contract explicitly. Do not market equivalent arbitrary-state fault tolerance.",
+      "name": "Held registered authorization certificate; no extra kill edge",
+      "old_stale_probe": "b.offer accepts the new command and clears certificate. Its subsequent private stale valid/owner injection has certificate0 and remains ignored. Add explicit pre-edge !base_abort and child-ownership checks without deleting the existing oracle.",
+      "status": "PREFERRED_SMALL_PROPOSAL_IF_ROUTED_CONE_CONFIRMED",
+      "why_not_duplicate_valid": "Held certificate has a distinct lifecycle from one-cycle valid, avoiding a deliberately identical duplicate valid flop. New command clears old authorization before its delayed child delivery."
+    },
+    {
+      "benefit": "Preserves explicit stale-tag filtering even outside the reachable invariant and breaks the child cancellation cone at a new edge.",
+      "cost": "Adds one private kill edge. Public masks and masked request-ready paths already prevent new external accepted scratch/reference requests, but private replay/staging activity may advance for one more edge. Must extend admission/drain fence until the actual child kill is consumed.",
+      "dataflow": "Retain old combinational base_abort observable and tag comparator; register its qualified private pulse before driving child_abort=abort_packet||registered_matched_peer_kill. External abort stays direct.",
+      "name": "Extra registered matched-child-kill edge",
+      "old_checker_conflict": "Existing peer before/after hooks key on base_abort and require cancellation on that exact edge. Retaining observable base_abort while delaying actual child kill fails these unchanged timing/counter oracles; it cannot be called an unchanged-contract optimization. Requires a separately declared latency adapter with original oracles retained and strengthened real pulse/debt checks, not a silent checker relaxation.",
+      "status": "SAFER_TAG_FILTER_BUT_MORE_CONTRACT_DISTURBANCE"
+    }
+  ],
+  "assignment_inventory": [
+    {
+      "assignment": "base_kill_valid<=0",
+      "condition": "Unconditional beginning of the sole always_ff; overwritten only by the two real kill births.",
+      "lines": "265"
+    },
+    {
+      "assignment": "owner_sequence<=0; base_kill_owner<=0; base_kill_valid remains default0",
+      "condition": "reset, top priority",
+      "lines": "266-270"
+    },
+    {
+      "assignment": "base_kill_valid<=1; base_kill_owner<=owner_sequence",
+      "condition": "!reset && abort_packet && !base_kill_sent",
+      "lines": "271-277",
+      "sequence_next": "unchanged; no sequence assignment in abort branch"
+    },
+    {
+      "assignment": "owner_sequence<=owner_sequence+1",
+      "condition": "!reset && !abort_packet && command_accept",
+      "kill_next": "default0, no kill birth in this mutually exclusive branch",
+      "lines": "280-289"
+    },
+    {
+      "assignment": "No sequence or kill-owner assignment; valid default0",
+      "condition": "accepted_start, second priority after command_accept",
+      "lines": "290-292"
+    },
+    {
+      "assignment": "base_kill_valid<=1; base_kill_owner<=owner_sequence",
+      "condition": "else branch && qualified_fault && !terminal_valid && (inverse_fault||reconstruction_fault) && !base_kill_sent",
+      "lines": "294-296",
+      "sequence_next": "unchanged; command_accept already excluded"
+    },
+    {
+      "assignment": "No owner_sequence/base_kill_owner/valid assignments",
+      "condition": "owner close, credit regeneration, preload accept/completion and cache-abort rearm",
+      "lines": "297-312"
+    }
+  ],
+  "existing_tests": {
+    "control_per_seed": [
+      {
+        "accepted_commands": 77,
+        "backdoor_fault_tests_declared": 7,
+        "delivered_commands": 75,
+        "directed_checks": 78,
+        "explicitly_canceled_commands": 2,
+        "focused_control_cycles": 1980,
+        "original_bench_checks_removed": 0,
+        "physical_control_cycles": 286956,
+        "real_physical_drain_checks": 4,
+        "seed": 114101,
+        "status": "TEST_PASS"
+      },
+      {
+        "accepted_commands": 77,
+        "backdoor_fault_tests_declared": 7,
+        "delivered_commands": 75,
+        "directed_checks": 78,
+        "explicitly_canceled_commands": 2,
+        "focused_control_cycles": 1980,
+        "original_bench_checks_removed": 0,
+        "physical_control_cycles": 287226,
+        "real_physical_drain_checks": 4,
+        "seed": 114102,
+        "status": "TEST_PASS"
+      }
+    ],
+    "coverage": "64 command flag/poison variants; accepted-undelivered reset and abort; held start; partial/full/cache-start priority; 7 prepared child fault masks; explicitly injected stale private kill after new offer; prepared fe\u2192ff frontier/reset; actual accepted scratch/reference physical drain.",
+    "critical_stale_probe": {
+      "body": "b.offer(); T(base_kill_valid)=1; T(base_kill_owner)=T(owner_sequence)-1; b.poison(); b.tick(); need(T(owner_delivered)&&!T(base_abort),...); b.abort();",
+      "line": 71,
+      "meaning": "Intentionally violates the reachable invariant to test defensive stale-private-pulse handling. Retain unchanged. It must not silently be excluded or made vacuous by a comparator-removal claim.",
+      "path": "fpga/experiments/cu66-v114-control/tb_control.cpp"
+    },
+    "v115_peer": "Both115501/115502 passed original8 peer cases plus6 parent pending kills,14 full retries/seed. Checks same-owner registered real kill, exact physical reply retirement, private queued/pending refill cancellation counts and original canonical bytes."
+  },
+  "formal_tool_proof": false,
+  "native_timing_fix_claim": false,
+  "path_causality": {
+    "alias_caution": "mode_store/reconstruct_lookup_rsp/cache_count aliases in the synthesis path can result from cross-hierarchy logic merging. Confirm actual carry-chain inputs include base_kill_owner/current-sequence and output reaches producer abort before changing source.",
+    "required_confirmation": "Wait for routed max path. Read DCP all_fanin/get_pins of the comparator endpoint and CARRY S/CI inputs; retain startpoint set, Boolean/LUT INIT and mapped nets. Distinguish an equality cone from frontier/addition or mode-store lookup bounds before claiming a causal cut.",
+    "source_cone": "owner_sequence feeds its increment/start-ready frontier comparison and the private base_kill_owner equality. accepted_start is command_pending based, so the public command frontier reaches children only through a register. Of these source uses, the direct combinational path from sequence into child parser cancellation is base_abort equality. This makes the comparator hypothesis strong at RTL level."
+  },
+  "production_edits": false,
+  "proposed_new_tests": [
+    "Actual inverse and reconstruction peer fault births under scratch write/read replies before/with/after kill; original same-owner kill, all finite physical ledgers and canonical retries retained.",
+    "Actual queued plus pending replay fault; birth and consume counts must be nonzero and exact; no vacuous certificate-only safety proof.",
+    "Original stale private valid/retired-owner injection after command_accept unchanged, plus pre-edge masking and unchanged child frame snapshot; full retry.",
+    "Real no-owner abort, accepted-undelivered abort/reset, held external abort, partial/full cache abort/rearm and coincident start/cache cases, with source-independent accepted/delivered/canceled conservation.",
+    "Private injection alone must not set certificate; fresh real matched kill must set and consume it. Stale old epoch/tag following new command must remain ignored.",
+    "Prepared fe\u2192ff sequence frontier and reset, with no outstanding physical operation at the fixture; no credit beyond ff, real kill tag ff, reset returns known empty certificate.",
+    "For delayed alternative only, abort/reset on each added stage; exact one extra private kill edge, no external request acceptance, bounded private debt drain and blocked new credit until child kill consumption."
+  ],
+  "reachable_invariant": {
+    "cache_and_no_owner": "Preload operations and no-owner abort do not change sequence. No-owner abort may intentionally create a matching kill. Cache rearm returns credit after the pulse; it cannot create a mismatched tag.",
+    "command_concurrency": "A command acceptance is mutually exclusive with both kill births by reset/abort and if/else priority. An already-high valid is cleared on the same edge as any sequence change, so no old valid survives into the new sequence.",
+    "expression": "base_kill_valid -> base_kill_owner == owner_sequence",
+    "proof": "For next_valid=1 exactly one real birth executes, capturing next_owner=current_sequence while next_sequence is unchanged. Every branch changing next_sequence leaves next_valid=0. All other branches default next_valid=0. Thus the implication holds one step after any actual transition, without relying on liveness, owner_open, fault priority, or credit assumptions.",
+    "scope": "Actual sequential RTL transitions after a reset/known state edge; arbitrary public input combinations. Deliberate backdoor forcing of private registers is excluded.",
+    "wrap": "start_ready disables acceptance at ffffffff. fe\u2192ff acceptance produces valid0; later kills capture ff. Reset simultaneously returns sequence0 and valid0. Equality proof does not rely on modular arithmetic."
+  },
+  "schema": "v115-owner-private-kill-read-only-review-v1",
+  "sources": {
+    "experiments/python-gamebub-v114/control/results.json": "992cb049e270a386a9b5cf369ce72847299d96ca710a46b24652c4b93957ff77",
+    "experiments/python-gamebub-v115/control-peer/results.json": "513daae40be5e642772fd750847a52ffc4a8577776521cce7f71e8787c5efce4",
+    "fpga/experiments/cu66-v114-control/cs88_pipeline_v91k.sv": "9e6d2b88ad0f06ca0df5a5218be0d78a9fa9d9e8151d3b0b43aebaafc3ba76bd",
+    "fpga/experiments/cu66-v114-control/tb_control.cpp": "2390c119c986b424820a081833481e6dd5812cfa0afbff7a43f70234409b68c8"
+  },
+  "status": "SOURCE_INVARIANT_ESTABLISHED_WITH_PRIVATE_INJECTION_CONTRACT_CAVEAT",
+  "timing_evidence": {
+    "carry4": 3,
+    "data_path_ns": 10.362,
+    "end": "coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/reservoir_reg[0]/CE",
+    "limits": "Synthesized estimated path only. Arbitrary merged hierarchy net names do not establish source algebra or a routed timing fix.",
+    "logic_levels": 15,
+    "path": "/home/lori/gamebub-build/cu66-v69/v115-integrated-125-20261109T012933706009Z-8cfd49/results/synth-setup-paths.rpt",
+    "sha256": "f53e56817f30f5b4d4539b931fd9e74cff35803d0928f6baf2ecb56aa07bf739",
+    "slack_ns": -2.648,
+    "stage": "synthesis_only_routing_in_progress",
+    "start": "owner_sequence_reg[5]/C"
+  }
+}

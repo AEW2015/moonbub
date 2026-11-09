@@ -1,0 +1,30 @@
+{
+  "candidate": "fpga/experiments/cu66-v115-refined-ingress/br88_packet_ingress_sync_v91h.sv",
+  "candidate_sha256": "93b965d5d02d89e9f8b88b64340af7bd8f7c08568694e1dc0aaeb41c19bfcaf2",
+  "capture": "prefix_header_capture && fetch_index==29; includes current ram_data as len3 high byte",
+  "commit": "E3,30 ordinary edges before HEADER in the unstalled two-edge fetch schedule; valid cleared on original cancel/failure/done guard",
+  "edits": [
+    {
+      "after": "    // REFINED_HEADER_LENGTH_BEGIN: owned WAIT29 E0 through predicate E3.\n    // Two unsigned32 operands fit exactly in33 bits. Two such pairs fit in34;\n    // size minus46 is retained at the original34-bit width, including wrap.\n    // Payload pipelines have no reset/global CE. Only a coherent owned E3\n    // predicate is committed; later unrelated ram_data cannot replace it.\n    logic [31:0] header_length0_s0, header_length1_s0;\n    logic [31:0] header_length2_s0, header_length3_s0;\n    logic [33:0] header_size_s0, header_expected_s1, header_expected_s2;\n    logic [32:0] header_pair01_s1, header_pair23_s1;\n    logic [33:0] header_total_s2;\n    logic [2:0] header_length_valid_pipe;\n    logic header_length_live, header_length_mismatch;\n    logic header_length_capture, header_length_flush;\n    assign header_length_capture=prefix_header_capture&&fetch_index==6'd29;\n    assign header_length_flush=cancelled||context_failure||(context_active&&ctx_done);\n    always_ff @(posedge clk)begin\n        if(header_length_flush)begin header_length_valid_pipe<=0;header_length_live<=0;end\n        else begin\n            header_length_valid_pipe<={header_length_valid_pipe[1:0],header_length_capture};\n            if(header_length_valid_pipe[2])header_length_live<=1;\n        end\n    end\n    always_ff @(posedge clk)begin\n        // E0: the first three words are already stored, and the fourth word's\n        // current high byte is forwarded from this exact owned response.\n        header_length0_s0<=cached32(14);header_length1_s0<=cached32(18);\n        header_length2_s0<=cached32(22);\n        header_length3_s0<={ram_data,fetch_bytes[28],fetch_bytes[27],fetch_bytes[26]};\n        header_size_s0<={2'd0,size_bytes};\n        // E1: each full carry stays in an explicit33-bit pair.\n        header_pair01_s1<={1'b0,header_length0_s0}+{1'b0,header_length1_s0};\n        header_pair23_s1<={1'b0,header_length2_s0}+{1'b0,header_length3_s0};\n        header_expected_s1<=header_size_s0-34'd46;\n        // E2: the pair carry bits are retained in the final34-bit sum.\n        header_total_s2<={1'b0,header_pair01_s1}+{1'b0,header_pair23_s1};\n        header_expected_s2<=header_expected_s1;\n        // E3: hold the one owned predicate until the next capture/kill.\n        if(header_length_valid_pipe[2])header_length_mismatch<=header_total_s2!=header_expected_s2;\n    end\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!header_length_flush&&header_length_valid_pipe[2])begin\n        assert(header_total_s2==({2'd0,cached32(14)}+{2'd0,cached32(18)}+{2'd0,cached32(22)}+{2'd0,cached32(26)}))\n            else $fatal(1,\"refined header sum lost full34-bit carry or forwarded high byte\");\n        assert(header_expected_s2==({2'd0,size_bytes}-34'd46))\n            else $fatal(1,\"refined header expected length lost34-bit underflow\");\n    end\n    always_ff @(posedge clk)if(state==HEADER&&!header_length_flush)begin\n        assert(header_length_live)else $fatal(1,\"HEADER consumed a stale or unowned length predicate\");\n        assert(header_length_mismatch==(({2'd0,cached32(14)}+{2'd0,cached32(18)}+{2'd0,cached32(22)}+{2'd0,cached32(26)})!=({2'd0,size_bytes}-34'd46)))\n            else $fatal(1,\"refined header predicate differs from literal original expression\");\n    end\n`endif\n    // REFINED_HEADER_LENGTH_END\n\n    // COUNT_THRESHOLD_PIPELINE_BEGIN: nine registered positions E0..E8.",
+      "before": "    // COUNT_THRESHOLD_PIPELINE_BEGIN: nine registered positions E0..E8.",
+      "occurrences": 1
+    },
+    {
+      "after": "else if(header_length_mismatch) fail_packet(4);",
+      "before": "else if({2'd0,cached32(14)}+{2'd0,cached32(18)}+{2'd0,cached32(22)}+{2'd0,cached32(26)}!=({2'd0,size_bytes}-34'd46)) fail_packet(4);",
+      "occurrences": 1
+    }
+  ],
+  "exact_widths": {
+    "expected": 34,
+    "operands": 32,
+    "pair_sums": 33,
+    "total": 34
+  },
+  "original": "fpga/experiments/cu66-v115-ingress/br88_packet_ingress_sync_v91h.sv",
+  "original_sha256": "b24bdd7db9077d76d30da8203a494584cd179ccd62ed65d87a768519dc858412",
+  "payload_reset": false,
+  "predicate": "Exact literal original34-bit four-word sum != (zero-extended size_bytes -34d46)",
+  "public_cycle_delta": 0,
+  "schema": "v115-refined-header-length-owned-four-edge-pipeline-v1"
+}

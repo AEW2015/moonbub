@@ -1,0 +1,173 @@
+{
+  "base": {
+    "path": "fpga/experiments/cu66-v114-harness/bench_command_api.cpp",
+    "prefix_sha256": "d7aab4549b40a24d2726ff9ecc4086ea1e684c4797af0ff20654b541a2cb389a",
+    "sha256": "97225e93eff4e7524ebefe553f01b6f0be8c98402cf2a380790ceb1a969c3672"
+  },
+  "changed_need_calls": [],
+  "changed_need_reason": "No original need() call removed; a bounded canonical view excludes the HUD suffix of the actual validated bank.",
+  "contract": "V114 E/E+1 command delivery unchanged; selected V115 private preparation unchanged. Outer C2/HUD publication credit is waited on by the original start_ready drain condition, bounded at20M edges. Cold power reset participates in the retained coefficient-elastic monitor. Parent fault cancels join/validation immediately and producer locally one edge later; request grants are masked while accepted responses drain unchanged.",
+  "derived": {
+    "path": "fpga/experiments/cu66-v115-live-parent/tb_keyframe.cpp",
+    "sha256": "bfb9d5388b8d87a681f0a446efbe5f4665b0559c140593817931c7c4a7d84e63"
+  },
+  "edits": [
+    {
+      "after": "Vcs88_live_v91l",
+      "before": "Vcs88_pipeline_v91k",
+      "occurrences": 3
+    },
+    {
+      "after": "cs88_live_v91l__DOT__producer__DOT__",
+      "before": "cs88_pipeline_v91k__DOT__",
+      "occurrences": 22
+    },
+    {
+      "after": "#include \"verilated.h\"\n#include <string_view>\n#include \"../../../experiments/cu66-native-v69/hud.hpp\"",
+      "before": "#include \"verilated.h\"",
+      "occurrences": 1
+    },
+    {
+      "after": "\nusing Digest=std::array<uint8_t,32>;\nusing cu66::Bytes;using cu66::Patch;using cu66::View;\ntemplate<class W>static Digest get_digest(const W &p){Digest out{};for(unsigned i=0;i<32;++i)out[i]=uint8_t(p[(31-i)/4]>>((3-i%4)*8));return out;}\ntemplate<class W>static void set_digest(W &p,const Digest &v){for(unsigned i=0;i<8;++i)p[i]=0;for(unsigned i=0;i<32;++i)p[(31-i)/4]|=uint32_t(v[i])<<((3-i%4)*8);}\nstatic Digest to_digest(const std::string &s){auto b=unhex(s);need(b.size()==32,\"digest width\");Digest d{};std::copy(b.begin(),b.end(),d.begin());return d;}\nstatic uint64_t be64(const Bytes &b,unsigned at){uint64_t v=0;for(unsigned i=0;i<8;++i)v=v*256+b[at+i];return v;}\nstruct ValidationFixture {std::string id;Bytes packet,tiles,hud;Digest root,seal,hud_sha;};\nstatic std::map<uint32_t,ValidationFixture> validation;\nstatic void load_validation(const std::string &path){std::ifstream in(path);need(bool(in),\"validation source\");std::string l;\n while(std::getline(in,l)){std::istringstream row(l);std::array<std::string,10> c;for(auto &x:c)need(bool(std::getline(row,x,'\\t')),\"validation columns\");if(c[0]==\"id\")continue;\n  if(c[0]!=\"c0_f0\"&&c[0]!=\"c0_f1\")continue;\n  ValidationFixture f{c[0],unhex(c[3]),unhex(c[4]),unhex(c[5]),to_digest(c[8]),to_digest(c[9]),to_digest(c[7])};\n  uint32_t fid=0;for(unsigned i=8;i<12;++i)fid=fid*256+f.packet[i];need(validation.emplace(fid,std::move(f)).second,\"validation duplicate\");\n }need(validation.size()==2,\"two original native chain fixtures\");}\n\nstruct Tuple{",
+      "before": "struct Tuple{",
+      "occurrences": 1
+    },
+    {
+      "after": "\n    struct CandidateRequest {uint32_t epoch,token;unsigned bank,addr;uint8_t value;\n      bool operator==(const CandidateRequest &x)const{return epoch==x.epoch&&token==x.token&&bank==x.bank&&addr==x.addr&&value==x.value;}};\n    struct CandidatePending{CandidateRequest q;uint64_t due;};\n    std::optional<CandidatePending> candidate_pending;std::optional<CandidateRequest> held_candidate;\n    std::array<Bytes,3> candidate_memory{{Bytes(560640),Bytes(560640),Bytes(560640)}};\n    std::vector<Patch> accepted_hud,provisional_patches;Bytes provisional_hud,accepted_qcache;\n    Bytes actual_qcache;std::array<bool,1350> qcache_seen{};std::optional<unsigned> qcache_lookup;\n    const ValidationFixture *vf=nullptr;size_t software_hud_pos=0;bool receipt_sent=false;\n    uint64_t candidate_requests=0,candidate_acks=0,hash_deliveries=0,candidate_hash=0,commit_cycle=0;\n    uint64_t first_outer=0,last_outer=0,first_write=0,last_write=0,first_token=0,last_token=0;\n    bool hold_candidate=false,wrong_ack=false,bus_error=false,hold_presentation=false,hold_scanout=false;\n    bool bad_root=false,bad_generation=false,bad_hud_index=false,bad_hud_last=false,extra_hud=false;\n    std::optional<CandidateRequest> held_delivery;\n    std::ofstream hash_events;\n    CandidateRequest candidate_request()const{return {d.candidate_req_epoch,d.candidate_req_token,unsigned(d.candidate_req_bank),unsigned(d.candidate_req_addr),uint8_t(d.candidate_req_data)};}\n    void cold_live(){need(!pending&&!reference_pending&&!candidate_pending,\"cold reset external owner\");monitor_active=false;vf=nullptr;d.software_hud_valid=0;d.software_receipt_valid=0;\n      d.power_on_reset=1;tick();d.power_on_reset=0;tick();accepted_hud.clear();accepted_qcache.clear();need(!d.v_accepted_valid&&!d.v_front_valid&&d.start_ready,\"cold live baseline\");}\n    void stage_live(const Case &c){\n      uint32_t fid=be32(c.packet,8);vf=&validation.at(fid);\n      need(std::equal(vf->root.begin(),vf->root.end(),c.packet.begin()+52)&&std::equal(vf->seal.begin(),vf->seal.end(),c.packet.begin()+84),\"live BR88 encoding changed original commitments\");\n      const unsigned off=128+be32(c.packet,36)+be32(c.packet,40)+be32(c.packet,48),n=be32(c.packet,44);\n      Bytes payload(c.packet.begin()+off,c.packet.begin()+off+n);\n      const auto &orig=vf->packet;const unsigned origoff=128+be32(orig,36)+be32(orig,40)+be32(orig,48),orign=be32(orig,44);\n      need(n==orign&&std::equal(payload.begin(),payload.end(),orig.begin()+origoff),\"live HUD body vs original CS88\");\n      provisional_patches=cu66::decode_hud(View(payload),c.packet[5]?nullptr:&accepted_hud,fid,be32(c.packet,12));\n      provisional_hud.clear();for(const auto &p:provisional_patches){auto raw=cu66::word_bytes(p.words);provisional_hud.insert(provisional_hud.end(),raw.begin(),raw.end());}\n      need(provisional_hud==vf->hud&&cu66::sha256(provisional_hud)==vf->hud_sha,\"real HUD decode vs independent fixture\");\n      if(!c.packet[5])need(c.prior==accepted_qcache&&d.v_accepted_valid&&c.ref_fid==d.v_accepted_fid&&c.ref_gen==d.v_accepted_generation,\"delta prior qcache/reference not actual accepted history\");\n      actual_qcache.assign(1350,0xff);qcache_seen.fill(false);qcache_lookup.reset();\n      software_hud_pos=0;receipt_sent=false;candidate_requests=candidate_acks=hash_deliveries=commit_cycle=first_outer=last_outer=first_write=last_write=first_token=last_token=0;\n      candidate_hash=1469598103934665603ULL;\n      d.validation_start_fid=fid;d.validation_start_refid=be32(c.packet,12);d.validation_start_generation=be64(c.packet,16)+(bad_generation?1:0);d.validation_start_key=c.packet[5];\n      Digest root=vf->root;if(bad_root)root[0]^=1;set_digest(d.validation_expected_root,root);set_digest(d.validation_expected_seal,vf->seal);set_digest(d.software_hud_sha,vf->hud_sha);\n      d.software_decoded_verified=1;\n    }\n    void live_before_eval(){\n      d.candidate_req_ready=!candidate_pending&&(profile==0||random(4)!=0);\n      d.candidate_rsp_valid=candidate_pending&&cycle>=candidate_pending->due&&!hold_candidate;\n      if(candidate_pending){const auto &q=candidate_pending->q;d.candidate_rsp_epoch=q.epoch;d.candidate_rsp_token=q.token^(wrong_ack?1U:0U);d.candidate_rsp_bank=q.bank;d.candidate_rsp_addr=q.addr;d.candidate_rsp_error=bus_error;}\n      d.software_hud_valid=vf&&(software_hud_pos<provisional_hud.size()||extra_hud);d.software_hud_data=software_hud_pos<provisional_hud.size()?provisional_hud[software_hud_pos]:0;\n      d.software_hud_index=unsigned(software_hud_pos)+(bad_hud_index?1:0);d.software_hud_last=(software_hud_pos+1==42240)^(bad_hud_last&&software_hud_pos==17);\n      d.software_receipt_valid=vf&&!receipt_sent;d.present_vblank=!hold_presentation;d.present_drained=!hold_scanout;\n    }\n    void live_observe(){\n      const bool kill=d.power_on_reset||d.reset||d.abort_packet||d.v_error||d.join_error||d.metadata_mismatch;\n      if(kill)qcache_lookup.reset();\n      if(!kill&&d.reconstruct_lookup_rsp){need(qcache_lookup.has_value(),\"qcache response owner\");unsigned cell=*qcache_lookup;need(cell<1350&&d.reconstruct_lookup_scale==active->scales[cell],\"actual registered qcache value\");actual_qcache[cell]=d.reconstruct_lookup_scale;qcache_seen[cell]=true;qcache_lookup.reset();}\n      if(!kill&&d.reconstruct_lookup_req&&d.reconstruct_lookup_ready){need(!qcache_lookup,\"qcache lookup owner bound\");qcache_lookup=d.reconstruct_lookup_cell;}\n      if(d.software_receipt_valid&&d.software_receipt_ready)receipt_sent=true;\n      if(d.software_hud_valid&&d.software_hud_ready)++software_hud_pos;\n      if(kill||d.join_error)held_candidate.reset();\n      if(held_candidate)need(d.candidate_req_valid&&candidate_request()==*held_candidate,\"held candidate write tuple changed\");\n      held_candidate=d.candidate_req_valid&&!d.candidate_req_ready?std::optional<CandidateRequest>(candidate_request()):std::nullopt;\n      if(d.join_output_valid&&d.join_output_ready){\n        need(vf&&d.join_output_addr<candidate_memory[d.v_write_bank].size(),\"hash delivery bounds\");\n        need(candidate_memory[d.v_write_bank][d.join_output_addr]==d.join_output_data,\"hash delivery before actual ACK-committed write\");\n        ++hash_deliveries;\n      }\n      if(d.candidate_rsp_valid&&d.candidate_rsp_ready&&!wrong_ack){need(bool(candidate_pending),\"candidate ACK owner\");auto q=candidate_pending->q;\n        if(!bus_error)candidate_memory[q.bank][q.addr]=q.value;\n        candidate_pending.reset();++candidate_acks;last_write=cycle+1;\n      }\n      if(d.candidate_req_valid&&d.candidate_req_ready){need(!candidate_pending&&vf&&d.v_bank_active&&!kill,\"candidate write lease\");auto q=candidate_request();\n        need(q.epoch==frame_epoch&&q.bank==d.v_write_bank&&q.addr<560640,\"candidate request owner/bounds\");\n        need((!d.v_reference_bank_valid||q.bank!=d.v_reference_bank)&&(!d.v_front_valid||q.bank!=d.v_front_bank)&&(!d.v_pending_valid||q.bank!=d.v_pending_bank),\"candidate write aliases immutable bank\");\n        uint8_t expected=q.addr<518400?canonical_golden().expected[q.addr]:provisional_hud[q.addr-518400];need(q.value==expected,\"physical write byte vs actual independent expected\");\n        for(uint32_t x:{q.epoch,q.token,uint32_t(q.bank),uint32_t(q.addr)})for(unsigned k=0;k<4;++k)candidate_hash=hash_byte(candidate_hash,uint8_t(x>>(8*k)));\n        candidate_hash=hash_byte(candidate_hash,q.value);\n        if(!first_write){first_write=cycle+1;first_token=q.token;}last_token=q.token;\n        candidate_pending=CandidatePending{q,cycle+(profile?3+random(6):1)};++candidate_requests;\n      }\n      if(d.v_hash_result&&record){hash_events<<\"{\\\"type\\\":\\\"hash\\\",\\\"id\\\":\\\"\"<<vf->id<<\"\\\",\\\"pipeline_id\\\":\\\"\"<<active->id<<\"\\\",\\\"profile\\\":\"<<profile<<\",\\\"epoch\\\":\"<<frame_epoch<<\",\\\"kind\\\":\"<<unsigned(d.v_hash_job_kind)<<\",\\\"node\\\":\"<<d.v_hash_job_node<<\",\\\"digest\\\":\\\"\"<<cu66::hex(get_digest(d.v_hash_digest))<<\"\\\",\\\"cycle\\\":\"<<cycle<<\"}\\n\";}\n    }\n    void live_after_edge(){\n      if(d.v_frame_committed){need(!candidate_pending&&d.join_drained&&candidate_requests==candidate_acks&&hash_deliveries==560640,\"commit before all actual write/hash fences\");\n        need(vf&&d.v_accepted_fid==be32(vf->packet,8)&&get_digest(d.v_accepted_root)==vf->root&&get_digest(d.v_accepted_hud)==vf->hud_sha&&get_digest(d.v_accepted_seal)==vf->seal,\"accepted atomic commitments\");\n        auto &mem=candidate_memory[d.v_reference_bank];need(std::equal(mem.begin(),mem.begin()+518400,canonical_golden().expected.begin())&&std::equal(mem.begin()+518400,mem.end(),provisional_hud.begin()),\"actual accepted candidate memory\");commit_cycle=cycle;\n      }\n    }\n    void drain_live(){d.in_valid=0;d.in_last=0;wrong_ack=false;bus_error=false;hold_candidate=false;\n      for(unsigned n=0;n<200000&&!d.start_ready;++n){tick();}need(d.start_ready&&!candidate_pending&&!pending&&!reference_pending&&!d.v_bank_active,\"live failed transaction drain: ps=\"+std::to_string(d.frame_state)+\" vs=\"+std::to_string(d.v_state)+\" js=\"+std::to_string(d.join_state)+\" pe=\"+std::to_string(d.error)+\" ve=\"+std::to_string(d.v_error)+\" je=\"+std::to_string(d.join_error)+\" pending=\"+std::to_string(bool(candidate_pending))+\" flags=\"+std::to_string(bad_generation)+std::to_string(bad_root)+std::to_string(bad_hud_index)+std::to_string(bad_hud_last)+std::to_string(extra_hud));}\n    void nominal(const Case &c,unsigned p){prepare(c,p,true);stage_live(c);preload(c);begin(c);\n      d.validation_start_fid^=0x100;d.validation_start_generation^=0x100; // Accepted transaction must ignore changed hints.\n      feed_until();finish(c);for(unsigned n=0;n<20000000&&!commit_cycle&&!d.v_error&&!d.join_error;++n)tick();\n      need(commit_cycle&&!d.v_error&&!d.join_error&&d.v_hash_jobs==1025&&d.v_pixel_bytes==518400&&d.v_hud_bytes==42240,\"live validated commit\");\n      need(d.join_inputs==560640&&d.join_requests==560640&&d.join_acks==560640&&d.join_outputs==560640,\"live write/hash conservation\");\n      need(std::all_of(qcache_seen.begin(),qcache_seen.end(),[](bool x){return x;})&&actual_qcache==c.scales,\"actual qcache registered coverage\");\n      accepted_hud=provisional_patches;accepted_qcache=actual_qcache;\n      std::cout<<\"{\\\"type\\\":\\\"live_case\\\",\\\"id\\\":\\\"\"<<vf->id<<\"\\\",\\\"pipeline_id\\\":\\\"\"<<c.id<<\"\\\",\\\"profile\\\":\"<<profile<<\",\\\"seed\\\":\"<<seed<<\",\\\"epoch\\\":\"<<frame_epoch<<\",\\\"fid\\\":\"<<d.v_accepted_fid<<\",\\\"generation\\\":\"<<d.v_accepted_generation<<\",\\\"canonical_bytes\\\":\"<<d.v_pixel_bytes<<\",\\\"hud_bytes\\\":\"<<d.v_hud_bytes<<\",\\\"hash_jobs\\\":\"<<d.v_hash_jobs<<\",\\\"hash_message_bytes\\\":\"<<d.v_hash_message_bytes<<\",\\\"hash_blocks\\\":\"<<d.v_hash_blocks<<\",\\\"write_requests\\\":\"<<candidate_requests<<\",\\\"write_acks\\\":\"<<candidate_acks<<\",\\\"hash_deliveries\\\":\"<<hash_deliveries<<\",\\\"write_descriptor_fnv\\\":\"<<candidate_hash<<\",\\\"first_token\\\":\"<<first_token<<\",\\\"last_token\\\":\"<<last_token<<\",\\\"first_outer_cycle\\\":\"<<first_outer<<\",\\\"last_outer_cycle\\\":\"<<last_outer<<\",\\\"start_cycle\\\":\"<<begin_cycle<<\",\\\"commit_cycle\\\":\"<<commit_cycle<<\",\\\"start_to_commit_cycles\\\":\"<<commit_cycle-begin_cycle<<\",\\\"first_outer_to_commit_cycles\\\":\"<<commit_cycle-first_outer<<\",\\\"last_outer_to_commit_cycles\\\":\"<<commit_cycle-last_outer<<\",\\\"qcache_preload_cycles\\\":\"<<cache_cycles<<\",\\\"qcache_bytes\\\":\"<<cache_bytes<<\",\\\"reference_requests\\\":\"<<observed_ref_requests<<\",\\\"accepted_bank\\\":\"<<unsigned(d.v_reference_bank)<<\",\\\"root\\\":\\\"\"<<cu66::hex(get_digest(d.v_accepted_root))<<\"\\\",\\\"hud_sha256\\\":\\\"\"<<cu66::hex(get_digest(d.v_accepted_hud))<<\"\\\",\\\"seal\\\":\\\"\"<<cu66::hex(get_digest(d.v_accepted_seal))<<\"\\\",\\\"status\\\":\\\"PASS\\\"}\\n\";\n      static const char hx[]=\"0123456789abcdef\";actual_output<<\"accepted_\"<<c.id<<'\\t'<<profile<<'\\t';for(uint8_t b:candidate_memory[d.v_reference_bank])actual_output<<hx[b>>4]<<hx[b&15];actual_output<<'\\n';\n      actual_output<<\"qcache_\"<<c.id<<'\\t'<<profile<<'\\t';for(uint8_t b:accepted_qcache)actual_output<<hx[b>>4]<<hx[b&15];actual_output<<'\\n';\n      record=false;tick();\n    }\n\n    Vcs88_live_v91l d;",
+      "before": "    Vcs88_live_v91l d;",
+      "occurrences": 1
+    },
+    {
+      "after": "/* out_ready is driven by the unchanged ACK-coupled join. */",
+      "before": "d.out_ready=0;",
+      "occurrences": 1
+    },
+    {
+      "after": "d.cache_data=accepted_qcache[i];",
+      "before": "d.cache_data=c.prior[i];",
+      "occurrences": 1
+    },
+    {
+      "after": "        d.power_on_reset=1;d.software_hud_valid=0;d.software_receipt_valid=0;d.candidate_rsp_valid=0;d.candidate_req_ready=0;d.present_vblank=1;d.present_drained=1;\n        tick();d.power_on_reset=0;d.reset=0;tick();",
+      "before": "        tick();d.reset=0;tick();",
+      "occurrences": 1
+    },
+    {
+      "after": "d.clk=0;live_before_eval();",
+      "before": "d.clk=0;d.out_ready=!force_output_hold&&(profile==0||random(3)==0);",
+      "occurrences": 1
+    },
+    {
+      "after": "need(d.v_reference_bank_valid,\"reference has no actual validated bank\");const auto &bank_pixels=candidate_memory[d.v_reference_bank];need(bank_pixels.size()==560640,\"actual candidate bank size\");const std::basic_string_view<uint8_t> pixels(bank_pixels.data(),518400);need(pixels.size()==518400,\"reference bytes unavailable\");\n            for(unsigned n=0;n<64;++n)need(pixels[pixel_address(r.plane,r.tile,n)]==canonical_golden().reference[pixel_address(r.plane,r.tile,n)],\"actual accepted reference differs from independent golden\");",
+      "before": "const auto &pixels=canonical_golden().reference;need(pixels.size()==518400,\"reference bytes unavailable\");",
+      "occurrences": 1
+    },
+    {
+      "after": "d.eval();live_observe();const bool cancel=d.reset||d.power_on_reset||d.abort_packet||d.v_error||d.join_error||d.metadata_mismatch;",
+      "before": "d.eval();const bool cancel=d.reset||d.abort_packet;",
+      "occurrences": 1
+    },
+    {
+      "after": "if(d.in_valid&&d.in_ready){if(!first_outer)first_outer=cycle+1;last_outer=cycle+1;received.push_back(d.in_data);",
+      "before": "if(d.in_valid&&d.in_ready){received.push_back(d.in_data);",
+      "occurrences": 1
+    },
+    {
+      "after": "d.clk=1;d.eval();++cycle;live_after_edge();",
+      "before": "d.clk=1;d.eval();++cycle;",
+      "occurrences": 1
+    },
+    {
+      "after": "if(d.error||d.done||d.v_error||d.join_error||d.metadata_mismatch){",
+      "before": "if(d.error||d.done){",
+      "occurrences": 1
+    },
+    {
+      "after": "k<20000000;",
+      "before": "k<200000;",
+      "occurrences": 1
+    },
+    {
+      "after": "const bool kill=d.reset||d.power_on_reset||r.cs88_live_v91l__DOT__producer__DOT__accepted_start",
+      "before": "const bool kill=d.reset||r.cs88_live_v91l__DOT__producer__DOT__accepted_start",
+      "occurrences": 1
+    },
+    {
+      "after": "if(d.reset||d.power_on_reset||r.cs88_live_v91l__DOT__producer__DOT__accepted_start)",
+      "before": "if(d.reset||r.cs88_live_v91l__DOT__producer__DOT__accepted_start)",
+      "occurrences": 1
+    }
+  ],
+  "live_extensions": {
+    "literal_names": [
+      "helper",
+      "fields"
+    ],
+    "path": "fpga/experiments/cu66-v91l-live/make_bench.py",
+    "sha256": "b0e50b104ec18420de7385af486a5cad24358c9f8d8ad02b4c93f722802223f9"
+  },
+  "main": "\nint main(int argc,char **argv){try{\n need(argc==10,\"usage: live cases transforms canonical validation seed events actual hashes profile\");\n auto cases=load(argv[1]);load_tiles(argv[2]);load_validation(argv[4]);unsigned seed=unsigned(std::stoul(argv[5])),profile=unsigned(std::stoul(argv[9]));need(profile<2,\"finite service profile\");\n Bench b(seed,argv[6],argv[3],argv[7]);b.hash_events.open(argv[8]);need(bool(b.hash_events),\"hash events output\");\n const Case*key=nullptr;for(const auto&c:cases)if(c.id==\"actual_001\")key=&c;need(key!=nullptr,\"original keyframe fixture\");\n b.cold_live();\n // Exercise a real accepted physical write before the newly registered local\n // producer cancellation. Parent hash/publication must remain invalid.\n b.prepare(*key,profile,false);b.stage_live(*key);b.preload(*key);b.begin(*key);b.hold_candidate=true;b.feed_until(11);\n for(unsigned n=0;n<6000000&&!b.candidate_pending&&!b.d.v_error;++n)b.tick();\n need(bool(b.candidate_pending),\"owned candidate write before registered parent cancellation\");\n const auto failed_owner=b.candidate_pending->q;b.wrong_ack=true;b.hold_candidate=false;b.tick();\n need(b.d.join_error==0x81&&b.d.join_physical_pending&&b.candidate_pending&&b.candidate_pending->q==failed_owner,\"wrong ACK must retain actual physical debt\");\n b.wrong_ack=false;b.drain_live();\n need(!b.d.v_accepted_valid&&!b.d.v_front_valid&&!b.d.v_pending_valid&&!b.candidate_pending&&!b.d.join_physical_pending,\"failed parent transaction published or retained physical debt\");\n b.nominal(*key,profile);\n need(b.d.v_accepted_valid&&b.d.v_front_valid&&b.d.v_front_fid==0&&!b.d.v_pending_valid,\"validated keyframe abstract publication\");\n need(b.candidate_requests==560640&&b.candidate_acks==560640&&b.hash_deliveries==560640,\"exact finite candidate write/ACK/hash conservation\");\n need(!b.pending&&!b.reference_pending&&!b.candidate_pending&&!b.d.join_physical_pending&&b.d.join_drained,\"physical owners remain after publication\");\n need(b.d.v_hash_jobs==1025&&b.d.v_pixel_bytes==518400&&b.d.v_hud_bytes==42240,\"complete C2/HUD work\");\n std::cout<<\"{\\\"type\\\":\\\"live_parent_verdict\\\",\\\"status\\\":\\\"TEST_PASS\\\",\\\"seed\\\":\"<<seed<<\",\\\"profile\\\":\"<<profile<<\",\\\"keyframes\\\":1,\\\"canonical_bytes\\\":518400,\\\"hud_bytes\\\":42240,\\\"candidate_write_requests\\\":\"<<b.candidate_requests<<\",\\\"candidate_write_acks\\\":\"<<b.candidate_acks<<\",\\\"hash_deliveries\\\":\"<<b.hash_deliveries<<\",\\\"hash_jobs\\\":1025,\\\"elastic_accepted\\\":\"<<b.elastic_total_up<<\",\\\"elastic_delivered\\\":\"<<b.elastic_total_down<<\",\\\"clock_edges\\\":\"<<b.cycle<<\",\\\"directed_checks\\\":2,\\\"wrong_ack_owned_write_drained\\\":true,\\\"clean_retry_without_reset\\\":true,\\\"actual_C2_HUD_seal_validation\\\":true,\\\"abstract_publication\\\":true,\\\"software_HUD_decode\\\":true,\\\"physical_SDRAM\\\":false,\\\"hardware_30fps\\\":false}\\n\";return 0;\n}catch(const std::exception&e){std::cerr<<\"V115_LIVE_PARENT_FAIL \"<<e.what()<<'\\n';return 1;}}\n",
+  "original_need_calls": 117,
+  "reverse_verified": true,
+  "schema": "v115-keyframe-live-parent-reversible-bench-v1",
+  "scope": "Actual selected V115 component + unchanged V91l ACK join/C2-HUD validator/bank publication. Software HUD semantic decode; no ESP32/QSPI/physical SDRAM/RGB LCD execution.",
+  "selected_producer_header_equal_original": true,
+  "selected_spatial": {
+    "path": "experiments/python-gamebub-v115/spatial/results.json",
+    "sha256": "52697a476f23ec0c44c17fc80026daeb63755d5481f2c360c8af9b4f557fc907"
+  },
+  "wrapper": {
+    "byte_exact": false,
+    "copy": "fpga/experiments/cu66-v115-live-parent/cs88_live_v91l.sv",
+    "edits": [
+      {
+        "after": " logic active_key,fault_ack,fault_cancel,transaction_active;\n // A local registered cancel breaks producer masked-done -> parent fault ->\n // producer public-revocation feedback. Parent validation/write/hash cancel\n // remains immediate; external abort and cold/warm reset remain direct.\n logic producer_fault_cancel,parent_transfer_enable;\n logic producer_in_ready,producer_cache_ready,producer_mem_req_valid,producer_ref_req_valid;\n assign parent_transfer_enable=!(power_on_reset||reset||abort_packet||fault_cancel||producer_fault_cancel);\n assign in_ready=producer_in_ready&&parent_transfer_enable;\n assign cache_ready=producer_cache_ready&&parent_transfer_enable;\n assign mem_req_valid=producer_mem_req_valid&&parent_transfer_enable;\n assign ref_req_valid=producer_ref_req_valid&&parent_transfer_enable;\n always_ff @(posedge clk)begin\n  if(power_on_reset||reset||abort_packet||accepted_start)producer_fault_cancel<=0;\n  else producer_fault_cancel<=fault_cancel;\n end",
+        "before": " logic active_key,fault_ack,fault_cancel,transaction_active;"
+      },
+      {
+        "after": ".abort_packet(abort_packet||producer_fault_cancel),",
+        "before": ".abort_packet(abort_packet||fault_cancel),"
+      },
+      {
+        "after": ".in_valid(in_valid&&parent_transfer_enable),",
+        "before": ".in_valid(in_valid),"
+      },
+      {
+        "after": ".in_ready(producer_in_ready),",
+        "before": ".in_ready(in_ready),"
+      },
+      {
+        "after": ".cache_valid(cache_valid&&parent_transfer_enable),",
+        "before": ".cache_valid(cache_valid),"
+      },
+      {
+        "after": ".cache_ready(producer_cache_ready),",
+        "before": ".cache_ready(cache_ready),"
+      },
+      {
+        "after": ".mem_req_valid(producer_mem_req_valid),",
+        "before": ".mem_req_valid(mem_req_valid),"
+      },
+      {
+        "after": ".mem_req_ready(mem_req_ready&&parent_transfer_enable),",
+        "before": ".mem_req_ready(mem_req_ready),"
+      },
+      {
+        "after": ".ref_req_valid(producer_ref_req_valid),",
+        "before": ".ref_req_valid(ref_req_valid),"
+      },
+      {
+        "after": ".ref_req_ready(ref_req_ready&&parent_transfer_enable),",
+        "before": ".ref_req_ready(ref_req_ready),"
+      },
+      {
+        "after": " // Accepted response channels are deliberately not masked: real physical\n // memory/reference/candidate debt must drain after parent revocation.\n always_ff @(posedge clk)if(!power_on_reset)begin\n  if(fault_cancel||producer_fault_cancel||reset||abort_packet)begin\n   assert(!in_ready&&!cache_ready&&!mem_req_valid&&!ref_req_valid)\n    else $fatal(1,\"parent revocation exposed a new producer request grant\");\n  end\n  if(fault_cancel)begin\n   assert(!candidate_req_valid&&!join_output_valid&&!software_hud_ready&&!start_ready)\n    else $fatal(1,\"immediate parent fault exposed new write/hash/HUD/admission work\");\n  end\n end\nendmodule",
+        "before": "endmodule"
+      }
+    ],
+    "original": "fpga/experiments/cu66-v91l-live/cs88_live_v91l.sv",
+    "original_sha256": "c8d579aec574da8e9893bc922a9ffdcc12d18ffe5dd478349514db1c6fff50b8",
+    "reverse_verified": true,
+    "sha256": "9f1144799e320061520611633f4829435d9e75c067f3cdd4becd7ff3c9fa36f9"
+  }
+}

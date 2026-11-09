@@ -1,0 +1,247 @@
+{
+  "schema": "v115-harness-readiness-inventory-v1",
+  "status": "EXISTING_INTEGRATED_RTL_TEST_FOUND_FIRMWARE_TO_RTL_CHAIN_OPEN",
+  "scope": "Read-only discovery; no builds, tests, network, hardware, or file writes outside the two assigned V115 docs.",
+  "repos": {
+    "moonbub": {
+      "path": "/home/lori/gamebub-streaming-prototype/repos/moonbub-30fps-study",
+      "revision": "6098d48e5c4b57576fddeec1ae6facbc25165a11"
+    },
+    "sunshine": {
+      "path": "/home/lori/gamebub-streaming-prototype/repos/sunshine-30fps-study",
+      "revision": "3d49c6fe87753eb5b35d693991fdff0365e4bbbf",
+      "branch": "handoff/gamebub-app-codec-v20-20261103",
+      "instructions": "AGENTS.md read; Windows UCRT64 build/test conventions apply."
+    }
+  },
+  "shared_fixture": {
+    "jpeg": {
+      "moonbub": {
+        "path": "host/fixtures/pattern-720x480-420-q65.jpg",
+        "sha256": "8cc99ea7d50d1d20255e41ff7247b0770b3349e705c27152a41817418ce5c9de"
+      },
+      "sunshine": {
+        "path": "/home/lori/gamebub-streaming-prototype/repos/sunshine-30fps-study/tools/gamebub/fixtures/receiver-pattern-720x480-420-q65.jpg",
+        "sha256": "8cc99ea7d50d1d20255e41ff7247b0770b3349e705c27152a41817418ce5c9de"
+      },
+      "sha256": "8cc99ea7d50d1d20255e41ff7247b0770b3349e705c27152a41817418ce5c9de",
+      "bytes": 26159
+    },
+    "msv1_packets": {
+      "moonbub": {
+        "path": "host/fixtures/pattern-msv1-packets.bin",
+        "sha256": "78c58cfcc4860761c33bcc7021e3db14e9fa66ef5e9a385ae1e4c00c82a6447f"
+      },
+      "sunshine": {
+        "path": "/home/lori/gamebub-streaming-prototype/repos/sunshine-30fps-study/tools/gamebub/fixtures/receiver-pattern-msv1-packets.bin",
+        "sha256": "78c58cfcc4860761c33bcc7021e3db14e9fa66ef5e9a385ae1e4c00c82a6447f"
+      },
+      "sha256": "78c58cfcc4860761c33bcc7021e3db14e9fa66ef5e9a385ae1e4c00c82a6447f",
+      "framing": "u16 big-endian datagram length plus raw datagram, repeated",
+      "frame_id": 305419896,
+      "capture_us": 1234567890123,
+      "payload_size": 1024
+    }
+  },
+  "existing_tests": [
+    {
+      "stage": "native_sunshine_packetizer",
+      "actual_functions": [
+        "gamebub::msv1::packetizer_t::packetizer_t",
+        "gamebub::msv1::packetizer_t::packet_at"
+      ],
+      "sources": [
+        {
+          "path": "/home/lori/gamebub-streaming-prototype/repos/sunshine-30fps-study/src/gamebub/msv1.h",
+          "sha256": "abb7dcc3c4a6e67ccbe567046504d3521e96d8b204797e345b0a69fcd8d5d480"
+        },
+        {
+          "path": "/home/lori/gamebub-streaming-prototype/repos/sunshine-30fps-study/src/gamebub/msv1.cpp",
+          "sha256": "c6b27f53d7ecf1972ce57c7c12c02103a740b7ea85141cc1d17781de8db003b7"
+        },
+        {
+          "path": "/home/lori/gamebub-streaming-prototype/repos/sunshine-30fps-study/tests/unit/test_gamebub_msv1.cpp",
+          "sha256": "94b4d1affb25e0969fd22de2a49e5f18cec62cc783c0a98c4171c41b25e23d26"
+        }
+      ],
+      "test": "GameBubMsv1.PacketsMatchPinnedReceiverFixtureByteForByte",
+      "command_from_sunshine_root": "./cmake-build-gamebub/tests/test_sunshine.exe --gtest_filter=GameBubMsv1.*",
+      "tooling": "Existing documented Windows MSYS2 UCRT64/GCC, CMake, Ninja, Boost build with SUNSHINE_GAMEBUB_EXPERIMENTAL=ON; test_sunshine target. Full configure/build commands in tools/gamebub/measurements/native-msv1-build.md.",
+      "input": "tools/gamebub/fixtures/receiver-pattern-720x480-420-q65.jpg",
+      "oracle": "tools/gamebub/fixtures/receiver-pattern-msv1-packets.bin",
+      "scope": "Native C++ packet serialization only. The class serializes borrowed, pre-encoded JPEG bytes; it does not capture, encode, transmit, negotiate, or connect Sunshine to the receiver.",
+      "retained_build_record": "tools/gamebub/measurements/native-msv1-build.md; documents three new serializer tests and an 862-test full executable run."
+    },
+    {
+      "stage": "production_rust_receiver_parser_host_harness",
+      "actual_functions": [
+        "protocol::Header::parse",
+        "protocol::Receiver::accept",
+        "protocol::feedback"
+      ],
+      "sources": [
+        {
+          "path": "firmware/handheld/src/streaming/protocol.rs",
+          "sha256": "32a91ffaf0b39a82f11036be7e501765cd3f9fed6905c27b6efc01f358d79e64"
+        },
+        {
+          "path": "scripts/integration_checks.py",
+          "sha256": "bc3c6ebd5ec094426dbfca6a81348987b026fa062ca6bc23557fef023db949d9"
+        },
+        {
+          "path": "host/moonshine/protocol.py",
+          "sha256": "01a083f4794c7ced7e73eece60eac9d32cdacf589c6bc72b6c91c72e945cc9e5"
+        }
+      ],
+      "command_from_moonbub_root": "python3 scripts/integration_checks.py",
+      "tooling": "Python 3 plus rustc +stable; the script generates a portable path-bound Rust wrapper, compiles the production protocol.rs source and feeds length-framed datagrams to it.",
+      "input": {
+        "path": "host/fixtures/pattern-720x480-420-q65.jpg",
+        "sha256": "8cc99ea7d50d1d20255e41ff7247b0770b3349e705c27152a41817418ce5c9de",
+        "current_script_chunk_size_bytes": 100,
+        "current_source_expected_jpeg_chunks": 262
+      },
+      "retained_result": {
+        "path": "evidence/integration/result.json",
+        "sha256": "4c26de2d2fb40a4291c397d8e959acdfd3e1ccf5c76a9471505a35a357f025e2",
+        "status": "pass",
+        "packet_cases": 1394,
+        "firmware_source_sha256": "32a91ffaf0b39a82f11036be7e501765cd3f9fed6905c27b6efc01f358d79e64",
+        "observed_actual_jpeg_chunks": 26,
+        "observed_packet_cases": 1394,
+        "result_sha256": "4c26de2d2fb40a4291c397d8e959acdfd3e1ccf5c76a9471505a35a357f025e2",
+        "matches_current_script": false,
+        "mismatch": "Retained counts imply a prior 1000-byte chunk run. Current script calls packets(jpeg, 100, ...), which implies 262 JPEG chunks and 1630 checked packet cases; the result does not bind the script SHA. Do not reuse retained counts as current-source verification."
+      },
+      "scope": "Host-native production Rust parser state only. It does not execute ESP-IDF, Wi-Fi, streaming::session, forward, DMA allocation, or SPI calls. It uses the Python packetizer, not live output from Sunshine C++."
+    },
+    {
+      "stage": "qspi_pin_and_clock_domain_crossing_endpoint",
+      "actual_rtl": [
+        {
+          "path": "fpga/rtl/moonshine_qspi_endpoint.sv",
+          "sha256": "1b47f424da33b678b3811e091f481a2bdab3fad9c43a8edd6b70817853f9bb13"
+        },
+        {
+          "path": "fpga/rtl/moonshine_bus_cdc.sv",
+          "sha256": "8c2d0dd4608e7ac0e157a8e3495c63fef4f37d6c05c105dc53e362d8bd6c96d9"
+        },
+        {
+          "path": "fpga/sim/moonshine_qspi_cdc_tb.sv",
+          "sha256": "39b1faae3d8d968d1fdb53fec91de64e08a881ed7c8b6cee0557b0a7572449ab"
+        }
+      ],
+      "command_from_moonbub_root": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test_qspi.ps1 -StartPhaseNs 0",
+      "tooling": "Windows PowerShell plus MSYS2 UCRT64 Icarus Verilog (iverilog) and vvp.",
+      "retained_result": {
+        "path": "fpga/evidence/qspi-result.json",
+        "sha256": "499d8d9f952b998a1dd47e7f1831a9aa77836a89dc1fd438f8931419848f9ad6",
+        "status": "pass",
+        "phase_ns": 4,
+        "pass_log": "fpga/evidence/qspi-simulation.log",
+        "pass_phrase": "QSPI_CDC_PASS"
+      },
+      "scope": "Exercises the actual endpoint and bus CDC with command/dummy/data pin transactions. Its attached core register/FIFO responder is a behavioral testbench model; no JPEG core is instantiated."
+    },
+    {
+      "stage": "qspi_to_jpeg_decoder_memory_sdram_lcd_integration",
+      "testbench": {
+        "path": "fpga/experiments/throughput30/burst/qspi-study/tb_qspi_jpeg720.sv",
+        "sha256": "e1076900b2acb54a06719833a1bf2d7434ceea1e9be59e3c79ae4a3ba2fb11eb"
+      },
+      "runner": {
+        "path": "fpga/experiments/throughput30/burst/qspi-study/run-jpeg720-verilator.sh",
+        "sha256": "21fc2b436974f98f557c13e9b08a071e83792bd03a89fc880ac0bc846962a27f",
+        "command_from_moonbub_root": "fpga/experiments/throughput30/burst/qspi-study/run-jpeg720-verilator.sh",
+        "tooling": "Verilator 5.x with --binary/--timing/--assert, make, C++ compiler, GNU timeout, Python 3 and Pillow; runner compiles a related fixed-color C JPEG model and compares every output pixel. No run was launched during this read-only discovery."
+      },
+      "documented_recipe": {
+        "path": "fpga/experiments/throughput30/burst/qspi-study/README.md",
+        "sha256": "3354058977ae456960c4c784fb764b67b5467f18b62a7232f387e47baa8cb764"
+      },
+      "actual_rtl": [
+        "fpga/rtl/moonshine_qspi_endpoint.sv",
+        "fpga/rtl/moonshine_bus_cdc.sv",
+        "fpga/rtl/moonshine_core.sv",
+        "fpga/rtl/moonshine_lcd.sv",
+        "fpga/experiments/throughput30/burst/moonbub_tile_transpose.sv",
+        "fpga/experiments/throughput30/burst/moonshine_memory_burst.sv",
+        "fpga/experiments/throughput30/burst/moonshine_sdram_burst.sv",
+        "fpga/experiments/throughput30/burst/sdram_model_burst_verilator.sv",
+        "tracked core_jpeg decoder Verilog except jpeg_input.v, replaced by jpeg_input_guarded.v"
+      ],
+      "input": {
+        "path": "host/fixtures/pattern-720x480-420-q65.jpg",
+        "sha256": "8cc99ea7d50d1d20255e41ff7247b0770b3349e705c27152a41817418ce5c9de",
+        "bytes": 26159,
+        "transactions": "26 payload chunks; metadata and payload driven as modeled QSPI pin transactions"
+      },
+      "retained_result": {
+        "path": "fpga/experiments/throughput30/burst/qspi-study/jpeg720-verilator.log",
+        "sha256": "310adbce73987a704bb84d0addf1345faab900cba71f16e1972c6bf17a5c3dfa",
+        "pass_line": "QSPI_JPEG720_PASS pixels=345600 writes=345600 bursts=43200 presented=1 upload_cycles=140045 commit_to_present_cycles=2449960 underruns=0 cdc_lost=0",
+        "limitations": "Retained log documents Verilator 5.020. Runner uses -Wno-fatal. The testbench generates pin activity itself; no Sunshine packetizer, Rust protocol worker, ESP-IDF SPI/DMA, network, or physical board participates. SDRAM/LCD are modeled. This is functional integrated RTL simulation, not strict-warning V115 acceptance or target firmware integration."
+      },
+      "scope": "The actual QSPI endpoint/CDC and downstream decoder/display RTL are coupled in this simulation. The missing seam is firmware-produced protocol traffic into the bench pins, not QSPI-to-JPEG RTL simulation."
+    },
+    {
+      "stage": "jpeg_core_memory_publication_simulation",
+      "actual_rtl": [
+        {
+          "path": "fpga/rtl/moonshine_core.sv",
+          "sha256": "53ffe4a18980822bdb06731b705d1e52632c0e19dc6f942be2791f5a178a050e"
+        },
+        {
+          "path": "fpga/rtl/moonshine_memory.sv",
+          "sha256": "19c89965c0df2aff6b250ff06860519fc9a067c1afcb2e3723ae398386482d99"
+        },
+        {
+          "path": "fpga/rtl/moonshine_sdram.sv",
+          "sha256": "f1c3bfd6e41b0f2cae0a68e4bf37155a5914d2993dc27d22b9a052d3e9b0f26f"
+        },
+        {
+          "path": "fpga/sim/tb_pipeline.sv",
+          "sha256": "518b1d4c7256d01929d3801765311f17fd64d1e0f2f6db4a956f48a2a9969c63"
+        }
+      ],
+      "command_from_moonbub_root": "powershell -NoProfile -ExecutionPolicy Bypass -File fpga/scripts/test_pipeline.ps1",
+      "tooling": "Windows PowerShell plus MSYS2 UCRT64 Icarus Verilog/vvp; tracked core_jpeg Verilog and SDRAM model.",
+      "input": {
+        "path": "fpga/sim/tiny-420.jpg",
+        "sha256": "6a132ff5020126f01bdb650af830c759cc22cc809139d60c5c025c8390ee6bb7",
+        "scope": "16x16 JPEG; test publishes two frames and exercises receive/abort/recovery."
+      },
+      "retained_pass_log": "fpga/evidence/pipeline-simulation.log",
+      "scope": "Actual JPEG core, memory/SDRAM model, and publication ownership are exercised by direct core bus writes. The QSPI endpoint/CDC and firmware are bypassed.",
+      "full_canvas_control": {
+        "testbench": "fpga/sim/tb_core.sv",
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File fpga/scripts/test.ps1",
+        "fixture": "host/fixtures/pattern-720x480-420-q65.jpg",
+        "retained_log": "fpga/sim/core.log",
+        "retained_result": "CORE_PASS pixels=345600 cycles=915185 truncated_crc_recovery=1 backpressure=1 ownership=1",
+        "scope": "Actual full-canvas JPEG decoder direct-bus test; still no QSPI or firmware."
+      }
+    }
+  ],
+  "current_firmware_to_rtl_functions": {
+    "receiver_worker": "firmware/handheld/src/streaming/mod.rs::session receives UDP and calls protocol::Receiver::accept; begin and forward issue FPGA register writes and spi_write.",
+    "target_spi_api": "firmware/handheld/src/device/drivers/fpga/xilinx.rs and parent FPGA driver; 40 MHz writes, register/stream transactions.",
+    "parent_wiring": "fpga/rtl/moonshine_top.sv connects moonshine_qspi_endpoint -> moonshine_bus_cdc -> moonshine_core -> memory/SDRAM and LCD scanout.",
+    "test_coverage_gap": "The qspi-study testbench executes actual QSPI endpoint/CDC through actual JPEG core, burst memory/SDRAM model, and LCD, but creates QSPI pin transactions itself. No existing test pipes native Sunshine MSV1 output through the production Rust streaming worker/ESP-IDF SPI callsite into those pins. The parser host harness excludes mod.rs/ESP-IDF; the smaller QSPI test has a behavioral core responder, and other JPEG tests use direct core-bus stimulus."
+  },
+  "smallest_reusable_later_plan": [
+    "Run the Sunshine GameBubMsv1 byte-for-byte gtest against the shared pinned JPEG/MSV1 fixture.",
+    "Run scripts/integration_checks.py to execute the real Rust receiver parser against a real JPEG and malformed/recovery corpus. This is the same packet format and JPEG but currently uses Python-produced chunks, not the C++ packetizer output.",
+    "Run the qspi-study one-frame test as integrated RTL evidence: its actual QSPI endpoint/CDC, JPEG core, burst memory/SDRAM model and LCD are coupled. Keep its testbench-generated pin source and -Wno-fatal policy explicit; it is not firmware or hardware evidence.",
+    "A small next handoff is a host-side adapter that takes actual datagrams emitted by the native Sunshine packetizer, passes them through the production Rust parser/receiver, and maps accepted frame/byte events into the existing qspi-study testbench pin tasks. This adapter is not present yet; do not substitute a fake Rust parser or claim target firmware/ESP-IDF execution."
+  ],
+  "missing_endpoints": [
+    "Sunshine capture/encoder and callsite: C++ packetizer accepts already encoded JPEG, is default-off experimental code, and has no sender or protocol negotiation.",
+    "Actual firmware worker and ESP32-S3 execution: Rust host harness compiles only protocol.rs, not ESP-IDF streaming::session/forward or device SPI/DMA runtime.",
+    "C++ output to Rust input in a single test: tests share an exact golden fixture, but no runner pipes the native packetizer bytes directly into the Rust parser; fixture has u16 records while the stored Rust harness wrapper expects u32 records.",
+    "Sunshine/Rust-produced protocol traffic to QSPI pin stimulus: the integrated qspi-study bench currently constructs metadata, reads and payload writes directly in its testbench rather than consuming native packetizer or firmware output.",
+    "Target firmware execution: no ESP32-S3/ESP-IDF receiver worker, DMA allocation/scheduling, or actual firmware SPI driver is exercised by the integrated simulation.",
+    "Production top equivalence: qspi-study couples the real endpoint/CDC and downstream decoder/display RTL with study-specific guarded JPEG input, tile transpose, burst-memory/SDRAM model; it is not a simulation of the complete moonshine_top source unchanged. No physical FPGA, SDRAM, or LCD evidence exists."
+  ],
+  "claim_boundary": "Existing evidence establishes serializer parity, host-native Rust parser behavior, a separate behavioral-core QSPI component test, direct-bus JPEG tests, and a real integrated QSPI endpoint/CDC→JPEG→memory/SDRAM model→LCD simulation driven by testbench pin transactions. It does not establish Sunshine→actual ESP32 firmware→QSPI pins→display integration, CS88 integration, physical timing, or hardware operation."
+}

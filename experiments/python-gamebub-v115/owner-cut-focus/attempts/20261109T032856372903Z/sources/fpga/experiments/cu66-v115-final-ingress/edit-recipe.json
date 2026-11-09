@@ -1,0 +1,28 @@
+{
+  "address_width_unchanged": 32,
+  "candidate": "fpga/experiments/cu66-v115-final-ingress/br88_packet_ingress_sync_v91h.sv",
+  "candidate_sha256": "e5ca00d03ca91050295da961e5793e7fd96bd183d83e668fbcd7a21b1784a2d6",
+  "edits": [
+    {
+      "after": "    always_ff @(posedge clk)if(state==FETCH_REQ)expected_fetch_addr<=prepared_request_addr;\n    // FINAL_REQUEST_BOUNDS_BEGIN: private future-address ownership crosses the\n    // already existing real request edge. All32 address bits and the original\n    // six-bit next-index expression above are preserved. Payload is unreset.\n    logic [31:0] next_address_at_request;\n    always_ff @(posedge clk)if(stage_read_req)next_address_at_request<=next_request_addr;\n`ifndef SYNTHESIS\n    logic next_address_warm;\n    always_ff @(posedge clk)begin\n        if(cancelled||context_failure||(context_active&&ctx_done)||\n           (state==FETCH_WAIT&&stage_read_rsp))next_address_warm<=0;\n        else if(stage_read_req)next_address_warm<=1;\n        if(state==FETCH_WAIT&&!cancelled&&!context_failure&&!(context_active&&ctx_done))begin\n            assert(next_address_warm)else $fatal(1,\"WAIT lacks its actual preceding request owner\");\n            assert(next_address_at_request==next_request_addr)\n                else $fatal(1,\"owned next address differs from unchanged full32 formula\");\n        end\n    end\n`endif\n    // FINAL_REQUEST_BOUNDS_END\n",
+      "before": "    always_ff @(posedge clk)if(state==FETCH_REQ)expected_fetch_addr<=prepared_request_addr;",
+      "occurrences": 1
+    },
+    {
+      "after": "            prepared_request_addr<=next_address_at_request;\n            prepared_request_in_bounds<=next_address_at_request<size_bytes && next_address_at_request<32'(MAX_PACKET_BYTES);",
+      "before": "            prepared_request_addr<=next_request_addr;\n            prepared_request_in_bounds<=next_request_addr<size_bytes && next_request_addr<32'(MAX_PACKET_BYTES);",
+      "occurrences": 1
+    }
+  ],
+  "index_width_unchanged": 6,
+  "initial_begin_fetch_unchanged": true,
+  "new_private_stage": "Full32 next address captured at actual stage_read_req edge; existing WAIT prepares address/bounds from it.",
+  "original": "fpga/experiments/cu66-v115-refined-ingress/br88_packet_ingress_sync_v91h.sv",
+  "original_current_request_owner_unchanged": true,
+  "original_next_address_formula_unchanged": true,
+  "original_sha256": "93b965d5d02d89e9f8b88b64340af7bd8f7c08568694e1dc0aaeb41c19bfcaf2",
+  "payload_reset": false,
+  "public_cycle_delta": 0,
+  "schema": "v115-final-existing-request-WAIT-address-bounds-cut-v1",
+  "validity_register_synthesis": false
+}

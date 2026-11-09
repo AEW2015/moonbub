@@ -1,0 +1,73 @@
+{
+  "driver_sha256": "220e4ebd9313a1ce2589b0c6ebb7e018bf87fa6dd45ccfb61f3d5af6c8f4c404",
+  "first_cause": "First fixture omitted redundant busy_owned when forcing state; second wrote cache_data while cache_valid=1 but left predecoded cache_positions stale, violating original all-offset SVA. Both failures are verification fixtures, not natural/equivalence failures.",
+  "fixture_only_corrections": [
+    "Set busy_owned exactly to original state predicate.",
+    "Seed every valid cache bank and every offset using the frozen C++ independent position(word) oracle after setting data.",
+    "Seed matching head_positions and all cursor/count/head fields; use a legal AC band derived from independent zigzag ranks.",
+    "Replace illegal AC index0 event by the actual DC event for index0. Number and zero/data/back-to-back storage cases unchanged.",
+    "Set aligned cache/read addresses, finite used bytes, empty assembler, inactive prefetch, no done/fault, explicit bank ownership and invariant metadata.",
+    "Add raw private-edge JSON observations before each edge to identify future causal fixture failures."
+  ],
+  "limits": "Prepared internal branch/storage contexts are not claims of whole packet reachability or accepted external memory obligations. No artificial suppression of source assertions.",
+  "natural_cases_modified": false,
+  "old_assertions_removed": 0,
+  "production_sha256": "2b9dbaf7fb25d7fdc8219a69dc59588b4c1bb2e7da374c6edaf223a5c1ac52d1",
+  "retained_failures": [
+    "20261109T020546433507Z",
+    "20261109T020805491580Z"
+  ],
+  "status": "SOURCE_REVIEW_OF_COMPLETE_PRIVATE_FIXTURE_POSTSTATES_NOT_RUN",
+  "sv_assertion_review": [
+    {
+      "eligibility": "Every clock after first including reset/abort",
+      "fixture": "State and busy_owned assigned together; subsequent RTL state updates untouched.",
+      "group": "Same-edge busy predicate"
+    },
+    {
+      "eligibility": "!cancel && !response_failure and each cache_valid bank",
+      "fixture": "All64 offset positions recomputed from exact128-bit cache contents using independent frozen C++ oracle. No cache assertion disabled or avoided.",
+      "group": "All-valid-cache all-offset sparse_position identity"
+    },
+    {
+      "eligibility": "AC_EXTRACT on a cache hit; cursor nonzero head-position relation",
+      "fixture": "Fixtures target AC_CHECK, but still seed legal nonzero [-2048,2048] AC records, rank-matched read_band, cursor/count1, exact head_position and cached record. DC index0 uses DC_EXTRACT.",
+      "group": "Head/cache record order and AC bank validation"
+    },
+    {
+      "eligibility": "DC/AC_FETCH and DC/AC_EXTRACT",
+      "fixture": "DC_EXTRACT uses read_address32, cache_address0=32, cache_valid0, read_tag_match1 and valid signed half. Other direct contexts never fake a fetch warmup.",
+      "group": "Registered read-tag decisions"
+    },
+    {
+      "eligibility": "prefetch_mode && sealed && eligible emission",
+      "fixture": "No prefetch/emission fixture is declared; mode explicitly0, sealed0; original natural prefetch tests remain unchanged.",
+      "group": "Prepared prefetch equations"
+    },
+    {
+      "eligibility": "Actual request valid",
+      "fixture": "No private fixture issues a request; read/write/prefetch error branches set outstanding for declared branch-context testing only. Real accepted request/response ownership remains the unchanged original suite.",
+      "group": "Mem-request bounds and outstanding owner"
+    },
+    {
+      "eligibility": "Held request or prefetch without response",
+      "fixture": "No held request; forced prefetch error includes response on the same edge, avoiding an invented stall owner. These assertions remain enabled; real stall tests retained.",
+      "group": "Stable accepted offer and prefetch tuple"
+    },
+    {
+      "eligibility": "tile_mode && bank_ready and no cancel/error/release",
+      "fixture": "Declared held bank1 uses stable block0/epoch0 and unchanged tile_valid/payload across retirement and second hold edge; no dense/output publication is claimed. Natural full-profile tests retain genuine held dense transfers.",
+      "group": "Bank-ready ownership and payload immutability"
+    },
+    {
+      "eligibility": "dense_valid && !dense_ready",
+      "fixture": "No private publication is declared; sealed0; full natural suite exercises actual output holds.",
+      "group": "Output tuple stability"
+    },
+    {
+      "eligibility": "Every pending/event edge, including reset and errors",
+      "fixture": "All assertions unconditional across kills; expected all128 raw words and event=commit+pending checked; no slot/payload initialized by the fixture.",
+      "group": "Slot retirement/capture/conservation"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "actual_RTL_run_by_reviewer": false,
+  "actual_parent": {
+    "path": "fpga/experiments/cu66-v108-capacity/br88_pipeline_v91h.sv",
+    "sha256": "cb440ed9c12c6fa3eac579aea99f2c03716e33b97ce50822ab00b93de08a4360"
+  },
+  "findings": [],
+  "heavy_jobs_by_reviewer": false,
+  "limits": [
+    "Read-only source and reversible-recipe analysis, not simulation, formal equivalence, timing, CDC or full-parent qualification.",
+    "Focused PASS and complete source-bound composition proof must be supplied by the actual running tests.",
+    "The reviewer did not inspect every original scratch behavior, nor infer that absent issues prove all input/state combinations."
+  ],
+  "observations": {
+    "ac_warmup": "All banks prepare line/cursor tuple continuously. AC_CHECK provides a maturation edge after AC_EXTRACT cursor increment and before AC_FETCH.",
+    "dc_warmup": "current_dc_line updates continuously; CLEAR_TILE edge follows every block/prepare-block change before DC_FETCH consumption.",
+    "descriptor_timing": "Queued tuple captured E; base/validation E+1, dependent address plans E+2, consume E+3. Private inactive old payload is never consumed before warm-up. Modulo32 widths and accepted-edge original threshold/prefix/capacity assertions are retained.",
+    "ownership_and_visibility": "Pending begin has no data or physical request eligibility. Commit resets new visible banks/cache/slots while existing response ownership and physical drain logic is retained. Original busy ownership and request/output hold assertions remain.",
+    "raw_warmup": "DESC1 initializes line32. Accepted RAW_EXTRACT captures V114 prepared nextline once; it holds through stalled PREFETCH_DRAIN, unlike recomputing from already incremented index.",
+    "read_reply_forwarding": "FETCH captures comparison before EXTRACT. The only other return into EXTRACT is matching successful READ_WAIT response; hit=1 registers on the same edge as cache-data/address/valid installation. response_failure blocks forwarding on wrong/error/unowned replies; old higher-priority debt/fault handling remains.",
+    "reserved_owner_abort_routing": "active_epoch updates on reservation E and equals queued_epoch while preparing; actual parent abort_epoch(store_epoch) now cancels that owner. Admitted anti-replay last_epoch/epoch_seen advance only on successful E+3 commit. Rejected or failed reserved owners still expose their tag for parent cancellation.",
+    "test_adapter_scope": "Normal existing suite may compare against V114 after exactly three checked candidate-only preparation edges. New reserved-cancel/retry/replay API cases require their stated independent oracle because private uncommitted anti-replay/inactive views intentionally differ from old immediate admission; this is not permission to remove old normal-suite checks."
+  },
+  "original_recipe_reversed_byte_exact": true,
+  "recipe": {
+    "path": "fpga/experiments/cu66-v115-scratch/edit-recipe.json",
+    "sha256": "ba1288c9b2c3411231c83a3bed74971048077c681e6e86fbc566ce029f9833f8"
+  },
+  "resolves_initial_review": "experiments/python-gamebub-v115/inverse/scratch-source-review-ac459715.json",
+  "reviewed_utc": "2026-11-09T00:56:34.306951+00:00",
+  "reviewer": "/root/v115_idct",
+  "schema": "v115-independent-scratch-source-review-v2",
+  "source": {
+    "path": "fpga/experiments/cu66-v115-scratch/packed_scratch_v91g2.sv",
+    "sha256": "559cb6d4aa7f97c1b0ee4b347d9f098b617123d855c19d2a6f76b945be11c6c3"
+  },
+  "source_edits_by_reviewer": false,
+  "status": "PASS_SOURCE_REVIEW_FUNCTIONAL_PROOF_SEPARATE"
+}

@@ -1,0 +1,90 @@
+{
+  "adapters": [
+    {
+      "edits": [],
+      "path": "fpga/experiments/cu66-v115-refined-scratch/verification/observed_original.sv",
+      "sha256": "9dd9dd48fb5d0166318d4f1d74360faaeb453b4f7286089d4ce187af654567a9",
+      "source": "fpga/experiments/cu66-v115-scratch/verification/observed_original.sv",
+      "source_sha256": "9dd9dd48fb5d0166318d4f1d74360faaeb453b4f7286089d4ce187af654567a9"
+    },
+    {
+      "edits": [],
+      "path": "fpga/experiments/cu66-v115-refined-scratch/verification/clock_adapter.hpp",
+      "sha256": "aadf7bed5e2fc4a9388810bd85171f8711eedb35a2f20dedc29229c51b4ff583",
+      "source": "fpga/experiments/cu66-v115-scratch/verification/clock_adapter.hpp",
+      "source_sha256": "aadf7bed5e2fc4a9388810bd85171f8711eedb35a2f20dedc29229c51b4ff583"
+    },
+    {
+      "edits": [],
+      "path": "fpga/experiments/cu66-v115-refined-scratch/verification/tb_scratch.cpp",
+      "sha256": "5515780dd96e2ed7640cf7e6741f54ca084536a0f5793c689e6cef37959edc16",
+      "source": "fpga/experiments/cu66-v115-scratch/verification/tb_scratch.cpp",
+      "source_sha256": "5515780dd96e2ed7640cf7e6741f54ca084536a0f5793c689e6cef37959edc16"
+    },
+    {
+      "edits": [],
+      "path": "fpga/experiments/cu66-v115-refined-scratch/verification/tb_bank.cpp",
+      "sha256": "dfea8a9f36cbc48a38d257e51099f245e391a9753196c6827707c89c94e31892",
+      "source": "fpga/experiments/cu66-v115-scratch/verification/tb_bank.cpp",
+      "source_sha256": "dfea8a9f36cbc48a38d257e51099f245e391a9753196c6827707c89c94e31892"
+    },
+    {
+      "edits": [],
+      "path": "fpga/experiments/cu66-v115-refined-scratch/verification/historical_hazards.cpp",
+      "sha256": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a",
+      "source": "fpga/experiments/cu66-v115-scratch/verification/historical_hazards.cpp",
+      "source_sha256": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a"
+    },
+    {
+      "edits": [
+        [
+          "module packed_scratch_v91g2 ",
+          "module observed_candidate "
+        ],
+        [
+          "\n);",
+          ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);"
+        ],
+        [
+          "\nendmodule",
+          "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule"
+        ]
+      ],
+      "path": "fpga/experiments/cu66-v115-refined-scratch/verification/observed_candidate.sv",
+      "sha256": "f0193ee02451adb9def9dec02fac94ecdeb039798617c52abf9b0a224fcf8fa5",
+      "source": "fpga/experiments/cu66-v115-refined-scratch/packed_scratch_v91g2.sv",
+      "source_sha256": "2b9dbaf7fb25d7fdc8219a69dc59588b4c1bb2e7da374c6edaf223a5c1ac52d1"
+    },
+    {
+      "edits": [
+        [
+          "    output logic mismatch,",
+          "    output logic [2047:0] verify_tile_visible, verify_tile_private,\n    output logic verify_tile_slot_valid, verify_tile_slot_bank,\n    output logic [5:0] verify_tile_slot_index,\n    output logic [15:0] verify_tile_slot_value,\n    output logic verify_tile_event_valid,\n    output logic [31:0] verify_tile_events, verify_tile_commits,\n    output logic [31:0] verify_tile_back_to_back, verify_tile_zero_events, verify_tile_data_events,\n    output logic mismatch,"
+        ],
+        [
+          "    assign mismatch=pair_enable && !((old_begin_ready==begin_ready)",
+          "    // Additive raw-array equivalence includes every inactive word, not only\n    // selected dense data. No original public/owner/raw check is removed.\n    logic all_tile_words_equal;\n    always_comb begin\n        all_tile_words_equal=1;\n        for(integer b=0;b<2;b=b+1)for(integer w=0;w<64;w=w+1)\n            all_tile_words_equal=all_tile_words_equal && original.tile[b][w]==candidate.tile[b][w];\n    end\n    for(genvar b=0;b<2;b=b+1)begin: additional_tile_views\n        for(genvar w=0;w<64;w=w+1)begin: word_view\n            assign verify_tile_visible[(b*64+w)*16+:16]=candidate.tile[b][w];\n            assign verify_tile_private[(b*64+w)*16+:16]=candidate.tile_payload[b][w];\n        end\n    end\n    assign verify_tile_slot_valid=candidate.tile_pending_valid;\n    assign verify_tile_slot_bank=candidate.tile_pending_bank;\n    assign verify_tile_slot_index=candidate.tile_pending_index;\n    assign verify_tile_slot_value=candidate.tile_pending_value;\n    assign verify_tile_event_valid=candidate.tile_event_valid;\n    initial begin verify_tile_events=0;verify_tile_commits=0;verify_tile_back_to_back=0;\n        verify_tile_zero_events=0;verify_tile_data_events=0;end\n    always_ff @(posedge clk)begin\n        if(candidate.tile_event_valid)begin\n            verify_tile_events<=verify_tile_events+1;\n            if(candidate.tile_event_value==0)verify_tile_zero_events<=verify_tile_zero_events+1;\n            else verify_tile_data_events<=verify_tile_data_events+1;\n        end\n        if(candidate.tile_pending_valid)verify_tile_commits<=verify_tile_commits+1;\n        if(candidate.tile_pending_valid && candidate.tile_event_valid)\n            verify_tile_back_to_back<=verify_tile_back_to_back+1;\n        assert(verify_tile_events==verify_tile_commits+32'(candidate.tile_pending_valid))\n            else $fatal(1,\"finite tile slot conservation differs\");\n        if(candidate.tile_pending_valid)\n            assert(candidate.tile[candidate.tile_pending_bank][candidate.tile_pending_index]==candidate.tile_pending_value)\n                else $fatal(1,\"newest visible tile write not forwarded\");\n    end\n    assign mismatch=pair_enable && !(all_tile_words_equal && (old_begin_ready==begin_ready)"
+        ]
+      ],
+      "path": "fpga/experiments/cu66-v115-refined-scratch/verification/scratch_probe.sv",
+      "sha256": "137f71b97610ce169eb3ad38bba6ebc1bc8c575c0feb6f1a2cf780fa5df06dd9",
+      "source": "fpga/experiments/cu66-v115-scratch/verification/scratch_probe.sv",
+      "source_sha256": "e0c1b6b0e286da4370ac41acb48b5fad5e50271695c9628485b45a90466db11b"
+    },
+    {
+      "edits": [
+        [
+          "int main(int argc,char**argv)",
+          "int inherited_prepare_main(int argc,char**argv)"
+        ]
+      ],
+      "path": "fpga/experiments/cu66-v115-refined-scratch/verification/tb_prepare.cpp",
+      "sha256": "1b6a2445ca9c70b9b5a34d12775f4ec9d0539dc5d46b2da522b1984e7441abb2",
+      "source": "fpga/experiments/cu66-v115-scratch/verification/tb_prepare.cpp",
+      "source_sha256": "5df40f799286d1894c3b701fc8f07a4fcd0ad04b56bbb6aaac1b825dd0a50ad9"
+    }
+  ],
+  "descriptor_extra_edges_unchanged": 3,
+  "old_assertions_removed": 0,
+  "schema": "v115-refined-all128-raw-forward-pair-v1"
+}

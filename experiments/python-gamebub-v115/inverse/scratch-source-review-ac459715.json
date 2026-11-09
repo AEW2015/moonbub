@@ -1,0 +1,28 @@
+{
+  "actual_RTL_run": false,
+  "finding": {
+    "consequence": "For a new queued epoch different from old active_epoch, parent abort during any pending edge is ignored and can allow descriptor commit after the parent cancels.",
+    "priority": "must_fix_before_composition",
+    "recommended_small_fix": "Expose/capture reserved owner tag on acceptance, retain last_epoch/epoch_seen update only on successful commit; document public reserved versus private admitted semantics. Test actual parent abort at every pending edge.",
+    "requirement": "Every accepted pending scratch owner must be canceled by the actual parent wiring before admission/physical effects.",
+    "source_evidence": "packed_scratch cancel selects queued_epoch in BEGIN_PLAN/BEGIN_COMMIT; active_epoch stays old until BEGIN_COMMIT. Existing parent wires abort_epoch(store_epoch) and active_epoch(store_epoch). Parent store_abort=start||abort_packet||(running&&packet_error!=0)."
+  },
+  "other_source_observations": [
+    "Descriptor capture and existing BEGIN_PLAN mature bit provide three real candidate edges: base and flags E+1, dependent plans E+2, consume E+3.",
+    "Modulo32 arithmetic widths and original accepted-edge algebra checks retained.",
+    "A pending descriptor owns no physical request, dense result or coefficient eligibility; existing response/debt overrides remain higher priority.",
+    "IDLE cursor clear happens on acceptance before preparation, and prepared V114 prefetch payload gets its existing later consuming warm-up.",
+    "No code changes were made by this reviewer and no simulation/equivalence result is claimed."
+  ],
+  "parent": {
+    "path": "fpga/experiments/cu66-v108-capacity/br88_pipeline_v91h.sv",
+    "sha256": "cb440ed9c12c6fa3eac579aea99f2c03716e33b97ce50822ab00b93de08a4360"
+  },
+  "reviewer": "/root/v115_idct",
+  "schema": "v115-independent-scratch-source-review-initial-v1",
+  "source": {
+    "path": "fpga/experiments/cu66-v115-scratch/packed_scratch_v91g2.sv",
+    "sha256": "ac459715994070e5ebb6266c4695d606b0f098619b58e24469536fefb5097e00"
+  },
+  "status": "BLOCKED_PENDING_OWNER_TAG_INTEGRATION"
+}

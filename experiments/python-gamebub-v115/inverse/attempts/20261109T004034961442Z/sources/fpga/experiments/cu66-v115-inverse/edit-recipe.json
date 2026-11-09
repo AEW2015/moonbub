@@ -1,0 +1,79 @@
+{
+  "schema": "v115-inverse-IV115.1-reversible-edit-v1",
+  "contract": "One registered PREPARE edge per accepted DQ tile and one per accepted IDCT tile; valid content/order/owners unchanged; invalid diagnostic phase shifted, no exact-old-cycle claim.",
+  "all_original_assertions_retained": true,
+  "recipes": [
+    {
+      "original": "fpga/experiments/cu66-v108-outtile/cu66_idct8x8.sv",
+      "original_sha256": "3a30e2c527755ee5e34480274a7998795a773e23fef6cec8471fdd89c31a7808",
+      "derived": "fpga/experiments/cu66-v115-inverse/cu66_idct8x8.sv",
+      "derived_sha256": "640b6729bbfeca8cd19d8514f06e1043be1302029dcebaadbadf9a7b81e6cc8a",
+      "edits": [
+        {
+          "before": "DC_SECOND_ACC, OUTPUT_TILE} state_t;",
+          "after": "DC_SECOND_ACC, OUTPUT_TILE, PREPARE} state_t;"
+        },
+        {
+          "before": "    logic input_bad;",
+          "after": "    logic input_bad;\n    // IV115.1: eight local groups are captured with the retained source tile.\n    // Only PREPARE consumes them, after an actual accepted IDLE edge. Payload\n    // and flags are unowned in IDLE and need no reset/cancel fanout.\n    logic [7:0] prepared_bad, prepared_nonzero, prepared_ac_nonzero;\n    logic tile_zero, tile_dc;\n    function automatic logic outside_domain(input logic [19:0] value);\n        // Exact [-522240,+522240] over signed20, no wide subtract/comparison.\n        outside_domain=(value[19:11]==9'b100000000)||\n            (value[19:11]==9'b011111111&&(|value[10:0]));\n    endfunction\n    for(genvar g=0;g<8;g=g+1)begin: input_preparation\n        logic bad, nonzero, ac_nonzero;\n        always_comb begin\n            bad=0;nonzero=0;ac_nonzero=0;\n            for(integer j=0;j<8;j=j+1)begin\n                bad=bad|outside_domain(in_tile[(g*8+j)*20+:20]);\n                nonzero=nonzero|(|in_tile[(g*8+j)*20+:20]);\n                if(g!=0||j!=0)ac_nonzero=ac_nonzero|(|in_tile[(g*8+j)*20+:20]);\n            end\n        end\n        always_ff @(posedge clk)if(state==IDLE)begin\n            prepared_bad[g]<=bad;prepared_nonzero[g]<=nonzero;\n            prepared_ac_nonzero[g]<=ac_nonzero;\n        end\n    end\n    assign tile_zero=!(|prepared_nonzero);\n    assign tile_dc=!(|prepared_ac_nonzero);"
+        },
+        {
+          "before": "        if(state==IDLE)begin\n            prefetch_enable=in_valid && in_ready && !input_bad && in_tile!=0;\n            prefetch_group=0;prefetch_k=0;prefetch_dc=in_tile[1279:20]==0;",
+          "after": "        if(state==PREPARE)begin\n            prefetch_enable=!input_bad&&!tile_zero;\n            prefetch_group=0;prefetch_k=0;prefetch_dc=tile_dc;"
+        },
+        {
+          "before": "            if(state==IDLE)\n                next_samples[row]={{4{in_tile[(row*8)*20+19]}},in_tile[(row*8)*20+:20]};",
+          "after": "            if(state==PREPARE)\n                next_samples[row]={{4{source_tile[(row*8)*20+19]}},source_tile[(row*8)*20+:20]};"
+        },
+        {
+          "before": "        input_bad=1'b0;\n        for (integer n=0; n<64; n=n+1)\n            if ($signed(in_tile[n*20 +:20]) > 20'sd522240 ||\n                $signed(in_tile[n*20 +:20]) < -20'sd522240)\n                input_bad=1'b1;",
+          "after": "        input_bad=|prepared_bad;"
+        },
+        {
+          "before": "                    out_error<=input_bad;\n                    active_cycles<=0;",
+          "after": "                    out_error<=0;\n                    active_cycles<=0;"
+        },
+        {
+          "before": "                    if (input_bad || in_tile==0) begin\n                        out_written<=0;\n                        state<=OUTPUT_TILE;\n                    end else if (in_tile[1279:20]==0) state<=DC_FIRST_MUL;\n                    else state<=FIRST_MUL;\n                end\n                FIRST_MUL",
+          "after": "                    state<=PREPARE;\n                end\n                PREPARE:begin\n                    out_error<=input_bad;\n                    if(input_bad||tile_zero)begin out_written<=0;state<=OUTPUT_TILE;end\n                    else if(tile_dc)state<=DC_FIRST_MUL;\n                    else state<=FIRST_MUL;\n                end\n                FIRST_MUL"
+        },
+        {
+          "before": "    always_ff @(posedge clk)if(state==IDLE)source_tile<=in_tile;",
+          "after": "    always_ff @(posedge clk)if(state==IDLE)source_tile<=in_tile;\n`ifndef SYNTHESIS\n    logic reference_bad;\n    always_comb begin\n        reference_bad=0;\n        for(integer n=0;n<64;n=n+1)\n            if($signed(source_tile[n*20+:20])>20'sd522240 ||\n               $signed(source_tile[n*20+:20])< -20'sd522240)reference_bad=1;\n    end\n    always_ff @(posedge clk)if(!rst&&!abort_frame&&state==PREPARE)begin\n        assert(input_bad==reference_bad)else $fatal(1,\"IDCT prepared range differs\");\n        assert(tile_zero==(source_tile==0))else $fatal(1,\"IDCT prepared zero differs\");\n        assert(tile_dc==(source_tile[1279:20]==0))else $fatal(1,\"IDCT prepared DC differs\");\n    end\n`endif"
+        }
+      ]
+    },
+    {
+      "original": "fpga/experiments/cu66-v110-dequant/cu66_dequant.sv",
+      "original_sha256": "e0a62ee4886f5690e2a0c788d20cbef1ee669ef451a4944c10c43e43788c72ac",
+      "derived": "fpga/experiments/cu66-v115-inverse/cu66_dequant.sv",
+      "derived_sha256": "cc446212502591447130f0260fc9e3922813c5afab7220a8a3a0f00739c47ec2",
+      "edits": [
+        {
+          "before": "typedef enum logic [1:0] {IDLE, MULTIPLY, HOLD_TILE} state_t;",
+          "after": "typedef enum logic [1:0] {IDLE, MULTIPLY, HOLD_TILE, PREPARE} state_t;"
+        },
+        {
+          "before": "    logic input_bad;",
+          "after": "    logic input_bad;\n    logic [7:0] prepared_bad, prepared_nonzero, output_written;\n    logic prepared_scale_bad, tile_zero;\n    for(genvar g=0;g<8;g=g+1)begin: input_preparation\n        logic bad,nonzero;\n        always_comb begin\n            bad=0;nonzero=0;\n            for(integer j=0;j<8;j=j+1)begin\n                bad=bad|!((in_coefficients[(g*8+j)*16+11+:5]==5'd0)||\n                    (in_coefficients[(g*8+j)*16+11+:5]==5'd31)||\n                    (in_coefficients[(g*8+j)*16+:16]==16'h0800));\n                nonzero=nonzero|(|in_coefficients[(g*8+j)*16+:16]);\n            end\n        end\n        always_ff @(posedge clk)if(state==IDLE)begin\n            prepared_bad[g]<=bad;prepared_nonzero[g]<=nonzero;\n        end\n    end\n    always_ff @(posedge clk)if(state==IDLE)prepared_scale_bad<=in_scale_code==3;\n    assign tile_zero=!(|prepared_nonzero);\n    // The payload words use only registered local group ownership as CE.\n    // Eight visibility bits provide the existing reset/invalid/zero contents;\n    // a canceled speculative write cannot expose old or partial output.\n    for(genvar w=0;w<64;w=w+1)begin: output_words\n        logic [19:0] payload;\n        always_ff @(posedge clk)if(state==MULTIPLY&&group_index==3'(w/8))\n            payload<=20'(operand_products[w%8]);\n        assign out_dequantized[w*20+:20]=output_written[w/8]?payload:20'd0;\n    end"
+        },
+        {
+          "before": "        input_bad=(in_scale_code==3);\n        for(integer i=0;i<64;i=i+1)\n            if($signed(in_coefficients[i*16 +:16]) < -16'sd2048 ||\n               $signed(in_coefficients[i*16 +:16]) > 16'sd2048)input_bad=1;",
+          "after": "        input_bad=prepared_scale_bad||(|prepared_bad);"
+        },
+        {
+          "before": "            group_index<=0;out_id<=0;out_error<=0;out_dequantized<=0;",
+          "after": "            group_index<=0;out_id<=0;out_error<=0;output_written<=0;"
+        },
+        {
+          "before": "                out_id<=in_id;out_error<=input_bad;group_index<=0;\n                if(input_bad||in_coefficients==0)begin out_dequantized<=0;state<=HOLD_TILE;end\n                else state<=MULTIPLY;\n            end\n            MULTIPLY:begin\n                for(integer lane=0;lane<8;lane=lane+1)\n                    out_dequantized[(int'(group_index)*8+lane)*20 +:20]<=20'(operand_products[lane]);",
+          "after": "                out_id<=in_id;out_error<=0;group_index<=0;state<=PREPARE;\n            end\n            PREPARE:begin\n                out_error<=input_bad;\n                if(input_bad||tile_zero)begin output_written<=0;state<=HOLD_TILE;end\n                else state<=MULTIPLY;\n            end\n            MULTIPLY:begin\n                output_written[group_index]<=1;"
+        },
+        {
+          "before": "    // The original quantizer/selection/product expressions remain independent",
+          "after": "    logic reference_bad;\n    always_comb begin\n        reference_bad=scale_code==3;\n        for(integer n=0;n<64;n=n+1)\n            if($signed(coefficients[n*16+:16])< -16'sd2048 ||\n               $signed(coefficients[n*16+:16])>16'sd2048)reference_bad=1;\n    end\n    always_ff @(posedge clk)if(state==PREPARE&&!rst&&!abort_i)begin\n        assert(input_bad==reference_bad)else $fatal(1,\"DQ prepared range differs\");\n        assert(tile_zero==(coefficients==0))else $fatal(1,\"DQ prepared zero differs\");\n    end\n    for(genvar g=0;g<8;g=g+1)begin: output_ownership_assertions\n        assert property(@(posedge clk)disable iff(rst||abort_i)\n            $rose(output_written[g])|->$past(state==MULTIPLY&&group_index==3'(g)))\n            else $fatal(1,\"DQ output group exposed without replacement\");\n    end\n    always_ff @(posedge clk)if(out_valid&&!out_error&&!tile_zero&&!rst&&!abort_i)\n        assert(&output_written)else $fatal(1,\"DQ complete tile has unwritten group\");\n    // The original quantizer/selection/product expressions remain independent"
+        }
+      ]
+    }
+  ]
+}

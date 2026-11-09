@@ -1,0 +1,172 @@
+{
+  "schema": "v115-ingress-descriptor-parser-caches-v1",
+  "production": [
+    {
+      "original": "fpga/experiments/cu66-v110-count-domain/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "38c524b52d40c1a7764ac7219582af974b8f973d94d8cff03f23c7088b2bcf28",
+      "candidate": "fpga/experiments/cu66-v115-ingress/br88_packet_ingress_sync_v91h.sv",
+      "candidate_sha256": "b24bdd7db9077d76d30da8203a494584cd179ccd62ed65d87a768519dc858412",
+      "edits": [
+        {
+          "before": "METADATA=9, CONTEXT_END=10, RAW_END=11, FETCH_REQ=12, FETCH_WAIT=13;",
+          "after": "METADATA=9, CONTEXT_END=10, RAW_END=11, FETCH_REQ=12, FETCH_WAIT=13, SELECT_BAND=14;",
+          "occurrences": 1
+        },
+        {
+          "before": "    logic prepared_request_in_bounds;",
+          "after": "    logic prepared_request_in_bounds;\n    // IV115 ingress: a private owned descriptor is selected one edge before\n    // either descriptor validation or context delivery. Payload is unreset;\n    // SELECT_BAND + context start/packet cancellation qualify every use.\n    logic selection_context;\n    logic [1:0] active_band;\n    logic [31:0] active_length, active_length_minus1, active_count;\n    logic [31:0] active_size, active_offset, descriptor_last_addr;\n    logic [7:0] active_k0, active_k1;\n    logic active_descriptor_bad;\n    logic replay_nonzero;\n    logic [5:0] replay_fetch_bits, replay_word_bits;\n    logic replay_word_last;",
+          "occurrences": 1
+        },
+        {
+          "before": "next_request_addr=fetch_base+lengths[band]-1;",
+          "after": "next_request_addr=descriptor_last_addr;",
+          "occurrences": 1
+        },
+        {
+          "before": "always_ff @(posedge clk)if(state==FETCH_REQ)expected_fetch_addr<=fetch_address;",
+          "after": "always_ff @(posedge clk)if(state==FETCH_REQ)expected_fetch_addr<=prepared_request_addr;",
+          "occurrences": 1
+        },
+        {
+          "before": "            prepared_request_addr<=base;",
+          "after": "            if(kind==F_DESCRIPTOR)descriptor_last_addr<=base+active_length_minus1;\n            prepared_request_addr<=base;",
+          "occurrences": 1
+        },
+        {
+          "before": "        ctx_bits=6'(cached_replay_remaining<(mode16 ? 16 : 32) ? cached_replay_remaining : (mode16 ? 16 : 32));\n        ctx_last=cached_replay_remaining==32'(ctx_bits);\n        ctx_valid=state==CONTEXT_RUN && word_valid && replay_bits<sizes[band] && !cancelled && !context_failure;",
+          "after": "        replay_fetch_bits=6'(cached_replay_remaining<(mode16 ? 16 : 32) ? cached_replay_remaining : (mode16 ? 16 : 32));\n        ctx_bits=replay_word_bits;\n        ctx_last=replay_word_last;\n        ctx_valid=state==CONTEXT_RUN && word_valid && replay_nonzero && !cancelled && !context_failure;",
+          "occurrences": 1
+        },
+        {
+          "before": ".band({6'd0,band}), .k0(k0s[band]), .k1(k1s[band]),\n        .event_count(counts[band]), .stream_bits(sizes[band]), .epoch(context_epoch),",
+          "after": ".band({6'd0,active_band}), .k0(active_k0), .k1(active_k1),\n        .event_count(active_count), .stream_bits(active_size), .epoch(context_epoch),",
+          "occurrences": 1
+        },
+        {
+          "before": "        if(state==FETCH_WAIT) begin\n            prepared_request_addr<=next_request_addr;",
+          "after": "        if(state==FETCH_WAIT) begin\n            if(fetch_kind==F_REPLAY)begin\n                replay_word_bits<=replay_fetch_bits;\n                replay_word_last<=cached_replay_remaining==32'(replay_fetch_bits);\n            end\n            prepared_request_addr<=next_request_addr;",
+          "occurrences": 1
+        },
+        {
+          "before": "            cached_replay_remaining<=0;\n            descriptor_ready<=0;",
+          "after": "            cached_replay_remaining<=0; replay_nonzero<=0; selection_context<=0;\n            descriptor_ready<=0;",
+          "occurrences": 2
+        },
+        {
+          "before": "                        end else state<=DESCRIPTOR;",
+          "after": "                        end else begin selection_context<=0;state<=SELECT_BAND;end",
+          "occurrences": 1
+        },
+        {
+          "before": "                DESCRIPTOR: begin\n                    if(!descriptor_ready) begin\n                        if(lengths[band]<6 || cursor>size_bytes-4 || lengths[band]>size_bytes-4-cursor) fail_packet(4);",
+          "after": "                SELECT_BAND:begin\n                    active_band<=band;active_length<=lengths[band];\n                    active_length_minus1<=lengths[band]-1;\n                    active_count<=counts[band];active_size<=sizes[band];active_offset<=offsets[band];\n                    active_k0<=k0s[band];active_k1<=k1s[band];active_descriptor_bad<=descriptor_count_bad;\n                    state<=selection_context?CONTEXT_START:DESCRIPTOR;\n                end\n                DESCRIPTOR: begin\n                    if(!descriptor_ready) begin\n                        if(active_length<6 || cursor>size_bytes-4 || active_length>size_bytes-4-cursor) fail_packet(4);",
+          "occurrences": 1
+        },
+        {
+          "before": "descriptor_bytes!=lengths[band]-6",
+          "after": "descriptor_bytes!=active_length-6",
+          "occurrences": 1
+        },
+        {
+          "before": "fetch_bytes[1]>11 || descriptor_count_bad",
+          "after": "fetch_bytes[1]>11 || active_descriptor_bad",
+          "occurrences": 1
+        },
+        {
+          "before": "else if(band!=0 && counts[band]==0 && descriptor_bits!=0)",
+          "after": "else if(band!=0 && active_count==0 && descriptor_bits!=0)",
+          "occurrences": 1
+        },
+        {
+          "before": "cursor<=cursor+lengths[band];",
+          "after": "cursor<=cursor+active_length;",
+          "occurrences": 1
+        },
+        {
+          "before": "                            else band<=band+1'b1;",
+          "after": "                            else begin band<=band+1'b1;selection_context<=0;state<=SELECT_BAND;end",
+          "occurrences": 1
+        },
+        {
+          "before": "                METADATA: if(meta_valid && meta_ready) state<=raw_mode ? RAW : CONTEXT_START;\n                CONTEXT_START: begin replay_bits<=0; cached_replay_remaining<=sizes[band]; word_valid<=0; context_active<=1; state<=CONTEXT_RUN; end",
+          "after": "                METADATA: if(meta_valid && meta_ready)begin\n                    if(raw_mode)state<=RAW;\n                    else begin selection_context<=1;state<=SELECT_BAND;end\n                end\n                CONTEXT_START: begin replay_bits<=0; cached_replay_remaining<=active_size;\n                    replay_nonzero<=active_size!=0;word_valid<=0; context_active<=1; state<=CONTEXT_RUN; end",
+          "occurrences": 1
+        },
+        {
+          "before": "cached_replay_remaining<=cached_replay_remaining-32'(ctx_bits); word_valid<=0;",
+          "after": "cached_replay_remaining<=cached_replay_remaining-32'(ctx_bits); replay_nonzero<=cached_replay_remaining!=32'(ctx_bits);word_valid<=0;",
+          "occurrences": 1
+        },
+        {
+          "before": "else if(!word_valid && replay_bits<sizes[band])\n                        begin_fetch(F_REPLAY,6'((32'(ctx_bits)+7)>>3),offsets[band]+(replay_bits>>3),CONTEXT_RUN);",
+          "after": "else if(!word_valid && replay_nonzero)\n                        begin_fetch(F_REPLAY,6'((32'(replay_fetch_bits)+7)>>3),active_offset+(replay_bits>>3),CONTEXT_RUN);",
+          "occurrences": 1
+        },
+        {
+          "before": "else begin band<=band+1'b1; state<=CONTEXT_START; end",
+          "after": "else begin band<=band+1'b1;selection_context<=1;state<=SELECT_BAND;end",
+          "occurrences": 1
+        },
+        {
+          "before": "    // Independent mathematical caller contract, evaluated only on actual start.",
+          "after": "    always_ff @(posedge clk)if(!cancelled)begin\n        if(state==CONTEXT_START)begin\n            assert(active_band==band && active_count==counts[band] && active_size==sizes[band] &&\n                active_offset==offsets[band] && active_k0==k0s[band] && active_k1==k1s[band])\n                else $fatal(1,\"V115 context descriptor ownership mismatch\");\n        end\n        if(state==DESCRIPTOR)begin\n            assert(active_length==lengths[band] && active_length_minus1==lengths[band]-1 &&\n                active_descriptor_bad==descriptor_count_bad)\n                else $fatal(1,\"V115 descriptor validation ownership mismatch\");\n        end\n        if(context_active && !context_failure && !ctx_done)begin\n            assert(replay_nonzero==(cached_replay_remaining!=0))else $fatal(1,\"V115 replay nonzero mismatch\");\n            if(word_valid)begin\n                assert(ctx_bits==replay_fetch_bits && ctx_last==(cached_replay_remaining==32'(replay_fetch_bits)))\n                    else $fatal(1,\"V115 replay word tuple mismatch\");\n            end\n        end\n    end\n    // Independent mathematical caller contract, evaluated only on actual start.",
+          "occurrences": 1
+        }
+      ]
+    },
+    {
+      "original": "fpga/experiments/cu66-v110-prefix/br88_rice_elastic.sv",
+      "original_sha256": "c07d936e807a09ee332b5df4c3f743f88f284784fbcf1e704d1a8db770c33eac",
+      "candidate": "fpga/experiments/cu66-v115-ingress/br88_rice_elastic.sv",
+      "candidate_sha256": "37c8f5bb79621117c0e9e05096b6edead446540b026b7240819bac39838660a3",
+      "edits": [
+        {
+          "before": "    logic [31:0] cached_remaining, cached_load_remaining;",
+          "after": "    logic [31:0] cached_remaining, cached_load_remaining;\n    // Exact bounded predicates avoid a live32-bit remaining path through the\n    // PREFIX priority/consume controller. IDLE/request supplies the warm-up.\n    logic [5:0] prefix_window;\n    logic remaining_nonzero, load_nonzero;\n    always_ff @(posedge clk)prefix_window<=cached_remaining<15?6'(cached_remaining):6'd15;",
+          "occurrences": 1
+        },
+        {
+          "before": "        window = remaining < 15 ? 6'(remaining) : 6'd15;",
+          "after": "        window = state==PREFIX&&!serial ? prefix_window : (remaining<15?6'(remaining):6'd15);",
+          "occurrences": 1
+        },
+        {
+          "before": "        prefix_empty = window==0;",
+          "after": "        prefix_empty = !remaining_nonzero;",
+          "occurrences": 1
+        },
+        {
+          "before": "                 loaded<size_bits && !(state==IDLE && req_valid) &&",
+          "after": "                 load_nonzero && !(state==IDLE && req_valid) &&",
+          "occurrences": 1
+        },
+        {
+          "before": "            cached_remaining<=stream_bits; cached_load_remaining<=stream_bits;",
+          "after": "            cached_remaining<=stream_bits; cached_load_remaining<=stream_bits;\n            remaining_nonzero<=stream_bits!=0;load_nonzero<=stream_bits!=0;",
+          "occurrences": 1
+        },
+        {
+          "before": "                    cached_load_remaining<=cached_load_remaining-32'(in_bits);",
+          "after": "                    cached_load_remaining<=cached_load_remaining-32'(in_bits);\n                    load_nonzero<=cached_load_remaining!=32'(in_bits);",
+          "occurrences": 1
+        },
+        {
+          "before": "                    cached_remaining<=cached_remaining-32'(take_bits);\n                    count_bits<=count_bits+64'(take_bits);\n                    if (!serial && !found_one",
+          "after": "                    cached_remaining<=cached_remaining-32'(take_bits);\n                    remaining_nonzero<=cached_remaining!=32'(take_bits);\n                    count_bits<=count_bits+64'(take_bits);\n                    if (!serial && !found_one",
+          "occurrences": 1
+        },
+        {
+          "before": "                    cached_remaining<=cached_remaining-32'(take_bits);\n                    count_bits<=count_bits+64'(take_bits);\n                    if (!serial || suffix_left",
+          "after": "                    cached_remaining<=cached_remaining-32'(take_bits);\n                    remaining_nonzero<=cached_remaining!=32'(take_bits);\n                    count_bits<=count_bits+64'(take_bits);\n                    if (!serial || suffix_left",
+          "occurrences": 1
+        },
+        {
+          "before": "    // Only SUFFIX selects this combinational result;",
+          "after": "    always_ff @(posedge clk)if(!reset&&!stream_start&&active)begin\n        assert(remaining_nonzero==(cached_remaining!=0))else $fatal(1,\"V115 remaining eligibility mismatch\");\n        assert(load_nonzero==(loaded<size_bits))else $fatal(1,\"V115 load eligibility mismatch\");\n        if(state==PREFIX&&!serial)\n            assert(prefix_window==(cached_remaining<15?6'(cached_remaining):6'd15))\n                else $fatal(1,\"V115 prefix request warmup mismatch\");\n    end\n    // Only SUFFIX selects this combinational result;",
+          "occurrences": 1
+        }
+      ]
+    }
+  ],
+  "contract": "IV115.ingress: +one private SELECT_BAND edge per selected descriptor/context; parser same public cycles; all original assertions retained, original source/checkers untouched."
+}

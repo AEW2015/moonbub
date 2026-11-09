@@ -1,0 +1,42 @@
+{
+  "arbitrary_private_corruption_recovery_claim": false,
+  "candidate": "fpga/experiments/cu66-v115-owner/cs88_pipeline_v91k.sv",
+  "candidate_sha256": "4ffe09eb94a4823b7870ab8421c7a0dc5f64758c3dbbd1acb8684c761df26a24",
+  "contract": "IV115.O1: keep raw valid/tag and original private/external kill edges; real birth captures tag and held authorization atomically; reset/new command revokes authorization. Preserve stale-private-injection oracle after new admission. No extra public cycle, physical drain or counter change.",
+  "edits": [
+    {
+      "after": "    logic base_kill_valid, base_kill_sent;\n    // IV115.O1: authorization is born with the real registered kill tuple and\n    // retained until a new command/reset revokes it. It is not a second copy of\n    // the one-edge valid pulse. Raw valid/tag remain visible to old probes.\n    logic base_kill_authorized;",
+      "before": "    logic base_kill_valid, base_kill_sent;"
+    },
+    {
+      "after": "    // Current real transitions capture the owner atomically at both kill births.\n    // A retired private valid/tag injection after a new command has no certificate.\n    assign base_abort=abort_packet||(base_kill_valid&&base_kill_authorized);",
+      "before": "    assign base_abort=abort_packet||(base_kill_valid&&base_kill_owner==owner_sequence);"
+    },
+    {
+      "after": "            base_kill_owner<=0;base_kill_sent<=0;base_kill_authorized<=0;terminal_valid<=0;terminal_cause<=0;",
+      "before": "            base_kill_owner<=0;base_kill_sent<=0;terminal_valid<=0;terminal_cause<=0;"
+    },
+    {
+      "after": "            if(!base_kill_sent)begin base_kill_valid<=1;base_kill_owner<=owner_sequence;base_kill_sent<=1;base_kill_authorized<=1;end",
+      "before": "            if(!base_kill_sent)begin base_kill_valid<=1;base_kill_owner<=owner_sequence;base_kill_sent<=1;end"
+    },
+    {
+      "after": "                terminal_valid<=0;terminal_cause<=0;base_kill_sent<=0;base_kill_authorized<=0;cache_abort_rearm<=0;",
+      "before": "                terminal_valid<=0;terminal_cause<=0;base_kill_sent<=0;cache_abort_rearm<=0;"
+    },
+    {
+      "after": "                    base_kill_valid<=1;base_kill_owner<=owner_sequence;base_kill_sent<=1;base_kill_authorized<=1;",
+      "before": "                    base_kill_valid<=1;base_kill_owner<=owner_sequence;base_kill_sent<=1;"
+    },
+    {
+      "after": "`ifndef SYNTHESIS\n    // Independent literal birth predicate follows the sole always_ff priority.\n    // The certificate is NOT proof of arbitrary private register fault recovery.\n    logic certificate_birth;\n    assign certificate_birth=!reset &&\n        ((abort_packet && !base_kill_sent) ||\n         (!abort_packet && !command_accept && !accepted_start && qualified_fault &&\n          !terminal_valid && (inverse_fault||reconstruction_fault) && !base_kill_sent));\n    assert property(@(posedge clk) certificate_birth |=>\n        base_kill_valid && base_kill_authorized &&\n        base_kill_owner==$past(owner_sequence) && owner_sequence==$past(owner_sequence))\n        else $fatal(1,\"real kill birth lost certificate or captured owner\");\n    assert property(@(posedge clk) base_kill_valid && base_kill_authorized |->\n        base_kill_owner==owner_sequence && base_abort && coefficients.abort_packet)\n        else $fatal(1,\"certified kill owner/delivery edge differs\");\n    assert property(@(posedge clk) base_kill_valid && base_kill_authorized |->\n        $past(certificate_birth))\n        else $fatal(1,\"certified pulse has no actual birth\");\n    assert property(@(posedge clk) base_kill_valid && base_kill_authorized |=>\n        !base_kill_valid)\n        else $fatal(1,\"private kill pulse extended beyond original edge\");\n    assert property(@(posedge clk) reset || command_accept |=> !base_kill_authorized)\n        else $fatal(1,\"new command/reset retained old kill authorization\");\n    assert property(@(posedge clk) !reset && !command_accept && !certificate_birth |=>\n        $stable(base_kill_authorized))\n        else $fatal(1,\"kill authorization changed without birth or revocation\");\n    assert property(@(posedge clk) !abort_packet && base_kill_valid && !base_kill_authorized |->\n        !base_abort && !coefficients.abort_packet)\n        else $fatal(1,\"uncertified stale private pulse canceled producer\");\n    assert property(@(posedge clk) abort_packet |-> base_abort && coefficients.abort_packet)\n        else $fatal(1,\"external abort lost its original direct edge\");\n    always_ff @(posedge clk)begin",
+      "before": "`ifndef SYNTHESIS\n    always_ff @(posedge clk)begin"
+    }
+  ],
+  "original": "fpga/experiments/cu66-v114-control/cs88_pipeline_v91k.sv",
+  "original_assertions_removed": 0,
+  "original_sha256": "9e6d2b88ad0f06ca0df5a5218be0d78a9fa9d9e8151d3b0b43aebaafc3ba76bd",
+  "qualification_status": "PREPARED_NOT_RUN",
+  "schema": "v115-owner-held-certificate-no-new-edge-v1",
+  "source_review_required": true
+}

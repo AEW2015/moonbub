@@ -1,0 +1,61 @@
+{
+  "schema": "v115-ingress-verification-adapters-v1",
+  "adapters": [
+    {
+      "source": "fpga/experiments/cu66-v110-prefix/br88_rice_elastic.sv",
+      "source_sha256": "c07d936e807a09ee332b5df4c3f743f88f284784fbcf1e704d1a8db770c33eac",
+      "path": "fpga/experiments/cu66-v115-ingress/verification/rice_original.sv",
+      "sha256": "558db2017dddcd55f315718ec3736e42b2196c519ebef149a0f7aa31cdf25b09",
+      "edits": [
+        {
+          "before": "module br88_rice_elastic (",
+          "after": "module rice_original ("
+        }
+      ]
+    },
+    {
+      "source": "fpga/experiments/cu66-v115-ingress/br88_rice_elastic.sv",
+      "source_sha256": "37c8f5bb79621117c0e9e05096b6edead446540b026b7240819bac39838660a3",
+      "path": "fpga/experiments/cu66-v115-ingress/verification/rice_candidate.sv",
+      "sha256": "004a3fface264a4a865172cf592370dd651098b67cc6c81ae5a1374278f82804",
+      "edits": [
+        {
+          "before": "module br88_rice_elastic (",
+          "after": "module rice_candidate ("
+        }
+      ]
+    },
+    {
+      "source": "fpga/experiments/cu66-v110-prefix/verification/rice_probe.sv",
+      "source_sha256": "32c1749592418f7578c7db86f3054c8aad51b6fafeab5d3cdb5906159a17f204",
+      "path": "fpga/experiments/cu66-v115-ingress/verification/rice_probe.sv",
+      "sha256": "32c1749592418f7578c7db86f3054c8aad51b6fafeab5d3cdb5906159a17f204",
+      "edits": []
+    },
+    {
+      "source": "fpga/experiments/cu66-v110-prefix/verification/historical_rice.cpp",
+      "source_sha256": "46a4ab6ee75ae88499caa5fb09317619d3b12fb0b30af7a5763860c39fb8b0ad",
+      "path": "fpga/experiments/cu66-v115-ingress/verification/historical_rice.cpp",
+      "sha256": "46a4ab6ee75ae88499caa5fb09317619d3b12fb0b30af7a5763860c39fb8b0ad",
+      "edits": []
+    },
+    {
+      "source": "fpga/experiments/cu66-v110-prefix/verification/tb_rice.cpp",
+      "source_sha256": "4467a02290d68eef0bd8f7d32759fed7f177699fa5d18920486b90b4efda2377",
+      "path": "fpga/experiments/cu66-v115-ingress/verification/tb_rice.cpp",
+      "sha256": "ec95b1a971823a1ddbe0d0ce12c69dc979c6ebdfe8b52c89abbba7c55741d999",
+      "edits": [
+        {
+          "before": "  d.reset=(guards&1)!=0;",
+          "after": "  // Complete the new private prepared-state tuple. No old check changes.\n  NEW(prefix_window)=std::min(uint32_t(size-consumed),uint32_t(15));\n  NEW(remaining_nonzero)=uint32_t(size-consumed)!=0;NEW(load_nonzero)=loaded<size;\n  d.reset=(guards&1)!=0;"
+        }
+      ]
+    }
+  ],
+  "wrapper_source": "fpga/experiments/cu66-v115-ingress/br88_packet_ingress_sync_v91h.sv",
+  "wrapper_source_sha256": "b24bdd7db9077d76d30da8203a494584cd179ccd62ed65d87a768519dc858412",
+  "wrapper_sha256": "b20247634bfc9f34fb3a400db9465584e118a996280be077c93abc87ee3408b9",
+  "parser_original_check_sites_removed": 0,
+  "parser_extra_prepared_tuple_sites": 1,
+  "ingress_contract": "new independent admitted-event dense golden/address-owner scoreboard; old exact-cycle checker remains byte-unchanged in frozen base"
+}

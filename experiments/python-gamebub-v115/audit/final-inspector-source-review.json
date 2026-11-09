@@ -1,0 +1,97 @@
+{
+  "checks": {
+    "2_cpu_8_gib_container_and_resource_watchdog_present": true,
+    "bounded_timeout_and_core_dump_disabled": true,
+    "checkpoint_opened_read_only_no_implementation_commands": true,
+    "completion_rechecks_dcp_receipt_and_query_source_pins": true,
+    "dcp_manifest_part_build_number_and_product_match_receipt_and_tool": true,
+    "device_top_tool_and_clock_checked_in_tcl": true,
+    "exact_external_route_dcp_path_size_and_sha256_verified": true,
+    "exact_native_receipt_selected_by_summary_and_result": true,
+    "hdl_top_verified_from_exact_receipt_hashed_dcp_manifest": true,
+    "inputs_source_contract_matches_receipt": true,
+    "native_retained_artifacts_verified": true,
+    "native_source_contract_current_and_snapshot_paths_verified": true,
+    "opened_design_name_is_logged_not_assumed_to_equal_hdl_top": true,
+    "query_source_snapshot_mounted_readonly": true,
+    "recursive_output_artifact_hashes_recorded": true,
+    "register_and_bounds_fanin_queries_are_read_only": true,
+    "source_snapshots_recorded_in_recursive_output_hash_ledger": true,
+    "summary_archived_as_byte_snapshot_before_query": true
+  },
+  "limitations": [
+    "The corrected inspector has not run; register survival/fanin output is pending.",
+    "Source snapshots are mounted read-only to the container and included in the recursive output hash ledger; the host runner rechecks current source files after the query but does not separately assert snapshot hashes against their pre-run values. This is nonblocking for the read-only query path."
+  ],
+  "pre_execution_revision": {
+    "actual_dcp_manifest_checks": [
+      {
+        "manifest_identity": {
+          "BUILD_NUMBER": "6511674",
+          "PRODUCT": "Vivado v2026.1 (64-bit)",
+          "Part": "xc7a100tcsg324-1",
+          "Top": "cs88_pipeline_v91k"
+        },
+        "matches_expected_native_top_part_tool": true,
+        "receipt_path": "experiments/python-gamebub-v115/final/native/20261109T040313064127Z/receipt.json",
+        "receipt_sha256": "0a71ca28ff7379da6bcdccf94d21bb1b0f8592fff27390734736d98d1a976995",
+        "route_dcp_sha256": "134034f9c581560d603e4b64d90963600f815cc2802c169de673fd077046c6ea"
+      },
+      {
+        "manifest_identity": {
+          "BUILD_NUMBER": "6511674",
+          "PRODUCT": "Vivado v2026.1 (64-bit)",
+          "Part": "xc7a100tcsg324-1",
+          "Top": "cs88_pipeline_v91k"
+        },
+        "matches_expected_native_top_part_tool": true,
+        "receipt_path": "experiments/python-gamebub-v115/final/native/20261109T040322403870Z/receipt.json",
+        "receipt_sha256": "f77796e4217a11d93695d225cd697ea4095268e682c899b723646b530915bd99",
+        "route_dcp_sha256": "d46aedd6342a3b3f6444d3bc85df86ed7b9add7efd223691545277a2e69f26e4"
+      }
+    ],
+    "correction_assessment": "The old failures are guard failures, not route/timing failures. Exact old Python/Tcl/native inputs were retained with matching sidecars before edits; old receipts remain unchanged. The replacement guard matches both actual final routed DCP manifests.",
+    "execution_status": "Current corrected inspector not run; awaiting parent launch.",
+    "previous_failed_inspections": [
+      {
+        "directory": "experiments/python-gamebub-v115/final/register-inspection/20261109T043221319064Z",
+        "error": "AssertionError()",
+        "failed_python_sha256": "9d91b8c6e1ac8aada703bee951490cb1d9426b19b3db80ae459e324eff50a54c",
+        "failure_reason": "Read-only DCP open succeeded; obsolete current_design NAME == HDL top guard asserted on the Vivado opened-design alias.",
+        "original_receipt_unmodified": true,
+        "preservation_sidecar_sha256": "2e3ecb92d79651c4bbb0598b7427c6e45f48bc0fd227f0d66bcd877ae163f58f",
+        "receipt_sha256": "45c6fceba3c4fc6f956799a6f9d58115282b7d78a63cd3a01ddd079fc8ff5eb1",
+        "sidecar_status": "EXACT_FAILED_INPUTS_RETAINED_BEFORE_FIRST_EDIT",
+        "status": "FAIL"
+      },
+      {
+        "directory": "experiments/python-gamebub-v115/final/register-inspection/20261109T043228870205Z",
+        "error": "AssertionError()",
+        "failed_python_sha256": "9d91b8c6e1ac8aada703bee951490cb1d9426b19b3db80ae459e324eff50a54c",
+        "failure_reason": "Read-only DCP open succeeded; obsolete current_design NAME == HDL top guard asserted on the Vivado opened-design alias.",
+        "original_receipt_unmodified": true,
+        "preservation_sidecar_sha256": "9d2a9fcaf51f2980dfbed89fa48c795e55de7f7b903bca4ef548244417919604",
+        "receipt_sha256": "489b5d79cfe4211e9206d96944ea2eee005aa959c3b216364b07df65ab7e7f23",
+        "sidecar_status": "EXACT_FAILED_INPUTS_RETAINED_BEFORE_FIRST_EDIT",
+        "status": "FAIL"
+      }
+    ],
+    "reviewed_change": "Host runner now validates Top, Part, BUILD_NUMBER and PRODUCT from dcp.xml inside the exact receipt-hashed routed DCP; Tcl still checks routed part, Vivado build and clock, and records the opened session design name as an alias. The inspector mounts exact source snapshots read-only and recursively hashes all output artifacts. The unique external /work CWD remains."
+  },
+  "review_note": "Refreshed pre-execution static review after correction of the opened-design-name guard. Parent freezes the mutable aggregate summary during each query; the archived byte snapshot is the historical selection evidence.",
+  "review_scope": "Read-only source review. No inspector run, checkpoint opened, synthesis, placement, routing, hardware access, or changes to frozen inputs.",
+  "reviewer": "/root/v115_inventory",
+  "schema": "v115-register-inspector-static-review-v1",
+  "source_pins": {
+    "fpga/experiments/cu66-v115-inspect/registers.tcl": {
+      "sha256": "e9d6e002d3bcb3e9c4963fdc15f48657995f6605d05048fcfe26d75074b32ef0"
+    },
+    "scripts/cu66-v115/native_final.py": {
+      "sha256": "5a2f34e26779b359d419a8c4f07b09c6c305eaf67a002641bed3e9cefc4bd987"
+    },
+    "scripts/cu66-v115/query_registers.py": {
+      "sha256": "0cbbd27a57928ecaf03547abb7888722f9eecff9e3ad3a09cb96657aee404860"
+    }
+  },
+  "status": "PASS_STATIC_REVIEW_RUNTIME_PENDING"
+}

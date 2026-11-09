@@ -1,0 +1,33 @@
+{
+  "candidate": "fpga/experiments/cu66-v115-refined-scratch/packed_scratch_v91g2.sv",
+  "candidate_sha256": "2b9dbaf7fb25d7fdc8219a69dc59588b4c1bb2e7da374c6edaf223a5c1ac52d1",
+  "contract": "IV115.S2: one23-bit local tuple plus initialized valid, one event/edge, prior tuple always retires; tile name exposes forwarding. Public cycles/visible raw tile values match initialV115 exactly. Descriptor3-edge contract unchanged.",
+  "controller_or_valid_writes_changed": false,
+  "edits": [
+    {
+      "after": "    // IV115.S2: tile is the original visible raw view, including the latest\n    // accepted write. A single local tuple retires into private payload on the\n    // next edge; forwarding preserves every original visible cycle/value.\n    logic signed [15:0] tile[0:1][0:63];\n    logic signed [15:0] tile_payload[0:1][0:63];\n    logic tile_pending_valid=0, tile_pending_bank;\n    logic [5:0] tile_pending_index;\n    logic signed [15:0] tile_pending_value;\n    logic tile_event_valid, tile_event_bank;\n    logic [5:0] tile_event_index;\n    logic signed [15:0] tile_event_value;\n    logic tile_case_eligible;",
+      "before": "    logic signed [15:0] tile[0:1][0:63];"
+    },
+    {
+      "after": "    // Mirror the ORIGINAL outer main-branch priority, not !response_failure.\n    // A matching response error without a prefetch/write owner can still reach\n    // these case writes in the frozen source; preserve its raw payload effects.\n    always_comb begin\n        tile_case_eligible=!cancel &&\n            !(mem_rsp_valid && (!outstanding || mem_rsp_epoch!=request_epoch)) &&\n            state!=DRAIN &&\n            !(prefetch_offer && outstanding && mem_rsp_valid && mem_rsp_error) &&\n            !(overlap_mode && write_slot_valid && outstanding && mem_rsp_valid && mem_rsp_error);\n        tile_event_valid=0;tile_event_bank=prep_bank;\n        tile_event_index=0;tile_event_value=0;\n        if(tile_case_eligible)begin\n            case(state)\n                CLEAR_TILE:if(serial_clear)begin\n                    tile_event_valid=1;tile_event_index=clear_index;\n                end\n                DC_EXTRACT:if(read_tag_match && !(read_half < -2048 || read_half > 2048) && !raw_mode)begin\n                    tile_event_valid=1;\n                    tile_event_value=16'(cache_data[0]>>(8*read_address[3:0]));\n                end\n                AC_CHECK:if(!(!head_valid[read_band] && cursors[read_band]<counts[read_band]) &&\n                    head_valid[read_band] && heads[read_band][31:19]==\n                        (tile_mode ? prepare_block[12:0] : output_block[12:0]))begin\n                    tile_event_valid=1;tile_event_index=heads[read_band][18:13];\n                    tile_event_value={{3{heads[read_band][12]}},heads[read_band][12:0]};\n                end\n                default:begin end\n            endcase\n        end\n    end\n    // Retire the old tuple even on reset/cancel: its value was already visible\n    // before the edge, and the original raw tile did not erase it on a kill.\n    always_ff @(posedge clk)begin\n        tile_pending_valid<=tile_event_valid;\n        if(tile_event_valid)begin\n            tile_pending_bank<=tile_event_bank;\n            tile_pending_index<=tile_event_index;\n            tile_pending_value<=tile_event_value;\n        end\n    end\n    for(genvar payload_bank=0;payload_bank<2;payload_bank=payload_bank+1)begin: local_tile_bank\n        for(genvar payload_word=0;payload_word<64;payload_word=payload_word+1)begin: local_tile_word\n            wire pending_match=tile_pending_valid && tile_pending_bank==1'(payload_bank) &&\n                tile_pending_index==6'(payload_word);\n            always_ff @(posedge clk)if(pending_match)\n                tile_payload[payload_bank][payload_word]<=tile_pending_value;\n            assign tile[payload_bank][payload_word]=pending_match ? tile_pending_value :\n                tile_payload[payload_bank][payload_word];\n        end\n    end\n`ifndef SYNTHESIS\n    // No disable on reset/abort: retirement of an already-visible write is\n    // required across those edges, including immediate replacement on retry.\n    assert property(@(posedge clk) tile_pending_valid |=>\n        tile_payload[$past(tile_pending_bank)][$past(tile_pending_index)]==$past(tile_pending_value))\n        else $fatal(1,\"visible tile write was not physically retired\");\n    assert property(@(posedge clk) tile_event_valid |=> tile_pending_valid &&\n        tile_pending_bank==$past(tile_event_bank) && tile_pending_index==$past(tile_event_index) &&\n        tile_pending_value==$past(tile_event_value))\n        else $fatal(1,\"tile write tuple lost or mixed owner/value\");\n    assert property(@(posedge clk) !tile_event_valid |=> !tile_pending_valid)\n        else $fatal(1,\"tile slot created a write without an event\");\n`endif\n\n    always_ff @(posedge clk) begin\n        // A reset is cancellation, not permission to discard an accepted write.",
+      "before": "    always_ff @(posedge clk) begin\n        // A reset is cancellation, not permission to discard an accepted write."
+    },
+    {
+      "after": "                    // Payload write is captured by the local forwarded tuple.",
+      "before": "                    if(serial_clear) tile[prep_bank][clear_index]<=0;"
+    },
+    {
+      "after": "                        tile_valid[prep_bank][0]<=1;",
+      "before": "                        tile[prep_bank][0]<=16'(cache_data[0]>>(8*read_address[3:0])); tile_valid[prep_bank][0]<=1;"
+    },
+    {
+      "after": "                        // Payload write is captured by the local forwarded tuple.",
+      "before": "                        tile[prep_bank][heads[read_band][18:13]]<={{3{heads[read_band][12]}},heads[read_band][12:0]};"
+    }
+  ],
+  "old_assertions_removed": 0,
+  "original": "fpga/experiments/cu66-v115-scratch/packed_scratch_v91g2.sv",
+  "original_sha256": "559cb6d4aa7f97c1b0ee4b347d9f098b617123d855c19d2a6f76b945be11c6c3",
+  "schema": "v115-refined-local-forwarded-tile-write-v1",
+  "status": "PREPARED_FOR_ROOT_REVIEW_NOT_RUN"
+}
