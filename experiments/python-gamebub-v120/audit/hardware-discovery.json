@@ -1,0 +1,63 @@
+{
+  "schema": "v120-local-hardware-discovery-v1",
+  "read_only": true,
+  "status": "IDENTITY_UNRESOLVED_NO_LOCAL_PROGRAMMING",
+  "usb_observation": {
+    "lsusb_devices": [
+      "Linux root hubs",
+      "Realtek Bluetooth Radio",
+      "FTDI FT2232C/D/H USB ID 0403:6010; manufacturer Digilent; product Digilent USB Device; serial 210292747873"
+    ],
+    "serial_by_id": [
+      "usb-Digilent_Digilent_USB_Device_210292747873-if01-port0 -> ../../ttyUSB1"
+    ],
+    "tty_devices": [
+      "/dev/ttyUSB1"
+    ],
+    "ttyACM_present": false,
+    "interpretation": "A Digilent FTDI/JTAG/UART bridge is present. USB identifiers alone do not identify FPGA board model or distinguish Game Bub from VCS3. No ESP32 USB serial device was visible."
+  },
+  "repository_board_integration": {
+    "top": "fpga/rtl/moonshine_top.sv",
+    "existing_interfaces": [
+      "4-bit MCU SPI/QSPI endpoint",
+      "100 MHz core and SDRAM clock domain from on-chip PLL",
+      "16-bit SDRAM interface",
+      "LCD scanout and pixel clock domain",
+      "ESP32 overlay path"
+    ],
+    "existing_top_core": "moonshine_core; research top cs88_pipeline_v91k is not instantiated in moonshine_top (search in current top hierarchy found no V120 integration).",
+    "board_constraints": [
+      "fpga/scripts/platform.xdc",
+      "fpga/scripts/buttons.xdc",
+      "fpga/evidence/lcd_pins_rev4.xdc",
+      "fpga/evidence/sdram_pins_rev4.xdc",
+      "fpga/evidence/button_pins_rev4.xdc"
+    ],
+    "existing_test_scripts": [
+      "fpga/scripts/test_sdram.ps1",
+      "fpga/scripts/test_memory.ps1",
+      "fpga/scripts/build_final.tcl"
+    ],
+    "missing_for_V120_board_test": [
+      "V120 selected decode source composed into full board top",
+      "explicit ingress/decoder/refill/row-memory/display ownership wiring",
+      "exact complete-board XDC and generated-clock/CDC/reset constraints for that composition",
+      "current full-board synthesis/route and on-board test procedure bound to one source manifest",
+      "target board identity and confirmation of Game Bub Rev4 versus VCS3 wiring"
+    ]
+  },
+  "qualification_separation": {
+    "stable_100_reference": "V118 repeat-qualified out-of-context component at 100 MHz; not a complete board qualification.",
+    "V119": "Also repeat-qualified OOC at 100 MHz but handoff explicitly does not recommend it as stable baseline replacement; 125 MHz was not qualified.",
+    "V120_context_terminal": "Unselected unit terminal only; it neither changes selected integrated source nor provides a clock qualification.",
+    "V120_100_and_125": "Must publish separate exact source/receipt manifests; 100 MHz board-test artifact must never inherit a 125 MHz result. 125 MHz remains experimental until repeated positive implementation evidence for the same exact source/recipe and full-design context."
+  },
+  "publication_gate": [
+    "Publish only after the current intended 100 MHz native trial and repeat finish PASS for the exact frozen source composition, with raw receipts, source aliases/origins, tool image and recipe hashes.",
+    "A component-only OOC handoff may be described only as OOC; for board programming, include the exact top, full source order, complete board constraints and full-design timing/CDC evidence.",
+    "Retain the known V118 100 MHz stable handoff separately as fallback/reference.",
+    "Place any 125 MHz experiment under a distinct manifest/branch/result entry marked unqualified until its own complete evidence exists.",
+    "Do not publish this local USB observation as board identification or as proof that the board is ready to program."
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "adapters": [
+    {
+      "edits": [
+        [
+          "module br88_context",
+          "module context_original"
+        ],
+        [
+          "\n);",
+          ",\n    output logic [15:0] verify_sparse_block,\n    output logic [5:0] verify_sparse_index\n);"
+        ],
+        [
+          "\nendmodule",
+          "\n    assign verify_sparse_block=sparse_block;assign verify_sparse_index=sparse_index;\nendmodule"
+        ]
+      ],
+      "path": "fpga/experiments/cu66-v120-context-terminal/verification/context_original.sv",
+      "sha256": "86e54b1cebc62cde350ca9ff49832fe9bc478f2b7bd246f8ac3a193d0f24e869",
+      "source": "fpga/experiments/cu66-v113-geometry/br88_context.sv",
+      "source_sha256": "4eefd41198a0fcbfd80648e702a42f179315f7378969863c778bd06686ff6775"
+    },
+    {
+      "edits": [
+        [
+          "module br88_context",
+          "module context_candidate"
+        ],
+        [
+          "\n);",
+          ",\n    output logic [15:0] verify_sparse_block,\n    output logic [5:0] verify_sparse_index\n);"
+        ],
+        [
+          "\nendmodule",
+          "\n    assign verify_sparse_block=sparse_block;assign verify_sparse_index=sparse_index;\nendmodule"
+        ]
+      ],
+      "path": "fpga/experiments/cu66-v120-context-terminal/verification/context_candidate.sv",
+      "sha256": "254df32d6a87020e0a47dfc258ec60d1f77b48df39bfa6cf0de1de1c400006e9",
+      "source": "fpga/experiments/cu66-v120-context-terminal/br88_context.sv",
+      "source_sha256": "79db0404c4561e853c7019c27f076f86c0b8a7171f56b68f5cfae94759619f05"
+    },
+    {
+      "edits": [
+        [
+          "    output logic [21:0] verify_original_geometry,verify_candidate_geometry\n",
+          "    output logic [21:0] verify_original_geometry,verify_candidate_geometry,\n    output logic verify_terminal_req_fire,verify_terminal_last,verify_terminal_special,verify_original_terminal\n"
+        ],
+        [
+          "\nendmodule\n",
+          "\n    assign verify_terminal_req_fire=candidate.req_valid && candidate.req_ready;\n    assign verify_terminal_last=candidate.terminal_last_event;\n    assign verify_terminal_special=specialized.terminal_last_event;\n    assign verify_original_terminal=(original.emitted+1==original.target);\nendmodule\n"
+        ]
+      ],
+      "path": "fpga/experiments/cu66-v120-context-terminal/verification/context_probe.sv",
+      "sha256": "d17e55a1307276e1f39315eb36d6e73cb0d1ea83f3833492ae5cfee0c1cee01c",
+      "source": "fpga/experiments/cu66-v113-geometry/verification/context_probe.sv",
+      "source_sha256": "1ab44682170f30d5110af9262aab6d7e3597a1e1b4edce49363830a57b6dd08a"
+    },
+    {
+      "edits": [
+        [
+          "int main(int argc,char**argv){try{",
+          "int inherited_domain_main(int argc,char**argv){try{"
+        ]
+      ],
+      "path": "fpga/experiments/cu66-v120-context-terminal/verification/count_domain_base.cpp",
+      "sha256": "2d4cd4ae65686e5506ee76b1d98f76b15af5651470e389c0b712eb3149682f8e",
+      "source": "fpga/experiments/cu66-v113-geometry/verification/tb_count_domain.cpp",
+      "source_sha256": "87fc89fe663749865287eb4b9a9def85554d70b5f2a02ad0de4cbc645714e8b4"
+    }
+  ],
+  "added_memory_ports": 0,
+  "added_public_cycles": 0,
+  "added_source_payload_bits": 1,
+  "added_tile_buffers": 0,
+  "candidate": "fpga/experiments/cu66-v120-context-terminal/br88_context.sv",
+  "candidate_sha256": "79db0404c4561e853c7019c27f076f86c0b8a7171f56b68f5cfae94759619f05",
+  "edits": [
+    {
+      "after": "    logic [31:0] start_limit;\n    // V120 proposal: one new private payload bit, unreset and phase-local.\n    // WAIT is entered only on a real request handshake at this same REQ edge.\n    // A canceled/stalled REQ may prepare an unowned bit; WAIT/HELD hold it.\n    logic terminal_last_event;\n    always_ff @(posedge clk)if(state==REQ_DC || state==REQ_RUN || state==REQ_LEVEL)\n        terminal_last_event<=(emitted+32'd1==target);\n`ifndef SYNTHESIS\n    logic terminal_owner_valid;\n    logic [31:0] terminal_owner_epoch,terminal_owner_emitted,terminal_owner_target;\n    always_ff @(posedge clk)begin\n        if(reset || abort_context || start)terminal_owner_valid<=0;\n        else if(req_valid && req_ready)begin\n            terminal_owner_valid<=1;\n            terminal_owner_epoch<=context_epoch;\n            terminal_owner_emitted<=emitted;\n            terminal_owner_target<=target;\n        end else if(state==IDLE || state==FINISHED || state==FAILED)terminal_owner_valid<=0;\n    end\n`endif\n",
+      "before": "    logic [31:0] start_limit;\n",
+      "reason": "Prepare the exact wrapped predicate at the existing REQ edge; actual acceptance alone births its verification owner."
+    },
+    {
+      "after": "else if (terminal_last_event && parser_consumed!=size_bits) fail_context(7);",
+      "before": "else if (emitted+1==target && parser_consumed!=size_bits) fail_context(7);",
+      "reason": "Use the owned terminal predicate in the unchanged coefficient/error-priority branch."
+    },
+    {
+      "after": "if (terminal_last_event) begin done<=1; state<=FINISHED; end",
+      "before": "if (emitted+1==target) begin done<=1; state<=FINISHED; end",
+      "reason": "Use the same owned predicate only at the unchanged accepted-output edge."
+    },
+    {
+      "after": "`endif\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!reset && !abort_context && !start &&\n        (state==WAIT_DC || state==WAIT_RUN || state==WAIT_LEVEL || state==HELD))begin\n        assert(terminal_owner_valid)else $fatal(1,\"V120 terminal consumption lacks accepted request owner\");\n        assert(terminal_owner_epoch==context_epoch && terminal_owner_emitted==emitted &&\n            terminal_owner_target==target)else $fatal(1,\"V120 terminal owner changed before consumption\");\n        assert(terminal_last_event==(emitted+32'd1==target))\n            else $fatal(1,\"V120 wrapped full32 terminal predicate mismatch\");\n    end\n`endif\nendmodule\n",
+      "before": "`endif\nendmodule\n",
+      "reason": "Certify full-width epoch/count ownership and exact wrapped identity throughout every WAIT/HELD consumption."
+    }
+  ],
+  "existing_private_value_contract_changes": 0,
+  "ghost_owner_capture": "Actual req_valid && req_ready; revocation on reset/start/abort or terminal phase.",
+  "hardware_capture": "REQ_DC/REQ_RUN/REQ_LEVEL state only; no reset, global ready or kill CE.",
+  "new_verification_files": {
+    "fpga/experiments/cu66-v120-context-terminal/verification/tb_terminal.cpp": "7cc81880526a675c581ae4afa7610d07d502ee4f3d1f38a87752c660e68442fb"
+  },
+  "original": "fpga/experiments/cu66-v113-geometry/br88_context.sv",
+  "original_assertion_blocks_byte_exact": true,
+  "original_sha256": "4eefd41198a0fcbfd80648e702a42f179315f7378969863c778bd06686ff6775",
+  "predicate_domain": "Unsigned32 modulo wrap: (emitted + 32'd1) == target; all epoch bits retained.",
+  "proof_scope": "Prepared/full-domain and current natural-context proof must run fresh; no timing or hardware claim.",
+  "schema": "v120-unselected-owned-terminal-predicate-v1",
+  "selected_for_native_composition": false,
+  "status": "PREPARED_NOT_RUN_NOT_SELECTED",
+  "unchanged_verification": {
+    "fpga/experiments/cu66-v113-geometry/verification/inherited_context.cpp": "b89834b3fc91d50d8a2591a40b49ce40c36942f7cc9c9d9e13c1a5051e1b44e9"
+  }
+}

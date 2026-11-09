@@ -1,0 +1,185 @@
+{
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v120-control-proposal/verification/ingress_base.cpp",
+      "candidate_sha256": "d3154a31371a80f167db7a148d0139cf77625b322671e85e111f028d19768923",
+      "edits": [
+        {
+          "after": "static void need(bool ok,const std::string& why){if(!ok)throw std::runtime_error(why);}\n#include \"writer_scoreboard.hpp\"\n",
+          "before": "static void need(bool ok,const std::string& why){if(!ok)throw std::runtime_error(why);}\n",
+          "reason": "Add the independent full-transition payload writer oracle after the existing fatal need helper."
+        },
+        {
+          "after": "  ControlPrivateStep private_step(d);d.clk=1;d.eval();d.clk=0;d.eval();private_step.finish(d);\n  if(kill||rsp)pending=false;",
+          "before": "  d.clk=1;d.eval();d.clk=0;d.eval();\n  if(kill||rsp)pending=false;",
+          "reason": "Check original and candidate private writes/holds on every natural packet clock without touching physical-owner or public checks."
+        },
+        {
+          "after": "   if(target==10)target_hit=d.probe_length_live&&d.stage_purpose==0&&d.probe_fetch_index<42;\n   if(target>=11&&target<=14)target_hit=writer_initial_kind(d)==target-11;\n",
+          "before": "   if(target==10)target_hit=d.probe_length_live&&d.stage_purpose==0&&d.probe_fetch_index<42;\n",
+          "reason": "Add four reachable actual initial-call cancellation targets; retain all old target predicates."
+        }
+      ],
+      "original": "fpga/experiments/cu66-v120-range/verification/ingress_base.cpp",
+      "original_sha256": "e1d9484e0d30f3f15f4b54b71e3839e97f48bbc2d25bd9b6538427a7e2a0defe"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v120-control-proposal/verification/extents_base.cpp",
+      "candidate_sha256": "96064262b258a46e3022b8891d95268a0aa9e93e461b3380e8511c0aae3e49f0",
+      "edits": [
+        {
+          "after": " need(IOLD(descriptor_last_addr)==INEW(descriptor_last_addr),\"unchanged descriptor-tail exact pair; two unowned fields independently transition-scored\");",
+          "before": " need(IOLD(prepared_request_addr)==INEW(prepared_request_addr)&&IOLD(prepared_request_in_bounds)==INEW(prepared_request_in_bounds)&&IOLD(descriptor_last_addr)==INEW(descriptor_last_addr),\"postedge request/last-address exact pair\");",
+          "reason": "The ONE admitted comparison edit: two unowned fields use complete old/new writer oracles; descriptor tail remains exact. The unchanged equality is retained in frozen A control evidence."
+        },
+        {
+          "after": " d.clk=0;d.eval();compare(d);ControlPrivateStep private_step(d);d.clk=1;d.eval();d.clk=0;d.eval();private_step.finish(d);compare(d);need(++c.edges<1000000,\"extent finite edge watchdog\");",
+          "before": " d.clk=0;d.eval();compare(d);d.clk=1;d.eval();d.clk=0;d.eval();compare(d);need(++c.edges<1000000,\"extent finite edge watchdog\");",
+          "reason": "Score every prepared extent edge, including rejected descriptors, reset/start/abort and all hold cases."
+        }
+      ],
+      "original": "fpga/experiments/cu66-v120-range/verification/extents_base.cpp",
+      "original_sha256": "caabb24f042523c66587f15ef729f26597c7ba559bd7cb7c4963dcf695063c5f"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v120-control-proposal/verification/range_base.cpp",
+      "candidate_sha256": "aeefad406292a56198b4ebafabfaf23c31413069ad601f4b2a6b1d0fb38b2103",
+      "edits": [
+        {
+          "after": " d.eval();{ControlPrivateStep private_step(d);d.clk=1;d.eval();d.clk=0;d.eval();private_step.finish(d);}d.reset=0;++edges;",
+          "before": " d.eval();d.clk=1;d.eval();d.clk=0;d.eval();d.reset=0;++edges;",
+          "reason": "Score the first actual reset edge in the exhaustive prepared-domain instance."
+        },
+        {
+          "after": "  {ControlPrivateStep private_step(d);d.clk=1;d.eval();d.clk=0;d.eval();private_step.finish(d);}++edges;",
+          "before": "  d.clk=1;d.eval();d.clk=0;d.eval();++edges;",
+          "reason": "Score all 65536 actual prepared RAW edges; no predicate or public oracle changes."
+        },
+        {
+          "after": "int inherited_range_main(int argc,char**argv){try{",
+          "before": "int main(int argc,char**argv){try{",
+          "reason": "Rename only the old entry so the additive control driver executes all inherited checks first."
+        }
+      ],
+      "original": "fpga/experiments/cu66-v120-range/verification/tb_range.cpp",
+      "original_sha256": "993d01152e8aa4b9d06ed7a174cd6cc276e9b105004ad2cd817dfbc81e2067fc"
+    }
+  ],
+  "candidate_all_private_equivalence_claim": false,
+  "candidate_private_comparison_edits": 1,
+  "candidate_public_cycle_value_error_owner_debt_delta": 0,
+  "changed_private_fields": [
+    "prepared_request_addr",
+    "prepared_request_in_bounds"
+  ],
+  "combined_range_source": {
+    "path": "fpga/experiments/cu66-v120-range/br88_packet_ingress_sync_v91h.sv",
+    "sha256": "82f6e3be050d0848e0d9e29439ac31a1a78e981f3a5b9f74f2b6180925c6a2e4"
+  },
+  "declared_public_cycle_delta": 0,
+  "declared_public_value_error_owner_debt_delta": 0,
+  "descriptor_last_addr_unchanged": true,
+  "new_natural_coverage": {
+    "context_error_cases": 32,
+    "first_request_response_cancellations": 24,
+    "initial_call_cancellations": 24,
+    "nonreset_retries": 80
+  },
+  "new_prepared_coverage": {
+    "canceled_unowned_full32_cases": 11424,
+    "natural_frame_claim": false,
+    "physical_requests": 0
+  },
+  "new_verification_files": {
+    "fpga/experiments/cu66-v120-control-proposal/verification/tb_control.cpp": "1b8bcd964df79ff12c22666cd0947398ccaef49d76eb9721f27e013cecd9c434",
+    "fpga/experiments/cu66-v120-control-proposal/verification/writer_scoreboard.hpp": "6f90dbd387e2f50d4b98559eb3d91e92be21ede8f0c941519bfb49e38a6cfe58"
+  },
+  "next_address_shadow": "Independent modulo32/six-bit-next-index math captured only on actual stage_read_req; checked and used on owned WAIT. Unowned cache before first actual request remains an explicit input.",
+  "old_control_proof_scope": "Reuse only frozen A control evidence: its original unconditional private equality is unchanged. All candidate models must compile fresh from the selected candidate; no candidate binary reuse.",
+  "original_assertion_blocks_byte_exact": true,
+  "parameter_domain_narrowed": false,
+  "private_contract_change": {
+    "all_private_equivalence_claim": false,
+    "candidate_private_comparison_edits": 1,
+    "description": "Phase writes may change unowned values; every transition must be independently scored. Owned request values remain exact.",
+    "fields": [
+      "prepared_request_addr",
+      "prepared_request_in_bounds"
+    ]
+  },
+  "production": [
+    {
+      "candidate": "fpga/experiments/cu66-v120-control-proposal/combined/br88_packet_ingress_sync_v91h.sv",
+      "candidate_sha256": "a6a8191a8bd2ea7bcb451a88020641b0a4b6299b8a9dc73e94882a23cba7bd23",
+      "edits": [
+        {
+          "after": "    logic cancelled, context_failure;\n\n    // V120 proposal: these two fields are private and unreset. Their value is\n    // owned only by FETCH_REQ. Preparing a phase value on a canceled/failing\n    // edge grants no transaction: the original FSM and public masks below\n    // remain the sole sources of request/response eligibility.\n    logic [31:0] phase_request_addr;\n    always_comb begin\n        case(state)\n            FETCH_WAIT: phase_request_addr=next_address_at_request;\n            DESCRIPTOR: phase_request_addr=cursor;\n            CONTEXT_RUN: phase_request_addr=active_offset+(replay_bits>>3);\n            RAW: phase_request_addr=32'd42+32'd2*raw_position;\n            default: phase_request_addr=32'd0;\n        endcase\n    end\n    always_ff @(posedge clk)begin\n        if(state==FETCH_WAIT || state==RECEIVE || state==DESCRIPTOR ||\n           state==CONTEXT_RUN || state==RAW)begin\n            prepared_request_addr<=phase_request_addr;\n            prepared_request_in_bounds<=phase_request_addr<size_bytes &&\n                phase_request_addr<32'(MAX_PACKET_BYTES);\n        end\n    end\n`ifndef SYNTHESIS\n    typedef struct packed {\n        logic [31:0] epoch,size,base,address,descriptor_length,descriptor_tail;\n        logic [2:0] kind;\n        logic [5:0] index,count;\n        logic [3:0] continuation;\n        logic [1:0] band;\n        logic in_bounds;\n    } request_owner_t;\n    request_owner_t request_owner;\n    logic request_owner_valid;\n    logic [31:0] owner_next_addr;\n    function automatic logic [31:0] owned_address(\n        input logic [2:0] kind,input logic [5:0] index,\n        input logic [31:0] base,size,descriptor_length);\n        logic [31:0] a;\n        begin\n            a=base+32'(index);\n            if(kind==F_HEADER && index>=6'd42)a=size-32'd4+32'(index)-32'd42;\n            if(kind==F_DESCRIPTOR && index==6'd6)a=base+descriptor_length-32'd1;\n            return a;\n        end\n    endfunction\n    assign owner_next_addr=owned_address(request_owner.kind,request_owner.index+6'd1,\n        request_owner.base,request_owner.size,request_owner.descriptor_length);\n`endif\n",
+          "before": "    logic cancelled, context_failure;\n",
+          "reason": "Isolate two unreset private payload fields from global eligibility; add verification-only complete owner type."
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n            // Capture the actual task arguments, rather than reconstructing a\n            // guessed call guard in a second controller.\n            request_owner_valid<=1;\n            request_owner<='{epoch:context_epoch,size:size_bytes,base:base,address:base,\n                descriptor_length:active_length,descriptor_tail:base+active_length_minus1,\n                kind:kind,index:6'd0,count:bytes_to_fetch,continuation:continuation,\n                band:band,in_bounds:(base<size_bytes && base<32'(MAX_PACKET_BYTES))};\n`endif\n",
+          "before": "            prepared_request_addr<=base;\n            prepared_request_in_bounds<=base<size_bytes && base<32'(MAX_PACKET_BYTES);\n",
+          "reason": "Remove only initial payload writes from begin_fetch; logical descriptor and tail assignments are untouched."
+        },
+        {
+          "after": "    always_ff @(posedge clk) begin\n`ifndef SYNTHESIS\n        // Each real initial call or successful nonfinal response below owns\n        // the next FETCH_REQ. The current request consumes this certificate.\n        request_owner_valid<=0;\n`endif\n        // Speculative private preparation is independent of cancellation. On a\n",
+          "before": "    always_ff @(posedge clk) begin\n        // Speculative private preparation is independent of cancellation. On a\n",
+          "reason": "Default-clear the verification-only first/request certificate in the existing single controller."
+        },
+        {
+          "after": "            // Address/bounds preparation moved to the phase-local writer.\n",
+          "before": "            prepared_request_addr<=next_address_at_request;\n            prepared_request_in_bounds<=next_address_at_request<size_bytes && next_address_at_request<32'(MAX_PACKET_BYTES);\n",
+          "reason": "Keep existing WAIT replay-word preparation; address and bounds retain the same WAIT edge in the separate writer."
+        },
+        {
+          "after": "                        end else begin\n                            fetch_index<=fetch_index+1'b1; state<=FETCH_REQ;\n`ifndef SYNTHESIS\n                            // Retain the previous accepted request's complete\n                            // owner. Only its six-bit index/address advance.\n                            request_owner_valid<=1;\n                            request_owner.index<=request_owner.index+6'd1;\n                            request_owner.address<=owner_next_addr;\n                            request_owner.in_bounds<=owner_next_addr<request_owner.size &&\n                                owner_next_addr<32'(MAX_PACKET_BYTES);\n`endif\n                        end\n",
+          "before": "                        end else begin fetch_index<=fetch_index+1'b1; state<=FETCH_REQ; end\n",
+          "reason": "Extend the complete owner only on the unchanged successful nonfinal physical-response branch."
+        },
+        {
+          "after": "`endif\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!cancelled && !context_failure && !(context_active&&ctx_done) &&\n        (state==FETCH_REQ || state==FETCH_WAIT))begin\n        assert(context_epoch==request_owner.epoch && size_bytes==request_owner.size &&\n            fetch_kind==request_owner.kind && fetch_index==request_owner.index &&\n            fetch_count==request_owner.count && fetch_base==request_owner.base &&\n            fetch_return==request_owner.continuation && band==request_owner.band)\n            else $fatal(1,\"V120 complete fetch owner mismatch\");\n        if(fetch_kind==F_DESCRIPTOR)\n            assert(descriptor_last_addr==request_owner.descriptor_tail &&\n                request_owner.descriptor_length==lengths[band])\n                else $fatal(1,\"V120 descriptor tail owner mismatch\");\n        if(state==FETCH_REQ)begin\n            assert(request_owner_valid)else $fatal(1,\"V120 request lacks actual call/response owner\");\n            assert(prepared_request_addr==request_owner.address &&\n                prepared_request_in_bounds==request_owner.in_bounds)\n                else $fatal(1,\"V120 phase payload differs from complete owned request\");\n        end else\n            assert(expected_fetch_addr==request_owner.address)\n                else $fatal(1,\"V120 physical response lost preceding request address\");\n    end\n`endif\nendmodule\n",
+          "before": "`endif\nendmodule\n",
+          "reason": "Certify epoch/kind/count/base/index/continuation/band/address/bounds for every owned request and WAIT physical owner."
+        },
+        {
+          "after": "    // V120: complete signed16 range expressed as parallel bit-prefix tests.\n    // The positive +2048 endpoint is intentional and remains inclusive.\n    function automatic logic raw_range_valid(input logic [15:0] coefficient);\n        raw_range_valid=(coefficient[15:11]==5'd0) ||\n            (coefficient[15:11]==5'd31) || (coefficient==16'h0800);\n    endfunction\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!cancelled && state==RAW && raw_valid)begin\n        assert(raw_range_valid(raw_coefficient)==\n            (raw_coefficient>=-2048 && raw_coefficient<=2048))\n            else $fatal(1,\"V120 full signed16 raw range predicate mismatch\");\n    end\n`endif\n\n    function automatic logic [31:0] cached32(input integer at);",
+          "before": "    function automatic logic [31:0] cached32(input integer at);"
+        },
+        {
+          "after": "state==RAW && raw_valid && raw_range_valid(raw_coefficient)",
+          "before": "state==RAW && raw_valid && raw_coefficient>=-2048 && raw_coefficient<=2048"
+        },
+        {
+          "after": "else if(!raw_range_valid(raw_coefficient)) fail_packet(5);",
+          "before": "else if(raw_coefficient < -2048 || raw_coefficient > 2048) fail_packet(5);"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v117-ingress-bytecount/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "278002752cd8ab478de5e66e0292fc97bea05b3042a7dfcffb3168f17252eb94"
+    }
+  ],
+  "required_old_control_proof": "experiments/python-gamebub-v120/range/results.json",
+  "schema": "v120-unselected-phase-payload-proposal-v1",
+  "source_composition_selected": false,
+  "status": "COMBINED_PROPOSAL_PREPARED_NOT_RUN_NOT_SELECTED",
+  "unchanged_memory_port_count": true,
+  "unchanged_physical_ports": true,
+  "unchanged_verification": {
+    "fpga/experiments/cu66-v120-range/verification/br88_packet_ingress_sync_v91h_reference.sv": "8d35b10f46eb86201a4f6a66813c41c9491943e622c726a280a09b97d0d39392",
+    "fpga/experiments/cu66-v120-range/verification/br88_packet_ingress_v91h_reference.sv": "7dceb13225712918435e6a0e8a6453b32aede43b0d843f5ba4026a1d16fe7977",
+    "fpga/experiments/cu66-v120-range/verification/br88_pipeline_candidate.sv": "6696d9dcfddff31801c89209565e5d0b8d101d8fdf8b4a7af4a3874d19e11a21",
+    "fpga/experiments/cu66-v120-range/verification/br88_pipeline_pair.sv": "44a4a0836d834c68fd9bbfdbb8618016690ead937702c67657de2842f24abc1b",
+    "fpga/experiments/cu66-v120-range/verification/br88_pipeline_reference.sv": "361839b1739ad81a1086cf32cf2977709e25a8dbc2f1bff35c11b0f6518eed8e",
+    "fpga/experiments/cu66-v120-range/verification/bytecount_base.cpp": "18662c87c7b0847c133c49701b90b9f3d663bb0ac9d87a065e9e0641a077572c",
+    "fpga/experiments/cu66-v120-range/verification/caller_prepare.cpp": "527a10a69996ac5fe2a7d89241242ff3a93173bb9eb34d041b3ff08afeeecf15",
+    "fpga/experiments/cu66-v120-range/verification/ingress_probe.sv": "322c64d4426799d8f22b1d283c9f58b0f50110ec45c4f0c63fd03e5a2fc5b6db",
+    "fpga/experiments/cu66-v120-range/verification/packed_scratch_reference.sv": "8998425023293555dd408af3645d71f912e4e976a8927c290441e6dcdf62d590",
+    "fpga/experiments/cu66-v120-range/verification/pair_adapter.hpp": "e9dda3b7a5f825dcdda6417c453dbd8c9dfb5ccb3928bf361f7afd5d06dcf104",
+    "fpga/experiments/cu66-v120-range/verification/tb_bytecount.cpp": "e6f91dd17cd9339069da4c72729fde145daae3990a4184b85d21264aece0b156",
+    "fpga/experiments/cu66-v120-range/verification/tb_extents.cpp": "75d9153aeefbc183d6c850141e245f2560e0ebf66f88d97ab6a493d4536be5bc",
+    "fpga/experiments/cu66-v120-range/verification/tb_ingress.cpp": "044bde9b440592d46a5dd35dbb7ded26bd38922600e414b8595623282b6c542e",
+    "fpga/experiments/cu66-v120-range/verification/tb_pipeline.cpp": "0ecf82fb877d9c7d45ea30fb24ed1dc689af456e151d7997ccb174d7ad35b7a6"
+  },
+  "validation": "Not yet simulated, synthesized or routed. Root selection and strict new proof required."
+}

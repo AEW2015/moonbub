@@ -1,0 +1,67 @@
+{
+  "contract": "Byte-identical V116 verification wrapper and all original functional bench checks. Observation-only end-to-end actual inverse staged handshakes and different-tile residual/canonical overlap; no RNG draw, simulated-cycle skip or DUT change.",
+  "frozen_derivation": {
+    "path": "fpga/experiments/cu66-v116-live-parent/derivation.json",
+    "sha256": "9179ae0d1d2f938a212fecfa5ae6042f54ba6855d26b8e86b66def4e3d8feecb"
+  },
+  "original_oracles_retained": true,
+  "reverse_verified": true,
+  "row_debug_owners": {
+    "FILL_SLOT": 1,
+    "FREE_SLOT": 0,
+    "HASH_SLOT": 4,
+    "READY_SLOT": 2,
+    "WAIT_SLOT": 3,
+    "path": "fpga/experiments/cu66-v116-rowjoin/cu66_row_write_hash_join_v91l.sv",
+    "sha256": "9c6680e5b3b9ca4a7245ca9b7f3cc0c5dd0acba1ad5ae82c09885b3621603d77"
+  },
+  "schema": "v117-live-spatial-observation-reversible-v1",
+  "sources": [
+    {
+      "candidate": "fpga/experiments/cu66-v117-live-parent/cs88_live_v91l.sv",
+      "candidate_sha256": "1a5603477383113d86cc56e3f8fbbcb28a2a3ac4ac0b77eff81919589811f030",
+      "edits": [],
+      "source": "fpga/experiments/cu66-v116-live-parent/cs88_live_v91l.sv",
+      "source_sha256": "1a5603477383113d86cc56e3f8fbbcb28a2a3ac4ac0b77eff81919589811f030"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v117-live-parent/tb_keyframe.cpp",
+      "candidate_sha256": "b1bff6555b92fd3fc1940c81bbfb41a4f8e5f4c6416a9e73502d30da61bf22e9",
+      "edits": [
+        {
+          "after": "    bool instrument_started=false;\n    uint64_t spatial_inverse_inputs=0,spatial_inverse_run=0,spatial_inverse_max_run=0;\n    uint64_t spatial_fill_emit=0,spatial_cross_tile=0,spatial_fill_held_head=0;",
+          "before": "    bool instrument_started=false;"
+        },
+        {
+          "after": "      maximum_slots_owned=triple_phase_edges=triple_transfer_edges=0;instrument_started=false;\n      spatial_inverse_inputs=spatial_inverse_run=spatial_inverse_max_run=0;\n      spatial_fill_emit=spatial_cross_tile=spatial_fill_held_head=0;",
+          "before": "      maximum_slots_owned=triple_phase_edges=triple_transfer_edges=0;instrument_started=false;"
+        },
+        {
+          "after": "        if(record&&monitor_active&&!kill){\n            if(valid&&ready){++spatial_inverse_inputs;++spatial_inverse_run;spatial_inverse_max_run=std::max(spatial_inverse_max_run,spatial_inverse_run);}\n            else spatial_inverse_run=0;\n        }else spatial_inverse_run=0;\n        need(full==!elastic_queue.empty()&&elastic_queue.size()<=1,\"independent staged occupancy/owner bound\");",
+          "before": "        need(full==!elastic_queue.empty()&&elastic_queue.size()<=1,\"independent staged occupancy/owner bound\");"
+        },
+        {
+          "after": "        if(record&&monitor_active&&!cancel&&!d.error&&!d.stage_cancel&&d.residual_valid&&d.residual_ready){\n            if(d.out_valid&&d.out_ready){\n                ++spatial_fill_emit;\n                if(d.residual_plane!=d.out_plane||d.residual_tile!=d.out_tile)++spatial_cross_tile;\n            }\n            if(d.out_valid&&!d.out_ready)++spatial_fill_held_head;\n        }\n        if(cancel||d.error!=0||d.stage_cancel){held_request.reset();held_output.reset();held_coefficient.reset();held_canonical.reset();held_reference.reset();}",
+          "before": "        if(cancel||d.error!=0||d.stage_cancel){held_request.reset();held_output.reset();held_coefficient.reset();held_canonical.reset();held_reference.reset();}"
+        },
+        {
+          "after": "      need(spatial_inverse_inputs==d.inverse_count_inputs&&spatial_inverse_max_run>=64,\"actual staged inverse II1 acceptance and counter binding\");\n      need(spatial_fill_emit>0&&spatial_cross_tile>0,\"actual different-tile residual fill and canonical emission overlap\");\n      std::cout<<\"{\\\"type\\\":\\\"live_spatial_pipeline\\\",\\\"status\\\":\\\"TEST_PASS\\\",\\\"inverse_accepted_inputs\\\":\"<<spatial_inverse_inputs\n        <<\",\\\"maximum_consecutive_inverse_accepts\\\":\"<<spatial_inverse_max_run<<\",\\\"residual_canonical_overlap_edges\\\":\"<<spatial_fill_emit\n        <<\",\\\"different_tile_overlap_edges\\\":\"<<spatial_cross_tile<<\",\\\"residual_fill_while_head_held_edges\\\":\"<<spatial_fill_held_head\n        <<\",\\\"cycle_skipping\\\":false,\\\"hardware\\\":false}\\n\";\n      record=false;tick();report_fences();",
+          "before": "      record=false;tick();report_fences();"
+        }
+      ],
+      "source": "fpga/experiments/cu66-v116-live-parent/tb_keyframe.cpp",
+      "source_sha256": "7b5b957d626d96a4bd39612a02168e07122a4cf8eac74513047a51d70c352895"
+    }
+  ],
+  "validator_job_enum": {
+    "EMPTY_LEAF": 1,
+    "HUD": 3,
+    "LEAF": 0,
+    "NODE": 2,
+    "SEAL": 4,
+    "path": "fpga/experiments/cu66-v91l/cs88_validate_publish_v91l.sv",
+    "root_kind": 2,
+    "root_node": 1,
+    "sha256": "fab62dcdbcb9a2594917eac0eaf09a9eda1df8879e799ce38833ca678069d143"
+  }
+}

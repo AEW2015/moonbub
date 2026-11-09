@@ -1,0 +1,23 @@
+{
+  "added_natural_public_cycles": 0,
+  "added_source_payload_bits": 1,
+  "candidate": "fpga/experiments/cu66-v120-admission-match/cs88_admission_v91i2a.sv",
+  "candidate_sha256": "275071538fd2de34246bad17ddbeb170f356e8f41e6162969b7a97ab3f45ef3f",
+  "edits": [
+    {
+      "after": "    logic [34:0] header_residual_end, header_packet_total;\n    // V120: one unreset payload bit on an existing byte-load phase. The\n    // complete total is stable after byte55, before final HEADER_BYTE127.\n    // Extra canceled/early captures are unowned and never authorize work.\n    logic prepared_header_total_matches;\n    always_ff @(posedge clk)if(state==HEADER_BYTE)\n        prepared_header_total_matches<=header_packet_total=={3'd0,size_bytes};\n`ifndef SYNTHESIS\n    logic header_match_owner_valid;\n    logic [31:0] header_match_owner_epoch, header_match_owner_size;\n    logic [34:0] header_match_owner_total;\n    always_ff @(posedge clk)begin\n        if(reset||start||abort_packet)header_match_owner_valid<=0;\n        else if(state==HEADER_BYTE&&header_index==127)begin\n            header_match_owner_valid<=1;\n            header_match_owner_epoch<=receipt_epoch;\n            header_match_owner_size<=size_bytes;\n            header_match_owner_total<=header_packet_total;\n        end else if(state==HEADER_CHECK)header_match_owner_valid<=0;\n    end\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&state==HEADER_CHECK)begin\n        assert(header_match_owner_valid&&header_index==127&&\n            header_match_owner_epoch==receipt_epoch&&header_match_owner_size==size_bytes&&\n            header_match_owner_total==header_packet_total)\n            else $fatal(1,\"V120 header equality complete owner mismatch\");\n        assert(prepared_header_total_matches==(header_packet_total=={3'd0,size_bytes}))\n            else $fatal(1,\"V120 full35 header equality payload mismatch\");\n    end\n`endif\n",
+      "before": "    logic [34:0] header_residual_end, header_packet_total;\n",
+      "reason": "Capture one phase-local full35 equality bit; verification-only owner covers exact epoch, size and total at every consume."
+    },
+    {
+      "after": "                        !prepared_header_total_matches)reject(5);",
+      "before": "                        header_packet_total!={3'd0,size_bytes})reject(5);",
+      "reason": "Replace only the HEADER_CHECK total comparison; all other branches and priorities remain exact."
+    }
+  ],
+  "old_assertions_removed": 0,
+  "old_private_value_contract_changes": 0,
+  "original": "fpga/experiments/cu66-v119-owner/cs88_admission_v91i2a.sv",
+  "original_sha256": "23d031d48e3934f1c33ccffcb2c2e707d884daa68ed799cd7ff3c639c6c1496b",
+  "schema": "v120-header-total-equality-payload-recipe-v1"
+}

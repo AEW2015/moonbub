@@ -1,0 +1,54 @@
+{
+  "schema": "v120-remote-handoff-publication-review-v1",
+  "status": "PASS_WITH_EXPORTER_METADATA_ASSERTION_GAP",
+  "branch": "study/gamebub-v120-range-ingress-timing-20261109",
+  "checks": {
+    "remote_doc_explicitly_says_no_board_bitstream_or_updated_production_adapter": true,
+    "remote_doc_has_conditional_manifest_gate": true,
+    "720x480_and_49152_cap_match_selected_study_source": true,
+    "top_and_part_match_policy_and_native_recipe": true,
+    "handoff_manifest_absent_pending_root_100_repeat": true,
+    "prepare_export_refuses_overwrite_and_checks_distinct_positive_repeat": true,
+    "prepared_tcl_is_component_only_and_not_bitstream": true,
+    "source_alias_origin_clock_recipe_identity_gates_present": true,
+    "ignored_python_bytecode_not_in_publication_candidates": true
+  },
+  "manifest_present": false,
+  "current_handoff_state": "No experiments/python-gamebub-v120/handoff.json yet; parent reports 100 MHz native trial active and will gate manifest on its fresh repeat PASS.",
+  "document_review": {
+    "source": "docs/cu66-v120/remote-hardware-test.md",
+    "finding": "Correctly describes an OOC component-only export, excludes a runnable board bitstream and production Sunshine/ESP32/JPEG adapter, matches selected top/part and the 720x480 / 49,152-byte study contract. Profile gates and measured-latency scope are qualified. The export instructions should be treated as conditional until handoff.json is published."
+  },
+  "exporter_review": {
+    "source": "scripts/cu66-v120/prepare_handoff.py",
+    "syntax_parse": "PASS_WITHOUT_BYTECODE",
+    "checks_observed": [
+      "requires distinct initial/repeat receipts",
+      "validates pinned receipt hashes and positive RTL component route status",
+      "requires fresh repeat identity, same source contract/image/tooling/recipes",
+      "checks source-origin current hashes, source order and recipe XDC/Tcl hashes",
+      "supports only 8 ns or 10 ns and selects matching component clock XDC",
+      "refuses to overwrite existing output",
+      "writes PREPARED_NOT_RUN and marks no hardware contact/tool invocation"
+    ],
+    "gap": "The exporter hardcodes the intended top and part into generated Tcl, but does not assert manifest top is cs88_pipeline_v91k or manifest part is xc7a100tcsg324-1 before copying handoff-manifest.json. Add those two fail-closed manifest identity assertions before publication so the copied manifest cannot disagree with the build recipe."
+  },
+  "publication_screen": {
+    "eligible_untracked_file_count": 888,
+    "counts_by_root": {
+      "docs/cu66-v120": 15,
+      "experiments/python-gamebub-v120": 782,
+      "fpga/experiments/cu66-v120-": 67,
+      "scripts/cu66-v120": 24
+    },
+    "ignored_pycache_or_pyc_present": 0,
+    "eligible_paths_exclude_gitignored_files": true,
+    "staging_guidance": [
+      "Do not stage the entire worktree or use git add .",
+      "Stage the exact source/flow/scripts and docs intended for the measured component handoff, plus the policy, selectors, receipts, source snapshots and raw reports that substantiate it.",
+      "Keep the 100 MHz handoff manifest/receipts separate from any 125 MHz research results; preserve V118 reference.",
+      "Do not stage any handoff manifest until the required fresh 100 MHz repeat passes."
+    ]
+  },
+  "native_state_at_review": "The attempt receipt present before current parent dispatch is a 125 MHz OOC trial marked COMPONENT_ROUTE_FINISHED_SIGNOFF_OPEN; a subsequent receipt directory is RUNNING. This review makes no V120 clock qualification claim."
+}

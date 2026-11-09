@@ -1,0 +1,137 @@
+{
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v120-range/verification/br88_packet_ingress_sync_v91h_reference.sv",
+      "candidate_sha256": "8d35b10f46eb86201a4f6a66813c41c9491943e622c726a280a09b97d0d39392",
+      "edits": [
+        {
+          "after": "module br88_packet_ingress_sync_v91h_reference #(",
+          "before": "module br88_packet_ingress_sync_v91h #(",
+          "count": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v117-ingress-bytecount/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "278002752cd8ab478de5e66e0292fc97bea05b3042a7dfcffb3168f17252eb94"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v120-range/verification/br88_pipeline_candidate.sv",
+      "candidate_sha256": "6696d9dcfddff31801c89209565e5d0b8d101d8fdf8b4a7af4a3874d19e11a21",
+      "edits": [
+        {
+          "after": "module br88_pipeline_candidate #(",
+          "before": "module br88_pipeline_v91h #(",
+          "count": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv",
+      "original_sha256": "2eef50dfe32a5c84cebf207dc9c56ac69b933ea0371e0b7e372681adacc4ad0e"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v120-range/verification/br88_pipeline_reference.sv",
+      "candidate_sha256": "361839b1739ad81a1086cf32cf2977709e25a8dbc2f1bff35c11b0f6518eed8e",
+      "edits": [
+        {
+          "after": "module br88_pipeline_reference #(",
+          "before": "module br88_pipeline_v91h #(",
+          "count": 1
+        },
+        {
+          "after": "br88_packet_ingress_v91h_reference #(",
+          "before": "br88_packet_ingress_v91h #(",
+          "count": 1
+        },
+        {
+          "after": "packed_scratch_reference scratch (",
+          "before": "packed_scratch_v91g2 scratch (",
+          "count": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv",
+      "original_sha256": "2eef50dfe32a5c84cebf207dc9c56ac69b933ea0371e0b7e372681adacc4ad0e"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v120-range/verification/packed_scratch_reference.sv",
+      "candidate_sha256": "8998425023293555dd408af3645d71f912e4e976a8927c290441e6dcdf62d590",
+      "edits": [
+        {
+          "after": "module packed_scratch_reference (",
+          "before": "module packed_scratch_v91g2 (",
+          "count": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v119-scratch/packed_scratch_v91g2.sv",
+      "original_sha256": "49a1731b2259dc089ca8d5e24b17e162b8c7bbd94c983cea938a793d3fdbda72"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v120-range/verification/br88_packet_ingress_v91h_reference.sv",
+      "candidate_sha256": "7dceb13225712918435e6a0e8a6453b32aede43b0d843f5ba4026a1d16fe7977",
+      "edits": [
+        {
+          "after": "module br88_packet_ingress_v91h_reference #(",
+          "before": "module br88_packet_ingress_v91h #(",
+          "count": 1
+        },
+        {
+          "after": "br88_packet_ingress_sync_v91h_reference #(",
+          "before": "br88_packet_ingress_sync_v91h #(",
+          "count": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v108-capacity/br88_packet_ingress_v91h.sv",
+      "original_sha256": "9529b8a76b531d22f7d0a4498295153f8a397c004725787c34af9824ee84cfb1"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v120-range/verification/bytecount_base.cpp",
+      "candidate_sha256": "18662c87c7b0847c133c49701b90b9f3d663bb0ac9d87a065e9e0641a077572c",
+      "edits": [
+        {
+          "after": "int inherited_bytecount_main(int argc,char**argv)",
+          "before": "int main(int argc,char**argv)",
+          "count": 1
+        }
+      ],
+      "original": "fpga/experiments/cu66-v117-ingress-bytecount/verification/tb_bytecount.cpp",
+      "original_sha256": "e6f91dd17cd9339069da4c72729fde145daae3990a4184b85d21264aece0b156"
+    }
+  ],
+  "declared_public_cycle_delta": 0,
+  "original_ifndef_blocks_preserved": true,
+  "production": [
+    {
+      "candidate": "fpga/experiments/cu66-v120-range/br88_packet_ingress_sync_v91h.sv",
+      "candidate_sha256": "82f6e3be050d0848e0d9e29439ac31a1a78e981f3a5b9f74f2b6180925c6a2e4",
+      "edits": [
+        {
+          "after": "    // V120: complete signed16 range expressed as parallel bit-prefix tests.\n    // The positive +2048 endpoint is intentional and remains inclusive.\n    function automatic logic raw_range_valid(input logic [15:0] coefficient);\n        raw_range_valid=(coefficient[15:11]==5'd0) ||\n            (coefficient[15:11]==5'd31) || (coefficient==16'h0800);\n    endfunction\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!cancelled && state==RAW && raw_valid)begin\n        assert(raw_range_valid(raw_coefficient)==\n            (raw_coefficient>=-2048 && raw_coefficient<=2048))\n            else $fatal(1,\"V120 full signed16 raw range predicate mismatch\");\n    end\n`endif\n\n    function automatic logic [31:0] cached32(input integer at);",
+          "before": "    function automatic logic [31:0] cached32(input integer at);"
+        },
+        {
+          "after": "state==RAW && raw_valid && raw_range_valid(raw_coefficient)",
+          "before": "state==RAW && raw_valid && raw_coefficient>=-2048 && raw_coefficient<=2048"
+        },
+        {
+          "after": "else if(!raw_range_valid(raw_coefficient)) fail_packet(5);",
+          "before": "else if(raw_coefficient < -2048 || raw_coefficient > 2048) fail_packet(5);"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v117-ingress-bytecount/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "278002752cd8ab478de5e66e0292fc97bea05b3042a7dfcffb3168f17252eb94"
+    }
+  ],
+  "schema": "v120-exact-signed16-prefix-range-v1",
+  "scope": "Only signed16 RAW range acceptance/rejection; current V119-used caller and ingress references, not historic sources.",
+  "unchanged_verification": {
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/br88_pipeline_candidate.sv": "6696d9dcfddff31801c89209565e5d0b8d101d8fdf8b4a7af4a3874d19e11a21",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/br88_pipeline_pair.sv": "44a4a0836d834c68fd9bbfdbb8618016690ead937702c67657de2842f24abc1b",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/br88_pipeline_reference.sv": "361839b1739ad81a1086cf32cf2977709e25a8dbc2f1bff35c11b0f6518eed8e",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/caller_prepare.cpp": "527a10a69996ac5fe2a7d89241242ff3a93173bb9eb34d041b3ff08afeeecf15",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/extents_base.cpp": "caabb24f042523c66587f15ef729f26597c7ba559bd7cb7c4963dcf695063c5f",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/ingress_base.cpp": "e1d9484e0d30f3f15f4b54b71e3839e97f48bbc2d25bd9b6538427a7e2a0defe",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/ingress_probe.sv": "322c64d4426799d8f22b1d283c9f58b0f50110ec45c4f0c63fd03e5a2fc5b6db",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/pair_adapter.hpp": "e9dda3b7a5f825dcdda6417c453dbd8c9dfb5ccb3928bf361f7afd5d06dcf104",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/tb_bytecount.cpp": "e6f91dd17cd9339069da4c72729fde145daae3990a4184b85d21264aece0b156",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/tb_extents.cpp": "75d9153aeefbc183d6c850141e245f2560e0ebf66f88d97ab6a493d4536be5bc",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/tb_ingress.cpp": "044bde9b440592d46a5dd35dbb7ded26bd38922600e414b8595623282b6c542e",
+    "fpga/experiments/cu66-v117-ingress-bytecount/verification/tb_pipeline.cpp": "0ecf82fb877d9c7d45ea30fb24ed1dc689af456e151d7997ccb174d7ad35b7a6"
+  }
+}

@@ -1,0 +1,155 @@
+#!/usr/bin/env python3
+"""V114 registered-admission content contract and actual V97 custom-packet chain (Verilator)."""
+import argparse,datetime,gzip,hashlib,json,shutil,subprocess,time
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[2]
+AREA=ROOT/'experiments/python-gamebub-v114/spatial';HARNESS=ROOT/'fpga/experiments/cu66-v114-harness'
+NATIVE=ROOT/'experiments/python-gamebub-v113/native/20261108T213634749593Z/receipt.json'
+BASELINE=ROOT/'experiments/python-gamebub-v113/spatial/results.json'
+BENCH=ROOT/'fpga/experiments/cu66-v107-elastic/verification/bench.cpp'
+FULL_BENCH=HARNESS/'bench_command_api.cpp'
+API_DERIVATION=HARNESS/'bench-api-derivation.json'
+FORWARD=ROOT/'fpga/experiments/cu66-v97-forward/v97_forward.sv'
+IMAGE='sha256:b35d0961607ab885b8024ef37ebcac0c3a0d010af00fe6bbdbc63264079a49cf'
+OVERRIDES={'cs88_pipeline_v91k.sv':ROOT/'fpga/experiments/cu66-v114-control/cs88_pipeline_v91k.sv'}
+CONTROL_PROOF=ROOT/'experiments/python-gamebub-v114/control/results.json'
+def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def load(p):return json.loads(Path(p).read_text())
+def write(p,j):Path(p).write_text(json.dumps(j,indent=2,sort_keys=True)+'\n')
+def rel(p):return str(Path(p).resolve().relative_to(ROOT))
+def memory():
+ m={x.split(':')[0]:int(x.split()[1])*1024 for x in Path('/proc/meminfo').read_text().splitlines()};f=next(x for x in Path('/proc/pressure/memory').read_text().splitlines()if x.startswith('full '));return dict(available_bytes=m['MemAvailable'],psi_full_avg10=float(f.split('avg10=')[1].split()[0]))
+def derive():
+ HARNESS.mkdir(parents=True,exist_ok=True)
+ original=BENCH.read_text();assert sha(BENCH)=='ec51ee82e4981d00a432aab633defd01e5fe638dbe999e4a41de2f2a5ad12384' and len(original.splitlines())==496
+ api_edits=[
+  ('tick();d.start=0;monitor_active=true;need(!d.cache_complete', 'tick();d.start=0;need(!d.cache_complete'),
+  ('        d.accepted_ref_valid=!c.ref_valid;d.accepted_qcache_valid=!c.qvalid;d.accepted_ref_fid=~c.ref_fid;d.accepted_ref_generation=~c.ref_gen;\n    }\n    void feed_until',
+   '        d.accepted_ref_valid=!c.ref_valid;d.accepted_qcache_valid=!c.qvalid;d.accepted_ref_fid=~c.ref_fid;d.accepted_ref_generation=~c.ref_gen;\n        need(!d.start_ready&&!d.in_ready&&!d.cache_ready&&!d.coefficient_valid&&!d.coefficient_ready&&!d.residual_valid&&!d.residual_ready&&!d.out_valid&&!d.mem_req_valid&&!d.ref_req_valid,"pending IV114 command exposed transfer eligibility");\n        tick();monitor_active=true;\n    }\n    void feed_until')]
+ api=original
+ for before,after in api_edits:assert api.count(before)==1;api=api.replace(before,after,1)
+ FULL_BENCH.write_text(api)
+ write(API_DERIVATION,dict(schema='v114-public-admission-to-child-delivery-api-adapter-v1',original=rel(BENCH),original_sha256=sha(BENCH),derived=rel(FULL_BENCH),derived_sha256=sha(FULL_BENCH),edits=[dict(before=a,after=b)for a,b in api_edits],all_original_need_checks_retained=True,original_frozen_bench_changed=False,added_pending_eligibility_assertions=1,api_change='Public start E/cache assertion/original metadata poison retained; one actual E+1 delivery tick before activating new-frame diagnostics; all reply/drain checks unchanged.'))
+ rev=api
+ for before,after in reversed(api_edits):assert rev.count(after)==1;rev=rev.replace(after,before,1)
+ assert rev==original
+ edits=[
+  ('#include <deque>','#include <deque>\n#include <functional>'),
+  ('    Vcs88_pipeline_v91k d;std::mt19937 rng;', '    std::function<void()> before_edge,after_edge;\n    Vcs88_pipeline_v91k d;std::mt19937 rng;'),
+  ('        d.eval();const bool cancel=d.reset||d.abort_packet;', '        d.eval();if(before_edge)before_edge();const bool cancel=d.reset||d.abort_packet;'),
+  ('        d.clk=1;d.eval();++cycle;', '        d.clk=1;d.eval();++cycle;if(after_edge)after_edge();'),
+  ('int main(int argc,char **argv){','int frozen_bench_main(int argc,char **argv){')]
+ t=api
+ for before,after in edits:assert t.count(before)==1;t=t.replace(before,after,1)
+ (HARNESS/'bench_transport_base.hpp').write_text(t)
+ write(HARNESS/'derivation.json',dict(schema='v114-api-base-five-clock-hook-derivation-v1',original=rel(FULL_BENCH),original_sha256=sha(FULL_BENCH),derived=rel(HARNESS/'bench_transport_base.hpp'),derived_sha256=sha(HARNESS/'bench_transport_base.hpp'),edits=[dict(before=a,after=b)for a,b in edits],all_original_need_checks_retained=True,old_exact_checker_modified=False,bench_api_derivation=dict(path=rel(API_DERIVATION),sha256=sha(API_DERIVATION))))
+ rev=t
+ for before,after in reversed(edits):assert rev.count(after)==1;rev=rev.replace(after,before,1)
+ assert rev==api
+def prepare(require_proofs):
+ derive();native=load(NATIVE);control=native['source_contract'];base=load(BASELINE)
+ assert base['status']=='PASS_V113_SPATIAL_CANONICAL' and base['actual_RTL_run']
+ baseline_receipt=ROOT/base['selected_receipt'];assert load(baseline_receipt)=={k:v for k,v in base.items()if k!='selected_receipt'}
+ assert base['source_sha256'][rel(BENCH)]==sha(BENCH)
+ aliases=control['source_order']['rtl_read_order_aliases']+[a for a in control['source_origins']if a.endswith('.svh')]
+ assert len(aliases)==18 and len(set(aliases))==18
+ sources=[];origins={};replacements=[]
+ for a in aliases:
+  m=control['source_origins'][a];old=ROOT/m['path'];assert sha(old)==m['sha256'];p=OVERRIDES.get(old.name,old);sources.append(p);origins[a]=dict(path=rel(p),sha256=sha(p))
+  if p!=old:replacements.append(dict(alias=a,original=m['path'],original_sha256=m['sha256'],candidate=rel(p),candidate_sha256=sha(p)))
+ assert len(replacements)==1 and replacements[0]['alias']=='fpga/experiments/cu66-v91k/cs88_pipeline_v91k.sv'
+ assert not any('v111-header' in rel(p)for p in sources)
+ proofs=[ROOT/'experiments/python-gamebub-v113/geometry/results.json',ROOT/'experiments/python-gamebub-v113/scratch/results.json',ROOT/'experiments/python-gamebub-v113/inverse/selected.json',CONTROL_PROOF]
+ targets=[ROOT/'fpga/experiments/cu66-v113-geometry/br88_context.sv',ROOT/'fpga/experiments/cu66-v113-scratch/packed_scratch_v91g2.sv',ROOT/'fpga/experiments/cu66-v113-inverse/cu66_inverse_stream_v91j.sv',OVERRIDES['cs88_pipeline_v91k.sv']]
+ if require_proofs:
+  for p,target in zip(proofs,targets):
+   q=load(p);assert q['status']=='PASS',p
+   selected=ROOT/q.get('selected_report',q.get('path',''));assert selected.is_file(),p
+   if 'selected_report_sha256'in q:assert sha(selected)==q['selected_report_sha256']
+   if 'sha256'in q:assert sha(selected)==q['sha256']
+   inner=load(selected);assert inner['status']=='PASS' and inner.get('assertions_disabled_or_downgraded',False) is False
+   assert inner.get('actual_RTL_run',inner.get('backend')=='Verilator') is True
+   assert inner['source_sha256'][rel(target)]==sha(target),target
+   commands=[c if isinstance(c,list) else c['argv'] for c in inner['commands']]
+   compiles=[c for c in commands if 'verilator' in c and '--cc' in c]
+   assert compiles and all('--assert' in c and '-Wall' in c and '-Wno-fatal' not in c for c in compiles)
+   assert all('-CFLAGS' in c and '-Werror' in c[c.index('-CFLAGS')+1] for c in compiles)
+   for n,h in inner['source_sha256'].items():assert sha(ROOT/n)==h,n
+   artifacts=inner.get('artifact_sha256',inner.get('artifacts_sha256',{}));assert artifacts
+   for n,h in artifacts.items():assert sha(selected.parent/n)==h,n
+ packaging=ROOT/'fpga/experiments/cu66-v112-control/packaging.json'
+ files=set(sources+[BENCH,FULL_BENCH,API_DERIVATION,FORWARD,HARNESS/'transport.cpp',HARNESS/'admission_monitor.hpp',HARNESS/'bench_transport_base.hpp',HARNESS/'derivation.json',packaging,Path(__file__).resolve(),NATIVE,BASELINE,baseline_receipt])
+ files.update(p for p in proofs if p.is_file())
+ for p in proofs:
+  if p.is_file():
+   q=load(p);candidate=q.get('selected_report',q.get('path'))
+   if candidate:files.add(ROOT/candidate)
+ for m in base['inputs'].values():files.add(ROOT/m['source'])
+ return base,baseline_receipt,sources,origins,replacements,packaging,sorted(files)
+def main():
+ ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--run',action='store_true');ap.add_argument('--attempt-id');a=ap.parse_args()
+ base,baseline_receipt,sources,origins,replacements,packaging,files=prepare(a.run)
+ if not a.run:print('V114_SPATIAL_PREPARED_NOT_RUN',json.dumps(replacements));return
+ stamp=a.attempt_id or datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+ assert datetime.datetime.strptime(stamp,'%Y%m%dT%H%M%S%fZ').strftime('%Y%m%dT%H%M%S%fZ')==stamp
+ out=AREA/'attempts'/stamp;out.mkdir(parents=True);build=Path('/home/lori/gamebub-build/cu66-v69')/('v114-spatial-'+stamp);build.mkdir();mapped='/build/'+build.name
+ r=dict(schema='v114-reserved-control-canonical-and-custom-transport-v1',status='FAIL',actual_RTL_run=False,backend='Verilator',image_id=IMAGE,transport_rtl_source_order=[rel(FORWARD)],seeds=[107601,107602],baseline_reference=dict(path=rel(baseline_receipt),sha256=sha(baseline_receipt)),baseline_reused_actual_RTL=True,baseline_recompiled_or_rerun=False,bench_api_derivation=dict(path=rel(API_DERIVATION),sha256=sha(API_DERIVATION)),full_component_bench_compiled_byte_exact_original=False,all_original_functional_oracles_retained=True,source_sha256={rel(p):sha(p)for p in files},source_origins=origins,rtl_source_order=[rel(p)for p in sources],inputs=base['inputs'],replacements=replacements,commands=[],runs=[],transport_runs=[],memory_samples=[],newly_executed_candidate_case_profiles=0,newly_executed_candidate_directed_checks=0,candidate_model_reused=False,canonical_reused_actual_RTL=False,fresh_candidate_model_required=True,full_frame_publication=False,hardware_contact=False,strict_warnings=True,assertions_disabled_or_downgraded=False,old_exact_checker_modified=False,public_cycle_equivalence_claim=False,contract='IV114 registered reservation/command delivery plus frozen IV113.1 inverse; original accepted external value/owner/drain oracle; V97 ingress commit distinct from decoder done',limits=['Actual retained custom packet/parallel DMA source adapter; no QSPI, ESP32 CPU, native Sunshine, C2 seal or publication claim.','Canonical oracle and all original held/error/counter/physical-drain checks retained; candidate event cycles intentionally differ.','Registered local command ownership is bounded; complete production PCTL1/session/publication qualification remains separate.'])
+ started=time.monotonic()
+ def command(argv,name,cap):
+  gate=memory();assert gate['available_bytes']>=8*1024**3 and gate['psi_full_avg10']<1,gate
+  container='gamebub-v114-spatial-'+stamp.lower()+'-'+str(len(r['commands']))
+  cmd=['docker','run','--rm','--init','--name',container,'--memory','8g','--memory-swap','8g','--cpus','2','--pids-limit','2048','--network','none','--ulimit','core=0','--mount',f'type=bind,src={out},dst={out},readonly','--mount',f'type=bind,src={build},dst={mapped}','-w',mapped,IMAGE,'timeout','--kill-after=5s',str(cap)+'s',*argv]
+  record=dict(argv=cmd,timeout_seconds=cap,resource_before=gate);r['commands'].append(record);began=time.monotonic()
+  with(out/name).open('w')as log:
+   p=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT);high=0
+   while p.poll()is None:
+    sample=dict(command=name,elapsed_seconds=time.monotonic()-began,**memory());r['memory_samples'].append(sample);high=high+1 if sample['psi_full_avg10']>=5 else 0
+    if sample['available_bytes']<4*1024**3 or high>=2 or sample['elapsed_seconds']>cap+20:
+     subprocess.run(['docker','stop','--time','5',container],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=15);record['resource_stop']=sample;break
+    time.sleep(2)
+   record.update(exit_code=p.wait(timeout=20),wall_seconds=time.monotonic()-began)
+  assert record['exit_code']==0 and 'resource_stop'not in record,name
+ def pack(p):
+  q=out/(p.name+'.gz');q.write_bytes(gzip.compress(p.read_bytes(),mtime=0));return dict(path=q.name,sha256=sha(q),raw_sha256=sha(p))
+ try:
+  for p in files:
+   q=out/'sources'/p.relative_to(ROOT);q.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,q)
+  snap=lambda p:str(out/'sources'/p.relative_to(ROOT))
+  for name,m in base['inputs'].items():
+   p=ROOT/m['source'];assert sha(p)==m['sha256'];data=gzip.decompress(p.read_bytes())if p.suffix=='.gz'else p.read_bytes();(build/name).write_bytes(data);assert sha(build/name)==m['expanded_sha256']
+  packaging_data=load(packaging);admission=next(p for p in sources if p.name=='cs88_admission_v91i2a.sv');data=admission.read_bytes();assert sha(admission)==packaging_data['production_sha256'];offsets=[0]+packaging_data['split_byte_offsets']+[len(data)];fragments=[]
+  for i,m in enumerate(packaging_data['fragments']):
+   p=build/m['filename'];p.write_bytes(data[offsets[i]:offsets[i+1]]);assert sha(p)==m['sha256'];fragments.append(p)
+  assert b''.join(p.read_bytes()for p in fragments)==data;r['lossless_compile_packaging']=packaging_data
+  compiled=[mapped+'/'+fragments[0].name if p==admission else snap(p)for p in sources if p.suffix=='.sv']+[mapped+'/'+p.name for p in fragments[1:]]
+  command(['verilator','--version'],'version.log',30)
+  command(['verilator','--cc','--exe','--build','-j','1','--output-split','10000','--output-split-cfuncs','1000','--assert','-Wall','--public-flat-rw','--language','1800-2017','--top-module','cs88_pipeline_v91k','--Mdir',mapped+'/obj','-I'+str(out/'sources/fpga/experiments/cu66-v69/inverse'),'-CFLAGS','-std=c++17 -O1 -Wall -Wextra -Werror -DELASTIC=1',*compiled,snap(FULL_BENCH)],'compile.log',900)
+  assert '%Warning-'not in(out/'compile.log').read_text();r['binary_sha256']=sha(build/'obj/Vcs88_pipeline_v91k')
+  for reference in base['runs']:
+   seed=reference['seed'];prefix='candidate-'+str(seed);command([mapped+'/obj/Vcs88_pipeline_v91k',mapped+'/cases.tsv',mapped+'/transform_tiles.tsv',mapped+'/canonical_goldens.tsv',str(seed),mapped+'/'+prefix+'-events.jsonl',mapped+'/'+prefix+'-canonical.tsv'],prefix+'-simulation.jsonl',900)
+   lines=[json.loads(l)for l in(out/(prefix+'-simulation.jsonl')).read_text().splitlines()];verdict=[j for j in lines if j.get('type')=='verdict'];assert len(verdict)==1 and verdict[0]['status']=='TEST_PASS'and verdict[0]['cases']==22 and verdict[0]['directed_checks']==21
+   path=build/(prefix+'-canonical.tsv');old=reference['artifacts']['canonical_actual'];assert sha(path)==old['raw_sha256'],'canonical accepted pixel bytes differ'
+   row=dict(seed=seed,verdict=verdict[0],canonical_exact=True,exact_stdout_events_cycles_and_canonical=False,artifacts=dict(events=pack(build/(prefix+'-events.jsonl')),canonical_actual=pack(path)),case_latency_metrics=[dict(id=x['id'],memory_profile=x['memory_profile'],cycles=x['cycles'],first_input=x['first_input'],last_input=x['last_input'],first_coef=x['first_coef'],last_coef=x['last_coef'],done_cycle=x['done_cycle'],last_residual=x['last_residual'])for x in lines if x.get('type')=='case'])
+   r['runs'].append(row);r['actual_RTL_run']=True;r['newly_executed_candidate_case_profiles']+=22;r['newly_executed_candidate_directed_checks']+=21
+  # Actual V97 model is compiled independently; no component hierarchy renaming.
+  for p in [HARNESS/'transport.cpp',HARNESS/'admission_monitor.hpp',HARNESS/'bench_transport_base.hpp']:shutil.copyfile(p,build/p.name)
+  command(['verilator','--cc','--build','-j','1','--assert','-Wall','--public-flat-rw','--language','1800-2017','--top-module','v97_forward','--Mdir',mapped+'/forward-obj',snap(FORWARD)],'transport-model-compile.log',300)
+  assert '%Warning-'not in(out/'transport-model-compile.log').read_text()
+  command(['g++','-std=c++17','-O1','-Wall','-Wextra','-Werror','-DELASTIC=1','-DVM_SC=0','-DVM_TRACE=0','-DVM_COVERAGE=0','-DVM_TRACE_FST=0','-DVM_TRACE_VCD=0','-I'+mapped+'/obj','-I'+mapped+'/forward-obj','-isystem','/usr/share/verilator/include','-isystem','/usr/share/verilator/include/vltstd',mapped+'/transport.cpp',mapped+'/obj/Vcs88_pipeline_v91k__ALL.a',mapped+'/forward-obj/Vv97_forward__ALL.a',mapped+'/obj/verilated.o',mapped+'/obj/verilated_dpi.o',mapped+'/obj/verilated_threads.o','-pthread','-latomic','-o',mapped+'/custom_transport'],'transport-adapter-compile.log',300)
+  r['transport_binary_sha256']=sha(build/'custom_transport')
+  for reference in base['runs']:
+   seed=reference['seed'];prefix='transport-'+str(seed);command([mapped+'/custom_transport',mapped+'/cases.tsv',mapped+'/transform_tiles.tsv',mapped+'/canonical_goldens.tsv',str(seed),mapped+'/'+prefix+'-events.jsonl',mapped+'/'+prefix+'-canonical.tsv'],prefix+'-simulation.jsonl',900)
+   lines=[json.loads(l)for l in(out/(prefix+'-simulation.jsonl')).read_text().splitlines()];v=[j for j in lines if j.get('type')=='transport_verdict'];assert len(v)==1 and v[0]['status']=='TEST_PASS'and v[0]['successful_case_profiles']==12 and v[0]['abort_reset_retries']==2 and v[0]['public_command_accepts']==16 and v[0]['registered_child_deliveries']==16 and v[0]['poisoned_command_tuples']==16
+   path=build/(prefix+'-canonical.tsv');assert sha(path)==reference['artifacts']['canonical_actual']['raw_sha256'],'transport canonical accepted pixel bytes differ'
+   r['transport_runs'].append(dict(seed=seed,verdict=v[0],canonical_exact=True,artifacts=dict(events=pack(build/(prefix+'-events.jsonl')),canonical_actual=pack(path)),fences=[x for x in lines if x.get('type')=='custom_transport']))
+  r.setdefault('canonical_qualified_case_profiles',r['newly_executed_candidate_case_profiles']);r.setdefault('canonical_qualified_directed_checks',r['newly_executed_candidate_directed_checks'])
+  assert r['newly_executed_candidate_case_profiles']==44 and r['newly_executed_candidate_directed_checks']==42
+  assert len(r['transport_runs'])==2 and not r['canonical_reused_actual_RTL']
+  assert r['source_sha256']=={rel(p):sha(p)for p in files};r['status']='PASS_V114_SPATIAL_CANONICAL';r['custom_transport_status']='PASS_ACTUAL_V97_TO_CUSTOM_DECODER_CANONICAL'
+ except BaseException as e:r['error']=repr(e);raise
+ finally:
+  # Preserve failed prefixes as well as final receipts; never replace an attempt.
+  for p in build.glob('*'):
+   if p.is_file()and p.name.endswith(('-events.jsonl','-canonical.tsv'))and not(out/(p.name+'.gz')).exists():pack(p)
+  r['wall_seconds']=time.monotonic()-started;r['artifact_sha256']={str(p.relative_to(out)):sha(p)for p in sorted(out.rglob('*'))if p.is_file()};write(out/'receipt.json',r);write(AREA/'results.json',dict(r,selected_receipt=rel(out/'receipt.json')));print('V114_SPATIAL',r['status'],out,flush=True)
+if __name__=='__main__':main()
