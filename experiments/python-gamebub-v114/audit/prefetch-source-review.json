@@ -1,0 +1,126 @@
+{
+  "adapters": {
+    "path": "fpga/experiments/cu66-v114-prefetch/verification/adapters.json",
+    "sha256": "370074161340833ff66cac0ca910151fe40091ee06f0106861abebad2bd5cad4"
+  },
+  "all_original_assertions_and_oracles_retained": true,
+  "auditor": "/root/v113_geometry",
+  "external_boundary_traces_not_in_focused_receipt_artifact_manifest": [
+    {
+      "path": "/home/lori/gamebub-build/cu66-v69/v114-prefetch-20261108T225637616459Z/seed-114301.jsonl-boundary.jsonl",
+      "sha256": "3a32acee895775485940354d13ab0275f60160a1a0c8eebda85b8cf8e687e1e5"
+    },
+    {
+      "path": "/home/lori/gamebub-build/cu66-v69/v114-prefetch-20261108T225637616459Z/seed-114302.jsonl-boundary.jsonl",
+      "sha256": "83aa9f42ae9488c010b5e49097e117d832490e699ddb10d5013a6b14bf0d9c30"
+    }
+  ],
+  "findings": [
+    {
+      "detail": "Sparse output_block changes before CLEAR_TILE/DC_FETCH/DC_EXTRACT; AC hit increments cursor in AC_EXTRACT then AC_CHECK precedes EMIT. Raw output_index/block changes before RAW_FETCH then DC_EXTRACT precedes RAW_EXTRACT. Held EMIT keeps relevant block/cursors stable. No new ready/bubble state; consuming assertions compare old algebra before every eligible emission edge.",
+      "status": "PASS_SOURCE_REVIEW",
+      "topic": "existing-edge-warmup"
+    },
+    {
+      "detail": "Preparation copies the exact original32-bit starts+cursor*4/raw sample/DC arithmetic and alignment before18-bit address truncation. Sparse more retains17-bit block extension, including65535+1=65536. Raw sample63 next-address correctly crosses to next block. No narrowing of32-bit modulo wrap or cursor/count comparison.",
+      "status": "PASS_SOURCE_REVIEW",
+      "topic": "full-width-algebra"
+    },
+    {
+      "detail": "Only addresses/more payloads are registered. Eligibility still uses current prefetch/tile/sealed/offer/outstanding/cancel/error; cache_valid/address are checked live, DC wins before ascending AC1/2/3. No cached hit decision or stale permission is consumed.",
+      "status": "PASS_SOURCE_REVIEW",
+      "topic": "live-cache-priority"
+    },
+    {
+      "detail": "Reset/abort/error/response priority and all existing transfer registers/state/request epochs are unchanged. Cancel gates launch immediately; accepted requests retain physical matching-response drain. Prepared payloads free-run without reset and are unowned outside eligible states; existing reachable setup paths mature them before consumption. They cannot create ownership alone.",
+      "status": "PASS_SOURCE_REVIEW",
+      "topic": "cancel-drain-no-reset-payload"
+    },
+    {
+      "detail": "Forward/reverse recipe exact; module interface exact; no original assertion removed. Scratch probe, tb_scratch, tb_bank and historical_hazards are byte-identical V113 files; observed pairs are only module renames/direct observation ports. Public/invalid payload/state/return-state/request/debug comparisons and independent scalar value/owner/drain oracles remain active.",
+      "status": "PASS_SOURCE_REVIEW",
+      "topic": "original-oracles"
+    },
+    {
+      "detail": "Two actual strict Verilator seeds114301/114302 each passed72 inherited full transactions+48 boundary transactions,128 corrupted responses,4 read-owner scenarios,9 historical accepted-write hazards, all4banks/all16offsets, and live unowned begin-sideband noise. All source/artifact hashes, compile source copies, binary hash and parsed verdicts verified.",
+      "status": "PASS_VERIFIED_RETAINED_PROOF",
+      "topic": "paired-focused-evidence"
+    }
+  ],
+  "forward_and_reverse_recipe_verified": true,
+  "independent_scalar_algebra_checks": {
+    "actual_RTL_run": false,
+    "cases": 770896,
+    "scope": "All65536 output-block values with boundary counts and selected raw indexes;50000 fullwidth start/cursor wrap cases; source-expression review remains primary for general equality."
+  },
+  "limitations": [
+    "Bounded paired RTL coverage uses blocks1/3/8 and9/17 boundaries; it is not an actual65536-block or32-bit wrapping-start/cursor RTL campaign, nor an all-history formal proof. Consuming assertions and exact expression widths support the reviewed fullwidth contract.",
+    "Boundary traces exist in external build and are independently hash-pinned here; focused receipt retains original traces/stdout but does not include separate boundary trace files in artifact manifest. No frozen proof/code was altered.",
+    "Optional candidate is not primary A scratch. Full optimized composition/peer qualification and actual native timing are separate; no achieved clock, placement gain, port/lane increase, hardware FPS or complete PCTL1 claim."
+  ],
+  "module_interface_byte_exact": true,
+  "observed_adapters_reversible": true,
+  "original_source": {
+    "path": "fpga/experiments/cu66-v113-scratch/packed_scratch_v91g2.sv",
+    "sha256": "efc3e61ac94d6c336164026c2865b70dee832c53a328bce720278719f6693f0f"
+  },
+  "receipt": {
+    "path": "experiments/python-gamebub-v114/prefetch/attempts/20261108T225637616459Z/receipt.json",
+    "sha256": "e4e8679ecfce7ce96b58a01130d49b1f44e9253b38b95a7cc8a1f7f0ed6969ee"
+  },
+  "recipe": {
+    "path": "fpga/experiments/cu66-v114-prefetch/edit-recipe.json",
+    "sha256": "ef872a873791a27b966693e22da3831bec8fe1a99cdea53b340a6c080063aca6"
+  },
+  "retained_source_and_artifact_pins_verified": true,
+  "reviewed_at_utc": "2026-11-08T23:25:01.041532+00:00",
+  "reviewer_actions": {
+    "builds": false,
+    "hardware_contact": false,
+    "heavy_jobs": false,
+    "source_or_proof_changes": false
+  },
+  "runner": {
+    "path": "scripts/cu66-v114/prefetch/qualify.py",
+    "sha256": "5bb6adfd8cfcb187589394ce35bc81be695b437c77dfa04da6e5fa7a343536b7"
+  },
+  "runs": [
+    {
+      "bank_mask": 15,
+      "begin_input_noise_edges": 128259,
+      "corrupt_response_cases": 128,
+      "dc_line_boundary_transactions": 48,
+      "full_transactions": 72,
+      "offset_mask": 65535,
+      "read_owner_cases": 4,
+      "seed": 114301,
+      "status": "TEST_PASS",
+      "total_clock_edges": 290965,
+      "type": "bank_complete_verdict"
+    },
+    {
+      "bank_mask": 15,
+      "begin_input_noise_edges": 128352,
+      "corrupt_response_cases": 128,
+      "dc_line_boundary_transactions": 48,
+      "full_transactions": 72,
+      "offset_mask": 65535,
+      "read_owner_cases": 4,
+      "seed": 114302,
+      "status": "TEST_PASS",
+      "total_clock_edges": 291010,
+      "type": "bank_complete_verdict"
+    }
+  ],
+  "schema": "v114-independent-prefetch-source-review-v1",
+  "source": {
+    "path": "fpga/experiments/cu66-v114-prefetch/packed_scratch_v91g2.sv",
+    "sha256": "332da2058fd3e6413e8cc6336c1aab13eba7cddaaa76bb9d49c8426b1727854a"
+  },
+  "status": "PASS_SOURCE_REVIEW_AND_BOUNDED_PAIRED_PROOF",
+  "strict_compile_and_actual_seed_verdicts_verified": true,
+  "summary": {
+    "path": "experiments/python-gamebub-v114/prefetch/results.json",
+    "sha256": "bf125447638374bc2b1eace4feaa05e4b0ae8f4191fcdd1752ba2db50ad3c0a8"
+  }
+}

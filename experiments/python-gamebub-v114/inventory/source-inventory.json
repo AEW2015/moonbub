@@ -1,0 +1,464 @@
+{
+  "schema": "v114-read-only-inventory-v1",
+  "status": "INVENTORIED_PROPOSED_INTEGRATION_OPEN",
+  "study_base": {
+    "revision": "3c2f644933d438c3ecb6d74677b896a3e2b42e38",
+    "branch": "study/gamebub-v114-reserved-control-20261108"
+  },
+  "roadmap": {
+    "path": "docs/gamebub-v111-v115-simulation-spatial-plan.md",
+    "sha256": "cee85a9d7ccf7c55052cb41be796a533e44d73e0b0e6427bb12b15803d692d65",
+    "status": "proposed; no V114 implementation or result claimed"
+  },
+  "evidence_matrix": [
+    {
+      "area": "Sunshine custom encoding/packetization",
+      "level": "partial executable JPEG-only packetizer",
+      "paths": [
+        {
+          "path": "/home/lori/gamebub-streaming-prototype/repos/sunshine-30fps-study/src/gamebub/msv1.h",
+          "commit": "3d49c6fe87753eb5b35d693991fdff0365e4bbbf",
+          "sha256": "abb7dcc3c4a6e67ccbe567046504d3521e96d8b204797e345b0a69fcd8d5d480"
+        },
+        {
+          "path": "/home/lori/gamebub-streaming-prototype/repos/sunshine-30fps-study/src/gamebub/msv1.cpp",
+          "commit": "3d49c6fe87753eb5b35d693991fdff0365e4bbbf",
+          "sha256": "c6b27f53d7ecf1972ce57c7c12c02103a740b7ea85141cc1d17781de8db003b7"
+        }
+      ],
+      "boundary": "MSV1 serializer packets borrowed JPEG bytes; it does not encode, send, negotiate, or provide CS88."
+    },
+    {
+      "area": "ESP32 receiver/forwarding",
+      "level": "executable negotiated-test-MJPEG receiver; no CS88 negotiation",
+      "paths": [
+        {
+          "path": "/home/lori/gamebub-streaming-prototype/repos/moonbub/host/PROTOCOL.md",
+          "commit": "75f8497b6ffefadd8c0403728b93ccfbbfa02f52",
+          "sha256": "8e898afe048e64ad2ca6fe084747063c1e96352ee2f78410b5d70e224edc1358"
+        },
+        {
+          "path": "/home/lori/gamebub-streaming-prototype/repos/moonbub/firmware/handheld/src/streaming/protocol.rs",
+          "commit": "75f8497b6ffefadd8c0403728b93ccfbbfa02f52",
+          "sha256": "32a91ffaf0b39a82f11036be7e501765cd3f9fed6905c27b6efc01f358d79e64"
+        },
+        {
+          "path": "/home/lori/gamebub-streaming-prototype/repos/moonbub/firmware/handheld/src/streaming/mod.rs",
+          "commit": "75f8497b6ffefadd8c0403728b93ccfbbfa02f52",
+          "sha256": "f6129ca653e96bc26a0fadd07c913a7be9f40190c705ba354db334c57621efbb"
+        },
+        {
+          "path": "/home/lori/gamebub-streaming-prototype/repos/moonbub/firmware/handheld/src/device/drivers/fpga/mod.rs",
+          "commit": "75f8497b6ffefadd8c0403728b93ccfbbfa02f52",
+          "sha256": "d3de5b50dd9cefb1e2eca5a86e99d3e6c1235f7020600ee393b5a511d1568dc7"
+        },
+        {
+          "path": "/home/lori/gamebub-streaming-prototype/repos/moonbub/firmware/handheld/src/device/drivers/fpga/xilinx.rs",
+          "commit": "75f8497b6ffefadd8c0403728b93ccfbbfa02f52",
+          "sha256": "3b6c501523626bb936cc2e1eac9263a8a84b521c6abd97874c47645ecf7e8427"
+        }
+      ],
+      "boundary": "MSV1 v1 codec byte accepts only JPEG=1; standalone receiver sends packet payload via FPGA QSPI driver; Sunshine pairing/video are explicitly absent."
+    },
+    {
+      "area": "FPGA production parent",
+      "level": "executable JPEG parent; CS88 absent",
+      "paths": [
+        {
+          "path": "fpga/rtl/moonshine_top.sv",
+          "sha256": "0475af1af47d1bdc59945e63e785aac5804acbc2f0956afe314150dbfce551be"
+        },
+        {
+          "path": "fpga/rtl/moonshine_qspi_endpoint.sv",
+          "sha256": "1b47f424da33b678b3811e091f481a2bdab3fad9c43a8edd6b70817853f9bb13"
+        },
+        {
+          "path": "fpga/rtl/moonshine_core.sv",
+          "sha256": "53ffe4a18980822bdb06731b705d1e52632c0e19dc6f942be2791f5a178a050e"
+        },
+        {
+          "path": "fpga/rtl/moonshine_memory.sv",
+          "sha256": "19c89965c0df2aff6b250ff06860519fc9a067c1afcb2e3723ae398386482d99"
+        },
+        {
+          "path": "fpga/rtl/moonshine_sdram.sv",
+          "sha256": "f1c3bfd6e41b0f2cae0a68e4bf37155a5914d2993dc27d22b9a052d3e9b0f26f"
+        },
+        {
+          "path": "fpga/rtl/moonshine_lcd.sv",
+          "sha256": "f6ef8c7476860c4ccc0cda18f86a1a22c267521f81f9a21f71b4b9c153e9fb27"
+        },
+        {
+          "path": "fpga/rtl/esp32_overlay.sv",
+          "sha256": "19a63f9a99784def9d6f454f717eda10a311738d1bc32a16c44e70e5d6ba2ec5"
+        }
+      ],
+      "boundary": "moonshine_top clocks QSPI endpoint at 200 MHz; JPEG core and SDRAM/controller at 100 MHz; LCD scanout and ESP32 overlay separate; no CS88 instance or complete custom commit/C2 publication in parent."
+    },
+    {
+      "area": "CS88 / BR88",
+      "level": "executable component sources and component proofs; not parent integrated",
+      "paths": [
+        {
+          "path": "fpga/experiments/cu66-v91k/cs88_pipeline_v91k.sv",
+          "sha256": "a128717c65741aec03ef55adeddf86aed2149be20c45d1a85e1c9c1c301b42c3"
+        },
+        {
+          "path": "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv",
+          "sha256": "7511f6bee4aeb1d78b9751ac493854a2c926519da4efcfa940619009b92f3ed8"
+        },
+        {
+          "path": "fpga/experiments/cu66-v91d/br88_packet_ingress.sv",
+          "sha256": "3c1cb5d93802dfcece9b003dec151152ab9a59be9d4972cf46023b9e9002eaba"
+        }
+      ],
+      "boundary": "CS88 and BR88 hierarchy has public ingress/request and local sealing interfaces; available component transport does not wire into production QSPI register map or board/display publication."
+    },
+    {
+      "area": "Protocol 97",
+      "level": "executable standalone bounded parallel ingress and Python/Rust protocol support",
+      "paths": [
+        {
+          "path": "docs/cu66-v97/protocol.md",
+          "sha256": "c883a7989623b22958bfc4d876d87182f6a52ff20c01b2430846210af082eb48"
+        },
+        {
+          "path": "fpga/experiments/cu66-v97-forward/README.md",
+          "sha256": "7559135a0581d4b41efe646f491b82769c0eb655310f30fd4643aa2efb6c6f7d"
+        },
+        {
+          "path": "fpga/experiments/cu66-v97-forward/v97_forward.sv",
+          "sha256": "5859e1260b4d307192b3322b28d9c419dfbfaed32b3835c7a890d6d4c1c4c052"
+        }
+      ],
+      "boundary": "40-byte setup/ACK, 12-byte common fragment and 16-byte first-fragment metadata; custom cap 49,152 bytes; 2 KiB ingress FIFO and two descriptors. Parallel command/DMA interface only; not QSPI pin protocol and not decoder/frame publication."
+    },
+    {
+      "area": "V113 actual custom evidence",
+      "level": "actual RTL simulation and OOC routed component evidence",
+      "paths": [
+        {
+          "path": "experiments/python-gamebub-v113/spatial/results.json",
+          "sha256": "70b3e484cb35e24d02913ae463ac91205d444b2b96d7008cc3b614db594cf445",
+          "status": "PASS_V113_SPATIAL_CANONICAL",
+          "image_id": "sha256:b35d0961607ab885b8024ef37ebcac0c3a0d010af00fe6bbdbc63264079a49cf"
+        },
+        {
+          "path": "experiments/python-gamebub-v113/native/20261108T213919828839Z/receipt.json",
+          "sha256": "713ddb73ab148bde242274406dd28a7399c9172fa735d75e55a07270ffd24a0b",
+          "status": "COMPONENT_ROUTE_FINISHED_SIGNOFF_OPEN"
+        },
+        {
+          "path": "experiments/python-gamebub-v113/lanes/results.json",
+          "sha256": "50d383f7f752448c60ce50d01fef428ec3b60805d84d42b6fbec8eec07ca1e38",
+          "status": "static/conditional model; actual_RTL_run=false"
+        }
+      ],
+      "boundary": "transport simulation exercised custom components using parallel V97 DMA adapter; V113 full parent, ESP32 QSPI custom sink, live Sunshine and C2/HUD/publication remain unqualified."
+    }
+  ],
+  "timing_controls": [
+    {
+      "label": "Count100",
+      "path": "experiments/python-gamebub-v110/count-domain-native/20261108T172431599061Z/receipt.json",
+      "period_ns": 10.0,
+      "WNS_ns": -1.022,
+      "sha256": "2dfc184586be4f90281bd10d3284006ec0e73019fab2f6bab70dcfb07e9fcdf7"
+    },
+    {
+      "label": "Count125",
+      "path": "experiments/python-gamebub-v111/native/20261108T183002986106Z/receipt.json",
+      "period_ns": 8.0,
+      "WNS_ns": -3.264,
+      "sha256": "4844575267375152b0f91fa194589dfbcabec615b1d08961c089cb36f909822d"
+    },
+    {
+      "label": "V112100",
+      "path": "experiments/python-gamebub-v112/native/20261108T195804890929Z/receipt.json",
+      "period_ns": 10.0,
+      "WNS_ns": -1.034,
+      "sha256": "4bcfbef1a34404873bf93fa049f4ae5ec4946cacbc868347e38c614eb14b771b"
+    },
+    {
+      "label": "V112125",
+      "path": "experiments/python-gamebub-v112/native/20261108T195810929250Z/receipt.json",
+      "period_ns": 8.0,
+      "WNS_ns": -2.844,
+      "sha256": "a72bb8c5cdd61549e13a8e7e1db6563122400b6a660823154d53b6956ea797ef"
+    },
+    {
+      "label": "V113100",
+      "path": "experiments/python-gamebub-v113/native/20261108T213634749593Z/receipt.json",
+      "period_ns": 10.0,
+      "WNS_ns": -1.686,
+      "sha256": "5c4cebfc6c444d50ef404e6252adbe8560554af59f271a2f55fc7f2087e06023"
+    },
+    {
+      "label": "V113125",
+      "path": "experiments/python-gamebub-v113/native/20261108T213919828839Z/receipt.json",
+      "period_ns": 8.0,
+      "WNS_ns": -3.303,
+      "sha256": "713ddb73ab148bde242274406dd28a7399c9172fa735d75e55a07270ffd24a0b"
+    }
+  ],
+  "v113_native": [
+    {
+      "path": "experiments/python-gamebub-v113/native/20261108T213634749593Z/receipt.json",
+      "sha256": "5c4cebfc6c444d50ef404e6252adbe8560554af59f271a2f55fc7f2087e06023",
+      "status": "COMPONENT_ROUTE_FINISHED_SIGNOFF_OPEN",
+      "period_ns": 10.0,
+      "wns_ns": -1.686,
+      "image_id": "sha256:dd51b5dd44148c23bb0059b929697243797022172d5efb01ffdd8b8dd7a89742",
+      "timeout_seconds": 3600,
+      "limits": {
+        "cpus": 2,
+        "memory_bytes": 8589934592,
+        "memory_and_swap_combined_ceiling_bytes": 8589934592,
+        "additional_container_swap_bytes": 0
+      }
+    },
+    {
+      "path": "experiments/python-gamebub-v113/native/20261108T213919828839Z/receipt.json",
+      "sha256": "713ddb73ab148bde242274406dd28a7399c9172fa735d75e55a07270ffd24a0b",
+      "status": "COMPONENT_ROUTE_FINISHED_SIGNOFF_OPEN",
+      "period_ns": 8.0,
+      "wns_ns": -3.303,
+      "image_id": "sha256:dd51b5dd44148c23bb0059b929697243797022172d5efb01ffdd8b8dd7a89742",
+      "timeout_seconds": 3600,
+      "limits": {
+        "cpus": 2,
+        "memory_bytes": 8589934592,
+        "memory_and_swap_combined_ceiling_bytes": 8589934592,
+        "additional_container_swap_bytes": 0
+      }
+    }
+  ],
+  "v113_source_origins_count": 18,
+  "v113_source_origins": [
+    {
+      "alias": "fpga/experiments/cu66-v107-elastic/cu66_coefficient_elastic.sv",
+      "path": "fpga/experiments/cu66-v107-meta-flags/cu66_coefficient_elastic.sv",
+      "sha256": "ea53b408aab5e522dfb2c4ffc2eefee41d58af37032cedc409e74815ab35dab9"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v69/inverse/cu66_dequant.sv",
+      "path": "fpga/experiments/cu66-v110-dequant/cu66_dequant.sv",
+      "sha256": "e0a62ee4886f5690e2a0c788d20cbef1ee669ef451a4944c10c43e43788c72ac"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v69/inverse/cu66_idct8x8.sv",
+      "path": "fpga/experiments/cu66-v108-outtile/cu66_idct8x8.sv",
+      "sha256": "3a30e2c527755ee5e34480274a7998795a773e23fef6cec8471fdd89c31a7808"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh",
+      "path": "fpga/experiments/cu66-v69/inverse/cu66_quant_rom.svh",
+      "sha256": "e0d5ae446155c1e295e0add487a30fec9c765cbafc0fabb15d248285ed22dca7"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv",
+      "path": "fpga/experiments/cu66-v69/inverse/cu66_reconstruct_tile.sv",
+      "sha256": "3eb9fbc02732f06b05f68499a5c03d48c00f24f7621db6cb318fc13f07c40d64"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91/br88_rice_elastic.sv",
+      "path": "fpga/experiments/cu66-v110-prefix/br88_rice_elastic.sv",
+      "sha256": "c07d936e807a09ee332b5df4c3f743f88f284784fbcf1e704d1a8db770c33eac"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91b/br88_context.sv",
+      "path": "fpga/experiments/cu66-v113-geometry/br88_context.sv",
+      "sha256": "4eefd41198a0fcbfd80648e702a42f179315f7378969863c778bd06686ff6775"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91d/br88_packet_ingress.sv",
+      "path": "fpga/experiments/cu66-v91d/br88_packet_ingress.sv",
+      "sha256": "3c1cb5d93802dfcece9b003dec151152ab9a59be9d4972cf46023b9e9002eaba"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv",
+      "path": "fpga/experiments/cu66-v113-scratch/packed_scratch_v91g2.sv",
+      "sha256": "efc3e61ac94d6c336164026c2865b70dee832c53a328bce720278719f6693f0f"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv",
+      "path": "fpga/experiments/cu66-v110-count-domain/br88_packet_ingress_sync_v91h.sv",
+      "sha256": "38c524b52d40c1a7764ac7219582af974b8f973d94d8cff03f23c7088b2bcf28"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91h/br88_packet_ingress_v91h.sv",
+      "path": "fpga/experiments/cu66-v108-capacity/br88_packet_ingress_v91h.sv",
+      "sha256": "9529b8a76b531d22f7d0a4498295153f8a397c004725787c34af9824ee84cfb1"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv",
+      "path": "fpga/experiments/cu66-v108-capacity/br88_pipeline_v91h.sv",
+      "sha256": "cb440ed9c12c6fa3eac579aea99f2c03716e33b97ce50822ab00b93de08a4360"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91i2/cs88_admission_v91i2a.sv",
+      "path": "fpga/experiments/cu66-v112-control/cs88_admission_v91i2a.sv",
+      "sha256": "49f23fe56894012d1f647192bb030025eb79331fe24b173c11a2252bee4ff8b7"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv",
+      "path": "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv",
+      "sha256": "af78e9d263fcdaa5ccc0d13f370aa994f46e2feb198c54c9775122c02d07a505"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv",
+      "path": "fpga/experiments/cu66-v113-inverse/cu66_inverse_stream_v91j.sv",
+      "sha256": "c727e7a71c8da5ace352df1e9483aa87c83a5d6a95d5b3127d9578653d0b9403"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv",
+      "path": "fpga/experiments/cu66-v110-ready/cs88_coefficients_v91k.sv",
+      "sha256": "b5f9dce886ce9d6d1460ac6d8579512750bc66504e306ecabf8bdd7f11bb40fd"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91k/cs88_pipeline_v91k.sv",
+      "path": "fpga/experiments/cu66-v110-fault/cs88_pipeline_v91k.sv",
+      "sha256": "950182396c4ac6f0f31c74fd41bf66c6122727e44cacf31ae48c55098e0dd786"
+    },
+    {
+      "alias": "fpga/experiments/cu66-v91k/cu66_reconstruct_stream_v91k.sv",
+      "path": "fpga/experiments/cu66-v110-fault/cu66_reconstruct_stream_v91k.sv",
+      "sha256": "f9dc06f183010a3486f387075b702a4cc7d9b4a06c1f4b0174cddad5813bf149"
+    }
+  ],
+  "tools_and_limits": {
+    "verilator_image_id": "sha256:b35d0961607ab885b8024ef37ebcac0c3a0d010af00fe6bbdbc63264079a49cf",
+    "native_vivado_image_id": "sha256:dd51b5dd44148c23bb0059b929697243797022172d5efb01ffdd8b8dd7a89742",
+    "vivado_version": "2026.1 (receipt reports build 6511674)",
+    "native_trial_limits": {
+      "cpus": 2,
+      "memory_bytes": 8589934592,
+      "timeout_seconds": 3600,
+      "network": "host mode to match validated Count control",
+      "hardware_contact": false,
+      "bitstream": false,
+      "memory_and_swap_combined_ceiling_bytes": 8589934592,
+      "additional_container_swap_bytes": 0
+    },
+    "verilator_compile": {
+      "jobs": 1,
+      "assertions": true,
+      "Wall": true,
+      "C++": "-std=c++17 -O1 -Wall -Wextra -Werror"
+    },
+    "esp_emu": {
+      "path": "/home/lori/gamebub-tools/esp-emu-study-0510/esp-emu-0.51.0-x86_64-unknown-linux-gnu/esp-emu",
+      "present": true,
+      "capability_status": "V111 inventory identifies locally proven receiver study, not full Sunshine/firmware/FPGA timing platform"
+    },
+    "verilator_container_limits": {
+      "cpus": 2,
+      "memory_bytes": 8589934592,
+      "memory_and_swap_combined_ceiling_bytes": 8589934592,
+      "additional_container_swap_bytes": 0,
+      "per_command_timeout_seconds": [
+        300,
+        900
+      ],
+      "source_receipt": "experiments/python-gamebub-v113/spatial/results.json",
+      "receipt_sha256": "70b3e484cb35e24d02913ae463ac91205d444b2b96d7008cc3b614db594cf445"
+    }
+  },
+  "parent_port_budget": {
+    "measured_one_lane_ooc": {
+      "path": "experiments/python-gamebub-v113/native/20261108T213919828839Z/reports/route-utilization.rpt",
+      "sha256": "ca82b8006e619745196f5957d55fb2783de26d15a9814fbcc2ad523ced5f22fc",
+      "DSP": 42,
+      "Slice_LUTs": 36976,
+      "FF": 39225,
+      "RAMB36": 32,
+      "RAMB18": 12,
+      "note": "OOC CS88 component route, not combined JPEG+CS88 parent."
+    },
+    "conditional_lane_model": {
+      "path": "experiments/python-gamebub-v113/lanes/results.json",
+      "sha256": "50d383f7f752448c60ce50d01fef428ec3b60805d84d42b6fbec8eec07ca1e38",
+      "actual_RTL_run": null,
+      "DSP_formula": "17 shared coefficient/context-path DSP + lanes*(8 dequant + 17 IDCT)",
+      "conditional_DSP_by_lanes": {
+        "1": 42,
+        "2": 67,
+        "4": 117
+      },
+      "limits": "No 2/4-lane synthesis/placement or fitted parent result; old-transform LUT extrapolation is explicitly diagnostic, not an estimate."
+    },
+    "memory_port_facts": [
+      "CS88 source reports synchronous ingress BRAMs with fixed implemented port structure; no demonstrated independent 2/4-lane service bandwidth.",
+      "Production memory is one 16-bit SDR SDRAM interface/controller shared between priority line reads and decoder pixel writes; a line is fetched as 60 BL8 bursts.",
+      "No measured full-parent arbitration budget includes CS88 writes, JPEG fallback, scanout, overlay, and any reference/hash/HUD traffic."
+    ]
+  },
+  "first_control_cut": {
+    "intent": "V114 initial study-policy alias is fpga/experiments/cu66-v114-control/cs88_pipeline_v91k.sv; isolate reserved/local control cones before parallel entropy syntax work.",
+    "comparison_baseline": "Frozen V113 125 MHz component receipt is negative (WNS -3.303 ns); retain old 100 MHz control separately.",
+    "scope": "Preserve decoder data/value/owner/drain contracts; no system qualification implied."
+  },
+  "minimal_integration_gaps": [
+    "Define and version CS88 transport/profile negotiation; MSV1 codec byte 1 remains JPEG and must not be silently repurposed.",
+    "Implement selected native CS88 encoder and packetizer in isolated Sunshine, shared by live and deterministic paths; pin output fixtures and host service assumptions.",
+    "Add negotiated bounded CS88 receive/recovery path in ESP32 firmware, including frame identity/CRC/cap/credit and a defined QSPI transaction mapping.",
+    "Bridge actual QSPI endpoint/CDC to CS88 ingress and finite memory write requests, preserving abort/reset generation and outstanding ownership.",
+    "Integrate frame validation, decoder drain, C2 seal, buffer ownership/commit, HUD ordering/hash and LCD publication/scanout into an explicit parent; add bounded arbiter and actual clock/reset/CDC constraints.",
+    "Run Python/native/RTL round-trips, malformed/recovery, 300 distinct frames/10 modeled seconds and full-parent synthesis/place/route/timing/fit before claims of completion."
+  ],
+  "limits": [
+    "This is source inventory; no builds, test reruns, native jobs, hardware, or network activity were performed.",
+    "Current roadmap target remains 720x480, 30 distinct displayed fps, 49,152-byte cap and strict <1,250,000 cycles at exact 125MHz for full validated decode; none is established by these component proofs.",
+    "Native V113 routes are OOC and fail setup at both periods; they are evidence and controls, not a V114 timing result."
+  ],
+  "canonical_fixture_pins": [
+    {
+      "repo": "/home/lori/gamebub-streaming-prototype/repos/moonbub",
+      "commit": "75f8497b6ffefadd8c0403728b93ccfbbfa02f52",
+      "path": "host/fixtures/pattern-msv1-packets.bin",
+      "sha256": "78c58cfcc4860761c33bcc7021e3db14e9fa66ef5e9a385ae1e4c00c82a6447f",
+      "scope": "JPEG-only MSV1 packet golden; not a CS88 fixture"
+    },
+    {
+      "path": "experiments/python-gamebub-v91k/vectors/canonical_goldens.tsv.gz",
+      "sha256": "1670dac7dfd25b4558e7aa469620dc468a8e3dbb63061b1cce2db1c42b6891cb",
+      "expanded_sha256": "6d4e956a413d23d3945d30419c19dcb065423bfe486ea37506361cb0d9c73097",
+      "rows": 6,
+      "scope": "V113 canonical custom-component oracle input; not Sunshine encoder output"
+    }
+  ],
+  "production_parent_resource_control": {
+    "path": "fpga/build-final/utilization.rpt",
+    "sha256": "55f43b5d0bfe8492b31b8efb100e42ecf4950eea0c62f028f6c7eb5837d13c16",
+    "device": "XC7A100TCSG324-1",
+    "DSP48E1": 32,
+    "RAMB36": 113,
+    "RAMB18": 15,
+    "scope": "retained JPEG design; no CS88 inclusion/full-parent replacement report"
+  },
+  "v113_composition_delta": {
+    "parent": "experiments/python-gamebub-v112/native/20261108T195810929250Z/receipt.json",
+    "parent_receipt_sha256": "a72bb8c5cdd61549e13a8e7e1db6563122400b6a660823154d53b6956ea797ef",
+    "three_replacements": [
+      {
+        "stage": "geometry",
+        "alias": "fpga/experiments/cu66-v91b/br88_context.sv",
+        "selected_path": "fpga/experiments/cu66-v113-geometry/br88_context.sv",
+        "sha256": "4eefd41198a0fcbfd80648e702a42f179315f7378969863c778bd06686ff6775"
+      },
+      {
+        "stage": "scratch",
+        "alias": "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv",
+        "selected_path": "fpga/experiments/cu66-v113-scratch/packed_scratch_v91g2.sv",
+        "sha256": "efc3e61ac94d6c336164026c2865b70dee832c53a328bce720278719f6693f0f"
+      },
+      {
+        "stage": "inverse",
+        "alias": "fpga/experiments/cu66-v91j/cu66_inverse_stream_v91j.sv",
+        "selected_path": "fpga/experiments/cu66-v113-inverse/cu66_inverse_stream_v91j.sv",
+        "sha256": "c727e7a71c8da5ace352df1e9483aa87c83a5d6a95d5b3127d9578653d0b9403"
+      }
+    ],
+    "other_15_source_origins": "retained unchanged from the V112 parent card; all 18 aliases and selected path hashes are listed in v113_source_origins."
+  }
+}

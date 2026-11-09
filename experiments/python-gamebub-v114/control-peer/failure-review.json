@@ -1,0 +1,86 @@
+{
+  "actual_RTL_run": true,
+  "completed_canonical_retries": 6,
+  "completed_scratch_cases": [
+    {
+      "first_cause": 197,
+      "peer": 2,
+      "reply_phase": 0,
+      "request_address": 32,
+      "request_epoch": 1,
+      "status": "PASS",
+      "type": "peer_case",
+      "write": 1
+    },
+    {
+      "first_cause": 197,
+      "peer": 2,
+      "reply_phase": 1,
+      "request_address": 0,
+      "request_epoch": 5,
+      "status": "PASS",
+      "type": "peer_case",
+      "write": 0
+    },
+    {
+      "first_cause": 197,
+      "peer": 2,
+      "reply_phase": 3,
+      "request_address": 0,
+      "request_epoch": 9,
+      "status": "PASS",
+      "type": "peer_case",
+      "write": 0
+    },
+    {
+      "first_cause": 227,
+      "peer": 4,
+      "reply_phase": 0,
+      "request_address": 32,
+      "request_epoch": 13,
+      "status": "PASS",
+      "type": "peer_case",
+      "write": 1
+    },
+    {
+      "first_cause": 227,
+      "peer": 4,
+      "reply_phase": 1,
+      "request_address": 0,
+      "request_epoch": 17,
+      "status": "PASS",
+      "type": "peer_case",
+      "write": 0
+    },
+    {
+      "first_cause": 227,
+      "peer": 4,
+      "reply_phase": 3,
+      "request_address": 0,
+      "request_epoch": 21,
+      "status": "PASS",
+      "type": "peer_case",
+      "write": 0
+    }
+  ],
+  "diagnosis": "The frozen original oracle compares queue_push==frame_read_rsp when no external reset/abort is asserted. Internal registered producer peer-kill asserts queue cancel, which suppresses push_event; the already registered synchronous response remains visible until that edge. This cancellation boundary requires an explicit independent private-owner cancellation oracle. No RTL fault conclusion or qualification PASS follows from this review.",
+  "failed_receipt": {
+    "path": "experiments/python-gamebub-v114/control-peer/attempts/20261108T231912975317Z/receipt.json",
+    "sha256": "30539095cfbe5df9e26b1f7b8aa63851b43aa308e8fe821733231d7e333573fa"
+  },
+  "failure": "queue response push conservation",
+  "frozen_source_evidence": {
+    "fpga/experiments/cu66-v107-elastic/verification/bench.cpp": "ec51ee82e4981d00a432aab633defd01e5fe638dbe999e4a41de2f2a5ad12384",
+    "fpga/experiments/cu66-v110-ready/cs88_coefficients_v91k.sv": "b5f9dce886ce9d6d1460ac6d8579512750bc66504e306ecabf8bdd7f11bb40fd",
+    "fpga/experiments/cu66-v112-control/cs88_admission_v91i2a.sv": "49f23fe56894012d1f647192bb030025eb79331fe24b173c11a2252bee4ff8b7",
+    "fpga/experiments/cu66-v114-control/cs88_pipeline_v91k.sv": "9e6d2b88ad0f06ca0df5a5218be0d78a9fa9d9e8151d3b0b43aebaafc3ba76bd",
+    "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv": "af78e9d263fcdaa5ccc0d13f370aa994f46e2feb198c54c9775122c02d07a505"
+  },
+  "log": {
+    "path": "experiments/python-gamebub-v114/control-peer/attempts/20261108T231912975317Z/peer-114401-simulation.jsonl",
+    "sha256": "0b3fe456b88a3d003efec503043a58084bd8afd778f75e99e3bed48ee36dd7b6"
+  },
+  "retry_authorized_or_started": false,
+  "source_or_original_oracle_edits": false,
+  "status": "RETAINED_FAILURE_PRIVATE_CANCEL_ORACLE_BOUNDARY"
+}

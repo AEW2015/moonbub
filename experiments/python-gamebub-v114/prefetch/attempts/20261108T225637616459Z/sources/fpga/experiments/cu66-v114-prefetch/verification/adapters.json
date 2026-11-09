@@ -1,0 +1,72 @@
+{
+  "adapters": [
+    {
+      "source": "fpga/experiments/cu66-v113-scratch/packed_scratch_v91g2.sv",
+      "source_sha256": "efc3e61ac94d6c336164026c2865b70dee832c53a328bce720278719f6693f0f",
+      "path": "fpga/experiments/cu66-v114-prefetch/verification/observed_original.sv",
+      "sha256": "fbeda97fe0e1da3eede8c82cb06bdf1e9fb963c11dcda21553e54c95a6909332",
+      "edits": [
+        [
+          "module packed_scratch_v91g2 ",
+          "module observed_original "
+        ],
+        [
+          "\n);",
+          ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);"
+        ],
+        [
+          "\nendmodule",
+          "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule"
+        ]
+      ]
+    },
+    {
+      "source": "fpga/experiments/cu66-v114-prefetch/packed_scratch_v91g2.sv",
+      "source_sha256": "332da2058fd3e6413e8cc6336c1aab13eba7cddaaa76bb9d49c8426b1727854a",
+      "path": "fpga/experiments/cu66-v114-prefetch/verification/observed_candidate.sv",
+      "sha256": "8d45a4db4642b64b07ec58db0b2f5839e114b422261f025cf0b9ca07f91ab52f",
+      "edits": [
+        [
+          "module packed_scratch_v91g2 ",
+          "module observed_candidate "
+        ],
+        [
+          "\n);",
+          ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);"
+        ],
+        [
+          "\nendmodule",
+          "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule"
+        ]
+      ]
+    },
+    {
+      "source": "fpga/experiments/cu66-v113-scratch/verification/scratch_probe.sv",
+      "source_sha256": "173f87729fde9a129291b3bd64021f4dc7160a6625b7ab75779560f360d3d9d0",
+      "path": "fpga/experiments/cu66-v114-prefetch/verification/scratch_probe.sv",
+      "sha256": "173f87729fde9a129291b3bd64021f4dc7160a6625b7ab75779560f360d3d9d0",
+      "edits": []
+    },
+    {
+      "source": "fpga/experiments/cu66-v113-scratch/verification/tb_scratch.cpp",
+      "source_sha256": "ae181060a0e45152ef892c248285aced9ab1528153fbe28d2b10c24154cf3e86",
+      "path": "fpga/experiments/cu66-v114-prefetch/verification/tb_scratch.cpp",
+      "sha256": "ae181060a0e45152ef892c248285aced9ab1528153fbe28d2b10c24154cf3e86",
+      "edits": []
+    },
+    {
+      "source": "fpga/experiments/cu66-v113-scratch/verification/tb_bank.cpp",
+      "source_sha256": "3d7affdc894fa032a226174858e210598c7a1b29bab9936ca006a4a0048e9636",
+      "path": "fpga/experiments/cu66-v114-prefetch/verification/tb_bank.cpp",
+      "sha256": "3d7affdc894fa032a226174858e210598c7a1b29bab9936ca006a4a0048e9636",
+      "edits": []
+    },
+    {
+      "source": "fpga/experiments/cu66-v113-scratch/verification/historical_hazards.cpp",
+      "source_sha256": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a",
+      "path": "fpga/experiments/cu66-v114-prefetch/verification/historical_hazards.cpp",
+      "sha256": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a",
+      "edits": []
+    }
+  ]
+}
