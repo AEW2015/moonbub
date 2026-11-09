@@ -1,0 +1,45 @@
+{
+  "all_bulk_clears_preserved": true,
+  "all_original_assertion_blocks_retained": true,
+  "clock_or_attribute_changes": false,
+  "contract": "Only dynamic wide residual insertion replaced by64 elaboration-constant24bit word assignments under the identical existing accepted-tuple control. All resets, MODE_WAIT clears, error priority, values, metadata, owner/reference leases, clock edges and COPY behavior remain unchanged. Hypothesis targets routed CARRY4-driven residual data fanout; no timing gain claim without measured native composition C. Physical canonical bank0/1 CE strobes predicted on the existing valid MATH_WAIT\u2192COPY transition exactly replace state/tail decoding at the same COPY edge, including kill-at-COPY. Same old state/raw predicates retained, plus exact preedge mirror/onehot assertions; prepared C peer poststate must explicitly clear new strobes as real fail-edge default does.",
+  "derived": "fpga/experiments/cu66-v117-reconstruct-wordbank/cu66_reconstruct_stream_v91k.sv",
+  "derived_sha256": "6bef0bea8d721bc9550dd0a3c7af73e8aa6e793b8b44c683bef42897a5e25bc4",
+  "edits": [
+    {
+      "after": "for(integer word_index=0;word_index<64;word_index=word_index+1)begin\n                                if(fill_index==6'(word_index))residual[word_index*24+:24]<=in_value;\n                            end\n                            ",
+      "before": "residual[int'(fill_index)*24+:24]<=in_value;"
+    },
+    {
+      "after": "    logic owner_head,owner_tail,owner_copy,storage_copy;\n    // Predict the existing COPY bank at its existing MATH_WAIT transition.\n    // These physical CE strobes add no edge and survive a kill-at-COPY edge.\n    logic storage_copy_bank0,storage_copy_bank1;",
+      "before": "    logic owner_head,owner_tail,owner_copy,storage_copy;"
+    },
+    {
+      "after": "always_ff @(posedge clk)if(b==0?storage_copy_bank0:storage_copy_bank1)value<=engine_out_pixels[w*8+:8];",
+      "before": "always_ff @(posedge clk)if(storage_copy&&owner_tail==1'(b))value<=engine_out_pixels[w*8+:8];"
+    },
+    {
+      "after": "always_ff @(posedge clk)if(b==0?storage_copy_bank0:storage_copy_bank1)begin",
+      "before": "always_ff @(posedge clk)if(storage_copy&&owner_tail==1'(b))begin"
+    },
+    {
+      "after": "    always_ff @(posedge clk)begin\n        storage_copy_bank0<=0;storage_copy_bank1<=0;\n        // Ack observes the old fault on this edge.",
+      "before": "    always_ff @(posedge clk)begin\n        // Ack observes the old fault on this edge."
+    },
+    {
+      "after": "                        else begin\n                            state<=COPY;\n                            storage_copy_bank0<=!owner_tail;storage_copy_bank1<=owner_tail;\n                        end",
+      "before": "                        else state<=COPY;"
+    },
+    {
+      "after": "`ifndef SYNTHESIS\n    // Check the prediction against the unchanged physical state/bank owner on\n    // every real preedge, including COPY with external kill asserted.\n    always_ff @(posedge clk)if(owner_initialized)begin\n        assert(storage_copy_bank0==(storage_copy&&!owner_tail))\n            else $fatal(1,\"bank0 COPY prediction changed physical edge\");\n        assert(storage_copy_bank1==(storage_copy&&owner_tail))\n            else $fatal(1,\"bank1 COPY prediction changed physical edge\");\n        assert(!(storage_copy_bank0&&storage_copy_bank1))\n            else $fatal(1,\"COPY prediction granted both physical banks\");\n    end\n`endif\nendmodule",
+      "before": "endmodule"
+    }
+  ],
+  "original": "fpga/experiments/cu66-v117-throughput/cu66_reconstruct_stream_v91k.sv",
+  "original_sha256": "5b12193073a8410ad0d05d251c061f7379cd9dba5a9677e5f8f20da4c581be06",
+  "prepared_peer_poststate_requires_strobes_zero": true,
+  "registered_bank_CE_predicts_existing_COPY_edge": true,
+  "reverse_verified": true,
+  "schema": "v117-reconstruct-constant-wordbank-exactcycle-v1",
+  "unchanged_private_and_public_schedule": true
+}

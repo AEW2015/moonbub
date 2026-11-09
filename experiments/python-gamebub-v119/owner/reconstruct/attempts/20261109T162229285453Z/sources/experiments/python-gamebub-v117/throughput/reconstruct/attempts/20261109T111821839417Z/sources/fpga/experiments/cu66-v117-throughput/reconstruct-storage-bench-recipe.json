@@ -1,0 +1,26 @@
+{
+  "derived": "fpga/experiments/cu66-v117-throughput/tb_reconstruct.cpp",
+  "derived_sha256": "f9dec8fc8da71ff00a7a78f247c0ab20bc565e6e6929ee74234f0e23118b7f8e",
+  "edits": [
+    {
+      "after": "full_owner_cycles=0,fixture_drains=0,private_copy_cancel_cases=0;",
+      "before": "full_owner_cycles=0,fixture_drains=0;"
+    },
+    {
+      "after": " auto&r(){return *d.rootp;}\n std::array<uint32_t,16> storage(unsigned bank){std::array<uint32_t,16> a{};for(unsigned w=0;w<16;++w)a[w]=r().reconstruct_probe__DOT__owner_pixels[bank][w];return a;}\n std::array<uint32_t,16> engine_storage(){std::array<uint32_t,16> a{};for(unsigned w=0;w<16;++w)a[w]=r().reconstruct_probe__DOT__engine_out_pixels[w];return a;}",
+      "before": " auto&r(){return *d.rootp;}"
+    },
+    {
+      "after": " // Kill at second COPY while a different, older READY head is stalled.\n // The inactive payload really captures, while publication revokes and the\n // entire previously offered head storage remains byte-exact.\n for(bool reset:{false,true}){b.phase=\"private_copy_kill_\"+std::to_string(reset);b.begin(true);b.hold_output=true;b.until_state(11);b.step();b.until_state(11);\n  const unsigned head=b.r().reconstruct_probe__DOT__owner_head,tail=b.r().reconstruct_probe__DOT__owner_tail;\n  need(head!=tail&&b.d.out_valid&&!b.d.out_ready,\"second COPY did not retain older stalled head\");\n  const auto saved_head=b.storage(head),expected_private=b.engine_storage();const unsigned expected_id=b.r().reconstruct_probe__DOT__engine_out_id;\n  b.cancel(reset);need(b.storage(head)==saved_head,\"kill COPY overwrote stalled head storage\");\n  need(b.storage(tail)==expected_private&&b.r().reconstruct_probe__DOT__owner_math_id[tail]==expected_id,\"inactive COPY did not physically capture on kill edge\");\n  need(!b.d.out_valid&&b.owners()==0&&!b.d.done,\"killed private COPY published a logical owner\");\n  ++b.private_copy_cancel_cases;++directed;b.begin(true);b.prefix();b.cancel();\n }\n // Reset/cancel over all gather/memory/conversion/copy phases and stalled final byte.",
+      "before": " // Reset/cancel over all gather/memory/conversion/copy phases and stalled final byte."
+    },
+    {
+      "after": "<<\",\\\"private_copy_cancel_cases\\\":\"<<b.private_copy_cancel_cases<<\",\\\"key_frame_cycles\\\":\"<<key_cycles",
+      "before": "<<\",\\\"key_frame_cycles\\\":\"<<key_cycles"
+    }
+  ],
+  "old_semantic_checks_removed": 0,
+  "original": "fpga/experiments/cu66-v117-throughput/initial/tb_reconstruct.cpp",
+  "original_sha256": "01d502d1b946fc2e0f944e907011ea7ac08b19ceb697f212c1ac350f830c3022",
+  "schema": "v117-private-copy-cancel-additive-bench-v1"
+}

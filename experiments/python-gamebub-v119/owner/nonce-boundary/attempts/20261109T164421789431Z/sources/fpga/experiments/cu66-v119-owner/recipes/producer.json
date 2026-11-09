@@ -1,0 +1,21 @@
+{
+  "appended_assertions": "`ifndef SYNTHESIS\n    // Accepted start binds zero geometry until entropy validation finishes.\n    always_ff @(posedge clk)if(!reset&&!abort_packet&&(state==ADMIT||state==CHECK_ENTROPY))begin\n        assert(plane==0&&tile_cursor==0&&producer_cell_cache==0)else $fatal(1,\"V119 producer zero-start owner\");\n    end\n    always_ff @(posedge clk)if(!reset&&!abort_packet&&state==CHECK_ENTROPY)begin\n        assert(nonce_budget_overflow==({32'd0,child_nonce}+64'(fork_blocks[0]!=0)+64'(fork_blocks[1]!=0)+64'(fork_blocks[2]!=0)>64'hffffffff))\n            else $fatal(1,\"V119 complete32 nonce budget equivalence\");\n    end\n`endif\n",
+  "candidate": "fpga/experiments/cu66-v119-owner/cs88_coefficients_v91k.sv",
+  "candidate_sha256": "3517bda5016d7c2920e20fbc0767bbb1146e091cea4a5216db9a8b9a6532ee30",
+  "edits": [
+    {
+      "after": "    logic [10:0] producer_cell_cache;\n    logic [1:0] nonce_needed;\n    logic [2:0] nonce_low_sum;\n    logic nonce_budget_overflow;\n    assign nonce_needed=2'(fork_blocks[0]!=0)+2'(fork_blocks[1]!=0)+2'(fork_blocks[2]!=0);\n    assign nonce_low_sum={1'b0,child_nonce[1:0]}+{1'b0,nonce_needed};\n    assign nonce_budget_overflow=(&child_nonce[31:2])&&nonce_low_sum[2];",
+      "before": "    logic [10:0] producer_cell_cache;"
+    },
+    {
+      "after": "nonce_budget_overflow",
+      "before": "{32'd0,child_nonce}+64'(fork_blocks[0]!=0)+64'(fork_blocks[1]!=0)+64'(fork_blocks[2]!=0)>64'hffffffff"
+    },
+    {
+      "after": "end else begin plane<=0;begin state<=PREP_PLANE;",
+      "before": "end else begin plane<=0;producer_cell_cache<=quant_cell(0,tile_cursor);begin state<=PREP_PLANE;"
+    }
+  ],
+  "original": "fpga/experiments/cu66-v110-ready/cs88_coefficients_v91k.sv",
+  "original_sha256": "b5f9dce886ce9d6d1460ac6d8579512750bc66504e306ecabf8bdd7f11bb40fd"
+}

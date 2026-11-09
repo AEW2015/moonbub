@@ -1,0 +1,25 @@
+{
+  "appended_assertions": "`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(owner_initialized&&!kill)begin\n        if(running&&!discard_ref&&ref_pending)assert(state==REF_WAIT)\n            else $fatal(1,\"V119 live physical reference phase\");\n        if(running&&(state==RESIDUAL||state==MODE_WAIT))assert(!response_failure)\n            else $fatal(1,\"V119 payload phase has accepted reference failure\");\n    end\n`endif\n",
+  "candidate": "fpga/experiments/cu66-v119-owner/cu66_reconstruct_stream_v91k.sv",
+  "candidate_sha256": "77421a10d0c18d50c33333b00b25e89170156576713d0b0622a8be31cd7a7f3d",
+  "edits": [
+    {
+      "after": "reference_pixels<=0;residual_child<=0;",
+      "before": "residual<=0;reference_pixels<=0;residual_child<=0;"
+    },
+    {
+      "after": "fill_index<=0;accepted_last<=0;reference_pixels<=0;",
+      "before": "fill_index<=0;accepted_last<=0;residual<=0;reference_pixels<=0;"
+    },
+    {
+      "after": "",
+      "before": "                            for(integer word_index=0;word_index<64;word_index=word_index+1)begin\n                                if(checked_index==6'(word_index))residual[word_index*24+:24]<=checked_value;\n                            end\n"
+    },
+    {
+      "after": "    // Phase-local physical payload writer. Logical state/ref fault handling\n    // stays below; full descriptor comparisons cannot enable this data bank.\n    always_ff @(posedge clk)begin\n        if(reset||cancel||start)residual<=0;\n        else if(running&&!fault_o&&state==MODE_WAIT&&lookup_rsp)residual<=0;\n        else if(running&&!fault_o&&state==RESIDUAL&&checked_valid&&checked_good)begin\n            for(integer word_index=0;word_index<64;word_index=word_index+1)begin\n                if(checked_index==6'(word_index))residual[word_index*24+:24]<=checked_value;\n            end\n        end\n    end\n    always_ff @(posedge clk)begin\n        storage_copy_lane0<=0;storage_copy_lane1<=0;",
+      "before": "    always_ff @(posedge clk)begin\n        storage_copy_lane0<=0;storage_copy_lane1<=0;"
+    }
+  ],
+  "original": "fpga/experiments/cu66-v118-reconstruct/cu66_reconstruct_stream_v91k.sv",
+  "original_sha256": "9caa5626404853d35cc0e39b9727ceeea60afe971916d9afe289edc5af25461c"
+}

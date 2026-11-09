@@ -1,0 +1,189 @@
+{
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v119-scratch/verification/observed_original.sv",
+      "candidate_sha256": "5350dd309c1cdaf20283a22e18c491784eb8345762497fc744330dbb69a19c6f",
+      "edits": [
+        {
+          "after": "module observed_original ",
+          "before": "module packed_scratch_v91g2 "
+        },
+        {
+          "after": ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);",
+          "before": "\n);"
+        },
+        {
+          "after": "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule",
+          "before": "\nendmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116c-record/packed_scratch_v91g2.sv",
+      "original_sha256": "1ac70499489acbdb00e682696a5783cf178c3e703e3b16d2138f275f7de59839"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v119-scratch/verification/observed_candidate.sv",
+      "candidate_sha256": "7796546370e3f3cb42d513ece777d1f512e3c412785a8fc19c72a014a626c5b2",
+      "edits": [
+        {
+          "after": "module observed_candidate ",
+          "before": "module packed_scratch_v91g2 "
+        },
+        {
+          "after": ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);",
+          "before": "\n);"
+        },
+        {
+          "after": "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule",
+          "before": "\nendmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v119-scratch/packed_scratch_v91g2.sv",
+      "original_sha256": "49a1731b2259dc089ca8d5e24b17e162b8c7bbd94c983cea938a793d3fdbda72"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v119-scratch/verification/packed_scratch_reference.sv",
+      "candidate_sha256": "950991bc7b5ff58e50baef564f91b7cc06d9f1cfee74c4a18d6bce194d0347e9",
+      "edits": [
+        {
+          "after": "module packed_scratch_reference (",
+          "before": "module packed_scratch_v91g2 ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116c-record/packed_scratch_v91g2.sv",
+      "original_sha256": "1ac70499489acbdb00e682696a5783cf178c3e703e3b16d2138f275f7de59839"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v119-scratch/verification/record_base.cpp",
+      "candidate_sha256": "50d7d7335bce35f0dbef1f64c20681863be4aceeb07d8c9d37d813415520824c",
+      "edits": [
+        {
+          "after": "int inherited_record_main(int argc,char**argv)",
+          "before": "int main(int argc,char**argv)"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116c-record/verification/tb_record.cpp",
+      "original_sha256": "8b06728bdcfe7d438e8110c9084bdc5ee264586af042988417132c5ff8a2f7c5"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v119-scratch/verification/tb_ac_base.cpp",
+      "candidate_sha256": "75eb2d55d5e1cb0ca6f3adad818cf4592e37995deb5d387bf1302d2c676bcfde",
+      "edits": [
+        {
+          "after": "int inherited_v118_ac_main(int argc,char**argv)",
+          "before": "int main(int argc,char**argv)"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v118-scratch/verification/tb_ac.cpp",
+      "original_sha256": "67e067b5519f633694adfa64324368b77a151ad9ad6b8f5e61688f331298b34d"
+    }
+  ],
+  "declared_public_cycle_delta": 0,
+  "extra_bench_sha256": {
+    "fpga/experiments/cu66-v119-scratch/verification/tb_ac.cpp": "82c395e1940203d03a16fe2a03f31324e500ff4e023e3269fcc2ea3dc28474c7"
+  },
+  "extra_contract": "Full32 count/written/previous and full16 block boundary inputs; exact terminal== including overshoot and16bitnextwrap; actual stable predecessor plan and realprefetch acceptance/matching response; no deposited plan or physical debt.",
+  "fixture_adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v119-scratch/verification/tb_slot.cpp",
+      "candidate_sha256": "72f267f4b0f2d41aa7ab96364c838bad0cee44b19c082da8b3df5125d716f6ff",
+      "edits": [
+        {
+          "after": " BOTH(read_tag_match,1);\n // V118 additive poststate for this explicitly deposited private context.\n // Real transactions never call this helper and no clock/eval hook refreshes it.\n NEW(ac_lane_fetch)=0;NEW(ac_lane_apply)=0;\n for(unsigned band=1;band<=3;++band){\n  if(!(NEW(head_valid)&(1U<<(band-1)))&&NEW(cursors)[band-1]<NEW(counts)[band])NEW(ac_lane_fetch)|=1U<<(band-1);\n  if((NEW(head_valid)&(1U<<(band-1)))&&(NEW(heads)[band-1]>>19)==NEW(output_block))NEW(ac_lane_apply)|=1U<<(band-1);\n }\n",
+          "before": " BOTH(read_tag_match,1);"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v117-ac/verification/tb_slot.cpp",
+      "original_sha256": "29a35436bc6fa26dcdf74c669f643ce5413a3b33547e986784045ed4eea190c6"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v118-scratch/verification/tb_ac.cpp",
+      "candidate_sha256": "67e067b5519f633694adfa64324368b77a151ad9ad6b8f5e61688f331298b34d",
+      "edits": [
+        {
+          "after": " // V118 coherent initial decision for this one explicitly deposited AC_CHECK.\n // Every subsequent AC_EXTRACT -> AC_CHECK and head consume transition is real RTL.\n NEW(ac_lane_fetch)=1U<<(band-1);NEW(ac_lane_apply)=0;\n // Real predecessor edge matures original prepared_ac_line, then AC_FETCH.",
+          "before": " // Real predecessor edge matures original prepared_ac_line, then AC_FETCH."
+        }
+      ],
+      "original": "fpga/experiments/cu66-v117-ac/verification/tb_ac.cpp",
+      "original_sha256": "bfbbd557d3f186875c3bcdf9c5d64b0a06ed8416d969cacac1db8d0764240376"
+    }
+  ],
+  "inherited_verification": {
+    "fpga/experiments/cu66-v117-ac/verification/br88_pipeline_candidate.sv": "6696d9dcfddff31801c89209565e5d0b8d101d8fdf8b4a7af4a3874d19e11a21",
+    "fpga/experiments/cu66-v117-ac/verification/br88_pipeline_pair.sv": "44a4a0836d834c68fd9bbfdbb8618016690ead937702c67657de2842f24abc1b",
+    "fpga/experiments/cu66-v117-ac/verification/br88_pipeline_reference.sv": "a749b8af01a78920c42bcfe5815d2e5ca01e9de6c0fe27031dbfc2e16e3704a6",
+    "fpga/experiments/cu66-v117-ac/verification/caller_prepare.cpp": "527a10a69996ac5fe2a7d89241242ff3a93173bb9eb34d041b3ff08afeeecf15",
+    "fpga/experiments/cu66-v117-ac/verification/clock_adapter.hpp": "2a3e48ec7c46cc1a68ea3eac3ba8d5d52cc2fe09aaf228bc044a3c5bef0936b1",
+    "fpga/experiments/cu66-v117-ac/verification/historical_hazards.cpp": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a",
+    "fpga/experiments/cu66-v117-ac/verification/packed_scratch_reference.sv": "950991bc7b5ff58e50baef564f91b7cc06d9f1cfee74c4a18d6bce194d0347e9",
+    "fpga/experiments/cu66-v117-ac/verification/pair_adapter.hpp": "e9dda3b7a5f825dcdda6417c453dbd8c9dfb5ccb3928bf361f7afd5d06dcf104",
+    "fpga/experiments/cu66-v117-ac/verification/record_base.cpp": "50d7d7335bce35f0dbef1f64c20681863be4aceeb07d8c9d37d813415520824c",
+    "fpga/experiments/cu66-v117-ac/verification/scratch_probe.sv": "db1a604675ecd92604f66ea436b5b7aacb444c0761de976e79ba5544acbdbdd0",
+    "fpga/experiments/cu66-v117-ac/verification/tb_bank.cpp": "dfea8a9f36cbc48a38d257e51099f245e391a9753196c6827707c89c94e31892",
+    "fpga/experiments/cu66-v117-ac/verification/tb_control.cpp": "4dc828da4d4c8f6fd8f8227494a60dd1b7a647077077d9d947e67e3e501998f9",
+    "fpga/experiments/cu66-v117-ac/verification/tb_pipeline.cpp": "0ecf82fb877d9c7d45ea30fb24ed1dc689af456e151d7997ccb174d7ad35b7a6",
+    "fpga/experiments/cu66-v117-ac/verification/tb_prepare.cpp": "1b6a2445ca9c70b9b5a34d12775f4ec9d0539dc5d46b2da522b1984e7441abb2",
+    "fpga/experiments/cu66-v117-ac/verification/tb_record.cpp": "8b06728bdcfe7d438e8110c9084bdc5ee264586af042988417132c5ff8a2f7c5",
+    "fpga/experiments/cu66-v117-ac/verification/tb_scratch.cpp": "5515780dd96e2ed7640cf7e6741f54ca084536a0f5793c689e6cef37959edc16"
+  },
+  "recipes": [
+    {
+      "candidate": "fpga/experiments/cu66-v118-scratch/packed_scratch_v91g2.sv",
+      "candidate_sha256": "45972143e61b8c4a5eaa6f37fb7f81dd0625acaf0416607eb2ef584c907fb179",
+      "edits": [
+        {
+          "after": "    // V118: spatial per-band decisions mature ahead of AC_CHECK. Only the\n    // compact owned predicates see read_band selection; no selected 32-bit\n    // cursor/count carry chain feeds the broad tile publication controls.\n    // Default refresh is safe outside AC_CHECK. The two same-edge head\n    // transitions forward their complete poststate so consecutive checks keep\n    // the original schedule, including consuming a head then fetching its next.\n    logic [3:1] ac_lane_fetch, ac_lane_apply;\n    logic ac_check_fetch, ac_check_apply;\n    assign ac_check_fetch=ac_lane_fetch[read_band];\n    assign ac_check_apply=ac_lane_apply[read_band];\n    for(genvar check_band=1;check_band<=3;check_band=check_band+1)begin: local_head_decision\n        wire [12:0] target_block=tile_mode ? prepare_block[12:0] : output_block[12:0];\n        always_ff @(posedge clk)begin\n            ac_lane_fetch[check_band]<=!head_valid[check_band] && cursors[check_band]<counts[check_band];\n            ac_lane_apply[check_band]<=head_valid[check_band] && heads[check_band][31:19]==target_block;\n            if(tile_case_eligible && state==AC_CHECK && read_band==2'(check_band) && ac_check_apply)begin\n                ac_lane_fetch[check_band]<=cursors[check_band]<counts[check_band];\n                ac_lane_apply[check_band]<=0;\n            end\n            if(tile_case_eligible && state==AC_EXTRACT && read_band==2'(check_band) &&\n                read_tag_match && !ac_selected_invalid)begin\n                ac_lane_fetch[check_band]<=0;\n                ac_lane_apply[check_band]<=ac_selected_word[31:19]==target_block;\n            end\n        end\n    end\n`ifndef SYNTHESIS\n    // These certificates compare with the full original expressions, without\n    // clock skipping. No decision may become visible under a different owner.\n    always_ff @(posedge clk)if(tile_case_eligible && state==AC_CHECK)begin\n        assert(read_band>=1)else $fatal(1,\"V118 AC check lacks a band owner\");\n        assert(ac_check_fetch==(!head_valid[read_band] && cursors[read_band]<counts[read_band]))\n            else $fatal(1,\"V118 prepared fetch decision differs from current whole owner\");\n        assert(ac_check_apply==(head_valid[read_band] && heads[read_band][31:19]==\n            (tile_mode ? prepare_block[12:0] : output_block[12:0])))\n            else $fatal(1,\"V118 prepared apply decision differs from current whole owner\");\n    end\n`endif\n\n    // Cursor payload is unowned in IDLE/DRAIN/FINISHED/FAILED.",
+          "before": "    // Cursor payload is unowned in IDLE/DRAIN/FINISHED/FAILED."
+        },
+        {
+          "after": "        !ac_check_fetch && !ac_check_apply && read_band==3;",
+          "before": "        (head_valid[read_band] || cursors[read_band]>=counts[read_band]) &&\n        !(head_valid[read_band] && heads[read_band][31:19]==prepare_block[12:0]) && read_band==3;"
+        },
+        {
+          "after": "                AC_CHECK:if(ac_check_apply)begin",
+          "before": "                AC_CHECK:if(!(!head_valid[read_band] && cursors[read_band]<counts[read_band]) &&\n                    head_valid[read_band] && heads[read_band][31:19]==\n                        (tile_mode ? prepare_block[12:0] : output_block[12:0]))begin"
+        },
+        {
+          "after": "                    if(ac_check_fetch) begin state<=AC_FETCH; busy_owned<=1'b1; end\n                    else if(ac_check_apply) begin",
+          "before": "                    if(!head_valid[read_band] && cursors[read_band]<counts[read_band]) begin state<=AC_FETCH; busy_owned<=1'b1; end\n                    else if(head_valid[read_band] && heads[read_band][31:19]==(tile_mode ? prepare_block[12:0] : output_block[12:0])) begin"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v117-ac/packed_scratch_v91g2.sv",
+      "original_sha256": "bce9547b0500d22ab222896dd7f712bd933abb11282ecb8f0ace0826bd2ecfc1"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v119-scratch/packed_scratch_v91g2.sv",
+      "candidate_sha256": "49a1731b2259dc089ca8d5e24b17e162b8c7bbd94c983cea938a793d3fdbda72",
+      "edits": [
+        {
+          "after": "    logic [7:0] phase_input_bad;\n    // V119: spatial format lanes compare BEFORE raw/phase selects their\n    // compact decisions. All positions remain full32; no input truncation or\n    // delayed fault/publication boundary replaces the original INGEST check.\n    logic [31:0] input_raster_position,input_sparse_position;\n    logic input_raster_bad,input_dc_bad,input_ac_bad;\n    assign input_raster_position={10'd0,coef_block,coef_index};\n    assign input_sparse_position={10'd0,coef_block,input_zigzag};\n    assign input_raster_bad=input_raster_position!=written;\n    assign input_dc_bad=coef_index!=0 || 32'(coef_block)!=written;\n    assign input_ac_bad=!band_matches(coef_band,coef_index) || coef_value==0 ||\n        (previous_valid && input_sparse_position<=previous_position);\n    for(genvar checking_phase=0;checking_phase<8;checking_phase=checking_phase+1)begin: phase_validation\n        wire [31:0] phase_position=raw_mode ? (32'(coef_block)*64+32'(coef_index)) :\n            (checking_phase==0 ? 32'(coef_block) : (32'(coef_block)*64+32'(input_zigzag)));\n        assign phase_input_bad[checking_phase]=coef_epoch!=active_epoch || coef_band!=2'(checking_phase) ||\n            coef_block>=16'(blocks) || coef_value < -2048 || coef_value > 2048 ||\n            written>=counts[checking_phase & 3] ||\n            (raw_mode ? input_raster_bad : checking_phase==0 ? input_dc_bad : input_ac_bad);\n`ifndef SYNTHESIS\n        // Complete original expression certifies every phase lane, including\n        // illegal full phase encodings whose count/band lookup uses low2 bits.\n        always_ff @(posedge clk)if(!cancel && !response_failure && state==INGEST && coef_valid)\n            assert(phase_input_bad[checking_phase]==(coef_epoch!=active_epoch || coef_band!=2'(checking_phase) ||\n                coef_block>=16'(blocks) || coef_value < -2048 || coef_value > 2048 ||\n                written>=counts[checking_phase & 3] ||\n                (raw_mode ? phase_position!=written : checking_phase==0 ?\n                 (coef_index!=0 || 32'(coef_block)!=written) :\n                 (!band_matches(coef_band,coef_index) || coef_value==0 ||\n                  (previous_valid && phase_position<=previous_position)))))\n                else $fatal(1,\"V119 full phase format decision mismatch\");\n`endif\n    end\n",
+          "before": "    logic [7:0] phase_input_bad;\n    for(genvar checking_phase=0;checking_phase<8;checking_phase=checking_phase+1)begin: phase_validation\n        wire [31:0] phase_position=raw_mode ? (32'(coef_block)*64+32'(coef_index)) :\n            (checking_phase==0 ? 32'(coef_block) : (32'(coef_block)*64+32'(input_zigzag)));\n        assign phase_input_bad[checking_phase]=coef_epoch!=active_epoch || coef_band!=2'(checking_phase) ||\n            coef_block>=16'(blocks) || coef_value < -2048 || coef_value > 2048 ||\n            written>=counts[checking_phase & 3] ||\n            (raw_mode ? phase_position!=written : checking_phase==0 ?\n             (coef_index!=0 || 32'(coef_block)!=written) :\n             (!band_matches(coef_band,coef_index) || coef_value==0 ||\n              (previous_valid && phase_position<=previous_position)));\n    end\n"
+        },
+        {
+          "after": "    logic prepared_sparse_more, prepared_raw_more;\n    // One local next-block/terminal plan, matured on an existing edge while\n    // output context is stable. This is metadata only, not another tile owner.\n    typedef struct packed {\n        logic [31:0] epoch;\n        logic [15:0] block_id;\n        logic [16:0] block_limit;\n        logic raw;\n        logic last_block;\n        logic [15:0] next_block;\n        state_t next_state;\n    } output_plan_t;\n    output_plan_t output_plan;\n",
+          "before": "    logic prepared_sparse_more, prepared_raw_more;\n"
+        },
+        {
+          "after": "        prepared_sparse_more<=17'(output_block)+1<blocks;\n        output_plan<='{epoch:active_epoch,block_id:output_block,block_limit:blocks,raw:raw_mode,\n            last_block:17'(output_block)+1==blocks,next_block:16'(32'(output_block)+32'd1),\n            next_state:raw_mode ? RAW_FETCH : CLEAR_TILE};\n",
+          "before": "        prepared_sparse_more<=17'(output_block)+1<blocks;\n"
+        },
+        {
+          "after": "                        if(output_plan.last_block) begin done<=1; begin state<=FINISHED; busy_owned<=1'b0; end end\n                        else begin\n                            output_block<=output_plan.next_block; output_index<=0;\n                            if(prefetch_mode && (prefetch_launch || (prefetch_offer && !prefetch_complete))) begin\n                                return_state<=output_plan.next_state; begin state<=PREFETCH_DRAIN; busy_owned<=1'b1; end\n                            end else begin state<=output_plan.next_state; busy_owned<=1'b1; end\n",
+          "before": "                        if(17'(output_block)+1==blocks) begin done<=1; begin state<=FINISHED; busy_owned<=1'b0; end end\n                        else begin\n                            output_block<=output_block+1; output_index<=0;\n                            if(prefetch_mode && (prefetch_launch || (prefetch_offer && !prefetch_complete))) begin\n                                return_state<=raw_mode ? RAW_FETCH : CLEAR_TILE; begin state<=PREFETCH_DRAIN; busy_owned<=1'b1; end\n                            end else begin state<=raw_mode ? RAW_FETCH : CLEAR_TILE; busy_owned<=1'b1; end\n"
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!cancel && !response_failure &&\n        (state==EMIT || state==RAW_EXTRACT))begin\n        assert(output_plan.epoch==active_epoch && output_plan.block_id==output_block &&\n            output_plan.block_limit==blocks && output_plan.raw==raw_mode)\n            else $fatal(1,\"V119 output plan mixed owner/context\");\n        assert(output_plan.last_block==(17'(output_block)+1==blocks) &&\n            output_plan.next_block==16'(32'(output_block)+32'd1) &&\n            output_plan.next_state==(raw_mode ? RAW_FETCH : CLEAR_TILE))\n            else $fatal(1,\"V119 output plan differs from full original expressions\");\n    end\n`endif\nendmodule\n",
+          "before": "endmodule\n"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v118-scratch/packed_scratch_v91g2.sv",
+      "original_sha256": "45972143e61b8c4a5eaa6f37fb7f81dd0625acaf0416607eb2ef584c907fb179"
+    }
+  ],
+  "schema": "v119-spatial-format-and-owned-output-plan-exact-pair-v1",
+  "scope": "V118 plus spatial raw/sparse/DC predicate lanes and existing-edge complete output plan; exact public and private views/cycles, no error deferral.",
+  "unchanged_caller": {
+    "path": "fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv",
+    "sha256": "2eef50dfe32a5c84cebf207dc9c56ac69b933ea0371e0b7e372681adacc4ad0e"
+  }
+}

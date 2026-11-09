@@ -1,0 +1,168 @@
+{
+  "audited_at_utc": "2026-11-09T17:37:32.306471+00:00",
+  "code_review_guardrails": [
+    {
+      "detail": "Clock selection branches to clock-125 only for period_ns == 8.0 and selects clock-100 for every other value. The helper does not explicitly restrict period_ns to {8.0, 10.0}. Current native preparation cards use 8.0/10.0; add an explicit allowlist before publishing a handoff.",
+      "id": "handoff-clock-whitelist",
+      "path": "scripts/cu66-v119/prepare_handoff.py",
+      "severity": "guardrail"
+    },
+    {
+      "detail": "Fresh-repeat clock qualification checks component_internal_target_pass and repeat identity/source/tool/image/recipe/period equality, but does not independently require exact terminal native status, start_mode=rtl, synthesis_executed, and source_snapshot_unchanged for both receipts. The native runner/preflight audit is the current gate; require these fields in the collector before treating its aggregate as qualification evidence.",
+      "id": "collector-native-terminal-validation",
+      "path": "scripts/cu66-v119/collect.py",
+      "severity": "guardrail"
+    }
+  ],
+  "collector_review": {
+    "file": "scripts/cu66-v119/collect.py",
+    "notes": [
+      "Collector is an aggregator, not an independent native receipt validator. Add explicit exact terminal status and RTL/synthesis/source-snapshot checks before publishing qualified-repeat summaries.",
+      "Collector was not run because it writes experiments/python-gamebub-v119/results.json."
+    ],
+    "tool_invoked_by_audit": false,
+    "verified_requirements": [
+      "selected summary receipt hash is checked when present",
+      "native clean repeat compares exact source contract plus tooling/image and run/report/clock recipes",
+      "repeat clock period must match initial",
+      "conditional latency is labeled separately from hardware latency"
+    ]
+  },
+  "handoff_preparation_review": {
+    "file": "scripts/cu66-v119/prepare_handoff.py",
+    "notes": [
+      "No V119 handoff.json exists yet; the helper is not run by this audit.",
+      "Current code lacks an explicit allowed clock-period set; see code_review_guardrails."
+    ],
+    "tool_invoked_by_audit": false,
+    "verified_requirements": [
+      "initial and repeat receipts SHA-pinned",
+      "both receipts must be positive component-internal target passes with synthesis and unchanged source/recipe flags",
+      "source contracts must match exactly",
+      "manifest aliases/origins/order must match repeat source contract",
+      "each selected source path and hash is checked",
+      "alias paths reject absolute and parent traversal",
+      "output refuses existing directory",
+      "clock/flow recipes are hash pinned and copied",
+      "source snapshots and Tcl inputs are prepared without invoking tools"
+    ]
+  },
+  "native_trial_state": [
+    {
+      "receipts": [
+        {
+          "clock_period_ns": 8.0,
+          "observed_exit_code": null,
+          "receipt": "experiments/python-gamebub-v119/integrated-study/native/20261109T171305710307Z/receipt.json",
+          "status": "RUNNING"
+        }
+      ],
+      "required_period_ns": 8.0,
+      "trial": "integrated-125"
+    },
+    {
+      "receipts": [
+        {
+          "clock_period_ns": 10.0,
+          "observed_exit_code": null,
+          "receipt": "experiments/python-gamebub-v119/integrated-study/native/20261109T171312690398Z/receipt.json",
+          "status": "RUNNING"
+        }
+      ],
+      "required_period_ns": 10.0,
+      "trial": "integrated-100"
+    }
+  ],
+  "protected_marker_recovery": [
+    {
+      "baseline_mtime_ns": 1793685321348351076,
+      "baseline_sha256": "7631642329ff8f66d859e2c7aa7a0d46ee284bc451e44b781493b2160f90eb78",
+      "baseline_size_bytes": 6697,
+      "current_mtime_ns": 1793685321348351076,
+      "current_sha256": "7631642329ff8f66d859e2c7aa7a0d46ee284bc451e44b781493b2160f90eb78",
+      "current_size_bytes": 6697,
+      "mtime_ns_matches": true,
+      "path": "fpga/experiments/throughput30/burst/marker-recovery/tb_abort_partial.sv",
+      "sha256_matches": true,
+      "size_matches": true
+    },
+    {
+      "baseline_mtime_ns": 1793685538035564050,
+      "baseline_sha256": "8452a7d6a1c893b1bc6e23bea0c71447f1a78ed2cb1ef6b96decef28a4a48971",
+      "baseline_size_bytes": 7005,
+      "current_mtime_ns": 1793685538035564050,
+      "current_sha256": "8452a7d6a1c893b1bc6e23bea0c71447f1a78ed2cb1ef6b96decef28a4a48971",
+      "current_size_bytes": 7005,
+      "mtime_ns_matches": true,
+      "path": "fpga/experiments/throughput30/burst/marker-recovery/tb_truncated_recovery.sv",
+      "sha256_matches": true,
+      "size_matches": true
+    }
+  ],
+  "publication_limits": [
+    "Both native runs are active; no terminal status or clock qualification is claimed here.",
+    "Root owns dispatch, staging, and publication. This audit did not alter older tracked files or run builds."
+  ],
+  "schema": "v119-publication-precheck-v1",
+  "status": "PASS_SCOPE_CHECKS_WITH_CODE_GUARDRAILS_REPORTED",
+  "tracked_older_changes": {
+    "git_diff_cached_name_only": [],
+    "git_diff_name_only": [],
+    "tracked_changes_present": false
+  },
+  "untracked_scope": {
+    "credential_content_candidate_paths": [],
+    "credential_filename_candidates": [],
+    "credential_scan_errors": [],
+    "credential_scan_method": "Read-only filename checks for common key/token container names and content patterns for PEM private keys, common cloud/source-control tokens, bearer tokens, and long credential assignments. Candidate paths only are recorded; no values emitted.",
+    "largest_files": [
+      {
+        "path": "experiments/python-gamebub-v119/owner/admission/attempts/20261109T164414897720Z/116201-trace.jsonl.gz",
+        "size_bytes": 15917907
+      },
+      {
+        "path": "experiments/python-gamebub-v119/owner/admission/attempts/20261109T164414897720Z/116202-trace.jsonl.gz",
+        "size_bytes": 15916381
+      },
+      {
+        "path": "experiments/python-gamebub-v119/scratch/attempts/20261109T162443216059Z/packet-vectors.txt",
+        "size_bytes": 10111467
+      },
+      {
+        "path": "experiments/python-gamebub-v119/scratch/attempts/20261109T162328053932Z/packet-vectors.txt",
+        "size_bytes": 10111467
+      },
+      {
+        "path": "experiments/python-gamebub-v119/integrated-study/spatial/attempts/20261109T164631864153Z/sources/experiments/python-gamebub-v91i2/vectors/cases.tsv",
+        "size_bytes": 8866430
+      },
+      {
+        "path": "experiments/python-gamebub-v119/integrated-study/live-guard/attempts/20261109T170133436719Z/sources/experiments/python-gamebub-v91i2/vectors/cases.tsv",
+        "size_bytes": 8866430
+      },
+      {
+        "path": "experiments/python-gamebub-v119/integrated-study/control-peer/attempts/20261109T164625412137Z/sources/experiments/python-gamebub-v91i2/vectors/cases.tsv",
+        "size_bytes": 8866430
+      },
+      {
+        "path": "experiments/python-gamebub-v119/integrated-study/control-peer/attempts/20261109T164625412137Z/peer-115502-events.jsonl.gz",
+        "size_bytes": 8325207
+      },
+      {
+        "path": "experiments/python-gamebub-v119/integrated-study/control-peer/attempts/20261109T164625412137Z/peer-115501-events.jsonl.gz",
+        "size_bytes": 8324130
+      },
+      {
+        "path": "experiments/python-gamebub-v119/integrated-study/spatial/attempts/20261109T164631864153Z/candidate-107602-events.jsonl.gz",
+        "size_bytes": 6892440
+      }
+    ],
+    "new_scope_symlink_count": 0,
+    "new_scope_untracked_file_count_excluding_protected_baseline": 1192,
+    "oversize_file_count": 0,
+    "oversize_files": [],
+    "oversize_threshold_bytes": 104857600,
+    "symlinks": [],
+    "untracked_file_count_including_protected": 1194
+  }
+}

@@ -1,0 +1,16 @@
+# Conditional carry diagnosis after the first V119 route
+
+This is a diagnostic proposal, not selected RTL or an implementation trial. Wait for the final V119 routed path and its exact source/tool/clock pins; neither the V118 path nor a placement estimate chooses source B.
+
+V118's actual A125 path starts at ingress `raw_mode_reg_rep`, passes the selected coefficient index/position into scratch validation and ends at `busy_owned`. V119 removes the local `Scratch.raw_mode` position mux from its format comparison lanes. The actual ingress still selects `out_block` and `out_index` between its raw counter and context outputs. Thus the source change does not prove that the original upstream path is absent. Native evidence must identify the surviving path and primitive equations.
+
+If a current routed path still crosses the selected coefficient data and a carry comparator, inspect the complete first failing path, its carry-cell pins/nets and the actual source predicates. Flattened names such as `assembly_bytes*_i_*` alone do not identify whether the carry belongs to coefficient range, block bounds, previous-position ordering or assembler extent arithmetic. Use bounded checkpoint startpoint/primitive-equation evidence before selecting one replacement.
+
+Two zero-error-latency candidates preserve the current INGEST chronology:
+
+1. The full signed16 coefficient domain `[-2048, 2048]` has an exact prefix predicate. Negative values are valid iff bits14:11 are all ones; nonnegative values are valid iff bits14:12 are zero and either bit11 is zero or bits10:0 are all zero. This changes neither the separate AC-zero rejection nor epoch, phase, count, block or ordering checks. The existing exhaustive65536-value/all8phase/raw-format suite is an independent oracle for the replacement. A model is not evidence that Vivado currently maps this comparison to the observed carry chain.
+2. An unsigned32 order test can compare eight4-bit groups in parallel, with the highest differing group deciding. Explicit group less/equal results and a balanced prefix combine can shorten a long ripple carry cone while preserving every bit. The same construction applies to the existing full16 block comparison. Keep `16'(blocks)` exactly as the current interface defines it, including prepared invalid full17-bit block-limit contexts. Full32 previous/count/written endpoints and all original equality/order semantics remain mandatory. Primitive/carry depth must be measured after synthesis/routing; source syntax is not a technology-mapping guarantee.
+
+Neither candidate permits trimming a field, exempting an invalid phase, changing a comparison from exact equality to a monotone shortcut, adding a timing exception, or dropping the old independent checks. Preserve every old source and selected proof, derive a separately named candidate, rerun its complete focused and integrated/transport/parent oracles, then use the fixed primary125MHz/secondary100MHz method. Only an actual positive route and identical fresh repeat qualify a clock.
+
+A delayed INGEST→APPEND invalid decision is a larger alternative. It requires the separately documented accepted-tuple and first-fault/physical-write chronology matrix. It must not be introduced merely to improve one timing number while allowing a held write, younger tuple or later response error to change the first-fault contract.

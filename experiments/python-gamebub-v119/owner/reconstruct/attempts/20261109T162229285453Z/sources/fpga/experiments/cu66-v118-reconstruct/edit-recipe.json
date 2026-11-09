@@ -1,0 +1,77 @@
+{
+  "original": "fpga/experiments/cu66-v117-reconstruct-wordbank/cu66_reconstruct_stream_v91k.sv",
+  "original_sha256": "6bef0bea8d721bc9550dd0a3c7af73e8aa6e793b8b44c683bef42897a5e25bc4",
+  "derived": "fpga/experiments/cu66-v118-reconstruct/cu66_reconstruct_stream_v91k.sv",
+  "derived_sha256": "9caa5626404853d35cc0e39b9727ceeea60afe971916d9afe289edc5af25461c",
+  "edits": [
+    {
+      "before": "    logic [5:0] fill_index,emit_index;",
+      "after": "    // fill_index reserves accepted words; count_residuals counts validated commits.\n    logic [5:0] fill_index,emit_index;\n    logic accepted_last;\n    typedef struct packed {\n        logic [31:0] epoch,child,token,expected_epoch,expected_child,expected_token;\n        logic [1:0] plane,scale,expected_plane,expected_scale;\n        logic [15:0] block_id,expected_block;\n        logic [12:0] tile,expected_tile;\n        logic [10:0] cell_id,expected_cell;\n        logic [5:0] index,expected_index;\n        logic signed [23:0] value;\n    } residual_accept_t;\n    residual_accept_t accepted_tuple;\n    logic accepted_valid,checked_valid,checked_good;\n    logic [5:0] checked_index;\n    logic signed [23:0] checked_value;\n    logic [1:0] copy_beat;\n    logic [3:0] storage_copy_lane0,storage_copy_lane1;"
+    },
+    {
+      "before": "    // Predict the existing COPY bank at its existing MATH_WAIT transition.\n    // These physical CE strobes add no edge and survive a kill-at-COPY edge.\n    logic storage_copy_bank0,storage_copy_bank1;",
+      "after": "    // Historical observation views; physical enables are four registered lanes.\n    logic storage_copy_bank0,storage_copy_bank1;\n    assign storage_copy_bank0=|storage_copy_lane0;\n    assign storage_copy_bank1=|storage_copy_lane1;"
+    },
+    {
+      "before": "        owner_state[0]<=O_FREE;owner_state[1]<=O_FREE;\n    endtask",
+      "after": "        owner_state[0]<=O_FREE;owner_state[1]<=O_FREE;\n        accepted_valid<=0;checked_valid<=0;accepted_last<=0;\n        storage_copy_lane0<=0;storage_copy_lane1<=0;\n    endtask"
+    },
+    {
+      "before": "    assign in_ready=running&&state==RESIDUAL&&owner_state[owner_tail]==O_FILL&&!kill;",
+      "after": "    assign in_ready=running&&state==RESIDUAL&&!accepted_last&&owner_state[owner_tail]==O_FILL&&!kill;"
+    },
+    {
+      "before": "    assign owner_copy=running&&state==COPY&&!kill;",
+      "after": "    assign owner_copy=running&&state==COPY&&copy_beat==3&&!kill;"
+    },
+    {
+      "before": "    // Real 64-byte parallel copy on a registered local COPY edge. Payloads are\n    // not reset and cannot be rewritten while their logical owner is ready.",
+      "after": "    // Four real128-bit destination writes, no extra tile payload buffer. The\n    // existing engine holds all512 bits until beat3 consumes its response.\n    // Payloads are not reset and no partial copy acquires a logical READY owner."
+    },
+    {
+      "before": "always_ff @(posedge clk)if(b==0?storage_copy_bank0:storage_copy_bank1)value<=engine_out_pixels[w*8+:8];",
+      "after": "always_ff @(posedge clk)if(b==0?storage_copy_lane0[w/16]:storage_copy_lane1[w/16])value<=engine_out_pixels[w*8+:8];"
+    },
+    {
+      "before": "always_ff @(posedge clk)if(b==0?storage_copy_bank0:storage_copy_bank1)begin",
+      "after": "always_ff @(posedge clk)if(b==0?storage_copy_lane0[3]:storage_copy_lane1[3])begin"
+    },
+    {
+      "before": "        storage_copy_bank0<=0;storage_copy_bank1<=0;",
+      "after": "        storage_copy_lane0<=0;storage_copy_lane1<=0;\n        accepted_valid<=0;checked_valid<=0;"
+    },
+    {
+      "before": "            plane<=0;tile<=0;mode<=0;scale<=0;fill_index<=0;emit_index<=0;",
+      "after": "            plane<=0;tile<=0;mode<=0;scale<=0;fill_index<=0;emit_index<=0;\n            accepted_last<=0;copy_beat<=0;"
+    },
+    {
+      "before": "            if(running&&!fault_o)begin",
+      "after": "            if(running&&!fault_o&&!response_failure)begin\n                // Acceptance only captures whole immutable ownership; it does\n                // not use validation results to write the wide residual bank.\n                accepted_valid<=in_valid&&in_ready;\n                if(in_valid&&in_ready)begin\n                    accepted_tuple<='{epoch:in_epoch,child:in_child_epoch,token:in_token,\n                        expected_epoch:frame_epoch,expected_child:residual_child,expected_token:residual_token,\n                        plane:in_plane,scale:in_qscale,expected_plane:plane,expected_scale:scale,\n                        block_id:in_block,expected_block:residual_block[plane],tile:in_tile,expected_tile:tile,\n                        cell_id:in_qcell,expected_cell:cached_cell,index:in_index,expected_index:fill_index,value:in_value};\n                    if(fill_index==0)begin residual_child<=in_child_epoch;residual_token<=in_token;end\n                    if(fill_index==63)accepted_last<=1;else fill_index<=fill_index+1;\n                end\n                checked_valid<=accepted_valid;\n                if(accepted_valid)begin\n                    checked_good<=accepted_tuple.epoch==accepted_tuple.expected_epoch&&\n                        accepted_tuple.plane==accepted_tuple.expected_plane&&accepted_tuple.tile==accepted_tuple.expected_tile&&\n                        accepted_tuple.index==accepted_tuple.expected_index&&accepted_tuple.cell_id==accepted_tuple.expected_cell&&\n                        accepted_tuple.scale==accepted_tuple.expected_scale&&accepted_tuple.block_id==accepted_tuple.expected_block&&\n                        accepted_tuple.child!=0&&accepted_tuple.token!=0&&\n                        (accepted_tuple.expected_index==0||(accepted_tuple.child==accepted_tuple.expected_child&&accepted_tuple.token==accepted_tuple.expected_token));\n                    checked_index<=accepted_tuple.expected_index;checked_value<=accepted_tuple.value;\n                end"
+    },
+    {
+      "before": "                        fill_index<=0;residual<=0;reference_pixels<=0;",
+      "after": "                        fill_index<=0;accepted_last<=0;residual<=0;reference_pixels<=0;"
+    },
+    {
+      "before": "                    RESIDUAL:if(in_valid&&in_ready)begin\n                        if(in_epoch!=frame_epoch||in_plane!=plane||in_tile!=tile||in_index!=fill_index||\n                           in_qcell!=cached_cell||in_qscale!=scale||in_block!=residual_block[plane]||\n                           in_child_epoch==0||in_token==0||(fill_index!=0&&(in_child_epoch!=residual_child||in_token!=residual_token)))fail(4);\n                        else begin\n                            for(integer word_index=0;word_index<64;word_index=word_index+1)begin\n                                if(fill_index==6'(word_index))residual[word_index*24+:24]<=in_value;\n                            end\n                            count_residuals<=count_residuals+1;\n                            if(fill_index==0)begin residual_child<=in_child_epoch;residual_token<=in_token;end\n                            if(fill_index==63)begin\n                                residual_block[plane]<=residual_block[plane]+1;\n                                if(snapshot_key)state<=MATH_SEND;\n                                else if(!snapshot_ref_valid)fail(2);\n                                else state<=REF_REQ;\n                            end else fill_index<=fill_index+1;\n                        end\n                    end\n",
+      "after": "                    RESIDUAL:if(checked_valid)begin\n                        if(!checked_good)fail(4);\n                        else begin\n                            for(integer word_index=0;word_index<64;word_index=word_index+1)begin\n                                if(checked_index==6'(word_index))residual[word_index*24+:24]<=checked_value;\n                            end\n                            count_residuals<=count_residuals+1;\n                            if(checked_index==63)begin\n                                residual_block[plane]<=residual_block[plane]+1;\n                                if(snapshot_key)state<=MATH_SEND;\n                                else if(!snapshot_ref_valid)fail(2);\n                                else state<=REF_REQ;\n                            end\n                        end\n                    end\n"
+    },
+    {
+      "before": "                            state<=COPY;\n                            storage_copy_bank0<=!owner_tail;storage_copy_bank1<=owner_tail;",
+      "after": "                            state<=COPY;copy_beat<=0;\n                            if(owner_tail)storage_copy_lane1<=4'b0001;else storage_copy_lane0<=4'b0001;"
+    },
+    {
+      "before": "                    COPY:if(owner_copy)begin",
+      "after": "                    COPY:if(copy_beat!=3)begin\n                        copy_beat<=copy_beat+1;\n                        if(owner_tail)storage_copy_lane1<=4'b0001<<(copy_beat+1'b1);\n                        else storage_copy_lane0<=4'b0001<<(copy_beat+1'b1);\n                    end else if(owner_copy)begin"
+    },
+    {
+      "before": "                else assert(owner_copy)else $fatal(1,\"normal private and logical reconstruction copy diverged\");",
+      "after": "                else assert(owner_copy==(copy_beat==3))else $fatal(1,\"logical copy must wait for fourth physical beat\");"
+    },
+    {
+      "before": "        assert(storage_copy_bank0==(storage_copy&&!owner_tail))\n            else $fatal(1,\"bank0 COPY prediction changed physical edge\");\n        assert(storage_copy_bank1==(storage_copy&&owner_tail))\n            else $fatal(1,\"bank1 COPY prediction changed physical edge\");",
+      "after": "        assert(storage_copy_lane0==(storage_copy&&!owner_tail?(4'b0001<<copy_beat):4'b0000))\n            else $fatal(1,\"bank0 COPY lane changed physical edge\");\n        assert(storage_copy_lane1==(storage_copy&&owner_tail?(4'b0001<<copy_beat):4'b0000))\n            else $fatal(1,\"bank1 COPY lane changed physical edge\");"
+    }
+  ],
+  "appended_assertions": "`ifndef SYNTHESIS\n    logic [6:0] accepted_words,committed_words;\n    logic copy_engine_held;\n    logic [511:0] copy_engine_pixels;\n    logic [31:0] copy_engine_id;\n    always_ff @(posedge clk)begin\n        if(kill||!running||state==MODE_WAIT)begin accepted_words<=0;committed_words<=0;end\n        else begin\n            if(in_valid&&in_ready)begin\n                assert(accepted_words<64&&fill_index==accepted_words[5:0])else $fatal(1,\"residual acceptance reservation\");\n                accepted_words<=accepted_words+1;\n            end\n            if(state==RESIDUAL&&checked_valid&&checked_good)begin\n                assert(committed_words<accepted_words&&checked_index==committed_words[5:0])else $fatal(1,\"residual ordered validated commit\");\n                committed_words<=committed_words+1;\n                if(checked_index==63)assert(accepted_last&&accepted_words==64&&!accepted_valid)\n                    else $fatal(1,\"math armed before final owned residual drained\");\n            end\n        end\n        if(kill)copy_engine_held<=0;\n        else begin\n            if(copy_engine_held)assert(engine_out_valid&&engine_out_pixels==copy_engine_pixels&&engine_out_id==copy_engine_id)\n                else $fatal(1,\"engine response changed during partial canonical copy\");\n            copy_engine_held<=state==COPY&&copy_beat!=3;\n            if(state==COPY)begin copy_engine_pixels<=engine_out_pixels;copy_engine_id<=engine_out_id;end\n        end\n    end\n`endif\n"
+}
