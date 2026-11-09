@@ -1,0 +1,33 @@
+{
+  "all_initial_assertion_blocks_retained": true,
+  "derived": "fpga/experiments/cu66-v117-throughput/cu66_reconstruct_stream_v91k.sv",
+  "derived_sha256": "5b12193073a8410ad0d05d251c061f7379cd9dba5a9677e5f8f20da4c581be06",
+  "edits": [
+    {
+      "after": "logic owner_head,owner_tail,owner_copy,storage_copy;",
+      "before": "logic owner_head,owner_tail,owner_copy;"
+    },
+    {
+      "after": "    // The physical inactive-slot write has only registered local ownership.\n    // On a kill edge the private copy may occur, but no logical owner is granted.\n    assign storage_copy=state==COPY;\n    assign owner_copy=running&&state==COPY&&!kill;",
+      "before": "    assign owner_copy=running&&state==COPY&&!kill;"
+    },
+    {
+      "after": "always_ff @(posedge clk)if(storage_copy&&owner_tail==1'(b))value<=engine_out_pixels[w*8+:8];",
+      "before": "always_ff @(posedge clk)if(owner_copy&&owner_tail==1'(b))value<=engine_out_pixels[w*8+:8];"
+    },
+    {
+      "after": "always_ff @(posedge clk)if(storage_copy&&owner_tail==1'(b))begin",
+      "before": "always_ff @(posedge clk)if(owner_copy&&owner_tail==1'(b))begin"
+    },
+    {
+      "after": "`ifndef SYNTHESIS\n    logic revoked_storage_copy_checked;\n    always_ff @(posedge clk)begin\n        if(!owner_initialized)revoked_storage_copy_checked<=0;\n        else begin\n            if(revoked_storage_copy_checked)assert(owner_state[0]==O_FREE&&owner_state[1]==O_FREE&&!out_valid)\n                else $fatal(1,\"killed private reconstruction copy acquired a logical owner\");\n            revoked_storage_copy_checked<=storage_copy&&kill;\n            if(storage_copy)begin\n                assert(owner_state[owner_tail]==O_MATH&&engine_out_valid)\n                    else $fatal(1,\"private reconstruction copy without reserved complete response\");\n                assert(owner_state[owner_head]!=O_READY||owner_tail!=owner_head)\n                    else $fatal(1,\"private reconstruction copy overwrote READY head\");\n                if(kill)assert(!owner_copy&&!out_valid)else $fatal(1,\"killed reconstruction copy published\");\n                else assert(owner_copy)else $fatal(1,\"normal private and logical reconstruction copy diverged\");\n            end\n        end\n    end\n`endif\nendmodule",
+      "before": "endmodule"
+    }
+  ],
+  "original": "fpga/experiments/cu66-v117-throughput/initial/cu66_reconstruct_stream_v91k.sv",
+  "original_logical_copy_mask_retained": true,
+  "original_sha256": "4dbd9c944f17507093513a0927cf71779842555b5b24e6b5e152db917ad6926a",
+  "qualified_initial_receipt": "experiments/python-gamebub-v117/throughput/reconstruct/attempts/20261109T110312411774Z/receipt.json",
+  "qualified_initial_receipt_sha256": "82a72b6893b69c83eaf5b3f4bad44279f551976593ba311518f73d712d74cebf",
+  "schema": "v117-private-copy-control-cut-v1"
+}

@@ -1,0 +1,69 @@
+{
+  "actual_routed_cause": "experiments/python-gamebub-v117/throughput-study/native/20261109T121229166037Z/receipt.json",
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v117-ingress-bytecount/verification/br88_packet_ingress_sync_v91h_reference.sv",
+      "candidate_sha256": "17b35a6d9543bb78baccfaf272c9e9b0490cd158233c4075352b0e63fcee772e",
+      "edits": [
+        {
+          "after": "module br88_packet_ingress_sync_v91h_reference #(",
+          "before": "module br88_packet_ingress_sync_v91h #("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v117-ingress/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "abfcef202b0c6792c89a45723bf0916c33c3ed7259ad756a59c120d03b7f6882"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v117-ingress-bytecount/verification/extents_base.cpp",
+      "candidate_sha256": "caabb24f042523c66587f15ef729f26597c7ba559bd7cb7c4963dcf695063c5f",
+      "edits": [
+        {
+          "after": "int inherited_extents_main(int argc,char**argv)",
+          "before": "int main(int argc,char**argv)"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v117-ingress/verification/tb_extents.cpp",
+      "original_sha256": "75d9153aeefbc183d6c850141e245f2560e0ebf66f88d97ab6a493d4536be5bc"
+    }
+  ],
+  "baseline_selector": "experiments/python-gamebub-v117/ingress/results.json",
+  "declared_public_cycle_delta": 0,
+  "private_descriptor_bytes_expression_unchanged": true,
+  "production": [
+    {
+      "candidate": "fpga/experiments/cu66-v117-ingress-bytecount/br88_packet_ingress_sync_v91h.sv",
+      "candidate_sha256": "278002752cd8ab478de5e66e0292fc97bea05b3042a7dfcffb3168f17252eb94",
+      "edits": [
+        {
+          "after": "    // V117 bytecount: a full32 algebraic comparison, not a narrowed byte\n    // counter or a changed private ceil view. u=floor(bits/8) fits29 bits;\n    // u+frac==L iff u==(L-frac) modulo32, including L==0 and max bits.\n    logic [31:0] active_length_minus7;\n    logic descriptor_bytecount_bad;\n    assign descriptor_bytecount_bad=descriptor_bits[2:0]==0 ?\n        (descriptor_bits>>3)!=active_length_minus6 :\n        (descriptor_bits>>3)!=active_length_minus7;\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!cancelled&&!context_failure&&!(context_active&&ctx_done)&&state==DESCRIPTOR)begin\n        assert(active_length_minus7==active_length-7)\n            else $fatal(1,\"V117 bytecount selected minus7 owner/wrap mismatch\");\n        assert(descriptor_bytes==((descriptor_bits>>3)+32'(descriptor_bits[2:0]!=0)))\n            else $fatal(1,\"V117 bytecount original private ceil view changed\");\n        assert(descriptor_bytecount_bad==(descriptor_bytes!=active_length_minus6))\n            else $fatal(1,\"V117 bytecount algebra changed original full32 ceil predicate\");\n    end\n`endif\n\n    function automatic logic [31:0] cached32(input integer at);",
+          "before": "    function automatic logic [31:0] cached32(input integer at);"
+        },
+        {
+          "after": "                    active_length_minus6<=lengths[band]-6;\n                    active_length_minus7<=lengths[band]-7;",
+          "before": "                    active_length_minus6<=lengths[band]-6;"
+        },
+        {
+          "after": "                        if(descriptor_bytecount_bad || descriptor_bits>packet_bit_limit) fail_packet(4);",
+          "before": "                        if(descriptor_bytes!=active_length_minus6 || descriptor_bits>packet_bit_limit) fail_packet(4);"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v117-ingress/br88_packet_ingress_sync_v91h.sv",
+      "original_sha256": "abfcef202b0c6792c89a45723bf0916c33c3ed7259ad756a59c120d03b7f6882"
+    }
+  ],
+  "schema": "v117-full32-ceil-bytecount-equality-cut-v1",
+  "unchanged_verification": {
+    "fpga/experiments/cu66-v117-ingress/verification/br88_packet_ingress_v91h_reference.sv": "7dceb13225712918435e6a0e8a6453b32aede43b0d843f5ba4026a1d16fe7977",
+    "fpga/experiments/cu66-v117-ingress/verification/br88_pipeline_candidate.sv": "6696d9dcfddff31801c89209565e5d0b8d101d8fdf8b4a7af4a3874d19e11a21",
+    "fpga/experiments/cu66-v117-ingress/verification/br88_pipeline_pair.sv": "44a4a0836d834c68fd9bbfdbb8618016690ead937702c67657de2842f24abc1b",
+    "fpga/experiments/cu66-v117-ingress/verification/br88_pipeline_reference.sv": "361839b1739ad81a1086cf32cf2977709e25a8dbc2f1bff35c11b0f6518eed8e",
+    "fpga/experiments/cu66-v117-ingress/verification/caller_prepare.cpp": "527a10a69996ac5fe2a7d89241242ff3a93173bb9eb34d041b3ff08afeeecf15",
+    "fpga/experiments/cu66-v117-ingress/verification/ingress_base.cpp": "e1d9484e0d30f3f15f4b54b71e3839e97f48bbc2d25bd9b6538427a7e2a0defe",
+    "fpga/experiments/cu66-v117-ingress/verification/ingress_probe.sv": "322c64d4426799d8f22b1d283c9f58b0f50110ec45c4f0c63fd03e5a2fc5b6db",
+    "fpga/experiments/cu66-v117-ingress/verification/packed_scratch_reference.sv": "f0a770b2561e37350edbdf0200b9980ef87927838a720cc9887323f2e2a9e49a",
+    "fpga/experiments/cu66-v117-ingress/verification/pair_adapter.hpp": "e9dda3b7a5f825dcdda6417c453dbd8c9dfb5ccb3928bf361f7afd5d06dcf104",
+    "fpga/experiments/cu66-v117-ingress/verification/tb_extents.cpp": "75d9153aeefbc183d6c850141e245f2560e0ebf66f88d97ab6a493d4536be5bc",
+    "fpga/experiments/cu66-v117-ingress/verification/tb_ingress.cpp": "044bde9b440592d46a5dd35dbb7ded26bd38922600e414b8595623282b6c542e",
+    "fpga/experiments/cu66-v117-ingress/verification/tb_pipeline.cpp": "0ecf82fb877d9c7d45ea30fb24ed1dc689af456e151d7997ccb174d7ad35b7a6"
+  }
+}

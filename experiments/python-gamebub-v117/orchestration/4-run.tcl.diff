@@ -1,0 +1,45 @@
+--- fpga/experiments/cu66-v116c-flow/run.tcl
++++ fpga/experiments/cu66-v117-flow/run.tcl
+@@ -1,4 +1,4 @@
+-# V116 fresh-RTL Default synthesis. The prepared input declares 8 or 10 ns.
++# V117 fresh-RTL Default synthesis. The prepared input declares 8 or 10 ns.
+ # Omission of -directive invokes documented default; no retiming option is added.
+ if {[llength $argv] != 1} {error "expected prepared BUILD_DIRECTORY"}
+ set build [file normalize [lindex $argv 0]]
+@@ -11,7 +11,7 @@
+     set f [open [file join $build results phase.txt] w]
+     puts $f $name
+     close $f
+-    puts "V116_PHASE $name"
++    puts "V117_PHASE $name"
+ }
+ if {$start_mode ne "rtl"} {error "Default comparison requires fresh RTL"}
+ v116_phase CLEAN_RTL_SYNTHESIS
+@@ -35,22 +35,22 @@
+ close $f
+ write_xdc -force -exclude_physical [file join $build results before-effective-timing.xdc]
+ source [file join $build report.tcl]
+-if {$start_mode eq "rtl"} {v116_reports synth}
++if {$start_mode eq "rtl"} {v117_reports synth}
+ v116_phase OPT_DESIGN
+ opt_design -directive $opt_directive
+ v116_phase PLACE_DESIGN
+ place_design -directive $place_directive
+-v116_reports place
++v117_reports place
+ if {$phys_directive ne "NONE"} {
+     v116_phase PRE_ROUTE_PHYS_OPT
+     phys_opt_design -directive $phys_directive
+-    v116_reports pre_route_phys
++    v117_reports pre_route_phys
+ }
+ v116_phase ROUTE_DESIGN
+ route_design -directive $route_directive
+-v116_reports route
++v117_reports route
+ write_checkpoint -force [file join $build results route.dcp]
+ report_route_status -file [file join $build results route-status.rpt]
+ write_xdc -force -exclude_physical [file join $build results effective-timing.xdc]
+ v116_phase ROUTE_COMPLETE
+-puts "V116_COMPONENT_ROUTE_FINISHED; no board or complete-custom-top signoff"
++puts "V117_COMPONENT_ROUTE_FINISHED; no board or complete-custom-top signoff"

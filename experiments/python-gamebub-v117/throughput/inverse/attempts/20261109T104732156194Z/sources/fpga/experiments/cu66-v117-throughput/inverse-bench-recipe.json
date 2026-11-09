@@ -1,0 +1,27 @@
+{
+  "derived": "fpga/experiments/cu66-v117-throughput/tb_inverse.cpp",
+  "derived_sha256": "5e417e98e35b845d0c54ff9261a8135d441f1603dfa4262c0de41ec57402c148",
+  "edits": [
+    {
+      "after": "unsigned high=0,owner=0,offered=0,emitted=0,launches=0,dqs=0,consecutive_accepts=0,max_consecutive_accepts=0;",
+      "before": "unsigned high=0,owner=0,offered=0,emitted=0,launches=0,dqs=0;"
+    },
+    {
+      "after": "if(take){++total_inputs;commits.push_back(cycle+2);++consecutive_accepts;max_consecutive_accepts=std::max(max_consecutive_accepts,consecutive_accepts);}else consecutive_accepts=0;",
+      "before": "if(take){++total_inputs;commits.push_back(cycle+2);}"
+    },
+    {
+      "after": " // The original semantic/math/owner checks above remain unchanged. The new\n // source must additionally demonstrate real consecutive II=1 acceptance.\n b.begin();const uint64_t first=b.cycle;b.feed(*ac);need(b.cycle-first==64,\"V117 first tile did not accept at II1\");b.finish();++directed;\n need(b.max_consecutive_accepts>=64,\"V117 consecutive acceptance coverage absent\");\n // Token wrap has no external token pin; seed the coherent private reservation\n // and committed frontiers, then require a real captured-input fault and retry.\n b.begin();b.r().cu66_inverse_stream_v91j__DOT__reserved_token=0xffffffffU;b.r().cu66_inverse_stream_v91j__DOT__next_token=0xffffffffU;\n b.feed(*ac,0,1);b.finish(7);b.cancel();b.begin();b.feed(*ac);b.finish();++directed;\n need(b.overlap>0&&b.high==2,\"overlap/full coverage absent\");",
+      "before": " need(b.overlap>0&&b.high==2,\"overlap/full coverage absent\");"
+    },
+    {
+      "after": "<<\",\\\"max_consecutive_accepts\\\":\"<<b.max_consecutive_accepts<<\",\\\"first_tile_acceptance_cycles\\\":64,\\\"commit_latency_edges\\\":2,\\\"max_eof_response_cycles\\\":\"<<b.latency_max",
+      "before": "<<\",\\\"max_eof_response_cycles\\\":\"<<b.latency_max"
+    }
+  ],
+  "old_semantic_checks_removed": 0,
+  "original": "fpga/experiments/cu66-v113-inverse/tb_inverse.cpp",
+  "original_E_plus_2_commit_ledger_retained": true,
+  "original_sha256": "b66feaa0cd519c859638c8c75799487d98a12e195aa373329bec259260e6e5fd",
+  "schema": "v117-inverse-bench-additive-recipe-v1"
+}

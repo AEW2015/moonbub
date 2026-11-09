@@ -1,0 +1,29 @@
+--- scripts/cu66-v117/native.py
++++ scripts/cu66-v117/native_throughput.py
+@@ -15,7 +15,7 @@
+ import uuid
+ 
+ ROOT = Path(__file__).resolve().parents[2]
+-AREA = ROOT / 'experiments/python-gamebub-v117/read-study'
++AREA = ROOT / 'experiments/python-gamebub-v117/throughput-study'
+ FLOW = ROOT / 'fpga/experiments/cu66-v117-flow'
+ POLICY = AREA / 'study-policy.json'
+ BUILD = Path('/home/lori/gamebub-build/cu66-v69')
+@@ -143,7 +143,7 @@
+     assert sha(rp)==recipe['sha256']==load(POLICY)['bench_api_derivation_sha256']
+     original=ROOT/derivation['original'];derived=ROOT/derivation['derived']
+     assert rel(original)=='fpga/experiments/cu66-v107-elastic/verification/bench.cpp'
+-    derived.resolve().relative_to((ROOT/'fpga/experiments/cu66-v114-harness').resolve())
++    derived.resolve().relative_to((ROOT/load(POLICY)['bench_harness_dir']).resolve())
+     assert sha(original)==derivation['original_sha256'] and sha(derived)==derivation['derived_sha256']
+     assert derivation['all_original_need_checks_retained'] is True
+     reversed_source=derived.read_text()
+@@ -523,7 +523,7 @@
+ def main():
+     global AREA, POLICY
+     ap = argparse.ArgumentParser(description=__doc__)
+-    ap.add_argument('--composition', choices=('read','throughput','repair'), default='read')
++    ap.add_argument('--composition', choices=('throughput',), default='throughput')
+     ap.add_argument('--trial', choices=('integrated-125','integrated-100'))
+     ap.add_argument('--repeat-of', type=Path)
+     ap.add_argument('--run', action='store_true')

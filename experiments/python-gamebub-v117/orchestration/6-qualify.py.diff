@@ -1,0 +1,151 @@
+--- scripts/cu66-v116/live-c/qualify.py
++++ scripts/cu66-v117/live_b/qualify.py
+@@ -1,5 +1,5 @@
+ #!/usr/bin/env python3
+-"""Root-only V116 LIVE parent byte/row control with independently checked bytes."""
++"""Root-only V117 LIVE parent byte/row control with independently checked bytes."""
+ import argparse
+ import collections
+ import datetime
+@@ -16,9 +16,9 @@
+ 
+ sys.dont_write_bytecode = True
+ ROOT = Path(__file__).resolve().parents[3]
+-SRC = ROOT/'fpga/experiments/cu66-v116-live-parent'
+-AREA = ROOT/'experiments/python-gamebub-v116/control-c-study/live-parent'
+-SELECT = ROOT/'experiments/python-gamebub-v116/control-c-study/spatial/results.json'
++SRC = ROOT/'fpga/experiments/cu66-v117-live-parent'
++AREA = ROOT/'experiments/python-gamebub-v117/throughput-study/live-parent'
++SELECT = ROOT/'experiments/python-gamebub-v117/throughput-study/spatial/results.json'
+ ROW = ROOT/'fpga/experiments/cu66-v116-rowjoin/cu66_row_write_hash_join_v91l.sv'
+ ROW_PROOF = ROOT/'experiments/python-gamebub-v116/rowjoin/results.json'
+ IMAGE = 'sha256:b35d0961607ab885b8024ef37ebcac0c3a0d010af00fe6bbdbc63264079a49cf'
+@@ -103,8 +103,8 @@
+ 
+ def prepare(require_proofs):
+     derivation = verify_derivation()
+-    spatial_path = ROOT/'scripts/cu66-v116/spatial_c.py'
+-    spatial = module(spatial_path, 'v116_live_spatial_contract')
++    spatial_path = ROOT/'scripts/cu66-v117/spatial_b.py'
++    spatial = module(spatial_path, 'v117_live_spatial_contract')
+     # This reconstructs the actual final18 aliases and both V116 overrides,
+     # without requiring a future summary or inventing its SHA during prep.
+     base, _, sources, origins, _, packaging, _ = spatial.prepare(require_proofs)
+@@ -114,7 +114,7 @@
+     proof_files = []
+     if require_proofs:
+         selected = load(SELECT)
+-        assert selected['status'] == 'PASS_V116_FINAL_SPATIAL_CANONICAL' and selected['actual_RTL_run'] is True
++        assert selected['status'] == 'PASS_V117_FINAL_SPATIAL_CANONICAL' and selected['actual_RTL_run'] is True
+         raw = ROOT/selected['selected_receipt']
+         assert load(raw) == {k:v for k,v in selected.items() if k != 'selected_receipt'}
+         assert selected['source_origins'] == origins and selected['rtl_source_order'] == [rel(p) for p in sources]
+@@ -132,7 +132,10 @@
+                                  (ROOT/'experiments/python-gamebub-v116/control-b/results.json', ROOT/'fpga/experiments/cu66-v116b-control/packed_scratch_v91g2.sv'),
+                                  (ROOT/'experiments/python-gamebub-v116/control-b/results.json', ROOT/'fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv'),
+                                  (ROOT/'experiments/python-gamebub-v116/domain-b/results.json', ROOT/'fpga/experiments/cu66-v116b-domain/cu66_coefficient_elastic.sv'),
+-                                 (ROOT/'experiments/python-gamebub-v116/record-c/results.json', ROOT/'fpga/experiments/cu66-v116c-record/packed_scratch_v91g2.sv')]:
++                                 (ROOT/'experiments/python-gamebub-v116/record-c/results.json', ROOT/'fpga/experiments/cu66-v116c-record/packed_scratch_v91g2.sv'),
++                                 (ROOT/'experiments/python-gamebub-v117/ac/results.json', ROOT/'fpga/experiments/cu66-v117-ac/packed_scratch_v91g2.sv'),
++                                 (ROOT/'experiments/python-gamebub-v117/throughput/inverse/results.json', ROOT/'fpga/experiments/cu66-v117-throughput/cu66_inverse_stream_v91j.sv'),
++                                 (ROOT/'experiments/python-gamebub-v117/throughput/reconstruct/results.json', ROOT/'fpga/experiments/cu66-v117-throughput/cu66_reconstruct_stream_v91k.sv')]:
+             pin, files = proof(selector, source)
+             pins.setdefault('focused_proofs', []).append(pin)
+             proof_files += files
+@@ -157,13 +160,13 @@
+     args = ap.parse_args()
+     derivation, selected, sources, origins, packaging_path, pins, proof_files = prepare(args.run)
+     if not args.run:
+-        print('V116_LIVE_PARENT_PREPARED_NOT_RUN', sha(SRC/'cs88_live_v91l.sv'), sha(SRC/'tb_keyframe.cpp'))
++        print('V117_LIVE_PARENT_PREPARED_NOT_RUN', sha(SRC/'cs88_live_v91l.sv'), sha(SRC/'tb_keyframe.cpp'))
+         return
+     assert args.root_grant, 'Root heavy-slot grant required'
+     stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+     out = AREA/'attempts'/stamp
+     out.mkdir(parents=True)
+-    build = Path('/home/lori/gamebub-build/cu66-v69')/('v116c-live-parent-'+stamp)
++    build = Path('/home/lori/gamebub-build/cu66-v69')/('v117b-live-parent-'+stamp)
+     build.mkdir()
+     mapped = '/build/'+build.name
+     endpoints = [ROOT/('fpga/experiments/'+name) for name in ('cu66-v69/hash/cu66_sha256_bytes.sv', 'cu66-v69/banks/cu66_frame_bank_control.sv',
+@@ -171,14 +174,14 @@
+     inputs = [ROOT/selected['inputs'][name]['source'] for name in ('cases.tsv','transform_tiles.tsv','canonical_goldens.tsv')]
+     inputs += [ROOT/'experiments/python-gamebub-v91l/vectors/validation.tsv.gz']
+     support = [ROOT/('experiments/cu66-native-v69/'+name) for name in ('hud.hpp','bytes.hpp','generated_constants.hpp')]
+-    initial_selector=ROOT/'experiments/python-gamebub-v116/live-parent/results.json'
++    initial_selector=ROOT/'experiments/python-gamebub-v116/control-c-study/live-parent/results.json'
+     initial_pin=load(initial_selector);initial_receipt=ROOT/initial_pin['path']
+     assert sha(initial_receipt)==initial_pin['sha256']
+-    files = sorted(set(sources+endpoints+inputs+support+proof_files+[initial_selector,initial_receipt,packaging_path, ROOT/'scripts/cu66-v116/spatial_c.py',
++    files = sorted(set(sources+endpoints+inputs+support+proof_files+[initial_selector,initial_receipt,packaging_path, ROOT/'scripts/cu66-v117/spatial_b.py',
+                        ROOT/'docs/cu66-v116/live-parent.md', ROOT/'experiments/python-gamebub-v116/live-parent/preparation.json',
+                        *[p for p in SRC.iterdir() if p.is_file()], *Path(__file__).parent.glob('*.py'),
+                        *[ROOT/r['source'] for r in derivation['sources']], ROOT/derivation['frozen_derivation']['path']]))
+-    report = dict(schema='v116-live-byte-and-three-slot-row-ACK-C2-HUD-v1', status='RUNNING', actual_RTL_run=False,
++    report = dict(schema='v117-live-byte-and-three-slot-row-ACK-C2-HUD-v1', status='RUNNING', actual_RTL_run=False,
+                   simulation_started=False, backend='Verilator 5.020', image_id=IMAGE, root_grant=args.root_grant,
+                   source_sha256={rel(p):sha(p) for p in files}, source_origins=origins, rtl_source_order=[rel(p) for p in sources+endpoints],
+                   proof_bindings=pins, dynamic_selected_receipt_binding=True, source_derivation=dict(path=rel(SRC/'derivation.json'), sha256=sha(SRC/'derivation.json')),
+@@ -202,7 +205,7 @@
+     def command(argv, name, cap, simulation=False):
+         gate = memory()
+         assert gate['available_bytes'] >= 8*GIB and gate['psi_full_avg10'] < 1 and gate['combined_used_ratio'] < .85, gate
+-        container = 'gamebub-v116c-live-'+stamp.lower()+'-'+str(len(report['commands']))
++        container = 'gamebub-v117b-live-'+stamp.lower()+'-'+str(len(report['commands']))
+         cmd = ['docker','run','--rm','--init','--name',container,'--cpus','2','--memory','8g','--memory-swap','8g','--pids-limit','2048',
+                '--network','none','--ulimit','core=0','--mount',f'type=bind,src={out},dst={out},readonly',
+                '--mount',f'type=bind,src={build},dst={mapped}','-w',mapped,IMAGE,'timeout','--kill-after=5s',str(cap)+'s',*argv]
+@@ -340,22 +343,38 @@
+                     assert int(p) == profile and hex_data == expected[name]
+                 hashes = [json.loads(line) for line in (build/(prefix+'-hashes.jsonl')).read_text().splitlines()]
+                 assert len(hashes) == 1025
++                spatial_rows=[row for row in rows if row.get('type')=='live_spatial_pipeline']
++                assert len(spatial_rows)==1
++                spatial_metrics=spatial_rows[0]
++                assert spatial_metrics['status']=='TEST_PASS' and spatial_metrics['maximum_consecutive_inverse_accepts']>=64
++                assert spatial_metrics['different_tile_overlap_edges']>0 and spatial_metrics['residual_canonical_overlap_edges']>=spatial_metrics['different_tile_overlap_edges']
++                assert spatial_metrics['cycle_skipping'] is False and spatial_metrics['hardware'] is False
+                 report['runs'].append(dict(variant=variant, row_writes=row_writes, seed=seed, profile=profile, verdict=v, live_case=c, service=s, fences=f,
+-                                          canonical_and_accepted_bytes_exact=True, actual_hash_job_records=1025,
++                                          spatial_pipeline=spatial_metrics, canonical_and_accepted_bytes_exact=True, actual_hash_job_records=1025,
+                                           artifacts={suffix:pack(build/(prefix+'-'+suffix)) for suffix in ('events.jsonl','actual.tsv','hashes.jsonl')}))
+                 persist()
+-        initial_selector=ROOT/'experiments/python-gamebub-v116/live-parent/results.json'
++        initial_selector=ROOT/'experiments/python-gamebub-v116/control-c-study/live-parent/results.json'
+         initial_pin=load(initial_selector);initial_receipt=ROOT/initial_pin['path']
+         assert sha(initial_receipt)==initial_pin['sha256']
+         initial=load(initial_receipt)
+         assert initial['status']=='PASS_V116_SELECTED_COMPONENT_BYTE_ROW_ACK_C2_HUD_ABSTRACT_PUBLICATION'
+         for run in report['runs']:
+             control=next(x for x in initial['runs'] if (x['variant'],x['seed'],x['profile'])==(run['variant'],run['seed'],run['profile']))
+-            for field in ('live_case','fences','service','verdict'):
+-                assert run[field]==control[field], 'V116C changed initial parent cycle/value/owner result: '+field
+-        report['initial_A_exact_parent_control']=dict(selector=rel(initial_selector),selector_sha256=sha(initial_selector),receipt=rel(initial_receipt),receipt_sha256=sha(initial_receipt),exact_fields=['live_case','fences','service','verdict'])
++            # The original exact-cycle comparator remains frozen in V116 and
++            # V117A. B explicitly changes accepted/commit/reconstruction scheduling;
++            # preserve semantic bytes/digests/physical ownership, measure new cycles.
++            for field in ('root','hud_sha256','seal','status'):
++                assert run['live_case'][field]==control['live_case'][field], 'B changed canonical commitment: '+field
++            for field in ('canonical_producer_bytes','canonical_request_bytes','canonical_successful_ack_bytes','canonical_hash_bytes','hud_request_bytes','hud_successful_ack_bytes','hud_hash_bytes','hash_kind_counts'):
++                assert run['fences'][field]==control['fences'][field], 'B changed accepted/ACK/hash accounting: '+field
++            for field in ('candidate_write_requests','candidate_write_acks','hash_deliveries','hash_jobs','actual_C2_HUD_seal_validation','observed_wrong_ack_count','wrong_ack_owned_write_drained','clean_retry_without_reset'):
++                assert run['verdict'][field]==control['verdict'][field], 'B changed publication/debt semantics: '+field
++            for field in ('row_writes','request_bytes','expanded_bytes','acked_bytes','service_queue_bound','service_bus_bits','service_data_edges'):
++                assert run['service'][field]==control['service'][field], 'B changed finite memory-service contract: '+field
++            run['baseline_C_comparison']=dict(baseline_last_outer_to_commit_cycles=control['live_case']['last_outer_to_commit_cycles'],candidate_last_outer_to_commit_cycles=run['live_case']['last_outer_to_commit_cycles'],cycle_savings=control['live_case']['last_outer_to_commit_cycles']-run['live_case']['last_outer_to_commit_cycles'],exact_cycle_equivalence=False)
++        report['baseline_C_semantic_parent_control']=dict(selector=rel(initial_selector),selector_sha256=sha(initial_selector),receipt=rel(initial_receipt),receipt_sha256=sha(initial_receipt),schedule_contract='New II1 inverse accepted/validated/committed frontier and exactly2 reconstruction owners; no modeled-cycle skipping; original all byte/hash/owner/drain checks and independent canonical goldens retained.',frozen_original_cycle_comparator='scripts/cu66-v116/live-c/qualify.py',exact_cycle_equivalence=False)
+         assert report['source_sha256'] == {rel(p):sha(p) for p in files}, 'source changed during LIVE run'
+-        report.update(status='PASS_V116_SELECTED_COMPONENT_'+'_'.join(name.upper() for name,_ in variants)+'_ACK_C2_HUD_ABSTRACT_PUBLICATION', qualified_variants=[name for name,_ in variants])
++        report.update(status='PASS_V117_SELECTED_COMPONENT_'+'_'.join(name.upper() for name,_ in variants)+'_ACK_C2_HUD_ABSTRACT_PUBLICATION', qualified_variants=[name for name,_ in variants])
+     except BaseException as exc:
+         report.update(status='FAIL', error_class=type(exc).__name__, error=str(exc))
+         raise
+@@ -367,7 +386,7 @@
+         report['artifact_sha256'] = {str(p.relative_to(out)):sha(p) for p in sorted(out.rglob('*')) if p.is_file() and p.name != 'receipt.json'}
+         persist()
+         write(AREA/'results.json', dict(status=report['status'], actual_RTL_run=report['actual_RTL_run'], path=rel(out/'receipt.json'), sha256=sha(out/'receipt.json')))
+-        print('V116_LIVE_PARENT', report['status'], out, flush=True)
++        print('V117_LIVE_PARENT', report['status'], out, flush=True)
+ 
+ 
+ if __name__ == '__main__':

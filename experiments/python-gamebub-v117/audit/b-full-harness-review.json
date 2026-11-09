@@ -1,0 +1,40 @@
+{
+  "auditor": "independent-readonly-v117-auditor",
+  "checks": {
+    "all_original_need_checks_retained": true,
+    "bench_api_derivation_reversible": true,
+    "full_setup_checks_no_new_lookup_and_held_signals": true,
+    "initial_failure_preserved": true,
+    "native_budget_resource_limits_unchanged": true,
+    "native_runner_has_only_area_harness_and_cli_routing_delta": true,
+    "ready_and_lookup_semantics_match_R_RTL": true,
+    "transport_base_hooks_reversible": true,
+    "wait_requires_two_actual_ready_owners": true,
+    "watchdog_and_cancel_edge_assertions_retained": true
+  },
+  "initial_attempt": {
+    "actual_RTL_run": true,
+    "error": "AssertionError('candidate-107601-simulation.jsonl')",
+    "path": "experiments/python-gamebub-v117/throughput-study/spatial/attempts/20261109T112604280569Z/receipt.json",
+    "sha256": "8ddb6a5d22a67435e83edc8ff9b483be8e721d6ebea51746530beef4c1bbfbed",
+    "status": "FAIL"
+  },
+  "pins": {
+    "experiments/python-gamebub-v117/study-policy.json": "77419a3c09b0020b963f6059a36ae4dcacb796e164bafa759672b705ac13a692",
+    "experiments/python-gamebub-v117/throughput-study/spatial/attempts/20261109T112604280569Z/receipt.json": "8ddb6a5d22a67435e83edc8ff9b483be8e721d6ebea51746530beef4c1bbfbed",
+    "fpga/experiments/cu66-v117-harness/bench-api-derivation.json": "b197c0f301fca5503412a02eb7590195f7147a5b6985e3657386e5d16c565db8",
+    "fpga/experiments/cu66-v117-harness/bench_command_api.cpp": "1e741341d18fcde01cdd18ef752a9c88db0e8837ca10898cd015d723aceb4c90",
+    "fpga/experiments/cu66-v117-harness/bench_transport_base.hpp": "98c7cd7de9502a040f2de538da2ff7456192d06da622b50a3c2ef1e344ffed0f",
+    "fpga/experiments/cu66-v117-harness/derivation.json": "8d2a58c3e8ad429c21c86265e3bb15928ac6f431e7e26bda65b7f8551002ca82",
+    "scripts/cu66-v117/native_throughput.py": "30721b0a0f8817f6581dcb8614c56422321b316022589ba39803673aed9dc10b",
+    "scripts/cu66-v117/peer_b.py": "107d78de9ed90d6d266d2921a1e054259d8b7155db181b811494e0048997c8e5"
+  },
+  "schema": "v117-b-two-owner-hold-fixture-independent-review-v1",
+  "scope": "Source/derivation review only. Retry is not represented as terminal PASS by this audit; no jobs launched.",
+  "semantic_review": [
+    "The setup now waits until both bounded reconstruction owner slots are O_READY and owned_tiles==2, in addition to residual backpressure and an output held by the bench. Given the selected RTL O_READY=3 and lookup_req requires the tail owner to be O_FREE, this is a valid capacity-full persistent-stall fixture.",
+    "The original seven-edge held-output check, 2,000,000-cycle watchdog, pending transfer-eligibility check, public tuple stability checks, and cancel/drain path remain. No RTL source is changed by this harness derivation.",
+    "The original first candidate FAIL remains immutable and records the earlier V114 harness pin; retry source composition separately pins the new V117 harness."
+  ],
+  "status": "PASS_V117_B_HARNESS_REVIEW"
+}

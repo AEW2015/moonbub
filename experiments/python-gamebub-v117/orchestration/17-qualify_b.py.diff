@@ -1,0 +1,48 @@
+--- scripts/cu66-v117/live_b/qualify.py
++++ scripts/cu66-v117/live_guard/qualify_b.py
+@@ -16,8 +16,8 @@
+ 
+ sys.dont_write_bytecode = True
+ ROOT = Path(__file__).resolve().parents[3]
+-SRC = ROOT/'fpga/experiments/cu66-v117-live-parent'
+-AREA = ROOT/'experiments/python-gamebub-v117/throughput-study/live-parent'
++SRC = ROOT/'fpga/experiments/cu66-v117-live-guard'
++AREA = ROOT/'experiments/python-gamebub-v117/throughput-study/live-guard'
+ SELECT = ROOT/'experiments/python-gamebub-v117/throughput-study/spatial/results.json'
+ ROW = ROOT/'fpga/experiments/cu66-v116-rowjoin/cu66_row_write_hash_join_v91l.sv'
+ ROW_PROOF = ROOT/'experiments/python-gamebub-v116/rowjoin/results.json'
+@@ -166,7 +166,7 @@
+     stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+     out = AREA/'attempts'/stamp
+     out.mkdir(parents=True)
+-    build = Path('/home/lori/gamebub-build/cu66-v69')/('v117b-live-parent-'+stamp)
++    build = Path('/home/lori/gamebub-build/cu66-v69')/('v117b-live-guard-'+stamp)
+     build.mkdir()
+     mapped = '/build/'+build.name
+     endpoints = [ROOT/('fpga/experiments/'+name) for name in ('cu66-v69/hash/cu66_sha256_bytes.sv', 'cu66-v69/banks/cu66_frame_bank_control.sv',
+@@ -205,7 +205,7 @@
+     def command(argv, name, cap, simulation=False):
+         gate = memory()
+         assert gate['available_bytes'] >= 8*GIB and gate['psi_full_avg10'] < 1 and gate['combined_used_ratio'] < .85, gate
+-        container = 'gamebub-v117b-live-'+stamp.lower()+'-'+str(len(report['commands']))
++        container = 'gamebub-v117b-live-guard-'+stamp.lower()+'-'+str(len(report['commands']))
+         cmd = ['docker','run','--rm','--init','--name',container,'--cpus','2','--memory','8g','--memory-swap','8g','--pids-limit','2048',
+                '--network','none','--ulimit','core=0','--mount',f'type=bind,src={out},dst={out},readonly',
+                '--mount',f'type=bind,src={build},dst={mapped}','-w',mapped,IMAGE,'timeout','--kill-after=5s',str(cap)+'s',*argv]
+@@ -349,7 +349,15 @@
+                 assert spatial_metrics['status']=='TEST_PASS' and spatial_metrics['maximum_consecutive_inverse_accepts']>=64
+                 assert spatial_metrics['different_tile_overlap_edges']>0 and spatial_metrics['residual_canonical_overlap_edges']>=spatial_metrics['different_tile_overlap_edges']
+                 assert spatial_metrics['cycle_skipping'] is False and spatial_metrics['hardware'] is False
+-                report['runs'].append(dict(variant=variant, row_writes=row_writes, seed=seed, profile=profile, verdict=v, live_case=c, service=s, fences=f,
++                guards=[row for row in rows if row.get('type')=='parent_guard_verdict']
++                assert len(guards)==1 and guards[0]['status']=='TEST_PASS'
++                guard=guards[0]
++                assert guard['checks']>0 and guard['parent_fault_gap_edges']==1 and guard['private_residual_handshakes']<=1
++                assert guard['raw_internal_work_blocked_by_observation_masks'] is False and guard['physical_responses_masked'] is False
++                assert guard['original_cancel_need_retained'] is True
++                assert guard['raw_local_reads']>0 and guard['raw_local_reads']==guard['raw_local_responses']
++                assert guard['raw_local_pending'] is False and guard['private_gap_local_responses']==guard['private_local_reads']
++                report['runs'].append(dict(variant=variant, row_writes=row_writes, seed=seed, profile=profile, verdict=v, parent_guard=guard, live_case=c, service=s, fences=f,
+                                           spatial_pipeline=spatial_metrics, canonical_and_accepted_bytes_exact=True, actual_hash_job_records=1025,
+                                           artifacts={suffix:pack(build/(prefix+'-'+suffix)) for suffix in ('events.jsonl','actual.tsv','hashes.jsonl')}))
+                 persist()

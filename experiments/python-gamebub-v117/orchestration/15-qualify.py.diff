@@ -1,0 +1,60 @@
+--- scripts/cu66-v117/live_b/qualify.py
++++ scripts/cu66-v117/live_c/qualify.py
+@@ -17,8 +17,8 @@
+ sys.dont_write_bytecode = True
+ ROOT = Path(__file__).resolve().parents[3]
+ SRC = ROOT/'fpga/experiments/cu66-v117-live-parent'
+-AREA = ROOT/'experiments/python-gamebub-v117/throughput-study/live-parent'
+-SELECT = ROOT/'experiments/python-gamebub-v117/throughput-study/spatial/results.json'
++AREA = ROOT/'experiments/python-gamebub-v117/repair-study/live-parent'
++SELECT = ROOT/'experiments/python-gamebub-v117/repair-study/spatial/results.json'
+ ROW = ROOT/'fpga/experiments/cu66-v116-rowjoin/cu66_row_write_hash_join_v91l.sv'
+ ROW_PROOF = ROOT/'experiments/python-gamebub-v116/rowjoin/results.json'
+ IMAGE = 'sha256:b35d0961607ab885b8024ef37ebcac0c3a0d010af00fe6bbdbc63264079a49cf'
+@@ -103,7 +103,7 @@
+ 
+ def prepare(require_proofs):
+     derivation = verify_derivation()
+-    spatial_path = ROOT/'scripts/cu66-v117/spatial_b.py'
++    spatial_path = ROOT/'scripts/cu66-v117/spatial_c.py'
+     spatial = module(spatial_path, 'v117_live_spatial_contract')
+     # This reconstructs the actual final18 aliases and both V116 overrides,
+     # without requiring a future summary or inventing its SHA during prep.
+@@ -134,8 +134,9 @@
+                                  (ROOT/'experiments/python-gamebub-v116/domain-b/results.json', ROOT/'fpga/experiments/cu66-v116b-domain/cu66_coefficient_elastic.sv'),
+                                  (ROOT/'experiments/python-gamebub-v116/record-c/results.json', ROOT/'fpga/experiments/cu66-v116c-record/packed_scratch_v91g2.sv'),
+                                  (ROOT/'experiments/python-gamebub-v117/ac/results.json', ROOT/'fpga/experiments/cu66-v117-ac/packed_scratch_v91g2.sv'),
++                                 (ROOT/'experiments/python-gamebub-v117/ingress-bytecount/results.json', ROOT/'fpga/experiments/cu66-v117-ingress-bytecount/br88_packet_ingress_sync_v91h.sv'),
+                                  (ROOT/'experiments/python-gamebub-v117/throughput/inverse/results.json', ROOT/'fpga/experiments/cu66-v117-throughput/cu66_inverse_stream_v91j.sv'),
+-                                 (ROOT/'experiments/python-gamebub-v117/throughput/reconstruct/results.json', ROOT/'fpga/experiments/cu66-v117-throughput/cu66_reconstruct_stream_v91k.sv')]:
++                                 (ROOT/'experiments/python-gamebub-v117/reconstruct-wordbank/results.json', ROOT/'fpga/experiments/cu66-v117-reconstruct-wordbank/cu66_reconstruct_stream_v91k.sv')]:
+             pin, files = proof(selector, source)
+             pins.setdefault('focused_proofs', []).append(pin)
+             proof_files += files
+@@ -166,7 +167,7 @@
+     stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+     out = AREA/'attempts'/stamp
+     out.mkdir(parents=True)
+-    build = Path('/home/lori/gamebub-build/cu66-v69')/('v117b-live-parent-'+stamp)
++    build = Path('/home/lori/gamebub-build/cu66-v69')/('v117c-live-parent-'+stamp)
+     build.mkdir()
+     mapped = '/build/'+build.name
+     endpoints = [ROOT/('fpga/experiments/'+name) for name in ('cu66-v69/hash/cu66_sha256_bytes.sv', 'cu66-v69/banks/cu66_frame_bank_control.sv',
+@@ -177,7 +178,7 @@
+     initial_selector=ROOT/'experiments/python-gamebub-v116/control-c-study/live-parent/results.json'
+     initial_pin=load(initial_selector);initial_receipt=ROOT/initial_pin['path']
+     assert sha(initial_receipt)==initial_pin['sha256']
+-    files = sorted(set(sources+endpoints+inputs+support+proof_files+[initial_selector,initial_receipt,packaging_path, ROOT/'scripts/cu66-v117/spatial_b.py',
++    files = sorted(set(sources+endpoints+inputs+support+proof_files+[initial_selector,initial_receipt,packaging_path, ROOT/'scripts/cu66-v117/spatial_c.py',
+                        ROOT/'docs/cu66-v116/live-parent.md', ROOT/'experiments/python-gamebub-v116/live-parent/preparation.json',
+                        *[p for p in SRC.iterdir() if p.is_file()], *Path(__file__).parent.glob('*.py'),
+                        *[ROOT/r['source'] for r in derivation['sources']], ROOT/derivation['frozen_derivation']['path']]))
+@@ -205,7 +206,7 @@
+     def command(argv, name, cap, simulation=False):
+         gate = memory()
+         assert gate['available_bytes'] >= 8*GIB and gate['psi_full_avg10'] < 1 and gate['combined_used_ratio'] < .85, gate
+-        container = 'gamebub-v117b-live-'+stamp.lower()+'-'+str(len(report['commands']))
++        container = 'gamebub-v117c-live-'+stamp.lower()+'-'+str(len(report['commands']))
+         cmd = ['docker','run','--rm','--init','--name',container,'--cpus','2','--memory','8g','--memory-swap','8g','--pids-limit','2048',
+                '--network','none','--ulimit','core=0','--mount',f'type=bind,src={out},dst={out},readonly',
+                '--mount',f'type=bind,src={build},dst={mapped}','-w',mapped,IMAGE,'timeout','--kill-after=5s',str(cap)+'s',*argv]

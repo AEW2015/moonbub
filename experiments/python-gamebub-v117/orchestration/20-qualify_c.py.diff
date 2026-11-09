@@ -1,0 +1,58 @@
+--- scripts/cu66-v117/live_guard/qualify_c.py
++++ scripts/cu66-v117/live_guard_final/qualify_c.py
+@@ -134,9 +134,9 @@
+                                  (ROOT/'experiments/python-gamebub-v116/domain-b/results.json', ROOT/'fpga/experiments/cu66-v116b-domain/cu66_coefficient_elastic.sv'),
+                                  (ROOT/'experiments/python-gamebub-v116/record-c/results.json', ROOT/'fpga/experiments/cu66-v116c-record/packed_scratch_v91g2.sv'),
+                                  (ROOT/'experiments/python-gamebub-v117/ac/results.json', ROOT/'fpga/experiments/cu66-v117-ac/packed_scratch_v91g2.sv'),
+-                                 (ROOT/'experiments/python-gamebub-v117/ingress/results.json', ROOT/'fpga/experiments/cu66-v117-ingress/br88_packet_ingress_sync_v91h.sv'),
++                                 (ROOT/'experiments/python-gamebub-v117/ingress-bytecount/results.json', ROOT/'fpga/experiments/cu66-v117-ingress-bytecount/br88_packet_ingress_sync_v91h.sv'),
+                                  (ROOT/'experiments/python-gamebub-v117/throughput/inverse/results.json', ROOT/'fpga/experiments/cu66-v117-throughput/cu66_inverse_stream_v91j.sv'),
+-                                 (ROOT/'experiments/python-gamebub-v117/throughput/reconstruct/results.json', ROOT/'fpga/experiments/cu66-v117-throughput/cu66_reconstruct_stream_v91k.sv')]:
++                                 (ROOT/'experiments/python-gamebub-v117/reconstruct-wordbank/results.json', ROOT/'fpga/experiments/cu66-v117-reconstruct-wordbank/cu66_reconstruct_stream_v91k.sv')]:
+             pin, files = proof(selector, source)
+             pins.setdefault('focused_proofs', []).append(pin)
+             proof_files += files
+@@ -178,9 +178,18 @@
+     initial_selector=ROOT/'experiments/python-gamebub-v116/control-c-study/live-parent/results.json'
+     initial_pin=load(initial_selector);initial_receipt=ROOT/initial_pin['path']
+     assert sha(initial_receipt)==initial_pin['sha256']
++    baseline_B_selector=ROOT/'experiments/python-gamebub-v117/throughput-study/live-guard/results.json'
++    baseline_B_pin=load(baseline_B_selector);baseline_B_receipt=ROOT/baseline_B_pin['path']
++    assert sha(baseline_B_receipt)==baseline_B_pin['sha256']
++    baseline_B=load(baseline_B_receipt)
++    assert baseline_B['status']=='PASS_V117_SELECTED_COMPONENT_BYTE_ROW_ACK_C2_HUD_ABSTRACT_PUBLICATION'
++    assert baseline_B['actual_RTL_run'] is True and len(baseline_B['runs'])==4
++    for name,expected in baseline_B['source_sha256'].items():assert sha(ROOT/name)==expected,name
++    for name,expected in baseline_B['artifact_sha256'].items():assert sha(baseline_B_receipt.parent/name)==expected,name
++    proof_files += [baseline_B_selector,baseline_B_receipt]
+     files = sorted(set(sources+endpoints+inputs+support+proof_files+[initial_selector,initial_receipt,packaging_path, ROOT/'scripts/cu66-v117/spatial_c.py',
+                        ROOT/'docs/cu66-v116/live-parent.md', ROOT/'experiments/python-gamebub-v116/live-parent/preparation.json',
+-                       *[p for p in SRC.iterdir() if p.is_file()], *Path(__file__).parent.glob('*.py'),
++                       *[p for p in SRC.iterdir() if p.is_file()], Path(__file__).resolve(),
+                        *[ROOT/r['source'] for r in derivation['sources']], ROOT/derivation['frozen_derivation']['path']]))
+     report = dict(schema='v117-live-byte-and-three-slot-row-ACK-C2-HUD-v1', status='RUNNING', actual_RTL_run=False,
+                   simulation_started=False, backend='Verilator 5.020', image_id=IMAGE, root_grant=args.root_grant,
+@@ -357,7 +366,8 @@
+                 assert guard['raw_internal_work_blocked_by_observation_masks'] is False and guard['physical_responses_masked'] is False
+                 assert guard['original_cancel_need_retained'] is True
+                 assert guard['raw_local_reads']>0 and guard['raw_local_reads']==guard['raw_local_responses']
+-                assert guard['raw_local_pending'] is False and guard['private_gap_local_responses']==guard['private_local_reads']
++                # C++ default bool stream emits JSON integer0/1. Require literal integer0; no pending-owner relaxation.
++                assert type(guard['raw_local_pending']) is int and guard['raw_local_pending']==0 and guard['private_gap_local_responses']==guard['private_local_reads']
+                 report['runs'].append(dict(variant=variant, row_writes=row_writes, seed=seed, profile=profile, verdict=v, parent_guard=guard, live_case=c, service=s, fences=f,
+                                           spatial_pipeline=spatial_metrics, canonical_and_accepted_bytes_exact=True, actual_hash_job_records=1025,
+                                           artifacts={suffix:pack(build/(prefix+'-'+suffix)) for suffix in ('events.jsonl','actual.tsv','hashes.jsonl')}))
+@@ -382,6 +392,13 @@
+                 assert run['service'][field]==control['service'][field], 'B changed finite memory-service contract: '+field
+             run['baseline_C_comparison']=dict(baseline_last_outer_to_commit_cycles=control['live_case']['last_outer_to_commit_cycles'],candidate_last_outer_to_commit_cycles=run['live_case']['last_outer_to_commit_cycles'],cycle_savings=control['live_case']['last_outer_to_commit_cycles']-run['live_case']['last_outer_to_commit_cycles'],exact_cycle_equivalence=False)
+         report['baseline_C_semantic_parent_control']=dict(selector=rel(initial_selector),selector_sha256=sha(initial_selector),receipt=rel(initial_receipt),receipt_sha256=sha(initial_receipt),schedule_contract='New II1 inverse accepted/validated/committed frontier and exactly2 reconstruction owners; no modeled-cycle skipping; original all byte/hash/owner/drain checks and independent canonical goldens retained.',frozen_original_cycle_comparator='scripts/cu66-v116/live-c/qualify.py',exact_cycle_equivalence=False)
++        # C changes only same-edge arithmetic/storage representation. Require the
++        # complete independently measured B schedule, not only equal pixels.
++        for run in report['runs']:
++            control=next(x for x in baseline_B['runs'] if (x['variant'],x['seed'],x['profile'])==(run['variant'],run['seed'],run['profile']))
++            for field in ('live_case','fences','service','verdict','spatial_pipeline','parent_guard'):
++                assert run[field]==control[field], 'C changed exact B guarded parent record: '+field
++        report['baseline_B_guard_exact_parent_control']=dict(selector=rel(baseline_B_selector),selector_sha256=sha(baseline_B_selector),receipt=rel(baseline_B_receipt),receipt_sha256=sha(baseline_B_receipt),exact_cycle_equivalence=True,compared_records=['live_case','fences','service','verdict','spatial_pipeline','parent_guard'])
+         assert report['source_sha256'] == {rel(p):sha(p) for p in files}, 'source changed during LIVE run'
+         report.update(status='PASS_V117_SELECTED_COMPONENT_'+'_'.join(name.upper() for name,_ in variants)+'_ACK_C2_HUD_ABSTRACT_PUBLICATION', qualified_variants=[name for name,_ in variants])
+     except BaseException as exc:

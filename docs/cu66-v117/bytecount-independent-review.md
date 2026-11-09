@@ -1,0 +1,29 @@
+# Independent G2 byte-count terminal review
+
+**PASS — source and actual terminal evidence audited independently.** This reviewer did not author the ingress repair. The audit is [bytecount-terminal.json](../../experiments/python-gamebub-v117/audit/bytecount-terminal.json). No heavy job or pinned file was modified by this audit.
+
+The selected actual [G2 receipt](../../experiments/python-gamebub-v117/ingress-bytecount/attempts/20261109T123941516083Z/receipt.json) is PASS with actual_RTL_run=true. Its selector, all57 source hashes, all98 retained artifacts and all33 actual compile-file hashes match. Source27800275… derives reversibly from the exact qualified G1 sourceabfcef20…, whose current PASS selector, actual receipt and entire source/artifact closure were independently rechecked. Original G1 files remain unchanged. The actual routed cause is the complete B125 terminal receiptd8ea9755…, WNS−2.202ns, not an estimate or a synthesis proxy; its retained routed artifacts also match.
+
+## Arithmetic and source contract
+
+Let u = bits>>3, f = (bits[2:0] !=0), and L = active_length−6 modulo2^32. The original predicate compares u+f to L. G2 compares u to L when f=0, or to active_length−7 = L−1 modulo2^32 when f=1. Addition/subtraction by one is a bijection modulo2^32; u is at most0x1fffffff and u+f at most0x20000000. Thus the equality is equivalent over the full32-bit length domain, including L=0, underflow/wrap, high expected lengths and maximum bits. No signed or narrowed comparison is introduced.
+
+The private literal `descriptor_bytes=(descriptor_bits>>3)+32'(descriptor_bits[2:0]!=0)` remains unchanged. The old G1 minus6/packet-bound/owner invariants remain. A new assertion checks minus7 ownership, the literal ceil view and substituted predicate on the original descriptor edge. All five prior `ifndef SYNTHESIS` assertion blocks are retained exactly; G2 adds one block. The only new registered operand is minus7 captured at the existing SELECT_BAND edge. All descriptor error-priority branches and subsequent cursor/metadata commits remain in the same order and cycles.
+
+The added actual RTL matrix covers10 expected byte lengths ×6 whole-part values ×8 remainders ×4 bands =1,920 cases per seed, including168 zero-L/nonzero-remainder cases,320 maximum-u cases and960 high expected lengths. Each run records104 commits plus1,816 rejects. These are declared prepared full-width owner states, not a claim that physically bounded packets naturally reach every enormous length. The independent audit also checked40,000 deterministic arithmetic samples in Python; that is supplemental model evidence, not additional RTL execution or a formal exhaustive proof.
+
+## Actual retained test coverage
+
+Two direct runs use seeds117901/117902. Each retains259 successful packets,84 cancel/retry cases,160 corpus profiles,6,272 initial-bound cases,21,860 ready-descriptor cases and56 combined reset/start/abort boundary cases with56 prepared retries, followed by the new1,920-case matrix. Actual raw logs contain exactly the three recorded inherited/extent/bytecount terminal rows. Original sparse/dense arithmetic, held tuples, admitted packet byte provenance, response owner/epoch, malformed packet/error priority and finite watchdog checks remain. Per run,2,256,431 accepted reads equal2,256,398 responses plus33 explicitly canceled owners. Direct pair checks equal every reported clock edge; there is no simulated-cycle skip.
+
+Two actual br88 caller runs use seeds118001/118002 and the real synchronous parser/context, caller and packed-scratch interface. The pair wrapper contains207 matching old/candidate raw, valid, ready, debug and counter equalities. It asserts the pair at every rising edge; the C++ adapter also checks each eval, plus the original private pending-tuple equality. This is a focused real caller proof, not full18-source canonical/LIVE qualification.
+
+Each caller run executes the20-packet corpus in both fast and stalled memory profiles, producing40 actual case rows and4,501,888 dense comparisons (9,003,776 total),56 directed checks,18 real caller preparation cancel/retry checks and9 synchronous-staging checks. Independently summing dense samples in the40 raw rows matches the terminal total. Seeds differ from G1's seeds, so no misleading G1-versus-G2 aggregate cycle equality is claimed; exact reference/candidate cycles are checked within each G2 paired run.
+
+Both compiles use Verilator5.020 with --assert -Wall, compiler-j1 and C++ -Wall -Wextra -Werror. All seven recorded commands exit0 without resource stops. Containers retain2CPU,8GiB memory and8GiB memory+swap caps, finite command/edge watchdogs and memory-pressure gates. No warning suppression or assertion disabling was found.
+
+## Native C expectations and limits
+
+The actual B bottleneck includes fetched descriptor bits passing through the ceil increment carry chain and late descriptor validity/error logic into metadata clock enables. G2 preserves the old ceil wire for verification while removing it from the synthesized functional validity condition. Native C may therefore replace that late increment with comparisons against precomputed minus6/minus7 and a low-remainder select. This is a structural expectation, not a predicted pass: minus7 preparation, equality/select logic, other descriptor errors, routing, bulk resets and residual/reference arithmetic can still limit125MHz.
+
+C's separate reconstruction wordbank/direct-bank-enable change also needs actual mapping evidence: inspect its generated constant word selects and whether bank CE startpoints are the predicted FFs. The frozen method and clocks remain authoritative; this review does not authorize another source composition, routing rerun or constraint change. No achieved full-parent clock, physical SDRAM/ESP32 execution, sustained hardware30fps or validated under-10-ms decoding is established by this focused audit.

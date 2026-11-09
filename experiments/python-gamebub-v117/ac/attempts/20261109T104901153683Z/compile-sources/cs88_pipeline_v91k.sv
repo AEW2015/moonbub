@@ -1,0 +1,650 @@
+// V91i2b bounded refill overlap; compile-time mode 0 retains V91i2a scheduling.
+module cs88_pipeline_v91k (
+    input logic clk, reset, start, abort_packet,
+    output logic out_valid,
+    input logic out_ready,
+    output logic [7:0] out_value,
+    output logic [31:0] out_epoch,out_fid,
+    output logic [1:0] out_plane,out_mode,
+    output logic [12:0] out_tile,
+    output logic [5:0] out_index,
+    output logic ref_req_valid,
+    input logic ref_req_ready,
+    output logic [31:0] ref_req_epoch,ref_req_fid,
+    output logic [63:0] ref_req_generation,
+    output logic [1:0] ref_req_plane,
+    output logic [12:0] ref_req_tile,
+    input logic ref_rsp_valid,
+    output logic ref_rsp_ready,
+    input logic [31:0] ref_rsp_epoch,ref_rsp_fid,
+    input logic [63:0] ref_rsp_generation,
+    input logic [1:0] ref_rsp_plane,
+    input logic [12:0] ref_rsp_tile,
+    input logic [511:0] ref_rsp_pixels,
+    input logic ref_rsp_error,
+    output logic reconstruct_busy,reconstruct_done,ref_pending,
+    output logic [7:0] reconstruct_error,
+    output logic [3:0] reconstruct_state,
+    output logic [63:0] count_reconstruct_modes,count_reconstruct_residuals,count_reconstruct_outputs,
+    output logic [63:0] count_ref_requests,count_ref_acks,count_copy_tiles,count_const_tiles,count_residual_tiles,
+    output logic [63:0] count_ref_discarded,count_reconstruct_output_stalls,count_reconstruct_ref_wait,
+    output logic reconstruct_lookup_req,reconstruct_lookup_ready,reconstruct_lookup_rsp,
+    output logic [12:0] reconstruct_lookup_tile,
+    output logic [10:0] reconstruct_lookup_cell,
+    output logic [1:0] reconstruct_lookup_mode,reconstruct_lookup_scale,
+    output logic admitted_ready,admitted_key,
+    output logic [31:0] admitted_fid,
+    output logic [63:0] admitted_generation,
+    output logic start_ready,
+    input logic cache_valid, cache_last,
+    output logic cache_ready, cache_complete,
+    input logic [1:0] cache_data,
+    input logic [31:0] cache_ref_fid,
+    input logic [63:0] cache_ref_generation,
+    output logic [7:0] cache_error,
+    input logic accepted_ref_valid, accepted_qcache_valid,
+    input logic [31:0] accepted_ref_fid,
+    input logic [63:0] accepted_ref_generation,
+    output logic [1:0] residual_plane,
+    output logic [12:0] residual_tile,
+    output logic [10:0] residual_qcell,
+    output logic [1:0] residual_qscale,
+    output logic [7:0] frame_state,
+    output logic [31:0] frame_fid,
+    output logic [31:0] core_starts, refill_bytes, blocked_starts,
+    output logic [31:0] current_child_epoch,
+    output logic [63:0] admission_reads,
+    output logic [31:0] replay_reads,
+    output logic [7:0] admission_error,
+    output logic frame_read_req, frame_read_rsp,
+    output logic [31:0] frame_read_addr, frame_rsp_addr, frame_rsp_epoch,
+    output logic [7:0] frame_read_data,
+    output logic [1:0] queue_count, queue_max_count, queue_max_owned,
+    output logic queue_pending, queue_active, queue_push, queue_pop, queue_stall,
+    output logic [31:0] queue_requests, queue_responses, queue_pops, queue_stalls,
+    output logic [31:0] queue_cancel_queued, queue_cancel_pending,
+
+    output logic [31:0] residual_child_epoch, residual_token,
+    output logic coefficient_valid, coefficient_ready, coefficient_done,
+    output logic [31:0] coefficient_epoch,
+    output logic [1:0] coefficient_plane, coefficient_qscale,
+    output logic [15:0] coefficient_block,
+    output logic [12:0] coefficient_tile,
+    output logic [10:0] coefficient_qcell,
+    output logic [5:0] coefficient_index,
+    output logic signed [15:0] coefficient_value,
+    output logic [7:0] coefficient_error, inverse_error,
+    output logic inverse_busy, inverse_done,
+    output logic [1:0] inverse_bank_state [0:1],
+    output logic inverse_fill_bank, inverse_math_bank,
+    output logic [2:0] inverse_math_state,
+    output logic [1:0] inverse_owned_banks, inverse_max_owned_banks,
+    output logic inverse_launch, inverse_dequant,
+    output logic [31:0] inverse_token, inverse_epoch, inverse_child_epoch,
+    output logic [1:0] inverse_plane, inverse_qscale,
+    output logic [15:0] inverse_block,
+    output logic [12:0] inverse_tile,
+    output logic [10:0] inverse_qcell,
+    output logic [1023:0] inverse_coefficients,
+    output logic [1279:0] inverse_dequantized,
+    output logic [63:0] inverse_count_inputs, inverse_count_tiles, inverse_count_launches,
+    output logic [63:0] inverse_count_dequant, inverse_count_outputs, inverse_count_completed_tiles,
+    output logic [63:0] inverse_count_input_stalls, inverse_count_output_stalls, inverse_count_cancelled_banks,
+
+    input logic [31:0] packet_bytes, epoch,
+    input logic serial_clear, write_overlap, read_prefetch, tile_overlap,
+    input logic in_valid,
+    output logic in_ready,
+    input logic [7:0] in_data,
+    input logic in_last,
+    output logic residual_valid,
+    output logic residual_ready,
+    output logic [15:0] residual_block,
+    output logic [5:0] residual_index,
+    output logic signed [23:0] residual_value,
+    output logic [31:0] residual_epoch,
+    output logic done,
+    output logic [7:0] error,
+    output logic busy, draining, scratch_sealed,
+    output logic [18:0] used_bytes,
+    output logic [63:0] count_cycles, count_input_bytes, count_dense,
+    output logic [63:0] count_reads, count_writes, count_dense_stall,
+    output logic mem_req_valid,
+    input logic mem_req_ready,
+    output logic mem_req_write,
+    output logic [17:0] mem_req_addr,
+    output logic [127:0] mem_req_data,
+    output logic [31:0] mem_req_epoch,
+    input logic mem_rsp_valid,
+    output logic mem_rsp_ready,
+    input logic [127:0] mem_rsp_data,
+    input logic [31:0] mem_rsp_epoch,
+    input logic mem_rsp_error,
+    output logic [3:0] packet_state,
+    output logic metadata_wait,
+    output logic dbg_running, dbg_allocation, dbg_seal_sent, dbg_packet_done,
+    output logic dbg_coef_valid, dbg_coef_ready,
+    output logic [1:0] dbg_coef_band,
+    output logic [15:0] dbg_coef_block,
+    output logic [5:0] dbg_coef_index,
+    output logic signed [15:0] dbg_coef_value,
+    output logic [31:0] dbg_coef_epoch,
+    output logic dbg_meta_valid, dbg_meta_ready, dbg_meta_raw,
+    output logic dbg_band_end_valid, dbg_band_end_ready,
+    output logic [1:0] dbg_band_end_band,
+    output logic dbg_seal_valid, dbg_seal_ready,
+    output logic [4:0] dbg_scratch_state, dbg_scratch_return_state,
+    output logic dbg_scratch_outstanding,
+    output logic dbg_prefetch_offer, dbg_prefetch_launch, dbg_prefetch_use,
+    output logic dbg_tile_mode, dbg_tile_preparing, dbg_prepare_bank, dbg_emit_bank,
+    output logic [1:0] dbg_bank_ready, dbg_bank_owned, dbg_emitter_state,
+    output logic [15:0] dbg_prepare_block,
+    output logic [15:0] dbg_bank_block [0:1],
+    output logic [31:0] dbg_bank_epoch [0:1],
+    output logic dbg_tile_prepare_start, dbg_tile_publish, dbg_tile_release,
+    output logic [63:0] count_emitter_state [0:3],
+    output logic [63:0] count_tile_starts, count_tile_publishes, count_tile_releases,
+    output logic [63:0] count_prepare_output_overlap, count_prepare_output_hold,
+    output logic [63:0] count_tile_read_output_overlap, count_tile_bank_wait, count_both_ready_wait, count_tile_prep_done_wait, count_output_valid,
+    output logic [63:0] count_publish_release_same_edge,
+    output logic [1:0] max_tile_owned, max_tile_ready,
+    output logic [63:0] count_prefetch_offers, count_prefetch_accepts, count_prefetch_acks,
+    output logic [63:0] count_prefetch_uses, count_dense_during_read_pending, count_prefetch_drain_wait,
+    output logic max_prefetch_offer,
+    output logic dbg_write_slot_valid, dbg_assembler_full, dbg_write_enqueue,
+    output logic [63:0] count_write_enqueues, count_write_accepts, count_write_acks, count_full_wait, count_packing_during_write_pending,
+    output logic max_write_slot,
+    output logic [1:0] max_owned_lines,
+    output logic [2:0] dbg_scratch_phase,
+    output logic [4:0] dbg_scratch_assembly_bytes,
+    output logic [3:0] dbg_scratch_cache_valid,
+    output logic [2:0] dbg_scratch_head_valid,
+    output logic [63:0] count_packet_state [0:15],
+    output logic [63:0] count_scratch_state [0:31],
+    output logic [63:0] count_coef_stall, count_metadata_wait, count_band_end_stall,
+    output logic [63:0] count_mem_req_stall, count_mem_pending, count_input_starved,
+    output logic [63:0] ts_first_input, ts_last_input, ts_metadata_accept,
+    output logic [63:0] ts_last_sparse_coef, ts_packet_done_observed,
+    output logic [63:0] ts_seal_accepted, ts_scratch_sealed_observed,
+    output logic [63:0] ts_first_dense, ts_last_dense, ts_integrated_done,
+    output logic [63:0] ts_first_coef_band [0:3], ts_last_coef_band [0:3], ts_band_end [0:3],
+    output logic [4:0] max_assembly_bytes,
+    output logic [2:0] max_cache_valid, max_head_valid,
+    output logic max_outstanding,
+    output logic stage_read_req, stage_read_rsp, stage_write, stage_pending, stage_context_active, stage_cancel, stage_word_valid, stage_word_ready,
+    output logic [31:0] stage_read_addr, stage_rsp_addr, stage_write_addr, stage_req_epoch, stage_rsp_epoch,
+    output logic [7:0] stage_read_data, stage_write_data,
+    output logic [5:0] stage_buffer_bytes, stage_buffer_highwater,
+    output logic [2:0] stage_purpose,
+    output logic [63:0] count_stage_reads, count_stage_responses, count_stage_writes,
+    output logic [63:0] count_stage_fetch_wait, count_stage_word_hold
+);
+    logic accepted_start, base_start_ready, base_cache_ready, base_busy;
+    logic inverse_cancel, base_abort, inverse_fault_ack, reconstruction_fault_ack;
+    logic reconstruction_cancel;
+    logic inverse_fault, reconstruction_fault, coefficient_fault;
+    logic inverse_fault_pending, reconstruction_fault_pending;
+    logic coefficient_stage_cancel, coefficient_stage_occupied;
+    logic staged_valid, staged_ready, staged_done;
+    logic staged_metadata_bad, staged_domain_bad;
+    logic [31:0] staged_epoch, staged_child_epoch;
+    logic [1:0] staged_plane, staged_qscale;
+    logic [15:0] staged_block;
+    logic [12:0] staged_tile;
+    logic [10:0] staged_qcell;
+    logic [5:0] staged_index;
+    logic signed [15:0] staged_value;
+    // IV114.1: a held reservation owns the idle resources until command or
+    // preload acceptance. Availability is sampled only when creating credit;
+    // while held, every autonomous allocation path is blocked by this wrapper.
+    logic admission_credit, command_pending, command_accept;
+    logic owner_open, owner_delivered, cache_owned, cache_abort_rearm;
+    logic [10:0] cache_index;
+    logic [31:0] owner_sequence, base_kill_owner;
+    logic base_kill_valid, base_kill_sent;
+    // IV115.O1: authorization is born with the real registered kill tuple and
+    // retained until a new command/reset revokes it. It is not a second copy of
+    // the one-edge valid pulse. Raw valid/tag remain visible to old probes.
+    logic base_kill_authorized;
+    logic terminal_valid;
+    logic [7:0] terminal_cause, current_cause;
+    logic qualified_fault, public_revoked, transfer_enable;
+    logic all_available, cache_accept, cache_grant, raw_joined_done;
+    logic [31:0] command_packet_bytes, command_epoch;
+    logic command_serial_clear, command_write_overlap, command_read_prefetch, command_tile_overlap;
+    logic command_accepted_ref_valid, command_accepted_qcache_valid;
+    logic [31:0] command_accepted_ref_fid;
+    logic [63:0] command_accepted_ref_generation;
+    logic base_in_ready, base_cache_complete, base_coefficient_valid, base_coefficient_done;
+    logic boundary_ready, transform_valid, reconstruction_ready, reconstruction_valid;
+    logic reference_request_valid, physical_request_valid;
+    logic [31:0] public_blocked_starts, unused_base_blocked_starts;
+    logic [63:0] count_command_accepts, count_command_deliveries, count_command_cancels;
+
+    assign all_available=base_start_ready&&!base_busy&&!inverse_busy&&!reconstruct_busy&&
+        !coefficient_stage_occupied&&!ref_pending&&!dbg_scratch_outstanding&&
+        queue_count==0&&!queue_pending&&!queue_active;
+    assign start_ready=admission_credit&&!command_pending&&!cache_owned&&
+        owner_sequence!=32'hffffffff&&!reset&&!abort_packet;
+    assign command_accept=start&&start_ready;
+    // Preserve this name as the actual child/reset edge for the frozen oracle.
+    assign accepted_start=command_pending&&!reset&&!abort_packet;
+    assign qualified_fault=owner_open&&owner_delivered&&
+        (reconstruction_fault||inverse_fault||coefficient_fault);
+    always_comb begin
+        current_cause=coefficient_error;
+        if(inverse_fault)current_cause=8'hc0|inverse_error;
+        if(reconstruction_fault)current_cause=8'he0|reconstruct_error;
+    end
+    assign public_revoked=reset||abort_packet||qualified_fault||terminal_valid;
+    assign transfer_enable=!public_revoked&&!command_pending;
+    assign cache_grant=(admission_credit||cache_owned)&&!owner_open&&!command_pending&&
+        !start&&!reset&&!abort_packet;
+    assign cache_ready=base_cache_ready&&cache_grant;
+    assign cache_accept=cache_valid&&cache_ready;
+    assign cache_complete=base_cache_complete&&!command_pending&&!reset&&!abort_packet;
+    // Peer faults cross one local kill register. External abort remains direct
+    // at the existing producer's private replay boundary. Public mask is immediate.
+    // Current real transitions capture the owner atomically at both kill births.
+    // A retired private valid/tag injection after a new command has no certificate.
+    assign base_abort=abort_packet||(base_kill_valid&&base_kill_authorized);
+    assign inverse_cancel=abort_packet||(owner_open&&owner_delivered&&(coefficient_fault||reconstruction_fault));
+    assign reconstruction_cancel=abort_packet||(owner_open&&owner_delivered&&(coefficient_fault||inverse_fault));
+    assign coefficient_stage_cancel=abort_packet||qualified_fault||(terminal_valid&&owner_open);
+    assign raw_joined_done=base_coefficient_done&&inverse_done&&reconstruct_done&&
+        !(coefficient_fault||inverse_fault||reconstruction_fault);
+    assign done=owner_delivered&&raw_joined_done&&!public_revoked&&!command_pending;
+    assign error=command_pending?8'd0:terminal_valid?terminal_cause:qualified_fault?current_cause:8'd0;
+    assign busy=command_pending||owner_open||base_busy||inverse_busy||reconstruct_busy||coefficient_stage_occupied;
+    assign blocked_starts=public_blocked_starts;
+    assign in_ready=base_in_ready&&transfer_enable&&owner_delivered;
+    assign coefficient_valid=base_coefficient_valid&&transfer_enable;
+    assign coefficient_ready=boundary_ready&&transfer_enable;
+    assign coefficient_done=base_coefficient_done&&transfer_enable&&owner_delivered;
+    assign residual_valid=transform_valid&&transfer_enable;
+    assign residual_ready=reconstruction_ready&&transfer_enable;
+    assign out_valid=reconstruction_valid&&transfer_enable;
+    assign ref_req_valid=reference_request_valid&&transfer_enable;
+    assign mem_req_valid=physical_request_valid&&transfer_enable;
+    // Response ports are intentionally not masked: accepted physical debt drains.
+    always_ff @(posedge clk)begin
+        base_kill_valid<=0;
+        if(reset)begin
+            admission_credit<=0;command_pending<=0;owner_open<=0;owner_delivered<=0;
+            cache_owned<=0;cache_index<=0;cache_abort_rearm<=0;owner_sequence<=0;
+            base_kill_owner<=0;base_kill_sent<=0;base_kill_authorized<=0;terminal_valid<=0;terminal_cause<=0;
+            public_blocked_starts<=0;count_command_accepts<=0;count_command_deliveries<=0;count_command_cancels<=0;
+        end else if(abort_packet)begin
+            admission_credit<=0;command_pending<=0;owner_open<=0;owner_delivered<=0;
+            cache_owned<=0;cache_index<=0;terminal_valid<=0;terminal_cause<=0;
+            cache_abort_rearm<=(!owner_open||!owner_delivered)&&(command_pending||cache_owned||admission_credit);
+            public_blocked_starts<=0;
+            if(command_pending)count_command_cancels<=count_command_cancels+1;
+            if(!base_kill_sent)begin base_kill_valid<=1;base_kill_owner<=owner_sequence;base_kill_sent<=1;base_kill_authorized<=1;end
+        end else begin
+            if(start&&!start_ready)public_blocked_starts<=public_blocked_starts+1;
+            if(command_accept)begin
+                admission_credit<=0;command_pending<=1;owner_open<=1;owner_delivered<=0;
+                terminal_valid<=0;terminal_cause<=0;base_kill_sent<=0;base_kill_authorized<=0;cache_abort_rearm<=0;
+                owner_sequence<=owner_sequence+1;count_command_accepts<=count_command_accepts+1;
+                command_packet_bytes<=packet_bytes;command_epoch<=epoch;
+                command_serial_clear<=serial_clear;command_write_overlap<=write_overlap;
+                command_read_prefetch<=read_prefetch;command_tile_overlap<=tile_overlap;
+                command_accepted_ref_valid<=accepted_ref_valid;command_accepted_qcache_valid<=accepted_qcache_valid;
+                command_accepted_ref_fid<=accepted_ref_fid;command_accepted_ref_generation<=accepted_ref_generation;
+            end else if(accepted_start)begin
+                command_pending<=0;owner_delivered<=1;
+                count_command_deliveries<=count_command_deliveries+1;
+            end else begin
+                if(qualified_fault&&!terminal_valid)begin terminal_valid<=1;terminal_cause<=current_cause;end
+                if(qualified_fault&&!terminal_valid&&(inverse_fault||reconstruction_fault)&&!base_kill_sent)begin
+                    base_kill_valid<=1;base_kill_owner<=owner_sequence;base_kill_sent<=1;base_kill_authorized<=1;
+                end
+                if(owner_open&&all_available&&(terminal_valid||raw_joined_done))owner_open<=0;
+                if(!owner_open&&!command_pending&&!cache_owned&&all_available&&!base_kill_valid&&owner_sequence!=32'hffffffff)
+                    admission_credit<=1;
+                if(cache_accept)begin
+                    base_kill_sent<=0;cache_abort_rearm<=0;
+                    if(cache_last||cache_index==1349)begin
+                        cache_owned<=0;cache_index<=0;
+                        // This preload has continuously reserved every other
+                        // stage, so its final accepted byte atomically returns credit.
+                        admission_credit<=owner_sequence!=32'hffffffff;
+                    end else begin cache_owned<=1;cache_index<=cache_index+1;admission_credit<=0;end
+                end
+                if(cache_abort_rearm&&base_kill_valid)begin
+                    cache_abort_rearm<=0;admission_credit<=owner_sequence!=32'hffffffff;
+                end
+            end
+        end
+    end
+    always_ff @(posedge clk)begin
+        if(reset||abort_packet||accepted_start)begin inverse_fault_ack<=0;reconstruction_fault_ack<=0;end
+        else begin
+            if(inverse_fault)inverse_fault_ack<=1;
+            if(reconstruction_fault)reconstruction_fault_ack<=1;
+        end
+    end
+    cu66_coefficient_elastic coefficient_boundary (
+        .clk(clk),.reset(reset),.start(accepted_start),.cancel(coefficient_stage_cancel),
+        .input_done(coefficient_done),.in_valid(coefficient_valid),.in_ready(boundary_ready),
+        .in_epoch(coefficient_epoch),.in_child_epoch(current_child_epoch),
+        .in_plane(coefficient_plane),.in_qscale(coefficient_qscale),.in_block(coefficient_block),
+        .in_tile(coefficient_tile),.in_qcell(coefficient_qcell),.in_index(coefficient_index),.in_value(coefficient_value),
+        .out_valid(staged_valid),.out_ready(staged_ready),.output_done(staged_done),.occupied(coefficient_stage_occupied),
+        .out_epoch(staged_epoch),.out_child_epoch(staged_child_epoch),
+        .out_plane(staged_plane),.out_qscale(staged_qscale),.out_block(staged_block),
+        .out_tile(staged_tile),.out_qcell(staged_qcell),.out_index(staged_index),.out_value(staged_value),.out_metadata_bad(staged_metadata_bad),.out_domain_bad(staged_domain_bad));
+    cu66_inverse_stream_v91j transform (
+        .clk(clk),.reset(reset),.start(accepted_start),.cancel(inverse_cancel),.input_done(staged_done),
+        .in_valid(staged_valid),.in_ready(staged_ready),
+        .in_epoch(staged_epoch),.in_child_epoch(staged_child_epoch),
+        .in_plane(staged_plane),.in_qscale(staged_qscale),.in_block(staged_block),
+        .in_tile(staged_tile),.in_qcell(staged_qcell),.in_index(staged_index),.in_value(staged_value),
+        .in_metadata_bad(staged_metadata_bad),.in_domain_bad(staged_domain_bad),
+        .out_valid(transform_valid),.out_ready(residual_ready),.out_epoch(residual_epoch),.out_child_epoch(residual_child_epoch),.out_token(residual_token),
+        .out_plane(residual_plane),.out_qscale(residual_qscale),.out_block(residual_block),.out_tile(residual_tile),.out_qcell(residual_qcell),
+        .out_index(residual_index),.out_value(residual_value),.busy(inverse_busy),.done(inverse_done),.error(inverse_error),.fault_o(inverse_fault),
+        .fault_ack_i(inverse_fault_ack),.fault_pending_o(inverse_fault_pending),
+        .bank_state(inverse_bank_state),.fill_bank(inverse_fill_bank),.math_bank(inverse_math_bank),.math_state(inverse_math_state),
+        .owned_banks(inverse_owned_banks),.max_owned_banks(inverse_max_owned_banks),
+        .dbg_launch(inverse_launch),.dbg_dequant(inverse_dequant),.dbg_token(inverse_token),
+        .dbg_coefficients(inverse_coefficients),.dbg_dequantized(inverse_dequantized),
+        .dbg_epoch(inverse_epoch),.dbg_child_epoch(inverse_child_epoch),.dbg_plane(inverse_plane),.dbg_qscale(inverse_qscale),
+        .dbg_block(inverse_block),.dbg_tile(inverse_tile),.dbg_qcell(inverse_qcell),
+        .count_inputs(inverse_count_inputs),.count_tiles(inverse_count_tiles),.count_launches(inverse_count_launches),
+        .count_dequant(inverse_count_dequant),.count_outputs(inverse_count_outputs),.count_completed_tiles(inverse_count_completed_tiles),
+        .count_input_stalls(inverse_count_input_stalls),.count_output_stalls(inverse_count_output_stalls),
+        .count_cancelled_banks(inverse_count_cancelled_banks));
+    cu66_reconstruct_stream_v91k reconstruction (
+        .clk(clk),.reset(reset),.start(accepted_start),.cancel(reconstruction_cancel),
+        .admitted_ready(admitted_ready),.key_frame(admitted_key),.input_done(inverse_done),
+        .epoch(command_epoch),.frame_fid(admitted_fid),.accepted_ref_valid(command_accepted_ref_valid),
+        .accepted_ref_fid(command_accepted_ref_fid),.accepted_ref_generation(command_accepted_ref_generation),
+        .lookup_req(reconstruct_lookup_req),.lookup_ready(reconstruct_lookup_ready),
+        .lookup_tile(reconstruct_lookup_tile),.lookup_cell(reconstruct_lookup_cell),
+        .lookup_rsp(reconstruct_lookup_rsp),.lookup_mode(reconstruct_lookup_mode),.lookup_scale(reconstruct_lookup_scale),
+        .in_valid(residual_valid),.in_ready(reconstruction_ready),.in_epoch(residual_epoch),
+        .in_child_epoch(residual_child_epoch),.in_token(residual_token),.in_plane(residual_plane),
+        .in_qscale(residual_qscale),.in_block(residual_block),.in_tile(residual_tile),.in_qcell(residual_qcell),
+        .in_index(residual_index),.in_value(residual_value),
+        .out_valid(reconstruction_valid),.out_ready(out_ready&&transfer_enable),.out_epoch(out_epoch),.out_fid(out_fid),
+        .out_plane(out_plane),.out_mode(out_mode),.out_tile(out_tile),.out_index(out_index),.out_value(out_value),
+        .ref_req_valid(reference_request_valid),.ref_req_ready(ref_req_ready&&transfer_enable),.ref_req_epoch(ref_req_epoch),.ref_req_fid(ref_req_fid),
+        .ref_req_generation(ref_req_generation),.ref_req_plane(ref_req_plane),.ref_req_tile(ref_req_tile),
+        .ref_rsp_valid(ref_rsp_valid),.ref_rsp_ready(ref_rsp_ready),.ref_rsp_epoch(ref_rsp_epoch),.ref_rsp_fid(ref_rsp_fid),
+        .ref_rsp_generation(ref_rsp_generation),.ref_rsp_plane(ref_rsp_plane),.ref_rsp_tile(ref_rsp_tile),
+        .ref_rsp_pixels(ref_rsp_pixels),.ref_rsp_error(ref_rsp_error),
+        .busy(reconstruct_busy),.done(reconstruct_done),.ref_pending(ref_pending),.error(reconstruct_error),.fault_o(reconstruction_fault),
+        .fault_ack_i(reconstruction_fault_ack),.fault_pending_o(reconstruction_fault_pending),.state(reconstruct_state),
+        .count_modes(count_reconstruct_modes),.count_residuals(count_reconstruct_residuals),.count_outputs(count_reconstruct_outputs),
+        .count_ref_requests(count_ref_requests),.count_ref_acks(count_ref_acks),.count_copy_tiles(count_copy_tiles),
+        .count_const_tiles(count_const_tiles),.count_residual_tiles(count_residual_tiles),.count_ref_discarded(count_ref_discarded),
+        .count_output_stalls(count_reconstruct_output_stalls),.count_ref_wait(count_reconstruct_ref_wait));
+    cs88_coefficients_v91k #(.REFILL_OVERLAP(1)) coefficients (
+        .reconstruct_lookup_req(reconstruct_lookup_req),.reconstruct_lookup_tile(reconstruct_lookup_tile),
+        .reconstruct_lookup_cell(reconstruct_lookup_cell),.reconstruct_lookup_ready(reconstruct_lookup_ready),
+        .reconstruct_lookup_rsp(reconstruct_lookup_rsp),.reconstruct_lookup_mode(reconstruct_lookup_mode),
+        .reconstruct_lookup_scale(reconstruct_lookup_scale),.admitted_ready(admitted_ready),.admitted_key(admitted_key),
+        .admitted_fid(admitted_fid),.admitted_generation(admitted_generation),
+        .clk(clk),
+        .reset(reset),
+        .start(accepted_start),
+        .abort_packet(base_abort),
+        .start_ready(base_start_ready),
+        .cache_valid(cache_valid&&cache_grant),
+        .cache_last(cache_last),
+        .cache_ready(base_cache_ready),
+        .cache_complete(base_cache_complete),
+        .cache_data(cache_data),
+        .cache_ref_fid(cache_ref_fid),
+        .cache_ref_generation(cache_ref_generation),
+        .cache_error(cache_error),
+        .accepted_ref_valid(command_accepted_ref_valid),
+        .accepted_qcache_valid(command_accepted_qcache_valid),
+        .accepted_ref_fid(command_accepted_ref_fid),
+        .accepted_ref_generation(command_accepted_ref_generation),
+        .out_plane(coefficient_plane),
+        .out_tile(coefficient_tile),
+        .out_qcell(coefficient_qcell),
+        .out_qscale(coefficient_qscale),
+        .frame_state(frame_state),
+        .frame_fid(frame_fid),
+        .core_starts(core_starts),
+        .refill_bytes(refill_bytes),
+        .blocked_starts(unused_base_blocked_starts),
+        .current_child_epoch(current_child_epoch),
+        .admission_reads(admission_reads),
+        .replay_reads(replay_reads),
+        .admission_error(admission_error),
+        .frame_read_req(frame_read_req),
+        .frame_read_rsp(frame_read_rsp),
+        .frame_read_addr(frame_read_addr),
+        .frame_rsp_addr(frame_rsp_addr),
+        .frame_rsp_epoch(frame_rsp_epoch),
+        .frame_read_data(frame_read_data),
+        .queue_count(queue_count),
+        .queue_max_count(queue_max_count),
+        .queue_max_owned(queue_max_owned),
+        .queue_pending(queue_pending),
+        .queue_active(queue_active),
+        .queue_push(queue_push),
+        .queue_pop(queue_pop),
+        .queue_stall(queue_stall),
+        .queue_requests(queue_requests),
+        .queue_responses(queue_responses),
+        .queue_pops(queue_pops),
+        .queue_stalls(queue_stalls),
+        .queue_cancel_queued(queue_cancel_queued),
+        .queue_cancel_pending(queue_cancel_pending),
+        .packet_bytes(command_packet_bytes),
+        .epoch(command_epoch),
+        .serial_clear(command_serial_clear),
+        .write_overlap(command_write_overlap),
+        .read_prefetch(command_read_prefetch),
+        .tile_overlap(command_tile_overlap),
+        .in_valid(in_valid&&transfer_enable&&owner_delivered),
+        .in_ready(base_in_ready),
+        .in_data(in_data),
+        .in_last(in_last),
+        .out_valid(base_coefficient_valid),
+        .out_ready(coefficient_ready),
+        .out_block(coefficient_block),
+        .out_index(coefficient_index),
+        .out_value(coefficient_value),
+        .out_epoch(coefficient_epoch),
+        .done(base_coefficient_done),
+        .error(coefficient_error),.fault_o(coefficient_fault),
+        .busy(base_busy),
+        .draining(draining),
+        .scratch_sealed(scratch_sealed),
+        .used_bytes(used_bytes),
+        .count_cycles(count_cycles),
+        .count_input_bytes(count_input_bytes),
+        .count_dense(count_dense),
+        .count_reads(count_reads),
+        .count_writes(count_writes),
+        .count_dense_stall(count_dense_stall),
+        .mem_req_valid(physical_request_valid),
+        .mem_req_ready(mem_req_ready&&transfer_enable),
+        .mem_req_write(mem_req_write),
+        .mem_req_addr(mem_req_addr),
+        .mem_req_data(mem_req_data),
+        .mem_req_epoch(mem_req_epoch),
+        .mem_rsp_valid(mem_rsp_valid),
+        .mem_rsp_ready(mem_rsp_ready),
+        .mem_rsp_data(mem_rsp_data),
+        .mem_rsp_epoch(mem_rsp_epoch),
+        .mem_rsp_error(mem_rsp_error),
+        .packet_state(packet_state),
+        .metadata_wait(metadata_wait),
+        .dbg_running(dbg_running),
+        .dbg_allocation(dbg_allocation),
+        .dbg_seal_sent(dbg_seal_sent),
+        .dbg_packet_done(dbg_packet_done),
+        .dbg_coef_valid(dbg_coef_valid),
+        .dbg_coef_ready(dbg_coef_ready),
+        .dbg_coef_band(dbg_coef_band),
+        .dbg_coef_block(dbg_coef_block),
+        .dbg_coef_index(dbg_coef_index),
+        .dbg_coef_value(dbg_coef_value),
+        .dbg_coef_epoch(dbg_coef_epoch),
+        .dbg_meta_valid(dbg_meta_valid),
+        .dbg_meta_ready(dbg_meta_ready),
+        .dbg_meta_raw(dbg_meta_raw),
+        .dbg_band_end_valid(dbg_band_end_valid),
+        .dbg_band_end_ready(dbg_band_end_ready),
+        .dbg_band_end_band(dbg_band_end_band),
+        .dbg_seal_valid(dbg_seal_valid),
+        .dbg_seal_ready(dbg_seal_ready),
+        .dbg_scratch_state(dbg_scratch_state),
+        .dbg_scratch_return_state(dbg_scratch_return_state),
+        .dbg_scratch_outstanding(dbg_scratch_outstanding),
+        .dbg_prefetch_offer(dbg_prefetch_offer),
+        .dbg_prefetch_launch(dbg_prefetch_launch),
+        .dbg_prefetch_use(dbg_prefetch_use),
+        .dbg_tile_mode(dbg_tile_mode),
+        .dbg_tile_preparing(dbg_tile_preparing),
+        .dbg_prepare_bank(dbg_prepare_bank),
+        .dbg_emit_bank(dbg_emit_bank),
+        .dbg_bank_ready(dbg_bank_ready),
+        .dbg_bank_owned(dbg_bank_owned),
+        .dbg_emitter_state(dbg_emitter_state),
+        .dbg_prepare_block(dbg_prepare_block),
+        .dbg_bank_block(dbg_bank_block),
+        .dbg_bank_epoch(dbg_bank_epoch),
+        .dbg_tile_prepare_start(dbg_tile_prepare_start),
+        .dbg_tile_publish(dbg_tile_publish),
+        .dbg_tile_release(dbg_tile_release),
+        .count_emitter_state(count_emitter_state),
+        .count_tile_starts(count_tile_starts),
+        .count_tile_publishes(count_tile_publishes),
+        .count_tile_releases(count_tile_releases),
+        .count_prepare_output_overlap(count_prepare_output_overlap),
+        .count_prepare_output_hold(count_prepare_output_hold),
+        .count_tile_read_output_overlap(count_tile_read_output_overlap),
+        .count_tile_bank_wait(count_tile_bank_wait),
+        .count_both_ready_wait(count_both_ready_wait),
+        .count_tile_prep_done_wait(count_tile_prep_done_wait),
+        .count_output_valid(count_output_valid),
+        .count_publish_release_same_edge(count_publish_release_same_edge),
+        .max_tile_owned(max_tile_owned),
+        .max_tile_ready(max_tile_ready),
+        .count_prefetch_offers(count_prefetch_offers),
+        .count_prefetch_accepts(count_prefetch_accepts),
+        .count_prefetch_acks(count_prefetch_acks),
+        .count_prefetch_uses(count_prefetch_uses),
+        .count_dense_during_read_pending(count_dense_during_read_pending),
+        .count_prefetch_drain_wait(count_prefetch_drain_wait),
+        .max_prefetch_offer(max_prefetch_offer),
+        .dbg_write_slot_valid(dbg_write_slot_valid),
+        .dbg_assembler_full(dbg_assembler_full),
+        .dbg_write_enqueue(dbg_write_enqueue),
+        .count_write_enqueues(count_write_enqueues),
+        .count_write_accepts(count_write_accepts),
+        .count_write_acks(count_write_acks),
+        .count_full_wait(count_full_wait),
+        .count_packing_during_write_pending(count_packing_during_write_pending),
+        .max_write_slot(max_write_slot),
+        .max_owned_lines(max_owned_lines),
+        .dbg_scratch_phase(dbg_scratch_phase),
+        .dbg_scratch_assembly_bytes(dbg_scratch_assembly_bytes),
+        .dbg_scratch_cache_valid(dbg_scratch_cache_valid),
+        .dbg_scratch_head_valid(dbg_scratch_head_valid),
+        .count_packet_state(count_packet_state),
+        .count_scratch_state(count_scratch_state),
+        .count_coef_stall(count_coef_stall),
+        .count_metadata_wait(count_metadata_wait),
+        .count_band_end_stall(count_band_end_stall),
+        .count_mem_req_stall(count_mem_req_stall),
+        .count_mem_pending(count_mem_pending),
+        .count_input_starved(count_input_starved),
+        .ts_first_input(ts_first_input),
+        .ts_last_input(ts_last_input),
+        .ts_metadata_accept(ts_metadata_accept),
+        .ts_last_sparse_coef(ts_last_sparse_coef),
+        .ts_packet_done_observed(ts_packet_done_observed),
+        .ts_seal_accepted(ts_seal_accepted),
+        .ts_scratch_sealed_observed(ts_scratch_sealed_observed),
+        .ts_first_dense(ts_first_dense),
+        .ts_last_dense(ts_last_dense),
+        .ts_integrated_done(ts_integrated_done),
+        .ts_first_coef_band(ts_first_coef_band),
+        .ts_last_coef_band(ts_last_coef_band),
+        .ts_band_end(ts_band_end),
+        .max_assembly_bytes(max_assembly_bytes),
+        .max_cache_valid(max_cache_valid),
+        .max_head_valid(max_head_valid),
+        .max_outstanding(max_outstanding),
+        .stage_read_req(stage_read_req),
+        .stage_read_rsp(stage_read_rsp),
+        .stage_write(stage_write),
+        .stage_pending(stage_pending),
+        .stage_context_active(stage_context_active),
+        .stage_cancel(stage_cancel),
+        .stage_word_valid(stage_word_valid),
+        .stage_word_ready(stage_word_ready),
+        .stage_read_addr(stage_read_addr),
+        .stage_rsp_addr(stage_rsp_addr),
+        .stage_write_addr(stage_write_addr),
+        .stage_req_epoch(stage_req_epoch),
+        .stage_rsp_epoch(stage_rsp_epoch),
+        .stage_read_data(stage_read_data),
+        .stage_write_data(stage_write_data),
+        .stage_buffer_bytes(stage_buffer_bytes),
+        .stage_buffer_highwater(stage_buffer_highwater),
+        .stage_purpose(stage_purpose),
+        .count_stage_reads(count_stage_reads),
+        .count_stage_responses(count_stage_responses),
+        .count_stage_writes(count_stage_writes),
+        .count_stage_fetch_wait(count_stage_fetch_wait),
+        .count_stage_word_hold(count_stage_word_hold)
+    );
+`ifndef SYNTHESIS
+    // Independent literal birth predicate follows the sole always_ff priority.
+    // The certificate is NOT proof of arbitrary private register fault recovery.
+    logic certificate_birth;
+    assign certificate_birth=!reset &&
+        ((abort_packet && !base_kill_sent) ||
+         (!abort_packet && !command_accept && !accepted_start && qualified_fault &&
+          !terminal_valid && (inverse_fault||reconstruction_fault) && !base_kill_sent));
+    assert property(@(posedge clk) certificate_birth |=>
+        base_kill_valid && base_kill_authorized &&
+        base_kill_owner==$past(owner_sequence) && owner_sequence==$past(owner_sequence))
+        else $fatal(1,"real kill birth lost certificate or captured owner");
+    assert property(@(posedge clk) base_kill_valid && base_kill_authorized |->
+        base_kill_owner==owner_sequence && base_abort && coefficients.abort_packet)
+        else $fatal(1,"certified kill owner/delivery edge differs");
+    assert property(@(posedge clk) base_kill_valid && base_kill_authorized |->
+        $past(certificate_birth))
+        else $fatal(1,"certified pulse has no actual birth");
+    assert property(@(posedge clk) base_kill_valid && base_kill_authorized |=>
+        !base_kill_valid)
+        else $fatal(1,"private kill pulse extended beyond original edge");
+    assert property(@(posedge clk) reset || command_accept |=> !base_kill_authorized)
+        else $fatal(1,"new command/reset retained old kill authorization");
+    assert property(@(posedge clk) !reset && !command_accept && !certificate_birth |=>
+        $stable(base_kill_authorized))
+        else $fatal(1,"kill authorization changed without birth or revocation");
+    assert property(@(posedge clk) !abort_packet && base_kill_valid && !base_kill_authorized |->
+        !base_abort && !coefficients.abort_packet)
+        else $fatal(1,"uncertified stale private pulse canceled producer");
+    assert property(@(posedge clk) abort_packet |-> base_abort && coefficients.abort_packet)
+        else $fatal(1,"external abort lost its original direct edge");
+    always_ff @(posedge clk)begin
+        if(!reset&&!abort_packet)begin
+            assert(!(command_accept&&cache_accept))else $fatal(1,"command/cache hidden dual transfer");
+            if(admission_credit&&!cache_accept&&!command_accept)
+                assert(!owner_open&&!command_pending&&!cache_owned&&all_available)else $fatal(1,"stale unreserved admission credit");
+            if(accepted_start)assert(owner_open&&!owner_delivered&&!admission_credit)else $fatal(1,"command replay/unreserved delivery");
+            if(public_revoked||command_pending)assert(!out_valid&&!ref_req_valid&&!mem_req_valid&&!coefficient_valid&&!coefficient_ready&&!residual_valid&&!residual_ready&&!in_ready)else $fatal(1,"revoked public transfer");
+            assert(coefficient_valid==((base_coefficient_valid&&transfer_enable)))else $fatal(1,"coefficient boundary valid mask");
+        end
+        assert(inverse_fault_pending==(inverse_fault&&!inverse_fault_ack)) else $fatal(1,"inverse pending fault/ack mismatch");
+        assert(reconstruction_fault_pending==(reconstruction_fault&&!reconstruction_fault_ack)) else $fatal(1,"reconstruction pending fault/ack mismatch");
+        assert(inverse_fault==(inverse_error!=0)) else $fatal(1,"top inverse fault/status mismatch");
+        assert(reconstruction_fault==(reconstruct_error!=0)) else $fatal(1,"top reconstruction fault/status mismatch");
+        assert(coefficient_fault==(coefficient_error!=0)) else $fatal(1,"top coefficient fault/status mismatch");
+    end
+`endif
+endmodule

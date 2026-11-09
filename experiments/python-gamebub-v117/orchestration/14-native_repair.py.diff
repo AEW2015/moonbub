@@ -1,0 +1,43 @@
+--- scripts/cu66-v117/native_throughput.py
++++ scripts/cu66-v117/native_repair.py
+@@ -15,8 +15,8 @@
+ import uuid
+ 
+ ROOT = Path(__file__).resolve().parents[2]
+-AREA = ROOT / 'experiments/python-gamebub-v117/throughput-study'
+-FLOW = ROOT / 'fpga/experiments/cu66-v117-flow'
++AREA = ROOT / 'experiments/python-gamebub-v117/repair-study'
++FLOW = ROOT / 'fpga/experiments/cu66-v117-repair-flow'
+ POLICY = AREA / 'study-policy.json'
+ BUILD = Path('/home/lori/gamebub-build/cu66-v69')
+ PARSER = ROOT / 'fpga/experiments/cu66-v110-count-domain-flow/run_native.py'
+@@ -109,6 +109,10 @@
+ def spatial(path):
+     q=load(path)
+     assert q['status']==load(POLICY)['canonical_status'] and q['actual_RTL_run'] is True
++    assert q['B_all_stdout_records_events_and_cycles_exact'] is True
++    for key in ('selector','receipt'):
++        cp=ROOT/q['B_exact_control'][key];assert sha(cp)==q['B_exact_control'][key+'_sha256']
++        assert q['source_sha256'][rel(cp)]==sha(cp)
+     assert q['seeds']==[107601,107602]
+     assert not q.get('canonical_reused_actual_RTL',False)
+     assert not q.get('candidate_model_reused',False)
+@@ -215,6 +219,9 @@
+     assert all(chosen[a]['path']==n for a,n in policy['candidate_aliases'].items())
+     assert not any('cu66-v111-header' in m['path'] for m in chosen.values())
+     proofs={qp:sha(qp)}
++    for cause in policy.get('routed_cause_artifacts',[]):
++        cp=ROOT/cause['path'];assert sha(cp)==cause['sha256']
++        proofs[cp]=sha(cp)
+     for name in policy['focus_paths']+policy.get('inherited_focus_paths',[]):
+         fp=ROOT/name;d,selected=focused(fp)
+         if name in policy['focus_paths']:
+@@ -523,7 +530,7 @@
+ def main():
+     global AREA, POLICY
+     ap = argparse.ArgumentParser(description=__doc__)
+-    ap.add_argument('--composition', choices=('throughput',), default='throughput')
++    ap.add_argument('--composition', choices=('repair',), default='repair')
+     ap.add_argument('--trial', choices=('integrated-125','integrated-100'))
+     ap.add_argument('--repeat-of', type=Path)
+     ap.add_argument('--run', action='store_true')
