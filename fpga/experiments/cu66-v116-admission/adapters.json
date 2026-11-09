@@ -1,0 +1,196 @@
+{
+  "adapters": [
+    {
+      "edits": [
+        [
+          "module cs88_admission_v91i2a (",
+          "module admission_original ("
+        ],
+        [
+          "\n);\n    localparam logic [7:0] IDLE",
+          ",\n    output logic verify_coord_valid,\n    output logic [1:0] verify_plane,\n    output logic [31:0] verify_tile,\n    output logic [10:0] verify_cell,\n    output logic [6:0] verify_column,\n    output logic verify_odd,\n    output logic [10:0] verify_pair_base,\n    output logic verify_residual,\n    output logic [10:0] verify_active_index,\n    output logic verify_active_value,\n    output logic [31:0] verify_q_index, verify_q_runs,\n    output logic [6:0] verify_q_remaining,\n    output logic [1:0] verify_q_value,\n    output logic [7:0] verify_q_selected, verify_q_cached,\n    output logic [31:0] verify_header_index,\n    output logic [34:0] verify_header_mode_start, verify_header_residual_start,\n    output logic [34:0] verify_header_hud_tail, verify_header_residual_end, verify_header_packet_total\n);\n    localparam logic [7:0] IDLE"
+        ],
+        [
+          "\nendmodule\n\n// Isolated common-clock",
+          "\n    assign verify_coord_valid=coord_valid;\n    assign verify_plane=plane;assign verify_tile=tile;assign verify_cell=coord_cell;\n    assign verify_column=coord_y_column;assign verify_odd=coord_y_odd;\n    assign verify_pair_base=coord_pair_base;\n    assign verify_residual=coord_valid && ((state==KEY_TILE && tile<tile_count(plane) && !hidden(plane,tile)) ||\n        (state==MODE_BIT && bits_left!=0 && mixed_bit && bit_cache[7]) ||\n        (state==GROUP_TILE && tile!=group_end && !hidden(plane,tile) && group_tag==1));\n    assign verify_active_index=active_index[10:0];\n    assign verify_active_value=active_index<1350 ? active_cell[active_index[10:0]] : 1'b0;\n\n    assign verify_q_index=q_index;assign verify_q_runs=q_runs;\n    assign verify_q_remaining=q_remaining;assign verify_q_value=q_value;\n    assign verify_q_selected=qbuffer[q_index[8:0]];\n    assign verify_q_cached=q_run_byte;\n    assign verify_header_index=header_index;\n    assign verify_header_mode_start=header_mode_start;\n    assign verify_header_residual_start=header_residual_start;\n    assign verify_header_hud_tail=header_hud_tail;\n    assign verify_header_residual_end=header_residual_end;\n    assign verify_header_packet_total=header_packet_total;\n\nendmodule\n\n// Isolated common-clock"
+        ],
+        [
+          "    output logic [31:0] mode_bytes, qmap_bytes, hud_bytes, data_bytes,",
+          "    output logic [31:0] mode_bytes, qmap_bytes /* verilator public_flat_rw */, hud_bytes, data_bytes,"
+        ],
+        [
+          "    logic [7:0] state, fetch_return, word_return;",
+          "    logic [7:0] state /* verilator public_flat_rw */, fetch_return, word_return;"
+        ],
+        [
+          "    logic [7:0] header [0:127];",
+          "    logic [7:0] header [0:127] /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [7:0] qbuffer [0:353];",
+          "    logic [7:0] qbuffer [0:353] /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [7:0] q_run_byte;",
+          "    logic [7:0] q_run_byte /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [6:0] q_remaining;",
+          "    logic [6:0] q_remaining /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [1:0] q_value;",
+          "    logic [1:0] q_value /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [7:0] ram_data, byte_value;",
+          "    logic [7:0] ram_data, byte_value /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [31:0] size_bytes, received, outer_crc, outer_trailer;",
+          "    logic [31:0] size_bytes /* verilator public_flat_rw */, received, outer_crc, outer_trailer;"
+        ],
+        [
+          "    logic snapshot_valid, snapshot_cache;",
+          "    logic snapshot_valid /* verilator public_flat_rw */, snapshot_cache;"
+        ],
+        [
+          "    logic [31:0] snapshot_fid;",
+          "    logic [31:0] snapshot_fid /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [63:0] snapshot_generation;",
+          "    logic [63:0] snapshot_generation /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [31:0] cursor, q_start, residual_start, residual_end;",
+          "    logic [31:0] cursor, q_start /* verilator public_flat_rw */, residual_start /* verilator public_flat_rw */, residual_end /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [34:0] header_mode_start, header_residual_start, header_hud_tail;",
+          "    logic [34:0] header_mode_start /* verilator public_flat_rw */, header_residual_start /* verilator public_flat_rw */, header_hud_tail /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [34:0] header_residual_end, header_packet_total;",
+          "    logic [34:0] header_residual_end /* verilator public_flat_rw */, header_packet_total /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [31:0] header_index, q_index, q_crc, q_trailer, q_runs;",
+          "    logic [31:0] header_index /* verilator public_flat_rw */, q_index /* verilator public_flat_rw */, q_crc, q_trailer, q_runs /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic coord_valid;",
+          "    logic coord_valid /* verilator public_flat_rw */;"
+        ]
+      ],
+      "path": "fpga/experiments/cu66-v116-admission/admission_original.sv",
+      "sha256": "fa12976651bf29c337120f842a32c9038f19adb0abf866491465cdc55c1e8a69",
+      "source": "fpga/experiments/cu66-v112-control/cs88_admission_v91i2a.sv",
+      "source_sha256": "49f23fe56894012d1f647192bb030025eb79331fe24b173c11a2252bee4ff8b7"
+    },
+    {
+      "edits": [
+        [
+          "module cs88_admission_v91i2a (",
+          "module admission_candidate ("
+        ],
+        [
+          "\n);\n    localparam logic [7:0] IDLE",
+          ",\n    output logic verify_coord_valid,\n    output logic [1:0] verify_plane,\n    output logic [31:0] verify_tile,\n    output logic [10:0] verify_cell,\n    output logic [6:0] verify_column,\n    output logic verify_odd,\n    output logic [10:0] verify_pair_base,\n    output logic verify_residual,\n    output logic [10:0] verify_active_index,\n    output logic verify_active_value,\n    output logic [31:0] verify_q_index, verify_q_runs,\n    output logic [6:0] verify_q_remaining,\n    output logic [1:0] verify_q_value,\n    output logic [7:0] verify_q_selected, verify_q_cached,\n    output logic [31:0] verify_header_index,\n    output logic [34:0] verify_header_mode_start, verify_header_residual_start,\n    output logic [34:0] verify_header_hud_tail, verify_header_residual_end, verify_header_packet_total\n);\n    localparam logic [7:0] IDLE"
+        ],
+        [
+          "\nendmodule\n\n// Isolated common-clock",
+          "\n    assign verify_coord_valid=coord_valid;\n    assign verify_plane=plane;assign verify_tile=tile;assign verify_cell=coord_cell;\n    assign verify_column=coord_y_column;assign verify_odd=coord_y_odd;\n    assign verify_pair_base=coord_pair_base;\n    assign verify_residual=coord_valid && ((state==KEY_TILE && tile<tile_count(plane) && !hidden(plane,tile)) ||\n        (state==MODE_BIT && bits_left!=0 && mixed_bit && bit_cache[7]) ||\n        (state==GROUP_TILE && tile!=group_end && !hidden(plane,tile) && group_tag==1));\n    assign verify_active_index=active_index[10:0];\n    assign verify_active_value=active_index<1350 ? active_cell[active_index[10:0]] : 1'b0;\n\n    assign verify_q_index=q_index;assign verify_q_runs=q_runs;\n    assign verify_q_remaining=q_remaining;assign verify_q_value=q_value;\n    assign verify_q_selected=qbuffer[q_index[8:0]];\n    assign verify_q_cached=q_run_byte;\n    assign verify_header_index=header_index;\n    assign verify_header_mode_start=header_mode_start;\n    assign verify_header_residual_start=header_residual_start;\n    assign verify_header_hud_tail=header_hud_tail;\n    assign verify_header_residual_end=header_residual_end;\n    assign verify_header_packet_total=header_packet_total;\n\nendmodule\n\n// Isolated common-clock"
+        ],
+        [
+          "    output logic [31:0] mode_bytes, qmap_bytes, hud_bytes, data_bytes,",
+          "    output logic [31:0] mode_bytes, qmap_bytes /* verilator public_flat_rw */, hud_bytes, data_bytes,"
+        ],
+        [
+          "    logic [7:0] state, fetch_return, word_return;",
+          "    logic [7:0] state /* verilator public_flat_rw */, fetch_return, word_return;"
+        ],
+        [
+          "    logic [7:0] header [0:127];",
+          "    logic [7:0] header [0:127] /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [7:0] qbuffer [0:353];",
+          "    logic [7:0] qbuffer [0:353] /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [7:0] q_run_byte;",
+          "    logic [7:0] q_run_byte /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [6:0] q_remaining;",
+          "    logic [6:0] q_remaining /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [1:0] q_value;",
+          "    logic [1:0] q_value /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [7:0] ram_data, byte_value;",
+          "    logic [7:0] ram_data, byte_value /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [31:0] size_bytes, received, outer_crc, outer_trailer;",
+          "    logic [31:0] size_bytes /* verilator public_flat_rw */, received, outer_crc, outer_trailer;"
+        ],
+        [
+          "    logic snapshot_valid, snapshot_cache;",
+          "    logic snapshot_valid /* verilator public_flat_rw */, snapshot_cache;"
+        ],
+        [
+          "    logic [31:0] snapshot_fid;",
+          "    logic [31:0] snapshot_fid /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [63:0] snapshot_generation;",
+          "    logic [63:0] snapshot_generation /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [31:0] cursor, q_start, residual_start, residual_end;",
+          "    logic [31:0] cursor, q_start /* verilator public_flat_rw */, residual_start /* verilator public_flat_rw */, residual_end /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [34:0] header_mode_start, header_residual_start, header_hud_tail;",
+          "    logic [34:0] header_mode_start /* verilator public_flat_rw */, header_residual_start /* verilator public_flat_rw */, header_hud_tail /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [34:0] header_residual_end, header_packet_total;",
+          "    logic [34:0] header_residual_end /* verilator public_flat_rw */, header_packet_total /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic [31:0] header_index, q_index, q_crc, q_trailer, q_runs;",
+          "    logic [31:0] header_index /* verilator public_flat_rw */, q_index /* verilator public_flat_rw */, q_crc, q_trailer, q_runs /* verilator public_flat_rw */;"
+        ],
+        [
+          "    logic coord_valid;",
+          "    logic coord_valid /* verilator public_flat_rw */;"
+        ]
+      ],
+      "path": "fpga/experiments/cu66-v116-admission/admission_candidate.sv",
+      "sha256": "1b15d17a79dab9831ae9d8813a5a557b2822b181b158f484910ec2e01c47d251",
+      "source": "fpga/experiments/cu66-v116-admission/cs88_admission_v91i2a.sv",
+      "source_sha256": "584491cbcd6168cb87ea1c0dafb59ae6c7fdaec2bcd22cf0210ad82085844ac7"
+    },
+    {
+      "edits": [],
+      "path": "fpga/experiments/cu66-v116-admission/admission_probe.sv",
+      "sha256": "43e63f2ee08850de79e703a4d0c9c849fcc025b419829c69f232e0ed5f2cee09",
+      "source": "fpga/experiments/cu66-v112-control/verification/admission_probe.sv",
+      "source_sha256": "43e63f2ee08850de79e703a4d0c9c849fcc025b419829c69f232e0ed5f2cee09"
+    },
+    {
+      "edits": [],
+      "path": "fpga/experiments/cu66-v116-admission/tb_admission.frozen.cpp",
+      "sha256": "309d89f858704ae563f0947a039e179cbfc3d6c43f227da2ecb18eff3a750ee2",
+      "source": "fpga/experiments/cu66-v112-control/verification/tb_admission.cpp",
+      "source_sha256": "309d89f858704ae563f0947a039e179cbfc3d6c43f227da2ecb18eff3a750ee2"
+    }
+  ],
+  "all_original_assertions_and_goldens_retained": true,
+  "all_public_ports_including_invalid_and_counters": true
+}

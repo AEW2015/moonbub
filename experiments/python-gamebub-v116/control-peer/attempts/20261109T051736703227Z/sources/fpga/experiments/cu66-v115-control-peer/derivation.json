@@ -1,0 +1,45 @@
+{
+  "canonical_recording_enabled_for_complete_retries": true,
+  "derived": "fpga/experiments/cu66-v115-control-peer/tb_peer.cpp",
+  "derived_sha256": "65ec05fdf68d235b1fdfc67e9aff5b5b4efbf0d75ed7aa1fa7fd40c49d4ef5b6",
+  "edits": [
+    {
+      "after": "#define P(n) b.d.rootp->cs88_pipeline_v91k__DOT__##n\n#define S(n) b.d.rootp->cs88_pipeline_v91k__DOT__coefficients__DOT__child__DOT__scratch__DOT__##n\n#define C(n) b.d.rootp->cs88_pipeline_v91k__DOT__coefficients__DOT__child__DOT__##n",
+      "before": "#define P(n) b.d.rootp->cs88_pipeline_v91k__DOT__##n"
+    },
+    {
+      "after": "unsigned checks=0,retries=0,accepted_writes=0,accepted_reads=0,replay_checks=0,local_cancel_edges=0,parent_checks=0,parent_retries=0,parent_stage_mask=0,parent_aborts=0,parent_resets=0,original_local_cancel_edges=0;",
+      "before": "unsigned checks=0,retries=0,accepted_writes=0,accepted_reads=0,replay_checks=0,local_cancel_edges=0;"
+    },
+    {
+      "after": " auto canonical_retry=[&](){b.hold_response=false;b.hold_reference_response=false;b.d.start=0;b.settle();need(!b.pending&&!b.reference_pending&&!b.d.ref_pending&&b.d.start_ready,\"peer drain did not return reservation\");start(0);b.record=true;b.feed_until();b.finish(*good);b.settle();};\n auto retry=[&](){canonical_retry();++retries;};",
+      "before": " auto retry=[&](){b.hold_response=false;b.hold_reference_response=false;b.d.start=0;b.settle();need(!b.pending&&!b.reference_pending&&!b.d.ref_pending&&b.d.start_ready,\"peer drain did not return reservation\");start(0);b.feed_until();b.finish(*good);b.settle();++retries;};"
+    },
+    {
+      "after": " original_local_cancel_edges=local_cancel_edges;need(original_local_cancel_edges==8,\"original peer cancel-edge count changed\");\n // Actual top-level reset/abort drives the unchanged real parent's store_abort\n // and abort_epoch(store_epoch) wiring. No child tag or owner is assigned here.\n for(bool reset:{false,true})for(unsigned stage=0;stage<3;++stage){\n  start(0);size_t at=0;bool offered=false;\n  auto input_tick=[&](){\n   if(!offered&&at<good->packet.size())offered=true;\n   b.d.in_valid=offered;b.d.in_data=at<good->packet.size()?good->packet[at]:0;b.d.in_last=at+1==good->packet.size();\n   b.d.clk=0;b.d.eval();const bool take=b.d.in_valid&&b.d.in_ready;b.tick();if(take){++at;offered=false;}\n  };\n  for(unsigned k=0;!(S(state)==30&&!S(prepare_mature));++k){need(k<3000000,\"real parent scratch reservation watchdog\");need(!b.d.error&&!b.d.done,\"frame terminated before scratch reservation\");input_tick();}\n  const auto reserved=S(queued_epoch),last=S(last_epoch);const bool seen=S(epoch_seen);const auto requests=b.requests,acks=b.acks,reference_requests=b.observed_ref_requests,reference_acks=b.observed_ref_acks;\n  need(S(active_epoch)==reserved&&C(store_epoch)==reserved,\"real parent does not see reserved scratch tag\");\n  for(unsigned n=0;n<stage;++n)input_tick();\n  need(S(state)==(stage==2?31U:30U)&&bool(S(prepare_mature))==(stage!=0),\"requested real scratch preparation edge absent\");\n  need(S(last_epoch)==last&&bool(S(epoch_seen))==seen,\"uncommitted scratch reservation advanced anti-replay epoch\");\n  need(!b.pending&&!b.reference_pending&&!b.d.dbg_scratch_outstanding&&!b.d.ref_pending&&!b.d.mem_req_valid&&!b.d.ref_req_valid&&!b.d.out_valid,\"pending scratch reservation acquired physical/output owner\");\n  if(reset)b.d.reset=1;else b.d.abort_packet=1;b.d.in_valid=b.d.in_last=0;b.d.eval();\n  need(S(cancel),\"actual parent abort/reset did not cancel reserved scratch owner\");\n  if(!reset)need(C(store_abort)&&C(store_epoch)==reserved,\"actual parent store_abort/tag wiring differs\");\n  masked(b);b.tick();b.d.reset=b.d.abort_packet=0;\n  need(S(state)==0&&!S(prepare_mature)&&S(last_epoch)==last&&bool(S(epoch_seen))==seen,\"reserved owner survived or advanced on public kill\");\n  b.settle();need(!b.pending&&!b.reference_pending&&!b.d.dbg_scratch_outstanding&&!b.d.ref_pending&&b.d.start_ready,\"public pending kill did not quiesce\");\n  need(b.requests==requests&&b.acks==acks&&b.observed_ref_requests==reference_requests&&b.observed_ref_acks==reference_acks,\"pending kill created or retired hidden physical request\");\n  ++parent_checks;parent_stage_mask|=1U<<stage;if(reset)++parent_resets;else ++parent_aborts;\n  std::cout<<\"{\\\"type\\\":\\\"parent_pending_case\\\",\\\"status\\\":\\\"PASS\\\",\\\"reset\\\":\"<<reset<<\",\\\"stage\\\":\"<<stage<<\",\\\"reserved_epoch\\\":\"<<reserved<<\",\\\"last_admitted_epoch\\\":\"<<last<<\",\\\"parent_abort_tag_read_only\\\":true}\\n\";\n  canonical_retry();++parent_retries;\n }\n need(checks==8&&retries==8&&parent_checks==6&&parent_retries==6&&parent_stage_mask==7&&parent_aborts==3&&parent_resets==3,\"peer/public-parent campaign coverage incomplete\");\n std::cout<<\"{\\\"type\\\":\\\"peer_verdict\\\"",
+      "before": " std::cout<<\"{\\\"type\\\":\\\"peer_verdict\\\""
+    },
+    {
+      "after": "local_cancel_edges\\\":\"<<original_local_cancel_edges<<\",\\\"all_local_cancel_edges\\\":\"<<local_cancel_edges<<\",\\\"parent_private_cancel_edges\\\":\"<<(local_cancel_edges-original_local_cancel_edges)<<\",\\\"parent_pending_cancel_cases\\\":\"<<parent_checks<<\",\\\"parent_canonical_retries\\\":\"<<parent_retries<<\",\\\"total_canonical_retries\\\":\"<<(retries+parent_retries)<<\",\\\"parent_stage_mask\\\":\"<<parent_stage_mask<<\",\\\"parent_abort_cases\\\":\"<<parent_aborts<<\",\\\"parent_reset_cases\\\":\"<<parent_resets<<\",\\\"canonical_case_id\\\":\\\"\"<<good->id<<\"\\\",\\\"clock_edges\\\":",
+      "before": "local_cancel_edges\\\":\"<<local_cancel_edges<<\",\\\"clock_edges\\\":"
+    },
+    {
+      "after": "IV115_CONTROL_PEER_FAIL",
+      "before": "IV114_CONTROL_PEER_FAIL"
+    }
+  ],
+  "original": "fpga/experiments/cu66-v114-control-peer/tb_peer.cpp",
+  "original_peer_case_assertions_retained": true,
+  "original_sha256": "8ba00ccca185a6cae7ce265b55a05d4f40686f3e0269bac76c400ce68507cc2b",
+  "private_cancel_header": {
+    "copy": "fpga/experiments/cu66-v115-control-peer/bench_peer_base.hpp",
+    "copy_sha256": "e56c4eb4a7a479c123baae06a7ad137b7c90e637735ccb6890c62f2df87c59dc",
+    "inherited_derivation": "fpga/experiments/cu66-v114-control-peer/derivation.json",
+    "inherited_derivation_sha256": "88faa8941684733e79b65c0a3c5fa31f0770b9c24dfa81608c82f23137c70554",
+    "original": "fpga/experiments/cu66-v114-control-peer/bench_peer_base.hpp",
+    "original_sha256": "e56c4eb4a7a479c123baae06a7ad137b7c90e637735ccb6890c62f2df87c59dc"
+  },
+  "reverse_verified": true,
+  "schema": "v115-additive-real-parent-peer-cancel-derivation-v1",
+  "shared_API_oracle_changed": false
+}

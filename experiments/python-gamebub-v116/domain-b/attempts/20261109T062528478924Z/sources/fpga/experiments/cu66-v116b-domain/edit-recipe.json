@@ -1,0 +1,84 @@
+{
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v116b-domain/domain_original.sv",
+      "candidate_sha256": "510872660bfbcfeca35ba01853fefd935d910f554806c712a823e3f504b8866d",
+      "edits": [
+        {
+          "after": "module domain_original (",
+          "before": "module cu66_coefficient_elastic ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v107-meta-flags/cu66_coefficient_elastic.sv",
+      "original_sha256": "ea53b408aab5e522dfb2c4ffc2eefee41d58af37032cedc409e74815ab35dab9"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-domain/domain_candidate.sv",
+      "candidate_sha256": "9029e5725f678624467848da8fd0ad32645319b472fcdf860f541ba1e3757857",
+      "edits": [
+        {
+          "after": "module domain_candidate (",
+          "before": "module cu66_coefficient_elastic ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-domain/cu66_coefficient_elastic.sv",
+      "original_sha256": "75f2dfce00929b25b035d30477689e3f397e5a8fb3796be2d425566f98117ee7"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-domain/tb_stage.frozen.cpp",
+      "candidate_sha256": "b44e0db47e5d70338bac8d498c36a78060fd4c7fa944ea53dc70665ea1753503",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v107-meta-flags/verification/tb_stage.cpp",
+      "original_sha256": "b44e0db47e5d70338bac8d498c36a78060fd4c7fa944ea53dc70665ea1753503"
+    }
+  ],
+  "all_original_SVA_blocks_text_exact": true,
+  "compared_public_outputs": [
+    "in_ready",
+    "out_valid",
+    "out_epoch",
+    "out_child_epoch",
+    "out_plane",
+    "out_qscale",
+    "out_block",
+    "out_tile",
+    "out_qcell",
+    "out_index",
+    "out_value",
+    "output_done",
+    "occupied",
+    "out_metadata_bad",
+    "out_domain_bad"
+  ],
+  "declared_public_cycle_delta": 0,
+  "domain_shadow_synthesis_excluded": true,
+  "metadata_flag_remains_registered": true,
+  "probe_ports_reference": {
+    "path": "fpga/experiments/cu66-v107-meta-flags/verification/ports.json",
+    "sha256": "2dc131f47df39cc8ba3615bfe7894a8f7339dce8b4ac7924f403f66162b6278a"
+  },
+  "probe_sha256": "cad95b0f8bf23036586ce846389add6d3b62a1cf9a33c7558c03a7a52602f0f0",
+  "production": {
+    "candidate": "fpga/experiments/cu66-v116b-domain/cu66_coefficient_elastic.sv",
+    "candidate_sha256": "75f2dfce00929b25b035d30477689e3f397e5a8fb3796be2d425566f98117ee7",
+    "edits": [
+      {
+        "after": "    assign out_domain_bad=tuple_checks[0];\n    // Metadata remains registered. Domain uses the same already-held tuple;\n    // no input-side selection cone enters a domain predicate FF.\n    assign tuple_checks[0]=(out_qscale==3||!(out_value[15:11]==5'd0||out_value[15:11]==5'b11111||out_value==16'h0800));",
+        "before": "    assign out_domain_bad=tuple_checks[0];"
+      },
+      {
+        "after": "                tuple_checks[1]<=(in_plane>2||in_tile>=(in_plane==0?13'd5400:13'd1350)||in_qcell!=quant_cell(in_plane,in_tile));",
+        "before": "                tuple_checks<={(in_plane>2||in_tile>=(in_plane==0?13'd5400:13'd1350)||in_qcell!=quant_cell(in_plane,in_tile)),(in_qscale==3||!(in_value[15:11]==5'd0||in_value[15:11]==5'b11111||in_value==16'h0800))};"
+      },
+      {
+        "after": "`ifndef SYNTHESIS\n    // The frozen input-side predicate is a verification-only independent\n    // shadow. Its initialized certificate persists across all warm kills,\n    // exactly like the original unreset payload and check registers.\n    logic domain_shadow_seen=0;\n    logic domain_shadow;\n    always_ff @(posedge clk)begin\n        if(!kill&&active&&in_valid&&in_ready)begin\n            domain_shadow<=(in_qscale==3||!(in_value[15:11]==5'd0||in_value[15:11]==5'b11111||in_value==16'h0800));domain_shadow_seen<=1;\n        end\n        if(domain_shadow_seen)\n            assert(out_domain_bad==domain_shadow)\n                else $fatal(1,\"V116B held domain differs from frozen accepted-input predicate\");\n    end\n`endif\nendmodule",
+        "before": "endmodule"
+      }
+    ],
+    "original": "fpga/experiments/cu66-v107-meta-flags/cu66_coefficient_elastic.sv",
+    "original_sha256": "ea53b408aab5e522dfb2c4ffc2eefee41d58af37032cedc409e74815ab35dab9"
+  },
+  "schema": "v116b-held-coefficient-domain-v1",
+  "scope": "All public2-state values every edge, including raw invalid views; unowned4-state initialization before first accepted tuple remains unspecified.",
+  "shadow_seen_persists_warm_kills": true
+}

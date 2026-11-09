@@ -1,0 +1,28 @@
+{
+  "added_public_cycles": 0,
+  "all_original_assertions_retained": true,
+  "candidate": "fpga/experiments/cu66-v116-admission/cs88_admission_v91i2a.sv",
+  "candidate_sha256": "584491cbcd6168cb87ea1c0dafb59ae6c7fdaec2bcd22cf0210ad82085844ac7",
+  "edits": [
+    {
+      "after": "    // V116_SELECTED_BEGIN: two existing edges separate plane selection from\n    // the original uint32 wrapped length expression. No fetch is advanced.\n    logic selected_valid, selected_limit_valid;\n    logic [1:0] selected_plane;\n    logic [31:0] selected_owner, selected_blocks, selected_limit;\n    logic selected_zero;\n    always_ff @(posedge clk)begin\n        if(reset||start||abort_packet)begin\n            selected_valid<=0;selected_limit_valid<=0;\n        end else if(state==PLANE_BEGIN)begin\n            selected_plane<=plane;selected_owner<=receipt_epoch;\n            selected_blocks<=plane_blocks[plane];\n            selected_zero<=plane_blocks[plane]==0;\n            selected_valid<=1;selected_limit_valid<=0;\n        end else if(state==PLANE_NEXT)begin\n            selected_valid<=0;selected_limit_valid<=0;\n        end else if(state==FETCH_REQ&&selected_valid&&!selected_limit_valid)begin\n            selected_limit<=46+128*selected_blocks;\n            selected_limit_valid<=1;\n        end\n    end\n`ifndef SYNTHESIS\n    // Check the complete owned tuple throughout all real fetch/word edges.\n    // plane_blocks has no writer during this interval; equality to the held\n    // selected count checks that stability rather than assuming it.\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&selected_valid&&\n        (state==FETCH_REQ||state==FETCH_WAIT||state==WORD_BYTE||\n         state==CHUNK_NUMBER||state==CHUNK_BLOCKS||state==CHUNK_LENGTH||\n         state==CHUNK_MAGIC||state==PLANE_NEXT))begin\n        assert(selected_plane==plane&&selected_owner==receipt_epoch)\n            else $fatal(1,\"V116 selected tuple owner/plane stability\");\n        assert(selected_blocks==plane_blocks[plane]&&selected_zero==(plane_blocks[plane]==0))\n            else $fatal(1,\"V116 selected count/zero stability\");\n    end\n    // Literal old arithmetic and predicates, including expression width, are\n    // retained at every actual consume. The residual-end bound stays separate.\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&\n        (state==CHUNK_NUMBER||state==CHUNK_BLOCKS||state==CHUNK_LENGTH))begin\n        assert(selected_valid&&selected_limit_valid&&selected_plane==plane&&selected_owner==receipt_epoch)\n            else $fatal(1,\"V116 selected consume without current preparation\");\n        assert(selected_blocks==plane_blocks[plane]&&selected_zero==(plane_blocks[plane]==0))\n            else $fatal(1,\"V116 selected consume count/zero\");\n        assert(selected_limit==46+128*plane_blocks[plane])\n            else $fatal(1,\"V116 selected consume literal old limit\");\n        if(state==CHUNK_NUMBER)\n            assert((word_value!=(selected_zero?32'd0:32'd1))==\n                (word_value!=(plane_blocks[plane]==0?32'd0:32'd1)))\n                else $fatal(1,\"V116 literal CHUNK_NUMBER predicate\");\n        if(state==CHUNK_BLOCKS)\n            assert((word_value!=selected_blocks||word_value==0)==\n                (word_value!=plane_blocks[plane]||word_value==0))\n                else $fatal(1,\"V116 literal CHUNK_BLOCKS predicate\");\n        if(state==CHUNK_LENGTH)\n            assert((word_value<46||word_value>selected_limit||\n                {32'd0,cursor}+4+{32'd0,word_value}>{32'd0,residual_end})==\n                (word_value<46||word_value>46+128*plane_blocks[plane]||\n                {32'd0,cursor}+4+{32'd0,word_value}>{32'd0,residual_end}))\n                else $fatal(1,\"V116 literal CHUNK_LENGTH predicate\");\n    end\n`endif\n    // V116_SELECTED_END\n\n    task automatic reject",
+      "before": "    task automatic reject"
+    },
+    {
+      "after": "if(word_value!=(selected_zero?32'd0:32'd1))reject(12);",
+      "before": "if(word_value!=(plane_blocks[plane]==0?32'd0:32'd1))reject(12);"
+    },
+    {
+      "after": "if(word_value!=selected_blocks||word_value==0)reject(13);",
+      "before": "if(word_value!=plane_blocks[plane]||word_value==0)reject(13);"
+    },
+    {
+      "after": "if(word_value<46||word_value>selected_limit||",
+      "before": "if(word_value<46||word_value>46+128*plane_blocks[plane]||"
+    }
+  ],
+  "original": "fpga/experiments/cu66-v112-control/cs88_admission_v91i2a.sv",
+  "original_sha256": "49f23fe56894012d1f647192bb030025eb79331fe24b173c11a2252bee4ff8b7",
+  "residual_end_expression_unchanged": true,
+  "schema": "v116-admission-existing-edge-v1"
+}

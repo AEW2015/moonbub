@@ -1,0 +1,30 @@
+{
+  "candidate": "fpga/experiments/cu66-v116-rice/br88_rice_elastic.sv",
+  "candidate_sha256": "c118357680db9825786d8b78fd7222abb24f7bf2039f6174c61c6ed2edd7e4b9",
+  "declared_public_cycle_delta": 0,
+  "edits": [
+    {
+      "after": "    logic [23:0] suffix_acc;\n    // Private payload is written only by an original successful suffix edge.\n    // Reset/start/error change the logical view, never this 24-bit bank.\n    logic [23:0] successful_payload;\n    logic output_zero;\n    assign out_value=output_zero ? 24'd0 : successful_payload;",
+      "before": "    logic [23:0] suffix_acc;",
+      "occurrences": 1
+    },
+    {
+      "after": "output_zero<=1;",
+      "before": "out_value<=0;",
+      "occurrences": 3
+    },
+    {
+      "after": "output_zero<=0; successful_payload<=decoded_value;",
+      "before": "out_value<=decoded_value;",
+      "occurrences": 1
+    },
+    {
+      "after": "`ifndef SYNTHESIS\n    // Independent old-value/view and owner model. This checker has no effect on\n    // synthesized hardware. Prepared-state fixtures explicitly initialize it.\n    logic v116_check_seen=0;\n    logic v116_expected_zero, v116_owned;\n    logic [23:0] v116_expected_value, v116_expected_payload, v116_previous_payload;\n    logic v116_previous_success;\n    logic v116_success_event, v116_error_event;\n    logic [23:0] v116_reference_suffix, v116_reference_value;\n    always_comb begin\n        v116_success_event=0;\n        v116_error_event=0;\n        v116_reference_suffix=serial ? ((suffix_acc<<1) | 24'(extracted)) : 24'(extracted);\n        v116_reference_value=quotient==15 ? v116_reference_suffix :\n            ((24'(quotient)<<k) | v116_reference_suffix);\n        // Reconstruct all old write-site priorities independently of the view.\n        if (!reset && !stream_start && active) begin\n            if (req_valid && req_ready)\n                v116_error_event=failed!=0 || req_k>19 || req_escape>24;\n            else if (in_valid && in_ready)\n                v116_error_event=word_bad && state!=IDLE;\n            else if (state==PREFIX && !out_valid)\n                v116_error_event=failed!=0 || prefix_empty ||\n                    (can_step && !serial && !found_one && window<15);\n            else if (state==SUFFIX && !out_valid) begin\n                v116_error_event=remaining<32'(suffix_left);\n                v116_success_event=!v116_error_event && can_step && (!serial || suffix_left<=1);\n            end\n        end\n    end\n    always_ff @(posedge clk) begin\n        if (v116_check_seen) begin\n            assert(out_value==v116_expected_value && output_zero==v116_expected_zero)\n                else $fatal(1,\"V116 exact old-value/zero-view mismatch\");\n            assert(output_zero || v116_owned)\n                else $fatal(1,\"V116 previous owner payload exposed\");\n            if (v116_previous_success)\n                assert(successful_payload==v116_expected_payload)\n                    else $fatal(1,\"V116 successful payload mismatch\");\n            else\n                assert(successful_payload==v116_previous_payload)\n                    else $fatal(1,\"V116 payload changed without successful suffix completion\");\n            if (output_zero)\n                assert(out_value==0)else $fatal(1,\"V116 zero view leaks private payload\");\n            if (out_valid && out_error!=OK)\n                assert(output_zero)else $fatal(1,\"V116 error lacks zero view\");\n        end\n        v116_check_seen<=1;\n        v116_previous_payload<=successful_payload;\n        v116_previous_success<=v116_success_event;\n        if (reset || stream_start) begin\n            v116_expected_zero<=1;\n            v116_expected_value<=0;\n            v116_owned<=0;\n        end else if (v116_error_event) begin\n            v116_expected_zero<=1;\n            v116_expected_value<=0;\n        end else if (v116_success_event) begin\n            v116_expected_zero<=0;\n            v116_expected_value<=v116_reference_value;\n            v116_expected_payload<=v116_reference_value;\n            v116_owned<=1;\n        end\n    end\n`endif\nendmodule",
+      "before": "endmodule",
+      "occurrences": 1
+    }
+  ],
+  "original": "fpga/experiments/cu66-v115-ingress/br88_rice_elastic.sv",
+  "original_sha256": "37c8f5bb79621117c0e9e05096b6edead446540b026b7240819bac39838660a3",
+  "schema": "v116-rice-unreset-payload-zero-view-v1"
+}

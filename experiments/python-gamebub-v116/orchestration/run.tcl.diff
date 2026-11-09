@@ -1,0 +1,60 @@
+--- fpga/experiments/cu66-v115-refined-flow/run.tcl
++++ fpga/experiments/cu66-v116-flow/run.tcl
+@@ -1,4 +1,4 @@
+-# V115 fresh-RTL Default synthesis. The prepared input declares 8 or 10 ns.
++# V116 fresh-RTL Default synthesis. The prepared input declares 8 or 10 ns.
+ # Omission of -directive invokes documented default; no retiming option is added.
+ if {[llength $argv] != 1} {error "expected prepared BUILD_DIRECTORY"}
+ set build [file normalize [lindex $argv 0]]
+@@ -6,15 +6,15 @@
+ file mkdir [file join $build results]
+ set_param general.maxThreads 2
+ if {[version -short] ne "2026.1" || ![string match *6511674* [version]]} {error "unqualified Vivado version/build"}
+-proc v115_phase {name} {
++proc v116_phase {name} {
+     global build
+     set f [open [file join $build results phase.txt] w]
+     puts $f $name
+     close $f
+-    puts "V115_PHASE $name"
++    puts "V116_PHASE $name"
+ }
+ if {$start_mode ne "rtl"} {error "Default comparison requires fresh RTL"}
+-v115_phase CLEAN_RTL_SYNTHESIS
++v116_phase CLEAN_RTL_SYNTHESIS
+ create_project -in_memory -part $part
+ set_property target_language Verilog [current_project]
+ set_property include_dirs $include_dirs [current_fileset]
+@@ -35,22 +35,22 @@
+ close $f
+ write_xdc -force -exclude_physical [file join $build results before-effective-timing.xdc]
+ source [file join $build report.tcl]
+-if {$start_mode eq "rtl"} {v115_reports synth}
+-v115_phase OPT_DESIGN
++if {$start_mode eq "rtl"} {v116_reports synth}
++v116_phase OPT_DESIGN
+ opt_design -directive $opt_directive
+-v115_phase PLACE_DESIGN
++v116_phase PLACE_DESIGN
+ place_design -directive $place_directive
+-v115_reports place
++v116_reports place
+ if {$phys_directive ne "NONE"} {
+-    v115_phase PRE_ROUTE_PHYS_OPT
++    v116_phase PRE_ROUTE_PHYS_OPT
+     phys_opt_design -directive $phys_directive
+-    v115_reports pre_route_phys
++    v116_reports pre_route_phys
+ }
+-v115_phase ROUTE_DESIGN
++v116_phase ROUTE_DESIGN
+ route_design -directive $route_directive
+-v115_reports route
++v116_reports route
+ write_checkpoint -force [file join $build results route.dcp]
+ report_route_status -file [file join $build results route-status.rpt]
+ write_xdc -force -exclude_physical [file join $build results effective-timing.xdc]
+-v115_phase ROUTE_COMPLETE
+-puts "V115_COMPONENT_ROUTE_FINISHED; no board or complete-custom-top signoff"
++v116_phase ROUTE_COMPLETE
++puts "V116_COMPONENT_ROUTE_FINISHED; no board or complete-custom-top signoff"

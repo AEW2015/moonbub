@@ -1,0 +1,63 @@
+--- scripts/cu66-v116/spatial.py
++++ scripts/cu66-v116/spatial_b.py
+@@ -4,7 +4,7 @@
+ from concurrent.futures import ThreadPoolExecutor
+ from pathlib import Path
+ ROOT=Path(__file__).resolve().parents[2]
+-AREA=ROOT/'experiments/python-gamebub-v116/spatial';HARNESS=ROOT/'fpga/experiments/cu66-v114-harness'
++AREA=ROOT/'experiments/python-gamebub-v116/control-b-study/spatial';HARNESS=ROOT/'fpga/experiments/cu66-v114-harness'
+ NATIVE=ROOT/'experiments/python-gamebub-v115/final/native/20261109T040313064127Z/receipt.json'
+ BASELINE=ROOT/'experiments/python-gamebub-v113/spatial/results.json'
+ BENCH=ROOT/'fpga/experiments/cu66-v107-elastic/verification/bench.cpp'
+@@ -14,10 +14,15 @@
+ IMAGE='sha256:b35d0961607ab885b8024ef37ebcac0c3a0d010af00fe6bbdbc63264079a49cf'
+ OVERRIDES={
+  'br88_rice_elastic.sv':ROOT/'fpga/experiments/cu66-v116-rice/br88_rice_elastic.sv',
+- 'cs88_admission_v91i2a.sv':ROOT/'fpga/experiments/cu66-v116-admission/cs88_admission_v91i2a.sv'}
++ 'cs88_admission_v91i2a.sv':ROOT/'fpga/experiments/cu66-v116-admission/cs88_admission_v91i2a.sv',
++ 'packed_scratch_v91g2.sv':ROOT/'fpga/experiments/cu66-v116b-control/packed_scratch_v91g2.sv',
++ 'br88_pipeline_v91h.sv':ROOT/'fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv',
++ 'cu66_coefficient_elastic.sv':ROOT/'fpga/experiments/cu66-v116b-domain/cu66_coefficient_elastic.sv'}
+ FOCUSED={
+  'experiments/python-gamebub-v116/rice/results.json':['br88_rice_elastic.sv'],
+- 'experiments/python-gamebub-v116/admission/results.json':['cs88_admission_v91i2a.sv']}
++ 'experiments/python-gamebub-v116/admission/results.json':['cs88_admission_v91i2a.sv'],
++ 'experiments/python-gamebub-v116/control-b/results.json':['packed_scratch_v91g2.sv','br88_pipeline_v91h.sv'],
++ 'experiments/python-gamebub-v116/domain-b/results.json':['cu66_coefficient_elastic.sv']}
+ PRIMARY_RUNNER=ROOT/'scripts/cu66-v114/spatial.py'
+ PRIMARY_RUNNER_SHA256='19dda677968bf539d7723777dedb7a59af02e1b6808bd1c5665e6302ac1b254e'
+ HARNESS_PINS={'bench_command_api.cpp':'97225e93eff4e7524ebefe553f01b6f0be8c98402cf2a380790ceb1a969c3672','bench-api-derivation.json':'ae0db1543b5c857e3442bba60d1d0f9fb0f5e42c0bd5abc2f57e4fc7b55cc3d8','bench_transport_base.hpp':'2e4c84900729de653e0927f5b86aebee25131679eac9fbec86d9a6ce04d66971','derivation.json':'1816b7830132d46850723b1977606a10c92238ce01ca55d327238aebf11d0c1d','transport.cpp':'266d9669092ca3893245b86a3281e321a7157819aaab406fbfef1e2c7f0bf5b2','admission_monitor.hpp':'7e45ba077fe1fcbf26e1a9235043ead0732fb2f00177529493ccfb26df17e1c3'}
+@@ -54,7 +59,7 @@
+  for a in aliases:
+   m=control['source_origins'][a];old=ROOT/m['path'];assert sha(old)==m['sha256'];p=OVERRIDES.get(old.name,old);sources.append(p);origins[a]=dict(path=rel(p),sha256=sha(p))
+   if p!=old:replacements.append(dict(alias=a,original=m['path'],original_sha256=m['sha256'],candidate=rel(p),candidate_sha256=sha(p)))
+- assert len(replacements)==2 and {Path(x['alias']).name for x in replacements}==set(OVERRIDES)
++ assert len(replacements)==5 and {Path(x['alias']).name for x in replacements}==set(OVERRIDES)
+  assert not any('v111-header' in rel(p)for p in sources)
+  proofs=[ROOT/name for name in FOCUSED]
+  if require_proofs:
+@@ -88,12 +93,12 @@
+  if not a.run:print('V116_SPATIAL_PREPARED_NOT_RUN',json.dumps(replacements));return
+  stamp=a.attempt_id or datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+  assert datetime.datetime.strptime(stamp,'%Y%m%dT%H%M%S%fZ').strftime('%Y%m%dT%H%M%S%fZ')==stamp
+- out=AREA/'attempts'/stamp;out.mkdir(parents=True);build=Path('/home/lori/gamebub-build/cu66-v69')/('v116-spatial-final-'+stamp);build.mkdir();mapped='/build/'+build.name
+- r=dict(schema='v116-owned-preparation-canonical-and-custom-transport-v1',variant='final-owner-certificate-and-request-bounds',primary_runner_reference=dict(path=rel(PRIMARY_RUNNER),sha256=PRIMARY_RUNNER_SHA256),shared_harness_read_only_verified=True,status='FAIL',actual_RTL_run=False,simulation_started=False,backend='Verilator',image_id=IMAGE,transport_rtl_source_order=[rel(FORWARD)],seeds=[107601,107602],baseline_reference=dict(path=rel(baseline_receipt),sha256=sha(baseline_receipt)),baseline_reused_actual_RTL=True,baseline_recompiled_or_rerun=False,bench_api_derivation=dict(path=rel(API_DERIVATION),sha256=sha(API_DERIVATION)),full_component_bench_compiled_byte_exact_original=False,all_original_functional_oracles_retained=True,source_sha256={rel(p):sha(p)for p in files},source_origins=origins,rtl_source_order=[rel(p)for p in sources],inputs=base['inputs'],replacements=replacements,commands=[],runs=[],transport_runs=[],memory_samples=[],newly_executed_candidate_case_profiles=0,newly_executed_candidate_directed_checks=0,candidate_model_reused=False,canonical_reused_actual_RTL=False,fresh_candidate_model_required=True,full_frame_publication=False,hardware_contact=False,strict_warnings=True,simulation_concurrency='Root exclusively grants two study heavy slots for two independent seeds; first container confirmed running before second launch. No concurrent source edits.',assertions_disabled_or_downgraded=False,old_exact_checker_modified=False,public_cycle_equivalence_claim=False,contract='V116 Rice zero-view payload and PLANE_BEGIN selected admission tuple retain all V115 public edge/value behavior. All earlier registered owner, scratch preparation, physical-drain and command contracts remain intact.',limits=['Actual retained custom packet/parallel DMA source adapter; no QSPI, ESP32 CPU, native Sunshine, C2 seal or publication claim.','Canonical oracle and all original held/error/counter/physical-drain checks retained; candidate event cycles intentionally differ.','Registered local command ownership is bounded; complete production PCTL1/session/publication qualification remains separate.'])
++ out=AREA/'attempts'/stamp;out.mkdir(parents=True);build=Path('/home/lori/gamebub-build/cu66-v69')/('v116b-spatial-'+stamp);build.mkdir();mapped='/build/'+build.name
++ r=dict(schema='v116-owned-preparation-canonical-and-custom-transport-v1',variant='control-b-owned-abort-and-held-domain-predicate',primary_runner_reference=dict(path=rel(PRIMARY_RUNNER),sha256=PRIMARY_RUNNER_SHA256),shared_harness_read_only_verified=True,status='FAIL',actual_RTL_run=False,simulation_started=False,backend='Verilator',image_id=IMAGE,transport_rtl_source_order=[rel(FORWARD)],seeds=[107601,107602],baseline_reference=dict(path=rel(baseline_receipt),sha256=sha(baseline_receipt)),baseline_reused_actual_RTL=True,baseline_recompiled_or_rerun=False,bench_api_derivation=dict(path=rel(API_DERIVATION),sha256=sha(API_DERIVATION)),full_component_bench_compiled_byte_exact_original=False,all_original_functional_oracles_retained=True,source_sha256={rel(p):sha(p)for p in files},source_origins=origins,rtl_source_order=[rel(p)for p in sources],inputs=base['inputs'],replacements=replacements,commands=[],runs=[],transport_runs=[],memory_samples=[],newly_executed_candidate_case_profiles=0,newly_executed_candidate_directed_checks=0,candidate_model_reused=False,canonical_reused_actual_RTL=False,fresh_candidate_model_required=True,full_frame_publication=False,hardware_contact=False,strict_warnings=True,simulation_concurrency='Root exclusively grants two study heavy slots for two independent seeds; first container confirmed running before second launch. No concurrent source edits.',assertions_disabled_or_downgraded=False,old_exact_checker_modified=False,public_cycle_equivalence_claim=False,contract='V116B domain check derives from the already-held identical payload, preserving public flags and acceptance cycles. V116B exact selected scratch abort-target feedback removes a redundant comparator only for its owned caller; generic foreign abort semantics retained. V116 Rice zero-view payload and PLANE_BEGIN selected admission tuple retain all V115 public edge/value behavior. All earlier registered owner, scratch preparation, physical-drain and command contracts remain intact.',limits=['Actual retained custom packet/parallel DMA source adapter; no QSPI, ESP32 CPU, native Sunshine, C2 seal or publication claim.','Canonical oracle and all original held/error/counter/physical-drain checks retained; candidate event cycles intentionally differ.','Registered local command ownership is bounded; complete production PCTL1/session/publication qualification remains separate.'])
+  started=time.monotonic();worker=threading.local()
+  def command(argv,name,cap):
+   gate=memory();assert gate['available_bytes']>=8*1024**3 and gate['psi_full_avg10']<1 and gate['combined_used_ratio']<.85,gate
+-  container='gamebub-v116-spatial-refined-'+stamp.lower()+'-'+name.split('.')[0]
++  container='gamebub-v116b-spatial-'+stamp.lower()+'-'+name.split('.')[0]
+   cmd=['docker','run','--rm','--init','--name',container,'--memory','8g','--memory-swap','8g','--cpus','2','--pids-limit','2048','--network','none','--ulimit','core=0','--mount',f'type=bind,src={out},dst={out},readonly','--mount',f'type=bind,src={build},dst={mapped}','-w',mapped,IMAGE,'timeout','--kill-after=5s',str(cap)+'s',*argv]
+   record=dict(argv=cmd,timeout_seconds=cap,resource_before=gate);r['commands'].append(record);began=time.monotonic()
+   with(out/name).open('w')as log:
+@@ -119,7 +124,7 @@
+    if a.pair_grant_file is None:return False
+    if not a.pair_grant_file.is_file():return False
+    grant=load(a.pair_grant_file)
+-   assert grant['owner']=='Root' and grant['grantee']=='v116-spatial-final' and grant['max_study_heavy_jobs']==2
++   assert grant['owner']=='Root' and grant['grantee']=='v116b-spatial' and grant['max_study_heavy_jobs']==2
+    assert grant['runner_sha256']==sha(Path(__file__))
+    peer=ROOT/grant['completed_peer_receipt']['path'];assert sha(peer)==grant['completed_peer_receipt']['sha256'] and load(peer)['status']=='PASS'
+    for name in r['rtl_source_order']:assert load(peer)['source_sha256'][name]==r['source_sha256'][name]

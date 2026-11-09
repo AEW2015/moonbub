@@ -1,0 +1,25 @@
+--- scripts/cu66-v116/peer_b.py
++++ scripts/cu66-v116/peer_c.py
+@@ -2,7 +2,7 @@
+ """Separate actual-full-top peer-kill/physical-debt/replay proof (Verilator)."""
+ import argparse,datetime,gzip,hashlib,importlib.util,json,pathlib,shutil,subprocess,time,sys
+ sys.dont_write_bytecode=True
+-R=pathlib.Path(__file__).resolve().parents[2];S=R/'fpga/experiments/cu66-v115-control-peer';A=R/'experiments/python-gamebub-v116/control-b-study/control-peer';P=R/'scripts/cu66-v116/spatial_b.py'
++R=pathlib.Path(__file__).resolve().parents[2];S=R/'fpga/experiments/cu66-v115-control-peer';A=R/'experiments/python-gamebub-v116/control-c-study/control-peer';P=R/'scripts/cu66-v116/spatial_c.py'
+ def sha(p):return hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
+ def write(p,j):pathlib.Path(p).write_text(json.dumps(j,indent=2,sort_keys=True)+'\n')
+ def main():
+@@ -18,11 +18,11 @@
+  for meta in origins.values():assert sha(R/meta['path'])==meta['sha256']
+  files=sorted(set(files+[pathlib.Path(__file__).resolve(),P,S/'tb_peer.cpp',S/'bench_peer_base.hpp',S/'derivation.json',S/'fault-injection-contract.json',R/'scripts/cu66-v115/control-peer/qualify.py']))
+  if not a.run:print('V116_CONTROL_PEER_PREPARED_NOT_RUN');return
+- stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out=A/'attempts'/stamp;out.mkdir(parents=True);build=pathlib.Path('/home/lori/gamebub-build/cu66-v69')/('v116b-control-peer-'+stamp);build.mkdir();mapped='/build/'+build.name
++ stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out=A/'attempts'/stamp;out.mkdir(parents=True);build=pathlib.Path('/home/lori/gamebub-build/cu66-v69')/('v116c-control-peer-'+stamp);build.mkdir();mapped='/build/'+build.name
+  r=dict(schema='v116-actual-full-top-peer-and-public-pending-cancel-v1',status='FAIL',actual_RTL_run=False,simulation_started=False,backend='Verilator',image_id=m.IMAGE,strict_warnings=True,assertions_disabled_or_downgraded=False,source_sha256={m.rel(p):sha(p)for p in files},rtl_source_order=[m.rel(p)for p in sources],source_origins=origins,replacements=replacements,bench_api_derivation=dict(path=m.rel(m.API_DERIVATION),sha256=sha(m.API_DERIVATION)),commands=[],runs=[],memory_samples=[],scope='Separate verification-only prepared child fault states during actual accepted scratch write/read and queued synchronous replay ownership; original independent functional/held/physical-owner checks retained; complete canonical retries; six real-parent abort/reset checks over all three scratch preparation boundaries with independent anti-replay/physical-owner/canonical retry checks; no production source or selected proof changes',original_oracle_checks_removed=0)
+  started=time.monotonic()
+  def command(argv,name,cap):
+-  gate=m.memory();assert gate['available_bytes']>=8*1024**3 and gate['psi_full_avg10']<1 and gate['combined_used_ratio']<.85,gate;container='gamebub-v116b-control-peer-final-'+stamp.lower()+'-'+str(len(r['commands']))
++  gate=m.memory();assert gate['available_bytes']>=8*1024**3 and gate['psi_full_avg10']<1 and gate['combined_used_ratio']<.85,gate;container='gamebub-v116c-control-peer-final-'+stamp.lower()+'-'+str(len(r['commands']))
+   cmd=['docker','run','--rm','--init','--name',container,'--memory','8g','--memory-swap','8g','--cpus','2','--pids-limit','2048','--network','none','--ulimit','core=0','--mount',f'type=bind,src={out},dst={out},readonly','--mount',f'type=bind,src={build},dst={mapped}','-w',mapped,m.IMAGE,'timeout','--kill-after=5s',str(cap)+'s',*argv];c=dict(argv=cmd,timeout_seconds=cap,resource_before=gate);r['commands'].append(c);t=time.monotonic()
+   with(out/name).open('w')as f:
+    if argv[0]==mapped+'/obj/Vcs88_pipeline_v91k':r['actual_RTL_run']=True;r['simulation_started']=True

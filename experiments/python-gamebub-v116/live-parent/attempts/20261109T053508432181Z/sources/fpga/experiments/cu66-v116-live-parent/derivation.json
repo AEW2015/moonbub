@@ -1,0 +1,142 @@
+{
+  "contract": "Frozen V115 local registered fault cancellation and physical drain, actual V11618-source producer, bytejoin control or bounded three-slot rowjoin, independently expanded request bytes with matching ACK-before-hash epoch proof.",
+  "counted_schedule_change": "Row mode replaces eight physical byte requests with one eight-byte request; full 560640-byte and1025-job oracles remain exact.",
+  "frozen_derivation": {
+    "path": "fpga/experiments/cu66-v115-live-parent/derivation.json",
+    "sha256": "c9e6f3b85e891157bfdbdefb132bfe7eb9bc933f3bfac6b8b2db00b06e03db63"
+  },
+  "limits": "Abstract 16-bit finite service model; no physical SDRAM, full-parent routed timing or hardware performance claim.",
+  "original_oracles_retained": true,
+  "reverse_verified": true,
+  "row_debug_owners": {
+    "FILL_SLOT": 1,
+    "FREE_SLOT": 0,
+    "HASH_SLOT": 4,
+    "READY_SLOT": 2,
+    "WAIT_SLOT": 3,
+    "path": "fpga/experiments/cu66-v116-rowjoin/cu66_row_write_hash_join_v91l.sv",
+    "sha256": "9c6680e5b3b9ca4a7245ca9b7f3cc0c5dd0acba1ad5ae82c09885b3621603d77"
+  },
+  "schema": "v116-live-row-and-byte-parent-reversible-v1",
+  "sources": [
+    {
+      "candidate": "fpga/experiments/cu66-v116-live-parent/cs88_live_v91l.sv",
+      "candidate_sha256": "1a5603477383113d86cc56e3f8fbbcb28a2a3ac4ac0b77eff81919589811f030",
+      "edits": [
+        {
+          "after": "module cs88_live_v91l #(parameter bit ROW_WRITES=1) (",
+          "before": "module cs88_live_v91l ("
+        },
+        {
+          "after": " output logic [63:0] candidate_req_data,output logic [3:0] candidate_req_bytes,",
+          "before": " output logic [7:0] candidate_req_data,"
+        },
+        {
+          "after": " output logic [2:0] join_state,output logic [3:0] join_fill_count,\n output logic [2:0] join_deliver_index,output logic [1:0] join_slots_owned,\n output logic join_phase_fill,join_phase_wait,join_phase_hash,output logic [7:0] join_error,",
+          "before": " output logic [1:0] join_state,output logic [7:0] join_error,"
+        },
+        {
+          "after": " generate if(ROW_WRITES)begin: row_writes\n cu66_row_write_hash_join_v91l joiner(\n  .clk(clk),.power_on_reset(power_on_reset),.reset(reset),.cancel(abort_packet||fault_cancel),.start(accepted_start),\n  .in_valid(join_input_valid),.in_ready(join_input_ready),.in_hud(join_input_hud),.in_data(join_input_data),\n  .in_epoch(out_valid?out_epoch:active_epoch),.in_fid(out_valid?out_fid:active_fid),.in_bank(v_write_bank),.in_plane(out_valid?out_plane:2'd0),\n  .in_addr(join_input_addr),.in_tile(out_valid?out_tile:13'd0),.in_index(out_valid?out_index:6'd0),\n  .in_last(out_valid?(out_plane==2&&out_tile==1349&&out_index==63):software_hud_last),\n  .req_valid(candidate_req_valid),.req_ready(candidate_req_ready),.req_epoch(candidate_req_epoch),.req_token(candidate_req_token),\n  .req_bank(candidate_req_bank),.req_addr(candidate_req_addr),.req_data(candidate_req_data),.req_bytes(candidate_req_bytes),\n  .rsp_valid(candidate_rsp_valid),.rsp_ready(candidate_rsp_ready),.rsp_epoch(candidate_rsp_epoch),.rsp_token(candidate_rsp_token),\n  .rsp_bank(candidate_rsp_bank),.rsp_addr(candidate_rsp_addr),.rsp_error(candidate_rsp_error),\n  .out_valid(join_output_valid),.out_ready(join_output_ready),.out_hud(join_output_hud),.out_data(join_output_data),\n  .out_epoch(jo_epoch),.out_fid(jo_fid),.out_bank(jo_bank),.out_plane(jo_plane),.out_addr(join_output_addr),\n  .out_tile(jo_tile),.out_index(jo_index),.out_last(jo_last),\n  .busy(join_busy),.physical_pending(join_physical_pending),.drained(join_drained),.state(join_state),.fill_count(join_fill_count),.deliver_index(join_deliver_index),.error(join_error),\n  .count_inputs(join_inputs),.count_requests(join_requests),.count_acks(join_acks),.count_outputs(join_outputs),.count_wrong_acks(join_wrong_acks),.count_drops(join_drops));\n // Reporting-only views of the actual three bounded slot owners.\n assign join_slots_owned=2'(joiner.owner[0]!=0)+2'(joiner.owner[1]!=0)+2'(joiner.owner[2]!=0);\n assign join_phase_fill=joiner.owner[0]==1||joiner.owner[1]==1||joiner.owner[2]==1;\n assign join_phase_wait=join_physical_pending;\n assign join_phase_hash=joiner.owner[0]==4||joiner.owner[1]==4||joiner.owner[2]==4;\n end else begin: byte_writes\n logic [7:0] byte_data;\n logic [1:0] byte_state;\n assign candidate_req_data={56'd0,byte_data};\n assign candidate_req_bytes=4'd1;\n assign join_state={1'b0,byte_state};\n assign join_fill_count=0;assign join_deliver_index=0;\n assign join_slots_owned=join_busy?2'd1:2'd0;\n assign join_phase_fill=0;assign join_phase_wait=join_physical_pending;\n assign join_phase_hash=byte_state==3;\n cu66_write_hash_join_v91l joiner(\n  .clk(clk),.power_on_reset(power_on_reset),.reset(reset),.cancel(abort_packet||fault_cancel),.start(accepted_start),\n  .in_valid(join_input_valid),.in_ready(join_input_ready),.in_hud(join_input_hud),.in_data(join_input_data),\n  .in_epoch(out_valid?out_epoch:active_epoch),.in_fid(out_valid?out_fid:active_fid),.in_bank(v_write_bank),.in_plane(out_valid?out_plane:2'd0),\n  .in_addr(join_input_addr),.in_tile(out_valid?out_tile:13'd0),.in_index(out_valid?out_index:6'd0),\n  .in_last(out_valid?(out_plane==2&&out_tile==1349&&out_index==63):software_hud_last),\n  .req_valid(candidate_req_valid),.req_ready(candidate_req_ready),.req_epoch(candidate_req_epoch),.req_token(candidate_req_token),\n  .req_bank(candidate_req_bank),.req_addr(candidate_req_addr),.req_data(byte_data),\n  .rsp_valid(candidate_rsp_valid),.rsp_ready(candidate_rsp_ready),.rsp_epoch(candidate_rsp_epoch),.rsp_token(candidate_rsp_token),\n  .rsp_bank(candidate_rsp_bank),.rsp_addr(candidate_rsp_addr),.rsp_error(candidate_rsp_error),\n  .out_valid(join_output_valid),.out_ready(join_output_ready),.out_hud(join_output_hud),.out_data(join_output_data),\n  .out_epoch(jo_epoch),.out_fid(jo_fid),.out_bank(jo_bank),.out_plane(jo_plane),.out_addr(join_output_addr),\n  .out_tile(jo_tile),.out_index(jo_index),.out_last(jo_last),\n  .busy(join_busy),.physical_pending(join_physical_pending),.drained(join_drained),.state(byte_state),.error(join_error),\n  .count_inputs(join_inputs),.count_requests(join_requests),.count_acks(join_acks),.count_outputs(join_outputs),.count_wrong_acks(join_wrong_acks),.count_drops(join_drops));\n end endgenerate",
+          "before": " cu66_write_hash_join_v91l joiner(\n  .clk(clk),.power_on_reset(power_on_reset),.reset(reset),.cancel(abort_packet||fault_cancel),.start(accepted_start),\n  .in_valid(join_input_valid),.in_ready(join_input_ready),.in_hud(join_input_hud),.in_data(join_input_data),\n  .in_epoch(out_valid?out_epoch:active_epoch),.in_fid(out_valid?out_fid:active_fid),.in_bank(v_write_bank),.in_plane(out_valid?out_plane:2'd0),\n  .in_addr(join_input_addr),.in_tile(out_valid?out_tile:13'd0),.in_index(out_valid?out_index:6'd0),\n  .in_last(out_valid?(out_plane==2&&out_tile==1349&&out_index==63):software_hud_last),\n  .req_valid(candidate_req_valid),.req_ready(candidate_req_ready),.req_epoch(candidate_req_epoch),.req_token(candidate_req_token),\n  .req_bank(candidate_req_bank),.req_addr(candidate_req_addr),.req_data(candidate_req_data),\n  .rsp_valid(candidate_rsp_valid),.rsp_ready(candidate_rsp_ready),.rsp_epoch(candidate_rsp_epoch),.rsp_token(candidate_rsp_token),\n  .rsp_bank(candidate_rsp_bank),.rsp_addr(candidate_rsp_addr),.rsp_error(candidate_rsp_error),\n  .out_valid(join_output_valid),.out_ready(join_output_ready),.out_hud(join_output_hud),.out_data(join_output_data),\n  .out_epoch(jo_epoch),.out_fid(jo_fid),.out_bank(jo_bank),.out_plane(jo_plane),.out_addr(join_output_addr),\n  .out_tile(jo_tile),.out_index(jo_index),.out_last(jo_last),\n  .busy(join_busy),.physical_pending(join_physical_pending),.drained(join_drained),.state(join_state),.error(join_error),\n  .count_inputs(join_inputs),.count_requests(join_requests),.count_acks(join_acks),.count_outputs(join_outputs),.count_wrong_acks(join_wrong_acks),.count_drops(join_drops));"
+        }
+      ],
+      "source": "fpga/experiments/cu66-v115-live-parent/cs88_live_v91l.sv",
+      "source_sha256": "9f1144799e320061520611633f4829435d9e75c067f3cdd4becd7ff3c9fa36f9"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116-live-parent/tb_keyframe.cpp",
+      "candidate_sha256": "7b5b957d626d96a4bd39612a02168e07122a4cf8eac74513047a51d70c352895",
+      "edits": [
+        {
+          "after": "#include \"Vcs88_live_v91l.h\"\n#ifndef ROW_WRITES\n#define ROW_WRITES 1\n#endif\n// Same full producer and C2/HUD oracles, separately compiled byte and row join.\nstatic constexpr unsigned candidate_width=ROW_WRITES?8U:1U;",
+          "before": "#include \"Vcs88_live_v91l.h\""
+        },
+        {
+          "after": "struct CandidateRequest {uint32_t epoch,token;unsigned bank,addr;uint64_t value;unsigned bytes;\n      bool operator==(const CandidateRequest &x)const{return epoch==x.epoch&&token==x.token&&bank==x.bank&&addr==x.addr&&value==x.value&&bytes==x.bytes;}};",
+          "before": "struct CandidateRequest {uint32_t epoch,token;unsigned bank,addr;uint8_t value;\n      bool operator==(const CandidateRequest &x)const{return epoch==x.epoch&&token==x.token&&bank==x.bank&&addr==x.addr&&value==x.value;}};"
+        },
+        {
+          "after": "    uint64_t first_outer=0,last_outer=0,first_write=0,last_write=0,first_token=0,last_token=0;\n    uint64_t candidate_expanded_bytes=0,candidate_acked_bytes=0,service_data_edges=0,service_overhead_edges=0;\n    uint64_t minimum_service=UINT64_MAX,maximum_service=0;\n    std::array<std::vector<uint32_t>,3> candidate_ack_epoch{{std::vector<uint32_t>(560640),std::vector<uint32_t>(560640),std::vector<uint32_t>(560640)}};\n    // Job tags are pinned to cs88_validate_publish_v91l's actual localparams.\n    enum HashKind:unsigned {LEAF_JOB=0,EMPTY_LEAF_JOB=1,NODE_JOB=2,HUD_JOB=3,SEAL_JOB=4};\n    uint64_t canonical_producer_bytes=0,canonical_request_bytes=0,canonical_ack_bytes=0,canonical_hash_bytes=0;\n    uint64_t hud_request_bytes=0,hud_ack_bytes=0,hud_hash_bytes=0;\n    uint64_t last_canonical_producer=0,last_canonical_ack=0,last_canonical_hash=0,reconstruct_done_fence=0;\n    uint64_t root_complete=0,hud_complete=0,seal_complete=0,presentation_cycle=0;\n    uint64_t last_hud_ack=0,last_hud_hash=0;\n    std::array<uint64_t,5> hash_kind_counts{};\n    std::array<uint64_t,9> phase_edges{};\n    std::array<std::array<uint64_t,5>,9> phase_stalls{};\n    std::array<uint64_t,4> slot_occupancy_edges{};\n    uint64_t maximum_slots_owned=0,triple_phase_edges=0,triple_transfer_edges=0;\n    bool instrument_started=false;\n",
+          "before": "    uint64_t first_outer=0,last_outer=0,first_write=0,last_write=0,first_token=0,last_token=0;"
+        },
+        {
+          "after": "CandidateRequest candidate_request()const{return {d.candidate_req_epoch,d.candidate_req_token,unsigned(d.candidate_req_bank),unsigned(d.candidate_req_addr),uint64_t(d.candidate_req_data),unsigned(d.candidate_req_bytes)};}",
+          "before": "CandidateRequest candidate_request()const{return {d.candidate_req_epoch,d.candidate_req_token,unsigned(d.candidate_req_bank),unsigned(d.candidate_req_addr),uint8_t(d.candidate_req_data)};}"
+        },
+        {
+          "after": "      candidate_hash=1469598103934665603ULL;\n      candidate_expanded_bytes=candidate_acked_bytes=service_data_edges=service_overhead_edges=0;\n      minimum_service=UINT64_MAX;maximum_service=0;\n      for(auto &bank:candidate_ack_epoch)std::fill(bank.begin(),bank.end(),0U);\n      canonical_producer_bytes=canonical_request_bytes=canonical_ack_bytes=canonical_hash_bytes=0;\n      hud_request_bytes=hud_ack_bytes=hud_hash_bytes=0;\n      last_canonical_producer=last_canonical_ack=last_canonical_hash=reconstruct_done_fence=0;\n      root_complete=hud_complete=seal_complete=presentation_cycle=last_hud_ack=last_hud_hash=0;\n      hash_kind_counts.fill(0);phase_edges.fill(0);slot_occupancy_edges.fill(0);\n      for(auto &phase:phase_stalls)phase.fill(0);\n      maximum_slots_owned=triple_phase_edges=triple_transfer_edges=0;instrument_started=false;\n",
+          "before": "      candidate_hash=1469598103934665603ULL;"
+        },
+        {
+          "after": "    void observe_fences(bool kill){\n      if(d.start&&d.start_ready)instrument_started=true;\n      if(!instrument_started||kill)return;\n      // Phase accounting uses priority in this exact order, not disjoint\n      // hardware operation: HUD writes can overlap root computation.\n      const unsigned phase=canonical_producer_bytes<518400?0U:canonical_hash_bytes<518400?1U:\n        !root_complete?2U:hud_hash_bytes<42240?3U:!hud_complete?4U:!seal_complete?5U:!commit_cycle?6U:!presentation_cycle?7U:8U;\n      ++phase_edges[phase];\n      phase_stalls[phase][0]+=d.out_valid&&!d.out_ready;\n      phase_stalls[phase][1]+=d.software_hud_valid&&!d.software_hud_ready;\n      phase_stalls[phase][2]+=d.candidate_req_valid&&!d.candidate_req_ready;\n      phase_stalls[phase][3]+=d.join_output_valid&&!d.join_output_ready;\n      phase_stalls[phase][4]+=candidate_pending&&cycle<candidate_pending->due;\n      need(d.join_slots_owned<=(ROW_WRITES?3U:1U),\"reported bounded join slot occupancy\");\n      ++slot_occupancy_edges[d.join_slots_owned];maximum_slots_owned=std::max(maximum_slots_owned,uint64_t(d.join_slots_owned));\n      triple_phase_edges+=d.join_phase_fill&&d.join_phase_wait&&d.join_phase_hash;\n      triple_transfer_edges+=d.out_valid&&d.out_ready&&candidate_pending&&d.join_output_valid&&d.join_output_ready;\n      if(d.out_valid&&d.out_ready){\n        need(++canonical_producer_bytes<=518400,\"count every canonical producer acceptance, independent of tile address order\");\n        if(canonical_producer_bytes==518400)last_canonical_producer=cycle+1;\n      }\n      if(d.v_hash_result){\n        need(d.v_hash_job_kind<=SEAL_JOB,\"actual validator hash job kind\");\n        ++hash_kind_counts[d.v_hash_job_kind];\n        if(d.v_hash_job_kind==NODE_JOB&&d.v_hash_job_node==1){need(!root_complete,\"one actual Merkle root completion\");root_complete=cycle+1;}\n        if(d.v_hash_job_kind==HUD_JOB){need(d.v_hash_job_node==0&&!hud_complete,\"one actual HUD hash completion\");hud_complete=cycle+1;}\n        if(d.v_hash_job_kind==SEAL_JOB){need(d.v_hash_job_node==0&&!seal_complete,\"one actual frame seal completion\");seal_complete=cycle+1;}\n      }\n    }\n    void report_fences(){\n      need(canonical_producer_bytes==518400&&canonical_request_bytes==518400&&canonical_ack_bytes==518400&&canonical_hash_bytes==518400,\"all canonical accepted/requested/successfully ACKed/hashed bytes\");\n      need(hud_request_bytes==42240&&hud_ack_bytes==42240&&hud_hash_bytes==42240,\"all HUD requested/successfully ACKed/hashed bytes\");\n      need(last_canonical_producer&&last_canonical_ack&&last_canonical_hash&&reconstruct_done_fence&&root_complete&&hud_complete&&seal_complete&&commit_cycle&&presentation_cycle,\"every actual completion fence observed\");\n      need(last_canonical_producer<=last_canonical_ack&&last_canonical_ack<=last_canonical_hash&&last_canonical_hash<=root_complete,\"canonical byte/ACK/hash/root causal order\");\n      need(last_canonical_producer<=reconstruct_done_fence&&reconstruct_done_fence<=commit_cycle,\"reconstruct completion before validated commit\");\n      need(last_hud_ack<=last_hud_hash&&last_hud_hash<=hud_complete,\"HUD successful ACK/hash/digest causal order\");\n      need(root_complete<hud_complete&&hud_complete<seal_complete&&seal_complete<commit_cycle&&commit_cycle<presentation_cycle,\"actual validator job and publication ordering\");\n      need(hash_kind_counts==std::array<uint64_t,5>{{508,4,511,1,1}},\"actual complete validator hash job-kind counts\");\n      std::cout<<\"{\\\"type\\\":\\\"live_fences\\\",\\\"status\\\":\\\"TEST_PASS\\\",\\\"cycle_convention\\\":\\\"accepted rising edge; preedge handshakes cycle+1\\\",\\\"canonical_producer_bytes\\\":\"<<canonical_producer_bytes\n        <<\",\\\"canonical_request_bytes\\\":\"<<canonical_request_bytes<<\",\\\"canonical_successful_ack_bytes\\\":\"<<canonical_ack_bytes<<\",\\\"canonical_hash_bytes\\\":\"<<canonical_hash_bytes\n        <<\",\\\"hud_request_bytes\\\":\"<<hud_request_bytes<<\",\\\"hud_successful_ack_bytes\\\":\"<<hud_ack_bytes<<\",\\\"hud_hash_bytes\\\":\"<<hud_hash_bytes\n        <<\",\\\"last_canonical_producer_accept\\\":\"<<last_canonical_producer<<\",\\\"last_canonical_successful_ack\\\":\"<<last_canonical_ack<<\",\\\"last_canonical_hash_delivery\\\":\"<<last_canonical_hash\n        <<\",\\\"reconstruct_done\\\":\"<<reconstruct_done_fence<<\",\\\"root_complete\\\":\"<<root_complete<<\",\\\"last_hud_successful_ack\\\":\"<<last_hud_ack<<\",\\\"last_hud_hash_delivery\\\":\"<<last_hud_hash\n        <<\",\\\"hud_hash_complete\\\":\"<<hud_complete<<\",\\\"seal_complete\\\":\"<<seal_complete<<\",\\\"commit\\\":\"<<commit_cycle<<\",\\\"presentation\\\":\"<<presentation_cycle\n        <<\",\\\"maximum_slots_owned\\\":\"<<maximum_slots_owned<<\",\\\"triple_phase_edges\\\":\"<<triple_phase_edges<<\",\\\"triple_transfer_edges\\\":\"<<triple_transfer_edges<<\",\\\"hash_kind_counts\\\":[\";\n      for(unsigned n=0;n<5;++n){if(n)std::cout<<',';std::cout<<hash_kind_counts[n];}\n      std::cout<<\"],\\\"slot_occupancy_edges\\\":[\";for(unsigned n=0;n<4;++n){if(n)std::cout<<',';std::cout<<slot_occupancy_edges[n];}\n      std::cout<<\"],\\\"phase_order\\\":[\\\"canonical_input\\\",\\\"canonical_drain\\\",\\\"root\\\",\\\"HUD_delivery\\\",\\\"HUD_digest\\\",\\\"seal\\\",\\\"commit\\\",\\\"presentation\\\",\\\"terminal\\\"],\\\"phase_edges\\\":[\";\n      for(unsigned n=0;n<9;++n){if(n)std::cout<<',';std::cout<<phase_edges[n];}\n      std::cout<<\"],\\\"stall_order\\\":[\\\"producer\\\",\\\"software_HUD\\\",\\\"physical_request\\\",\\\"hash_delivery\\\",\\\"physical_service\\\"],\\\"phase_stalls\\\":[\";\n      for(unsigned p=0;p<9;++p){if(p)std::cout<<',';std::cout<<'[';for(unsigned n=0;n<5;++n){if(n)std::cout<<',';std::cout<<phase_stalls[p][n];}std::cout<<']';}\n      std::cout<<\"],\\\"stalled_profile_comparability\\\":\\\"same bounded service rule and seed; different RNG draw counts and accepted traffic prevent identical cycle-trace comparison\\\",\\\"physical_SDRAM\\\":false}\\n\";\n    }\n    void live_observe(){",
+          "before": "    void live_observe(){"
+        },
+        {
+          "after": "      const bool kill=d.power_on_reset||d.reset||d.abort_packet||d.v_error||d.join_error||d.metadata_mismatch;\n      observe_fences(kill);",
+          "before": "      const bool kill=d.power_on_reset||d.reset||d.abort_packet||d.v_error||d.join_error||d.metadata_mismatch;"
+        },
+        {
+          "after": "    void live_after_edge(){\n      if(instrument_started&&vf){\n        if(canonical_producer_bytes==518400&&d.reconstruct_done&&!reconstruct_done_fence)reconstruct_done_fence=cycle;\n        if(d.v_frame_presented&&d.v_front_fid==be32(vf->packet,8))presentation_cycle=cycle;\n      }\n",
+          "before": "    void live_after_edge(){"
+        },
+        {
+          "after": "      record=false;tick();report_fences();",
+          "before": "      record=false;tick();"
+        },
+        {
+          "after": "        need(candidate_memory[d.v_write_bank][d.join_output_addr]==d.join_output_data,\"hash delivery before actual ACK-committed write\");\n        need(candidate_ack_epoch[d.v_write_bank][d.join_output_addr]==frame_epoch,\"hash byte lacks successful matching ACK in current owner epoch\");\n        if(!d.join_output_hud){\n          need(d.join_output_addr<518400&&++canonical_hash_bytes<=518400,\"count every canonical hash byte\");\n          if(canonical_hash_bytes==518400)last_canonical_hash=cycle+1;\n        }else{\n          need(d.join_output_addr>=518400&&++hud_hash_bytes<=42240,\"count every HUD hash byte\");\n          if(hud_hash_bytes==42240)last_hud_hash=cycle+1;\n        }",
+          "before": "        need(candidate_memory[d.v_write_bank][d.join_output_addr]==d.join_output_data,\"hash delivery before actual ACK-committed write\");"
+        },
+        {
+          "after": "        if(!bus_error)for(unsigned n=0;n<q.bytes;++n){\n          candidate_memory[q.bank][q.addr+n]=uint8_t(q.value>>(8U*n));\n          candidate_ack_epoch[q.bank][q.addr+n]=q.epoch;\n          ++candidate_acked_bytes;\n          if(q.addr+n<518400){need(++canonical_ack_bytes<=518400,\"count every successful canonical ACK byte\");if(canonical_ack_bytes==518400)last_canonical_ack=cycle+1;}\n          else{need(++hud_ack_bytes<=42240,\"count every successful HUD ACK byte\");if(hud_ack_bytes==42240)last_hud_ack=cycle+1;}\n        }",
+          "before": "        if(!bus_error)candidate_memory[q.bank][q.addr]=q.value;"
+        },
+        {
+          "after": "        need(q.epoch==frame_epoch&&q.bank==d.v_write_bank&&q.addr<560640,\"candidate request owner/bounds\");\n        need(q.bytes==candidate_width&&q.addr+q.bytes<=560640&&(!ROW_WRITES||(q.addr&7U)==0),\"normalized bounded candidate row descriptor\");",
+          "before": "        need(q.epoch==frame_epoch&&q.bank==d.v_write_bank&&q.addr<560640,\"candidate request owner/bounds\");"
+        },
+        {
+          "after": "        if(!ROW_WRITES){\n          uint8_t expected=q.addr<518400?canonical_golden().expected[q.addr]:provisional_hud[q.addr-518400];need(q.value==expected,\"physical write byte vs actual independent expected\");\n        }\n        for(unsigned n=0;n<q.bytes;++n){\n          const unsigned address=q.addr+n;\n          uint8_t expected=address<518400?canonical_golden().expected[address]:provisional_hud[address-518400];\n          need(uint8_t(q.value>>(8U*n))==expected,\"expanded physical request byte vs independent canonical/HUD oracle\");\n          need(candidate_ack_epoch[q.bank][address]!=q.epoch,\"candidate byte rewritten in one frame owner\");\n          if(address<518400)++canonical_request_bytes;else ++hud_request_bytes;\n        }\n        candidate_expanded_bytes+=q.bytes;",
+          "before": "        uint8_t expected=q.addr<518400?canonical_golden().expected[q.addr]:provisional_hud[q.addr-518400];need(q.value==expected,\"physical write byte vs actual independent expected\");"
+        },
+        {
+          "after": "        for(unsigned n=0;n<q.bytes;++n)candidate_hash=hash_byte(candidate_hash,uint8_t(q.value>>(8U*n)));",
+          "before": "        candidate_hash=hash_byte(candidate_hash,q.value);"
+        },
+        {
+          "after": "        // A single physical lease bounds the abstract service queue. One 8B\n        // request consumes four 16-bit data edges plus explicit overhead.\n        const uint64_t data_edges=(q.bytes+1U)/2U;\n        const uint64_t overhead=profile?8U+random(9):2U;\n        const uint64_t service=data_edges+overhead;\n        service_data_edges+=data_edges;service_overhead_edges+=overhead;\n        minimum_service=std::min(minimum_service,service);maximum_service=std::max(maximum_service,service);\n        candidate_pending=CandidatePending{q,cycle+service};++candidate_requests;",
+          "before": "        candidate_pending=CandidatePending{q,cycle+(profile?3+random(6):1)};++candidate_requests;"
+        },
+        {
+          "after": "      if(!ROW_WRITES){\n      need(d.join_inputs==560640&&d.join_requests==560640&&d.join_acks==560640&&d.join_outputs==560640,\"live write/hash conservation\");\n      }else need(d.join_inputs==560640&&d.join_requests==70080&&d.join_acks==70080&&d.join_outputs==560640,\"row physical requests/ACKs and original expanded-byte conservation\");\n      need(candidate_expanded_bytes==560640&&candidate_acked_bytes==560640,\"all original bytes independently expanded and ACK committed\");",
+          "before": "      need(d.join_inputs==560640&&d.join_requests==560640&&d.join_acks==560640&&d.join_outputs==560640,\"live write/hash conservation\");"
+        },
+        {
+          "after": " if(!ROW_WRITES){\n need(b.candidate_requests==560640&&b.candidate_acks==560640&&b.hash_deliveries==560640,\"exact finite candidate write/ACK/hash conservation\");\n }else need(b.candidate_requests==70080&&b.candidate_acks==70080&&b.hash_deliveries==560640,\"exact finite row request/ACK and original hash-byte conservation\");\n need(b.candidate_expanded_bytes==560640&&b.candidate_acked_bytes==560640,\"original full candidate byte oracle after independent row expansion\");",
+          "before": " need(b.candidate_requests==560640&&b.candidate_acks==560640&&b.hash_deliveries==560640,\"exact finite candidate write/ACK/hash conservation\");"
+        },
+        {
+          "after": " std::cout<<\"{\\\"type\\\":\\\"live_service_verdict\\\",\\\"status\\\":\\\"TEST_PASS\\\",\\\"row_writes\\\":\"<<unsigned(ROW_WRITES)\n          <<\",\\\"request_bytes\\\":\"<<candidate_width<<\",\\\"expanded_bytes\\\":\"<<b.candidate_expanded_bytes<<\",\\\"acked_bytes\\\":\"<<b.candidate_acked_bytes\n          <<\",\\\"service_queue_bound\\\":1,\\\"service_bus_bits\\\":16,\\\"service_data_edges\\\":\"<<b.service_data_edges<<\",\\\"service_overhead_edges\\\":\"<<b.service_overhead_edges\n          <<\",\\\"minimum_service_edges\\\":\"<<b.minimum_service<<\",\\\"maximum_service_edges\\\":\"<<b.maximum_service<<\",\\\"physical_SDRAM\\\":false}\\n\";\n std::cout<<\"{\\\"type\\\":\\\"live_parent_verdict\\\",",
+          "before": " std::cout<<\"{\\\"type\\\":\\\"live_parent_verdict\\\","
+        },
+        {
+          "after": "      if(d.v_hash_result&&record){hash_events<<\"{\\\"type\\\":\\\"hash\\\",\\\"id\\\":\\\"\"<<vf->id<<\"\\\",\\\"pipeline_id\\\":\\\"\"<<active->id<<\"\\\",\\\"profile\\\":\"<<profile<<\",\\\"epoch\\\":\"<<frame_epoch<<\",\\\"kind\\\":\"<<unsigned(d.v_hash_job_kind)<<\",\\\"node\\\":\"<<d.v_hash_job_node<<\",\\\"digest\\\":\\\"\"<<cu66::hex(get_digest(d.v_hash_digest))<<\"\\\",\\\"cycle\\\":\"<<(cycle+1)<<\"}\\n\";}",
+          "before": "      if(d.v_hash_result&&record){hash_events<<\"{\\\"type\\\":\\\"hash\\\",\\\"id\\\":\\\"\"<<vf->id<<\"\\\",\\\"pipeline_id\\\":\\\"\"<<active->id<<\"\\\",\\\"profile\\\":\"<<profile<<\",\\\"epoch\\\":\"<<frame_epoch<<\",\\\"kind\\\":\"<<unsigned(d.v_hash_job_kind)<<\",\\\"node\\\":\"<<d.v_hash_job_node<<\",\\\"digest\\\":\\\"\"<<cu66::hex(get_digest(d.v_hash_digest))<<\"\\\",\\\"cycle\\\":\"<<cycle<<\"}\\n\";}"
+        }
+      ],
+      "source": "fpga/experiments/cu66-v115-live-parent/tb_keyframe.cpp",
+      "source_sha256": "5d99cdf28fd9f5cb1a85cabed43e27bb8a92f50672755d44fd195da7e3216f44"
+    }
+  ],
+  "validator_job_enum": {
+    "EMPTY_LEAF": 1,
+    "HUD": 3,
+    "LEAF": 0,
+    "NODE": 2,
+    "SEAL": 4,
+    "path": "fpga/experiments/cu66-v91l/cs88_validate_publish_v91l.sv",
+    "root_kind": 2,
+    "root_node": 1,
+    "sha256": "fab62dcdbcb9a2594917eac0eaf09a9eda1df8879e799ce38833ca678069d143"
+  }
+}

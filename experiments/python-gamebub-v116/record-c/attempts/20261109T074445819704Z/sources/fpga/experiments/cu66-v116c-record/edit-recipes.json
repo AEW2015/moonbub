@@ -1,0 +1,221 @@
+{
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/observed_original.sv",
+      "candidate_sha256": "94f2c7b01fd9bc38c35ee93e644faac7b9b3b4a2f10da6eb00f8ccaf00fdc4a9",
+      "edits": [
+        {
+          "after": "module observed_original ",
+          "before": "module packed_scratch_v91g2 "
+        },
+        {
+          "after": ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);",
+          "before": "\n);"
+        },
+        {
+          "after": "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule",
+          "before": "\nendmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/packed_scratch_v91g2.sv",
+      "original_sha256": "98060d865bb74de8e8430a3d0d2edb6f7a8670772f52106dc79e404d8f48a87a"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/observed_candidate.sv",
+      "candidate_sha256": "f809a1f1236e7f9751cd0e40e66e9657d07495fd4841aa6e6c043fefa299b8ea",
+      "edits": [
+        {
+          "after": "module observed_candidate ",
+          "before": "module packed_scratch_v91g2 "
+        },
+        {
+          "after": ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);",
+          "before": "\n);"
+        },
+        {
+          "after": "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule",
+          "before": "\nendmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116c-record/packed_scratch_v91g2.sv",
+      "original_sha256": "1ac70499489acbdb00e682696a5783cf178c3e703e3b16d2138f275f7de59839"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/scratch_probe.sv",
+      "candidate_sha256": "db1a604675ecd92604f66ea436b5b7aacb444c0761de976e79ba5544acbdbdd0",
+      "edits": [
+        {
+          "after": "observed_original original (\n        .clk(reference_clk),\n        .reset(reset),\n        .begin_valid(begin_valid),\n        .begin_ready(old_begin_ready),\n        .begin_blocks(begin_blocks),\n        .begin_raw(begin_raw),\n        .begin_serial_clear(begin_serial_clear),\n        .begin_overlap(begin_overlap),\n        .begin_prefetch(begin_prefetch),\n        .begin_tile_overlap(begin_tile_overlap),\n        .begin_count1(begin_count1),\n        .begin_count2(begin_count2),\n        .begin_count3(begin_count3),\n        .begin_epoch(begin_epoch),\n        .begin_prefix1(aligned1),.begin_prefix12(aligned12),.begin_prefix123(aligned123),\n        .begin_threshold1(threshold1),.begin_threshold2(threshold2),.begin_threshold3(threshold3),\n        .begin_capacity_upper(capacity_upper),.begin_capacity_lower(capacity_lower),.begin_capacity_wrap(capacity_wrap),\n        .coef_valid(coef_valid),\n        .coef_ready(old_coef_ready),\n        .coef_band(coef_band),\n        .coef_block(coef_block),\n        .coef_index(coef_index),\n        .coef_value(coef_value),\n        .coef_epoch(coef_epoch),\n        .band_end_valid(band_end_valid),\n        .band_end_ready(old_band_end_ready),\n        .band_end_band(band_end_band),\n        .band_end_epoch(band_end_epoch),\n        .seal_valid(seal_valid),\n        .seal_ready(old_seal_ready),\n        .seal_epoch(seal_epoch),\n        .owned_abort_epoch(reference_owned_abort_target), .abort_valid(abort_valid),\n        .abort_epoch(abort_epoch),\n        .busy(old_busy),\n        .sealed(old_sealed),\n        .done(old_done),\n        .error(old_error),\n        .active_epoch(old_active_epoch),\n        .used_bytes(old_used_bytes),\n        .dense_valid(old_dense_valid),\n        .dense_ready(dense_ready),\n        .dense_block(old_dense_block),\n        .dense_index(old_dense_index),\n        .dense_value(old_dense_value),\n        .dense_epoch(old_dense_epoch),\n        .mem_req_valid(old_mem_req_valid),\n        .mem_req_ready(mem_req_ready),\n        .mem_req_write(old_mem_req_write),\n        .mem_req_addr(old_mem_req_addr),\n        .mem_req_data(old_mem_req_data),\n        .mem_req_epoch(old_mem_req_epoch),\n        .mem_rsp_valid(mem_rsp_valid),\n        .mem_rsp_ready(old_mem_rsp_ready),\n        .mem_rsp_data(mem_rsp_data),\n        .mem_rsp_epoch(mem_rsp_epoch),\n        .mem_rsp_error(mem_rsp_error),\n        .debug_state(old_debug_state),\n        .debug_return_state(old_debug_return_state),\n        .debug_outstanding(old_debug_outstanding),\n        .debug_phase(old_debug_phase),\n        .debug_assembly_bytes(old_debug_assembly_bytes),\n        .debug_cache_valid(old_debug_cache_valid),\n        .debug_prefetch_offer(old_debug_prefetch_offer),\n        .debug_prefetch_launch(old_debug_prefetch_launch),\n        .debug_prefetch_use(old_debug_prefetch_use),\n        .debug_tile_mode(old_debug_tile_mode),\n        .debug_tile_preparing(old_debug_tile_preparing),\n        .debug_prepare_bank(old_debug_prepare_bank),\n        .debug_emit_bank(old_debug_emit_bank),\n        .debug_bank_ready(old_debug_bank_ready),\n        .debug_bank_owned(old_debug_bank_owned),\n        .debug_emitter_state(old_debug_emitter_state),\n        .debug_prepare_block(old_debug_prepare_block),\n        .debug_bank_block(old_debug_bank_block),\n        .debug_bank_epoch(old_debug_bank_epoch),\n        .debug_tile_prepare_start(old_debug_tile_prepare_start),\n        .debug_tile_publish(old_debug_tile_publish),\n        .debug_tile_release(old_debug_tile_release),\n        .debug_write_slot_valid(old_debug_write_slot_valid),\n        .debug_assembler_full(old_debug_assembler_full),\n        .debug_write_enqueue(old_debug_write_enqueue),\n        .debug_head_valid(old_debug_head_valid),\n        .verify_cache_data(old_verify_cache_data),\n        .verify_positions(old_verify_positions),\n        .verify_heads(old_verify_heads),\n        .verify_head_positions(old_verify_head_positions),\n        .verify_cursors(old_verify_cursors),\n        .verify_read_word(old_verify_read_word),\n        .verify_read_position(old_verify_read_position),\n        .verify_read_address(old_verify_read_address),\n        .verify_read_segment(old_verify_read_segment),\n        .verify_read_band(old_verify_read_band),\n        .verify_position_use(old_verify_position_use));\n    ",
+          "before": "observed_original original (\n        .clk(reference_clk),\n        .reset(reset),\n        .begin_valid(begin_valid),\n        .begin_ready(old_begin_ready),\n        .begin_blocks(begin_blocks),\n        .begin_raw(begin_raw),\n        .begin_serial_clear(begin_serial_clear),\n        .begin_overlap(begin_overlap),\n        .begin_prefetch(begin_prefetch),\n        .begin_tile_overlap(begin_tile_overlap),\n        .begin_count1(begin_count1),\n        .begin_count2(begin_count2),\n        .begin_count3(begin_count3),\n        .begin_epoch(begin_epoch),\n        .begin_prefix1(aligned1),.begin_prefix12(aligned12),.begin_prefix123(aligned123),\n        .begin_threshold1(threshold1),.begin_threshold2(threshold2),.begin_threshold3(threshold3),\n        .begin_capacity_upper(capacity_upper),.begin_capacity_lower(capacity_lower),.begin_capacity_wrap(capacity_wrap),\n        .coef_valid(coef_valid),\n        .coef_ready(old_coef_ready),\n        .coef_band(coef_band),\n        .coef_block(coef_block),\n        .coef_index(coef_index),\n        .coef_value(coef_value),\n        .coef_epoch(coef_epoch),\n        .band_end_valid(band_end_valid),\n        .band_end_ready(old_band_end_ready),\n        .band_end_band(band_end_band),\n        .band_end_epoch(band_end_epoch),\n        .seal_valid(seal_valid),\n        .seal_ready(old_seal_ready),\n        .seal_epoch(seal_epoch),\n        .abort_valid(abort_valid),\n        .abort_epoch(abort_epoch),\n        .busy(old_busy),\n        .sealed(old_sealed),\n        .done(old_done),\n        .error(old_error),\n        .active_epoch(old_active_epoch),\n        .used_bytes(old_used_bytes),\n        .dense_valid(old_dense_valid),\n        .dense_ready(dense_ready),\n        .dense_block(old_dense_block),\n        .dense_index(old_dense_index),\n        .dense_value(old_dense_value),\n        .dense_epoch(old_dense_epoch),\n        .mem_req_valid(old_mem_req_valid),\n        .mem_req_ready(mem_req_ready),\n        .mem_req_write(old_mem_req_write),\n        .mem_req_addr(old_mem_req_addr),\n        .mem_req_data(old_mem_req_data),\n        .mem_req_epoch(old_mem_req_epoch),\n        .mem_rsp_valid(mem_rsp_valid),\n        .mem_rsp_ready(old_mem_rsp_ready),\n        .mem_rsp_data(mem_rsp_data),\n        .mem_rsp_epoch(mem_rsp_epoch),\n        .mem_rsp_error(mem_rsp_error),\n        .debug_state(old_debug_state),\n        .debug_return_state(old_debug_return_state),\n        .debug_outstanding(old_debug_outstanding),\n        .debug_phase(old_debug_phase),\n        .debug_assembly_bytes(old_debug_assembly_bytes),\n        .debug_cache_valid(old_debug_cache_valid),\n        .debug_prefetch_offer(old_debug_prefetch_offer),\n        .debug_prefetch_launch(old_debug_prefetch_launch),\n        .debug_prefetch_use(old_debug_prefetch_use),\n        .debug_tile_mode(old_debug_tile_mode),\n        .debug_tile_preparing(old_debug_tile_preparing),\n        .debug_prepare_bank(old_debug_prepare_bank),\n        .debug_emit_bank(old_debug_emit_bank),\n        .debug_bank_ready(old_debug_bank_ready),\n        .debug_bank_owned(old_debug_bank_owned),\n        .debug_emitter_state(old_debug_emitter_state),\n        .debug_prepare_block(old_debug_prepare_block),\n        .debug_bank_block(old_debug_bank_block),\n        .debug_bank_epoch(old_debug_bank_epoch),\n        .debug_tile_prepare_start(old_debug_tile_prepare_start),\n        .debug_tile_publish(old_debug_tile_publish),\n        .debug_tile_release(old_debug_tile_release),\n        .debug_write_slot_valid(old_debug_write_slot_valid),\n        .debug_assembler_full(old_debug_assembler_full),\n        .debug_write_enqueue(old_debug_write_enqueue),\n        .debug_head_valid(old_debug_head_valid),\n        .verify_cache_data(old_verify_cache_data),\n        .verify_positions(old_verify_positions),\n        .verify_heads(old_verify_heads),\n        .verify_head_positions(old_verify_head_positions),\n        .verify_cursors(old_verify_cursors),\n        .verify_read_word(old_verify_read_word),\n        .verify_read_position(old_verify_read_position),\n        .verify_read_address(old_verify_read_address),\n        .verify_read_segment(old_verify_read_segment),\n        .verify_read_band(old_verify_read_band),\n        .verify_position_use(old_verify_position_use));\n    "
+        },
+        {
+          "after": "    logic [31:0] candidate_owned_abort_target,reference_owned_abort_target;",
+          "before": "    logic [31:0] candidate_owned_abort_target;"
+        },
+        {
+          "after": "    always_ff @(posedge clk)begin\n        assert(reference_owned_abort_target==candidate_owned_abort_target)\n            else $fatal(1,\"V116C exact generic abort target pair mismatch\");\n        assert({original.pending_record,original.pending_bytes,original.pending_position}==\n            {candidate.pending_record,candidate.pending_bytes,candidate.pending_position})\n            else $fatal(1,\"V116C exact generic private pending tuple pair mismatch\");\n    end\nendmodule",
+          "before": "endmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/verification/scratch_probe.sv",
+      "original_sha256": "e1c2c2a165d8b433dd1f98e2b1d2acce2666fe3d2059352bd7673b85b516f241"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/clock_adapter.hpp",
+      "candidate_sha256": "2a3e48ec7c46cc1a68ea3eac3ba8d5d52cc2fe09aaf228bc044a3c5bef0936b1",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v116b-control/verification/clock_adapter.hpp",
+      "original_sha256": "2a3e48ec7c46cc1a68ea3eac3ba8d5d52cc2fe09aaf228bc044a3c5bef0936b1"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/historical_hazards.cpp",
+      "candidate_sha256": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v116b-control/verification/historical_hazards.cpp",
+      "original_sha256": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/tb_scratch.cpp",
+      "candidate_sha256": "5515780dd96e2ed7640cf7e6741f54ca084536a0f5793c689e6cef37959edc16",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v116b-control/verification/tb_scratch.cpp",
+      "original_sha256": "5515780dd96e2ed7640cf7e6741f54ca084536a0f5793c689e6cef37959edc16"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/tb_bank.cpp",
+      "candidate_sha256": "dfea8a9f36cbc48a38d257e51099f245e391a9753196c6827707c89c94e31892",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v116b-control/verification/tb_bank.cpp",
+      "original_sha256": "dfea8a9f36cbc48a38d257e51099f245e391a9753196c6827707c89c94e31892"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/tb_prepare.cpp",
+      "candidate_sha256": "1b6a2445ca9c70b9b5a34d12775f4ec9d0539dc5d46b2da522b1984e7441abb2",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v116b-control/verification/tb_prepare.cpp",
+      "original_sha256": "1b6a2445ca9c70b9b5a34d12775f4ec9d0539dc5d46b2da522b1984e7441abb2"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/tb_slot.cpp",
+      "candidate_sha256": "29a35436bc6fa26dcdf74c669f643ce5413a3b33547e986784045ed4eea190c6",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v116b-control/verification/tb_slot.cpp",
+      "original_sha256": "29a35436bc6fa26dcdf74c669f643ce5413a3b33547e986784045ed4eea190c6"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/pair_adapter.hpp",
+      "candidate_sha256": "e9dda3b7a5f825dcdda6417c453dbd8c9dfb5ccb3928bf361f7afd5d06dcf104",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v116b-control/verification/pair_adapter.hpp",
+      "original_sha256": "e9dda3b7a5f825dcdda6417c453dbd8c9dfb5ccb3928bf361f7afd5d06dcf104"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/caller_prepare.cpp",
+      "candidate_sha256": "527a10a69996ac5fe2a7d89241242ff3a93173bb9eb34d041b3ff08afeeecf15",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v116b-control/verification/caller_prepare.cpp",
+      "original_sha256": "527a10a69996ac5fe2a7d89241242ff3a93173bb9eb34d041b3ff08afeeecf15"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/tb_pipeline.cpp",
+      "candidate_sha256": "0ecf82fb877d9c7d45ea30fb24ed1dc689af456e151d7997ccb174d7ad35b7a6",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v116b-control/verification/tb_pipeline.cpp",
+      "original_sha256": "0ecf82fb877d9c7d45ea30fb24ed1dc689af456e151d7997ccb174d7ad35b7a6"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/tb_control.cpp",
+      "candidate_sha256": "4dc828da4d4c8f6fd8f8227494a60dd1b7a647077077d9d947e67e3e501998f9",
+      "edits": [
+        {
+          "after": "int inherited_control_main(int argc,char**argv)",
+          "before": "int main(int argc,char**argv)"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/verification/tb_control.cpp",
+      "original_sha256": "312816eb0de9cb4a333a4073dd3e0b1d8a38724f1d24b7bd443e1e9b161bdb4e"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/br88_pipeline_pair.sv",
+      "candidate_sha256": "44a4a0836d834c68fd9bbfdbb8618016690ead937702c67657de2842f24abc1b",
+      "edits": [
+        {
+          "after": "    always_ff @(posedge clk)\n        assert({reference.scratch.pending_record,reference.scratch.pending_bytes,reference.scratch.pending_position}==\n            {candidate.scratch.pending_record,candidate.scratch.pending_bytes,candidate.scratch.pending_position})\n            else $fatal(1,\"V116C exact real-caller private pending tuple mismatch\");\nendmodule",
+          "before": "endmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/verification/br88_pipeline_pair.sv",
+      "original_sha256": "8d9573df607bc0bd7d9622aebb60a0b9355647c35fef1c4cecb126dca8eede9a"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/packed_scratch_reference.sv",
+      "candidate_sha256": "4207f994cdf636325da2ab646fc2e5d19f6811ab49c4a4cea3b98d5dc43f9aa4",
+      "edits": [
+        {
+          "after": "module packed_scratch_reference (",
+          "before": "module packed_scratch_v91g2 ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/packed_scratch_v91g2.sv",
+      "original_sha256": "98060d865bb74de8e8430a3d0d2edb6f7a8670772f52106dc79e404d8f48a87a"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/br88_pipeline_reference.sv",
+      "candidate_sha256": "a749b8af01a78920c42bcfe5815d2e5ca01e9de6c0fe27031dbfc2e16e3704a6",
+      "edits": [
+        {
+          "after": "module br88_pipeline_reference #(",
+          "before": "module br88_pipeline_v91h #("
+        },
+        {
+          "after": "    packed_scratch_reference scratch (",
+          "before": "    packed_scratch_v91g2 scratch ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv",
+      "original_sha256": "2eef50dfe32a5c84cebf207dc9c56ac69b933ea0371e0b7e372681adacc4ad0e"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/verification/br88_pipeline_candidate.sv",
+      "candidate_sha256": "6696d9dcfddff31801c89209565e5d0b8d101d8fdf8b4a7af4a3874d19e11a21",
+      "edits": [
+        {
+          "after": "module br88_pipeline_candidate #(",
+          "before": "module br88_pipeline_v91h #("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv",
+      "original_sha256": "2eef50dfe32a5c84cebf207dc9c56ac69b933ea0371e0b7e372681adacc4ad0e"
+    }
+  ],
+  "declared_public_cycle_delta": 0,
+  "logical_pending_capacity": 1,
+  "physical_banks": 2,
+  "recipes": [
+    {
+      "candidate": "fpga/experiments/cu66-v116c-record/packed_scratch_v91g2.sv",
+      "candidate_sha256": "1ac70499489acbdb00e682696a5783cf178c3e703e3b16d2138f275f7de59839",
+      "edits": [
+        {
+          "after": "    logic [31:0] pending_record;\n    logic [2:0] pending_bytes;\n    logic [31:0] pending_position;\n    // Two physical speculative banks represent ONE logical pending tuple.\n    // Only the small view selector sees the original acceptance/kill priority.\n    logic record_view_bank=0, record_view_seen=0;\n    logic [31:0] record_payload [0:1], position_payload [0:1];\n    logic [2:0] bytes_payload [0:1];\n    logic [66:0] prospective_record;\n    assign prospective_record={\n        (raw_mode || phase==0 ? {16'd0,coef_value} : {coef_block[12:0],coef_index,coef_value[12:0]}),\n        (raw_mode || phase==0 ? 3'd2 : 3'd4),input_position};\n    for(genvar record_bank=0;record_bank<2;record_bank=record_bank+1)begin: pending_storage\n        // Continuously refresh only the inactive bank. No reset, cancel,\n        // input_bad, coef_valid, phase or format predicate gates this write.\n        always_ff @(posedge clk)if(record_view_bank!=1'(record_bank))\n            {record_payload[record_bank],bytes_payload[record_bank],position_payload[record_bank]}<=prospective_record;\n    end\n    // Before the first original write, the initialized two-state view is zero.\n    // All warm reset/abort/error edges retain this logical view exactly.\n    assign pending_record=record_view_seen ? record_payload[record_view_bank] : 32'd0;\n    assign pending_bytes=record_view_seen ? bytes_payload[record_view_bank] : 3'd0;\n    assign pending_position=record_view_seen ? position_payload[record_view_bank] : 32'd0;",
+          "before": "    logic [31:0] pending_record;\n    logic [2:0] pending_bytes;\n    logic [31:0] pending_position;"
+        },
+        {
+          "after": "                            record_view_bank<=!record_view_bank; record_view_seen<=1;\n                            begin state<=APPEND; busy_owned<=1'b1; end",
+          "before": "                            pending_record<=raw_mode || phase==0 ? {16'd0,coef_value} :\n                                {coef_block[12:0],coef_index,coef_value[12:0]};\n                            pending_bytes<=raw_mode || phase==0 ? 2 : 4;\n                            pending_position<=input_position; begin state<=APPEND; busy_owned<=1'b1; end"
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    // Frozen old three-field shadow. Its eligibility independently spells out\n    // the ORIGINAL main outer priority; response_failure is deliberately not\n    // used because a matching error without prefetch/write ownership falls in.\n    logic [31:0] record_shadow=0,position_shadow=0;\n    logic [2:0] bytes_shadow=0;\n    logic record_shadow_event;\n    logic record_check_initialized=0,record_previous_bank,record_previous_event;\n    logic [66:0] record_previous_prospective;\n    logic [66:0] record_previous_physical [0:1];\n    always_comb record_shadow_event=!cancel &&\n        !(mem_rsp_valid && (!outstanding || mem_rsp_epoch!=request_epoch)) &&\n        state!=DRAIN &&\n        !(prefetch_offer && outstanding && mem_rsp_valid && mem_rsp_error) &&\n        !(overlap_mode && write_slot_valid && outstanding && mem_rsp_valid && mem_rsp_error) &&\n        state==INGEST && coef_valid && !input_bad;\n    always_ff @(posedge clk)begin\n        assert({pending_record,pending_bytes,pending_position}=={record_shadow,bytes_shadow,position_shadow})\n            else $fatal(1,\"V116C exact old pending tuple shadow mismatch\");\n        if(record_check_initialized)begin\n            assert(record_view_bank==(record_previous_bank^record_previous_event))\n                else $fatal(1,\"V116C view selector changed outside original write\");\n            for(integer n=0;n<2;n=n+1)begin\n                if(1'(n)==record_previous_bank)\n                    assert({record_payload[n],bytes_payload[n],position_payload[n]}==record_previous_physical[n])\n                        else $fatal(1,\"V116C selected physical tuple was overwritten\");\n                else\n                    assert({record_payload[n],bytes_payload[n],position_payload[n]}==record_previous_prospective)\n                        else $fatal(1,\"V116C inactive bank missed complete speculative tuple\");\n            end\n            if(record_previous_event)assert(record_view_seen)\n                else $fatal(1,\"V116C original pending write not made visible\");\n        end\n        if(record_shadow_event)begin\n            record_shadow<=raw_mode || phase==0 ? {16'd0,coef_value} :\n                {coef_block[12:0],coef_index,coef_value[12:0]};\n            bytes_shadow<=raw_mode || phase==0 ? 2 : 4;\n            position_shadow<=input_position;\n        end\n        record_check_initialized<=1;\n        record_previous_bank<=record_view_bank;record_previous_event<=record_shadow_event;\n        record_previous_prospective<=prospective_record;\n        for(integer n=0;n<2;n=n+1)\n            record_previous_physical[n]<={record_payload[n],bytes_payload[n],position_payload[n]};\n    end\n`endif\nendmodule",
+          "before": "endmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/packed_scratch_v91g2.sv",
+      "original_sha256": "98060d865bb74de8e8430a3d0d2edb6f7a8670772f52106dc79e404d8f48a87a"
+    }
+  ],
+  "schema": "v116c-two-bank-one-logical-record-v1",
+  "unchanged_caller": {
+    "path": "fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv",
+    "sha256": "2eef50dfe32a5c84cebf207dc9c56ac69b933ea0371e0b7e372681adacc4ad0e"
+  }
+}

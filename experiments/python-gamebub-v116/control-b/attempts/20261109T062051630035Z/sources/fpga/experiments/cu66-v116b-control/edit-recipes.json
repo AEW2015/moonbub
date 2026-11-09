@@ -1,0 +1,222 @@
+{
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/observed_original.sv",
+      "candidate_sha256": "ddf1b8936375ab3ede48810a012e49f1925f8246369400cfcacdaa6a27082c74",
+      "edits": [
+        {
+          "after": "module observed_original ",
+          "before": "module packed_scratch_v91g2 "
+        },
+        {
+          "after": ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);",
+          "before": "\n);"
+        },
+        {
+          "after": "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule",
+          "before": "\nendmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v115-refined-scratch/packed_scratch_v91g2.sv",
+      "original_sha256": "2b9dbaf7fb25d7fdc8219a69dc59588b4c1bb2e7da374c6edaf223a5c1ac52d1"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/observed_candidate.sv",
+      "candidate_sha256": "941e0dd3c09bad1a7becaa7f4a0a839270f139e4b49033417a60d4ad0af5454d",
+      "edits": [
+        {
+          "after": "module observed_candidate ",
+          "before": "module packed_scratch_v91g2 "
+        },
+        {
+          "after": ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);",
+          "before": "\n);"
+        },
+        {
+          "after": "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule",
+          "before": "\nendmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/packed_scratch_v91g2.sv",
+      "original_sha256": "98060d865bb74de8e8430a3d0d2edb6f7a8670772f52106dc79e404d8f48a87a"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/scratch_probe.sv",
+      "candidate_sha256": "e1c2c2a165d8b433dd1f98e2b1d2acce2666fe3d2059352bd7673b85b516f241",
+      "edits": [
+        {
+          "after": "observed_candidate candidate (\n        .clk(clk),\n        .reset(reset),\n        .begin_valid(begin_valid),\n        .begin_ready(begin_ready),\n        .begin_blocks(begin_blocks),\n        .begin_raw(begin_raw),\n        .begin_serial_clear(begin_serial_clear),\n        .begin_overlap(begin_overlap),\n        .begin_prefetch(begin_prefetch),\n        .begin_tile_overlap(begin_tile_overlap),\n        .begin_count1(begin_count1),\n        .begin_count2(begin_count2),\n        .begin_count3(begin_count3),\n        .begin_epoch(begin_epoch),\n        .begin_prefix1(aligned1),.begin_prefix12(aligned12),.begin_prefix123(aligned123),\n        .begin_threshold1(threshold1),.begin_threshold2(threshold2),.begin_threshold3(threshold3),\n        .begin_capacity_upper(capacity_upper),.begin_capacity_lower(capacity_lower),.begin_capacity_wrap(capacity_wrap),\n        .coef_valid(coef_valid),\n        .coef_ready(coef_ready),\n        .coef_band(coef_band),\n        .coef_block(coef_block),\n        .coef_index(coef_index),\n        .coef_value(coef_value),\n        .coef_epoch(coef_epoch),\n        .band_end_valid(band_end_valid),\n        .band_end_ready(band_end_ready),\n        .band_end_band(band_end_band),\n        .band_end_epoch(band_end_epoch),\n        .seal_valid(seal_valid),\n        .seal_ready(seal_ready),\n        .seal_epoch(seal_epoch),\n        .owned_abort_epoch(candidate_owned_abort_target), .abort_valid(abort_valid),\n        .abort_epoch(abort_epoch),\n        .busy(busy),\n        .sealed(sealed),\n        .done(done),\n        .error(error),\n        .active_epoch(active_epoch),\n        .used_bytes(used_bytes),\n        .dense_valid(dense_valid),\n        .dense_ready(dense_ready),\n        .dense_block(dense_block),\n        .dense_index(dense_index),\n        .dense_value(dense_value),\n        .dense_epoch(dense_epoch),\n        .mem_req_valid(mem_req_valid),\n        .mem_req_ready(mem_req_ready),\n        .mem_req_write(mem_req_write),\n        .mem_req_addr(mem_req_addr),\n        .mem_req_data(mem_req_data),\n        .mem_req_epoch(mem_req_epoch),\n        .mem_rsp_valid(mem_rsp_valid),\n        .mem_rsp_ready(mem_rsp_ready),\n        .mem_rsp_data(mem_rsp_data),\n        .mem_rsp_epoch(mem_rsp_epoch),\n        .mem_rsp_error(mem_rsp_error),\n        .debug_state(debug_state),\n        .debug_return_state(debug_return_state),\n        .debug_outstanding(debug_outstanding),\n        .debug_phase(debug_phase),\n        .debug_assembly_bytes(debug_assembly_bytes),\n        .debug_cache_valid(debug_cache_valid),\n        .debug_prefetch_offer(debug_prefetch_offer),\n        .debug_prefetch_launch(debug_prefetch_launch),\n        .debug_prefetch_use(debug_prefetch_use),\n        .debug_tile_mode(debug_tile_mode),\n        .debug_tile_preparing(debug_tile_preparing),\n        .debug_prepare_bank(debug_prepare_bank),\n        .debug_emit_bank(debug_emit_bank),\n        .debug_bank_ready(debug_bank_ready),\n        .debug_bank_owned(debug_bank_owned),\n        .debug_emitter_state(debug_emitter_state),\n        .debug_prepare_block(debug_prepare_block),\n        .debug_bank_block(debug_bank_block),\n        .debug_bank_epoch(debug_bank_epoch),\n        .debug_tile_prepare_start(debug_tile_prepare_start),\n        .debug_tile_publish(debug_tile_publish),\n        .debug_tile_release(debug_tile_release),\n        .debug_write_slot_valid(debug_write_slot_valid),\n        .debug_assembler_full(debug_assembler_full),\n        .debug_write_enqueue(debug_write_enqueue),\n        .debug_head_valid(debug_head_valid),\n        .verify_cache_data(verify_cache_data),\n        .verify_positions(verify_positions),\n        .verify_heads(verify_heads),\n        .verify_head_positions(verify_head_positions),\n        .verify_cursors(verify_cursors),\n        .verify_read_word(verify_read_word),\n        .verify_read_position(verify_read_position),\n        .verify_read_address(verify_read_address),\n        .verify_read_segment(verify_read_segment),\n        .verify_read_band(verify_read_band),\n        .verify_position_use(verify_position_use));\n    logic old_cursor_live,new_cursor_live;\n    assign old_cursor_live=old_debug_state!=0 && old_debug_state!=23 && old_debug_state!=24 && old_debug_state!=25;\n    assign new_cursor_live=debug_state!=0 && debug_state!=23 && debug_state!=24 && debug_state!=25;\n    assign verify_cursor_equal=old_verify_cursors==verify_cursors;\n    assign verify_cursor_owner_live=old_cursor_live || new_cursor_live;\n    assign verify_reference_cursors=old_verify_cursors;\n    // States and every noncursor observation remain equal before owner masking.\n    always_ff @(posedge reference_clk)if(pair_enable)begin\n        assert(old_debug_state==debug_state)else $fatal(1,\"cursor state mismatch before owner scope\");\n        assert(old_verify_positions==verify_positions && old_verify_head_positions==verify_head_positions &&\n            old_verify_read_position==verify_read_position)else $fatal(1,\"cursor changed noncursor raw payload\");\n    end\n    assign verify_preparing=candidate.preparing_begin;\n    assign verify_prepare_cancel=candidate.cancel;\n    always_ff @(posedge clk)if(!pair_enable && verify_preparing && !reset && !abort_valid && !mem_rsp_valid)\n        assert(busy && !begin_ready && !coef_ready && !band_end_ready && !seal_ready &&\n            !dense_valid && !mem_req_valid && !debug_outstanding && !sealed && !done && error==0)\n            else $fatal(1,\"paired scratch prepare interval leaked public work\");\n    // Additive raw-array equivalence includes every inactive word, not only\n    // selected dense data. No original public/owner/raw check is removed.\n    logic all_tile_words_equal;\n    always_comb begin\n        all_tile_words_equal=1;\n        for(integer b=0;b<2;b=b+1)for(integer w=0;w<64;w=w+1)\n            all_tile_words_equal=all_tile_words_equal && original.tile[b][w]==candidate.tile[b][w];\n    end\n    for(genvar b=0;b<2;b=b+1)begin: additional_tile_views\n        for(genvar w=0;w<64;w=w+1)begin: word_view\n            assign verify_tile_visible[(b*64+w)*16+:16]=candidate.tile[b][w];\n            assign verify_tile_private[(b*64+w)*16+:16]=candidate.tile_payload[b][w];\n        end\n    end\n    assign verify_tile_slot_valid=candidate.tile_pending_valid;\n    assign verify_tile_slot_bank=candidate.tile_pending_bank;\n    assign verify_tile_slot_index=candidate.tile_pending_index;\n    assign verify_tile_slot_value=candidate.tile_pending_value;\n    assign verify_tile_event_valid=candidate.tile_event_valid;\n    initial begin verify_tile_events=0;verify_tile_commits=0;verify_tile_back_to_back=0;\n        verify_tile_zero_events=0;verify_tile_data_events=0;end\n    always_ff @(posedge clk)begin\n        if(candidate.tile_event_valid)begin\n            verify_tile_events<=verify_tile_events+1;\n            if(candidate.tile_event_value==0)verify_tile_zero_events<=verify_tile_zero_events+1;\n            else verify_tile_data_events<=verify_tile_data_events+1;\n        end\n        if(candidate.tile_pending_valid)verify_tile_commits<=verify_tile_commits+1;\n        if(candidate.tile_pending_valid && candidate.tile_event_valid)\n            verify_tile_back_to_back<=verify_tile_back_to_back+1;\n        assert(verify_tile_events==verify_tile_commits+32'(candidate.tile_pending_valid))\n            else $fatal(1,\"finite tile slot conservation differs\");\n        if(candidate.tile_pending_valid)\n            assert(candidate.tile[candidate.tile_pending_bank][candidate.tile_pending_index]==candidate.tile_pending_value)\n                else $fatal(1,\"newest visible tile write not forwarded\");\n    end\n    assign mismatch=pair_enable && !(all_tile_words_equal && (old_begin_ready==begin_ready) &&\n        (old_coef_ready==coef_ready) &&\n        (old_band_end_ready==band_end_ready) &&\n        (old_seal_ready==seal_ready) &&\n        (old_busy==busy) &&\n        (old_sealed==sealed) &&\n        (old_done==done) &&\n        (old_error==error) &&\n        (old_active_epoch==active_epoch) &&\n        (old_used_bytes==used_bytes) &&\n        (old_dense_valid==dense_valid) &&\n        (old_dense_block==dense_block) &&\n        (old_dense_index==dense_index) &&\n        (old_dense_value==dense_value) &&\n        (old_dense_epoch==dense_epoch) &&\n        (old_mem_req_valid==mem_req_valid) &&\n        (old_mem_req_write==mem_req_write) &&\n        (old_mem_req_addr==mem_req_addr) &&\n        (old_mem_req_data==mem_req_data) &&\n        (old_mem_req_epoch==mem_req_epoch) &&\n        (old_mem_rsp_ready==mem_rsp_ready) &&\n        (old_debug_state==debug_state) &&\n        (old_debug_return_state==debug_return_state) &&\n        (old_debug_outstanding==debug_outstanding) &&\n        (old_debug_phase==debug_phase) &&\n        (old_debug_assembly_bytes==debug_assembly_bytes) &&\n        (old_debug_cache_valid==debug_cache_valid) &&\n        (old_debug_prefetch_offer==debug_prefetch_offer) &&\n        (old_debug_prefetch_launch==debug_prefetch_launch) &&\n        (old_debug_prefetch_use==debug_prefetch_use) &&\n        (old_debug_tile_mode==debug_tile_mode) &&\n        (old_debug_tile_preparing==debug_tile_preparing) &&\n        (old_debug_prepare_bank==debug_prepare_bank) &&\n        (old_debug_emit_bank==debug_emit_bank) &&\n        (old_debug_bank_ready==debug_bank_ready) &&\n        (old_debug_bank_owned==debug_bank_owned) &&\n        (old_debug_emitter_state==debug_emitter_state) &&\n        (old_debug_prepare_block==debug_prepare_block) &&\n        (old_debug_bank_block[0]==debug_bank_block[0]) &&\n        (old_debug_bank_block[1]==debug_bank_block[1]) &&\n        (old_debug_bank_epoch[0]==debug_bank_epoch[0]) &&\n        (old_debug_bank_epoch[1]==debug_bank_epoch[1]) &&\n        (old_debug_tile_prepare_start==debug_tile_prepare_start) &&\n        (old_debug_tile_publish==debug_tile_publish) &&\n        (old_debug_tile_release==debug_tile_release) &&\n        (old_debug_write_slot_valid==debug_write_slot_valid) &&\n        (old_debug_assembler_full==debug_assembler_full) &&\n        (old_debug_write_enqueue==debug_write_enqueue) &&\n        (old_debug_head_valid==debug_head_valid) &&\n        (old_verify_cache_data==verify_cache_data) &&\n        (old_verify_heads==verify_heads) &&\n        (!(old_cursor_live || new_cursor_live) || old_verify_cursors==verify_cursors) &&\n        (old_verify_read_word==verify_read_word) &&\n        (old_verify_read_address==verify_read_address) &&\n        (old_verify_read_segment==verify_read_segment) &&\n        (old_verify_read_band==verify_read_band) &&\n        (old_verify_position_use==verify_position_use) &&\n        (!debug_cache_valid[0] || old_verify_positions[0+:304]==verify_positions[0+:304]) &&\n        (!debug_cache_valid[1] || old_verify_positions[304+:304]==verify_positions[304+:304]) &&\n        (!debug_cache_valid[2] || old_verify_positions[608+:304]==verify_positions[608+:304]) &&\n        (!debug_cache_valid[3] || old_verify_positions[912+:304]==verify_positions[912+:304]) &&\n        (!verify_position_use || old_verify_read_position==verify_read_position) &&\n        (!(verify_position_use && verify_read_band==2'd1 && verify_cursors[0+:32]!=0) || old_verify_head_positions[0+:19]==verify_head_positions[0+:19]) &&\n        (!(verify_position_use && verify_read_band==2'd2 && verify_cursors[32+:32]!=0) || old_verify_head_positions[19+:19]==verify_head_positions[19+:19]) &&\n        (!(verify_position_use && verify_read_band==2'd3 && verify_cursors[64+:32]!=0) || old_verify_head_positions[38+:19]==verify_head_positions[38+:19]));\nendmodule\n",
+          "before": "observed_candidate candidate (\n        .clk(clk),\n        .reset(reset),\n        .begin_valid(begin_valid),\n        .begin_ready(begin_ready),\n        .begin_blocks(begin_blocks),\n        .begin_raw(begin_raw),\n        .begin_serial_clear(begin_serial_clear),\n        .begin_overlap(begin_overlap),\n        .begin_prefetch(begin_prefetch),\n        .begin_tile_overlap(begin_tile_overlap),\n        .begin_count1(begin_count1),\n        .begin_count2(begin_count2),\n        .begin_count3(begin_count3),\n        .begin_epoch(begin_epoch),\n        .begin_prefix1(aligned1),.begin_prefix12(aligned12),.begin_prefix123(aligned123),\n        .begin_threshold1(threshold1),.begin_threshold2(threshold2),.begin_threshold3(threshold3),\n        .begin_capacity_upper(capacity_upper),.begin_capacity_lower(capacity_lower),.begin_capacity_wrap(capacity_wrap),\n        .coef_valid(coef_valid),\n        .coef_ready(coef_ready),\n        .coef_band(coef_band),\n        .coef_block(coef_block),\n        .coef_index(coef_index),\n        .coef_value(coef_value),\n        .coef_epoch(coef_epoch),\n        .band_end_valid(band_end_valid),\n        .band_end_ready(band_end_ready),\n        .band_end_band(band_end_band),\n        .band_end_epoch(band_end_epoch),\n        .seal_valid(seal_valid),\n        .seal_ready(seal_ready),\n        .seal_epoch(seal_epoch),\n        .abort_valid(abort_valid),\n        .abort_epoch(abort_epoch),\n        .busy(busy),\n        .sealed(sealed),\n        .done(done),\n        .error(error),\n        .active_epoch(active_epoch),\n        .used_bytes(used_bytes),\n        .dense_valid(dense_valid),\n        .dense_ready(dense_ready),\n        .dense_block(dense_block),\n        .dense_index(dense_index),\n        .dense_value(dense_value),\n        .dense_epoch(dense_epoch),\n        .mem_req_valid(mem_req_valid),\n        .mem_req_ready(mem_req_ready),\n        .mem_req_write(mem_req_write),\n        .mem_req_addr(mem_req_addr),\n        .mem_req_data(mem_req_data),\n        .mem_req_epoch(mem_req_epoch),\n        .mem_rsp_valid(mem_rsp_valid),\n        .mem_rsp_ready(mem_rsp_ready),\n        .mem_rsp_data(mem_rsp_data),\n        .mem_rsp_epoch(mem_rsp_epoch),\n        .mem_rsp_error(mem_rsp_error),\n        .debug_state(debug_state),\n        .debug_return_state(debug_return_state),\n        .debug_outstanding(debug_outstanding),\n        .debug_phase(debug_phase),\n        .debug_assembly_bytes(debug_assembly_bytes),\n        .debug_cache_valid(debug_cache_valid),\n        .debug_prefetch_offer(debug_prefetch_offer),\n        .debug_prefetch_launch(debug_prefetch_launch),\n        .debug_prefetch_use(debug_prefetch_use),\n        .debug_tile_mode(debug_tile_mode),\n        .debug_tile_preparing(debug_tile_preparing),\n        .debug_prepare_bank(debug_prepare_bank),\n        .debug_emit_bank(debug_emit_bank),\n        .debug_bank_ready(debug_bank_ready),\n        .debug_bank_owned(debug_bank_owned),\n        .debug_emitter_state(debug_emitter_state),\n        .debug_prepare_block(debug_prepare_block),\n        .debug_bank_block(debug_bank_block),\n        .debug_bank_epoch(debug_bank_epoch),\n        .debug_tile_prepare_start(debug_tile_prepare_start),\n        .debug_tile_publish(debug_tile_publish),\n        .debug_tile_release(debug_tile_release),\n        .debug_write_slot_valid(debug_write_slot_valid),\n        .debug_assembler_full(debug_assembler_full),\n        .debug_write_enqueue(debug_write_enqueue),\n        .debug_head_valid(debug_head_valid),\n        .verify_cache_data(verify_cache_data),\n        .verify_positions(verify_positions),\n        .verify_heads(verify_heads),\n        .verify_head_positions(verify_head_positions),\n        .verify_cursors(verify_cursors),\n        .verify_read_word(verify_read_word),\n        .verify_read_position(verify_read_position),\n        .verify_read_address(verify_read_address),\n        .verify_read_segment(verify_read_segment),\n        .verify_read_band(verify_read_band),\n        .verify_position_use(verify_position_use));\n    logic old_cursor_live,new_cursor_live;\n    assign old_cursor_live=old_debug_state!=0 && old_debug_state!=23 && old_debug_state!=24 && old_debug_state!=25;\n    assign new_cursor_live=debug_state!=0 && debug_state!=23 && debug_state!=24 && debug_state!=25;\n    assign verify_cursor_equal=old_verify_cursors==verify_cursors;\n    assign verify_cursor_owner_live=old_cursor_live || new_cursor_live;\n    assign verify_reference_cursors=old_verify_cursors;\n    // States and every noncursor observation remain equal before owner masking.\n    always_ff @(posedge reference_clk)if(pair_enable)begin\n        assert(old_debug_state==debug_state)else $fatal(1,\"cursor state mismatch before owner scope\");\n        assert(old_verify_positions==verify_positions && old_verify_head_positions==verify_head_positions &&\n            old_verify_read_position==verify_read_position)else $fatal(1,\"cursor changed noncursor raw payload\");\n    end\n    assign verify_preparing=candidate.preparing_begin;\n    assign verify_prepare_cancel=candidate.cancel;\n    always_ff @(posedge clk)if(!pair_enable && verify_preparing && !reset && !abort_valid && !mem_rsp_valid)\n        assert(busy && !begin_ready && !coef_ready && !band_end_ready && !seal_ready &&\n            !dense_valid && !mem_req_valid && !debug_outstanding && !sealed && !done && error==0)\n            else $fatal(1,\"paired scratch prepare interval leaked public work\");\n    // Additive raw-array equivalence includes every inactive word, not only\n    // selected dense data. No original public/owner/raw check is removed.\n    logic all_tile_words_equal;\n    always_comb begin\n        all_tile_words_equal=1;\n        for(integer b=0;b<2;b=b+1)for(integer w=0;w<64;w=w+1)\n            all_tile_words_equal=all_tile_words_equal && original.tile[b][w]==candidate.tile[b][w];\n    end\n    for(genvar b=0;b<2;b=b+1)begin: additional_tile_views\n        for(genvar w=0;w<64;w=w+1)begin: word_view\n            assign verify_tile_visible[(b*64+w)*16+:16]=candidate.tile[b][w];\n            assign verify_tile_private[(b*64+w)*16+:16]=candidate.tile_payload[b][w];\n        end\n    end\n    assign verify_tile_slot_valid=candidate.tile_pending_valid;\n    assign verify_tile_slot_bank=candidate.tile_pending_bank;\n    assign verify_tile_slot_index=candidate.tile_pending_index;\n    assign verify_tile_slot_value=candidate.tile_pending_value;\n    assign verify_tile_event_valid=candidate.tile_event_valid;\n    initial begin verify_tile_events=0;verify_tile_commits=0;verify_tile_back_to_back=0;\n        verify_tile_zero_events=0;verify_tile_data_events=0;end\n    always_ff @(posedge clk)begin\n        if(candidate.tile_event_valid)begin\n            verify_tile_events<=verify_tile_events+1;\n            if(candidate.tile_event_value==0)verify_tile_zero_events<=verify_tile_zero_events+1;\n            else verify_tile_data_events<=verify_tile_data_events+1;\n        end\n        if(candidate.tile_pending_valid)verify_tile_commits<=verify_tile_commits+1;\n        if(candidate.tile_pending_valid && candidate.tile_event_valid)\n            verify_tile_back_to_back<=verify_tile_back_to_back+1;\n        assert(verify_tile_events==verify_tile_commits+32'(candidate.tile_pending_valid))\n            else $fatal(1,\"finite tile slot conservation differs\");\n        if(candidate.tile_pending_valid)\n            assert(candidate.tile[candidate.tile_pending_bank][candidate.tile_pending_index]==candidate.tile_pending_value)\n                else $fatal(1,\"newest visible tile write not forwarded\");\n    end\n    assign mismatch=pair_enable && !(all_tile_words_equal && (old_begin_ready==begin_ready) &&\n        (old_coef_ready==coef_ready) &&\n        (old_band_end_ready==band_end_ready) &&\n        (old_seal_ready==seal_ready) &&\n        (old_busy==busy) &&\n        (old_sealed==sealed) &&\n        (old_done==done) &&\n        (old_error==error) &&\n        (old_active_epoch==active_epoch) &&\n        (old_used_bytes==used_bytes) &&\n        (old_dense_valid==dense_valid) &&\n        (old_dense_block==dense_block) &&\n        (old_dense_index==dense_index) &&\n        (old_dense_value==dense_value) &&\n        (old_dense_epoch==dense_epoch) &&\n        (old_mem_req_valid==mem_req_valid) &&\n        (old_mem_req_write==mem_req_write) &&\n        (old_mem_req_addr==mem_req_addr) &&\n        (old_mem_req_data==mem_req_data) &&\n        (old_mem_req_epoch==mem_req_epoch) &&\n        (old_mem_rsp_ready==mem_rsp_ready) &&\n        (old_debug_state==debug_state) &&\n        (old_debug_return_state==debug_return_state) &&\n        (old_debug_outstanding==debug_outstanding) &&\n        (old_debug_phase==debug_phase) &&\n        (old_debug_assembly_bytes==debug_assembly_bytes) &&\n        (old_debug_cache_valid==debug_cache_valid) &&\n        (old_debug_prefetch_offer==debug_prefetch_offer) &&\n        (old_debug_prefetch_launch==debug_prefetch_launch) &&\n        (old_debug_prefetch_use==debug_prefetch_use) &&\n        (old_debug_tile_mode==debug_tile_mode) &&\n        (old_debug_tile_preparing==debug_tile_preparing) &&\n        (old_debug_prepare_bank==debug_prepare_bank) &&\n        (old_debug_emit_bank==debug_emit_bank) &&\n        (old_debug_bank_ready==debug_bank_ready) &&\n        (old_debug_bank_owned==debug_bank_owned) &&\n        (old_debug_emitter_state==debug_emitter_state) &&\n        (old_debug_prepare_block==debug_prepare_block) &&\n        (old_debug_bank_block[0]==debug_bank_block[0]) &&\n        (old_debug_bank_block[1]==debug_bank_block[1]) &&\n        (old_debug_bank_epoch[0]==debug_bank_epoch[0]) &&\n        (old_debug_bank_epoch[1]==debug_bank_epoch[1]) &&\n        (old_debug_tile_prepare_start==debug_tile_prepare_start) &&\n        (old_debug_tile_publish==debug_tile_publish) &&\n        (old_debug_tile_release==debug_tile_release) &&\n        (old_debug_write_slot_valid==debug_write_slot_valid) &&\n        (old_debug_assembler_full==debug_assembler_full) &&\n        (old_debug_write_enqueue==debug_write_enqueue) &&\n        (old_debug_head_valid==debug_head_valid) &&\n        (old_verify_cache_data==verify_cache_data) &&\n        (old_verify_heads==verify_heads) &&\n        (!(old_cursor_live || new_cursor_live) || old_verify_cursors==verify_cursors) &&\n        (old_verify_read_word==verify_read_word) &&\n        (old_verify_read_address==verify_read_address) &&\n        (old_verify_read_segment==verify_read_segment) &&\n        (old_verify_read_band==verify_read_band) &&\n        (old_verify_position_use==verify_position_use) &&\n        (!debug_cache_valid[0] || old_verify_positions[0+:304]==verify_positions[0+:304]) &&\n        (!debug_cache_valid[1] || old_verify_positions[304+:304]==verify_positions[304+:304]) &&\n        (!debug_cache_valid[2] || old_verify_positions[608+:304]==verify_positions[608+:304]) &&\n        (!debug_cache_valid[3] || old_verify_positions[912+:304]==verify_positions[912+:304]) &&\n        (!verify_position_use || old_verify_read_position==verify_read_position) &&\n        (!(verify_position_use && verify_read_band==2'd1 && verify_cursors[0+:32]!=0) || old_verify_head_positions[0+:19]==verify_head_positions[0+:19]) &&\n        (!(verify_position_use && verify_read_band==2'd2 && verify_cursors[32+:32]!=0) || old_verify_head_positions[19+:19]==verify_head_positions[19+:19]) &&\n        (!(verify_position_use && verify_read_band==2'd3 && verify_cursors[64+:32]!=0) || old_verify_head_positions[38+:19]==verify_head_positions[38+:19]));\nendmodule\n"
+        },
+        {
+          "after": "    logic [31:0] candidate_owned_abort_target;\n    logic  old_begin_ready;",
+          "before": "    logic  old_begin_ready;"
+        },
+        {
+          "after": "    // Check the live new port against the exact old private target every edge.\n    // No reset/abort/response-failure mask and no unused observability wire.\n    always_ff @(posedge clk)begin\n        assert(candidate_owned_abort_target==(original.preparing_begin ? original.queued_epoch : original.active_epoch))\n            else $fatal(1,\"V116B probe selected abort target differs from old target\");\n    end\nendmodule",
+          "before": "endmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v115-refined-scratch/verification/scratch_probe.sv",
+      "original_sha256": "137f71b97610ce169eb3ad38bba6ebc1bc8c575c0feb6f1a2cf780fa5df06dd9"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/tb_scratch.cpp",
+      "candidate_sha256": "5515780dd96e2ed7640cf7e6741f54ca084536a0f5793c689e6cef37959edc16",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v115-refined-scratch/verification/tb_scratch.cpp",
+      "original_sha256": "5515780dd96e2ed7640cf7e6741f54ca084536a0f5793c689e6cef37959edc16"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/tb_bank.cpp",
+      "candidate_sha256": "dfea8a9f36cbc48a38d257e51099f245e391a9753196c6827707c89c94e31892",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v115-refined-scratch/verification/tb_bank.cpp",
+      "original_sha256": "dfea8a9f36cbc48a38d257e51099f245e391a9753196c6827707c89c94e31892"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/historical_hazards.cpp",
+      "candidate_sha256": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v115-refined-scratch/verification/historical_hazards.cpp",
+      "original_sha256": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/tb_prepare.cpp",
+      "candidate_sha256": "1b6a2445ca9c70b9b5a34d12775f4ec9d0539dc5d46b2da522b1984e7441abb2",
+      "edits": [],
+      "original": "fpga/experiments/cu66-v115-refined-scratch/verification/tb_prepare.cpp",
+      "original_sha256": "1b6a2445ca9c70b9b5a34d12775f4ec9d0539dc5d46b2da522b1984e7441abb2"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/tb_slot.cpp",
+      "candidate_sha256": "29a35436bc6fa26dcdf74c669f643ce5413a3b33547e986784045ed4eea190c6",
+      "edits": [
+        {
+          "after": "BOTH(read_tag_match,1);",
+          "before": "NEW(read_tag_match)=1;"
+        },
+        {
+          "after": "int inherited_slot_main(int argc,char**argv)",
+          "before": "int main(int argc,char**argv)"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v115-refined-scratch/verification/tb_slot.cpp",
+      "original_sha256": "220e4ebd9313a1ce2589b0c6ebb7e018bf87fa6dd45ccfb61f3d5af6c8f4c404"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/packed_scratch_reference.sv",
+      "candidate_sha256": "88c3023079f1b43a849837127cf2d336af92e3e8c78009dc424fc265139d869e",
+      "edits": [
+        {
+          "after": "module packed_scratch_reference (",
+          "before": "module packed_scratch_v91g2 ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v115-refined-scratch/packed_scratch_v91g2.sv",
+      "original_sha256": "2b9dbaf7fb25d7fdc8219a69dc59588b4c1bb2e7da374c6edaf223a5c1ac52d1"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/br88_pipeline_reference.sv",
+      "candidate_sha256": "3f3f7650674e5d06935ad6210c8ed998d08032d8702e7eac0347c9f82f7a0101",
+      "edits": [
+        {
+          "after": "module br88_pipeline_reference #(",
+          "before": "module br88_pipeline_v91h #("
+        },
+        {
+          "after": "    packed_scratch_reference scratch (",
+          "before": "    packed_scratch_v91g2 scratch ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v108-capacity/br88_pipeline_v91h.sv",
+      "original_sha256": "cb440ed9c12c6fa3eac579aea99f2c03716e33b97ce50822ab00b93de08a4360"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/br88_pipeline_candidate.sv",
+      "candidate_sha256": "6696d9dcfddff31801c89209565e5d0b8d101d8fdf8b4a7af4a3874d19e11a21",
+      "edits": [
+        {
+          "after": "module br88_pipeline_candidate #(",
+          "before": "module br88_pipeline_v91h #("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv",
+      "original_sha256": "2eef50dfe32a5c84cebf207dc9c56ac69b933ea0371e0b7e372681adacc4ad0e"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/verification/tb_pipeline.cpp",
+      "candidate_sha256": "0ecf82fb877d9c7d45ea30fb24ed1dc689af456e151d7997ccb174d7ad35b7a6",
+      "edits": [
+        {
+          "after": "#include \"pair_adapter.hpp\"\nusing Pipeline=Pipeline_checked;",
+          "before": "using Pipeline=Vbr88_pipeline_v91h;"
+        },
+        {
+          "after": "#include \"caller_prepare.cpp\"\nint main(int argc,char** argv) {",
+          "before": "int main(int argc,char** argv) {"
+        },
+        {
+          "after": "        const unsigned caller_prepare_checks=caller_prepare_cancels(sim,*simple,*raw);\n        unsigned checks=sim.directed(*simple,*raw);",
+          "before": "        unsigned checks=sim.directed(*simple,*raw);"
+        },
+        {
+          "after": "<<\",\\\"caller_prepare_checks\\\":\"<<caller_prepare_checks<<\",\\\"sync_staging_checks\\\":\"<<staging_checks",
+          "before": "<<\",\\\"sync_staging_checks\\\":\"<<staging_checks"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v91h/tb_pipeline.cpp",
+      "original_sha256": "efee805f4fcf403fefcfa227d5ba09647bcfd7e362377d5a9ad7f62968e135b8"
+    }
+  ],
+  "caller_compared_outputs": 207,
+  "caller_ports_source_sha256": "cb440ed9c12c6fa3eac579aea99f2c03716e33b97ce50822ab00b93de08a4360",
+  "declared_public_cycle_delta": 0,
+  "recipes": [
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/packed_scratch_v91g2.sv",
+      "candidate_sha256": "98060d865bb74de8e8430a3d0d2edb6f7a8670772f52106dc79e404d8f48a87a",
+      "edits": [
+        {
+          "after": "    output logic [31:0] owned_abort_epoch,\n    output logic [31:0] active_epoch=0, output logic [18:0] used_bytes,",
+          "before": "    output logic [31:0] active_epoch=0, output logic [18:0] used_bytes,"
+        },
+        {
+          "after": "    logic cancel;\n    // Exact existing target; generic foreign-epoch abort semantics are unchanged.\n    assign owned_abort_epoch=preparing_begin ? queued_epoch : active_epoch;",
+          "before": "    logic cancel;"
+        },
+        {
+          "after": "cancel=reset || (abort_valid && abort_epoch==owned_abort_epoch);",
+          "before": "cancel=reset || (abort_valid && abort_epoch==(preparing_begin ? queued_epoch : active_epoch));"
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    // No reset/abort/response_failure disable: prove the owner relation through\n    // the cancellation edge itself, including rejected descriptors and drains.\n    always_ff @(posedge clk)begin\n        if(state==IDLE)assert(!outstanding)\n            else $fatal(1,\"V116B IDLE retained physical debt\");\n        if(preparing_begin)begin\n            assert(active_epoch==queued_epoch)\n                else $fatal(1,\"V116B preparing owner epochs diverged\");\n            assert(!outstanding)\n                else $fatal(1,\"V116B preparation acquired physical debt\");\n        end\n        assert(owned_abort_epoch==(preparing_begin ? queued_epoch : active_epoch))\n            else $fatal(1,\"V116B selected abort target mismatch\");\n        assert(cancel==(reset || (abort_valid && abort_epoch==(preparing_begin ? queued_epoch : active_epoch))))\n            else $fatal(1,\"V116B generic abort-epoch semantics changed\");\n    end\n`endif\nendmodule",
+          "before": "endmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v115-refined-scratch/packed_scratch_v91g2.sv",
+      "original_sha256": "2b9dbaf7fb25d7fdc8219a69dc59588b4c1bb2e7da374c6edaf223a5c1ac52d1"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv",
+      "candidate_sha256": "2eef50dfe32a5c84cebf207dc9c56ac69b933ea0371e0b7e372681adacc4ad0e",
+      "edits": [
+        {
+          "after": "    logic [31:0] store_epoch;\n    logic [31:0] store_owned_abort_epoch;",
+          "before": "    logic [31:0] store_epoch;"
+        },
+        {
+          "after": "        .abort_valid(store_abort), .abort_epoch(store_owned_abort_epoch),\n        .owned_abort_epoch(store_owned_abort_epoch),",
+          "before": "        .abort_valid(store_abort), .abort_epoch(store_epoch),"
+        },
+        {
+          "after": "`ifndef SYNTHESIS\n    // This caller formerly fed back active_epoch. Check the exact substitution\n    // precondition on every real abort, including reset/start/fault/drain edges.\n    always_ff @(posedge clk)if(store_abort)\n        assert(store_epoch==store_owned_abort_epoch)\n            else $fatal(1,\"V116B caller changed abort ownership\");\n`endif\nendmodule",
+          "before": "endmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v108-capacity/br88_pipeline_v91h.sv",
+      "original_sha256": "cb440ed9c12c6fa3eac579aea99f2c03716e33b97ce50822ab00b93de08a4360"
+    }
+  ],
+  "schema": "v116b-private-selected-abort-feedback-v1"
+}

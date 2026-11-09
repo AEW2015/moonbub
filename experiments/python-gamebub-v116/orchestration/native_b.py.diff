@@ -1,0 +1,38 @@
+--- scripts/cu66-v116/native.py
++++ scripts/cu66-v116/native_b.py
+@@ -15,7 +15,7 @@
+ import uuid
+ 
+ ROOT = Path(__file__).resolve().parents[2]
+-AREA = ROOT / 'experiments/python-gamebub-v116/native-study'
++AREA = ROOT / 'experiments/python-gamebub-v116/control-b-study'
+ FLOW = ROOT / 'fpga/experiments/cu66-v116-flow'
+ POLICY = AREA / 'study-policy.json'
+ BUILD = Path('/home/lori/gamebub-build/cu66-v69')
+@@ -297,7 +297,7 @@
+     period = policy['trials'][args.trial]['period_ns']
+     clock = FLOW / ('clock-125.xdc' if period == 8.0 else 'clock-100.xdc')
+     stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ') + '-' + uuid.uuid4().hex[:6]
+-    name = 'v116-' + args.trial + ('-repeat-' if args.repeat_of else '-') + stamp
++    name = 'v116b-' + args.trial + ('-repeat-' if args.repeat_of else '-') + stamp
+     build = BUILD / name
+     out = AREA / 'prepared' / name
+     build.mkdir()
+@@ -425,7 +425,7 @@
+         shutil.copyfile(build / name, out / 'recipe-snapshot' / name)
+     with reservation.open('x') as stream:
+         stream.write(json.dumps(dispatch, indent=2, sort_keys=True) + '\n')
+-    name = 'gamebub-v116-native-' + stamp.lower()
++    name = 'gamebub-v116b-native-' + stamp.lower()
+     mapped = Path('/build') / build.name
+     cmd = ['docker', 'run', '--rm', '--init', '--name', name, '--memory', '8g', '--memory-swap', '8g',
+            '--cpus', '2', '--pids-limit', '2048', '--network', 'host', '--ulimit', 'core=0',
+@@ -520,7 +520,7 @@
+ 
+ def main():
+     ap = argparse.ArgumentParser(description=__doc__)
+-    ap.add_argument('--trial', choices=('integrated-100', 'integrated-125'))
++    ap.add_argument('--trial', choices=('integrated-125',))
+     ap.add_argument('--repeat-of', type=Path)
+     ap.add_argument('--run', action='store_true')
+     ap.add_argument('--preflight', type=Path)
