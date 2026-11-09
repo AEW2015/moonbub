@@ -17,10 +17,14 @@ def main():
   p=ROOT/m[key]['path'];assert sha(p)==m[key]['sha256'];r=json.loads(p.read_text());assert r['status']=='COMPONENT_ROUTE_FINISHED_SIGNOFF_OPEN' and r['start_mode']=='rtl' and r['observed_exit_code']==0
   assert r['part']==m['part'] and r['top']==m['top'],'Receipt part/top differs from manifest'
   assert all(r.get(k) is True for k in ('component_route_finished','synthesis_executed','clock_loaded_before_synthesis_in_this_run','observed_default_command_exact','source_snapshot_unchanged','recipe_unchanged'))
+  assert r['retained_artifact_sha256'],'Missing retained timing/source evidence'
+  for name,expected in r['retained_artifact_sha256'].items():
+   q=Path(name);assert not q.is_absolute() and '..'not in q.parts
+   assert sha(p.parent/q)==expected,'Retained evidence differs: '+name
   assert r['result']['component_internal_target_pass'] and r['clock_period_ns']==m['period_ns'];receipts.append(r)
  assert receipts[0]['clean_repeat_of'] is None and receipts[1]['clean_repeat_of']==m['initial_receipt']
  assert receipts[0]['build_external']!=receipts[1]['build_external'] and receipts[0]['container']!=receipts[1]['container'],'Repeat must identify a distinct fresh build'
- assert receipts[0]['image_id']==receipts[1]['image_id'] and receipts[0]['tooling_sha256']==receipts[1]['tooling_sha256']
+ assert m['image_id']==receipts[0]['image_id']==receipts[1]['image_id'] and receipts[0]['tooling_sha256']==receipts[1]['tooling_sha256']
  assert all(receipts[0]['recipe_sha256'][n]==receipts[1]['recipe_sha256'][n]==m['recipe_sha256'][n] for n in ('run.tcl','report.tcl','component.xdc'))
  assert receipts[0]['source_contract']==receipts[1]['source_contract']
  assert m['source_origins']==receipts[1]['source_contract']['source_origins']

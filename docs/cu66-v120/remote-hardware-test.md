@@ -6,7 +6,7 @@ Source export requires Git and Python 3.10 or newer, using only the standard lib
 
 ## Select the measured source
 
-The final [handoff manifest](../../experiments/python-gamebub-v120/handoff.json), when present, is the authority for the selected source composition, clock, original run and fresh repeat. Wait for that manifest before running the V120 exporter below. Before it is published, V120 is not a qualified 100 MHz export. A passing V118/V119 clock does not qualify a V120 source substitution. The [measured results](../../experiments/python-gamebub-v120/results.json) also retain failed and unfinished trials.
+The [handoff manifest](../../experiments/python-gamebub-v120/handoff.json) is the authority for the selected Source B composition, qualified 100 MHz clock, original run and separate positive fresh repeat. Its 18 source/include files remain byte-identical to `69c0f145`; the qualification commit adds evidence without a decoder RTL change. The exporter requires this manifest and both receipts. A passing V118/V119 clock does not qualify a V120 source substitution. The [measured results](../../experiments/python-gamebub-v120/results.json) retain the failed 125 MHz target and all other trials as well.
 
 Prepare the exact source alias tree in a new directory:
 
@@ -30,7 +30,7 @@ vivado -mode batch -nojournal -nolog -source /absolute/new/v120-component/run.tc
 
 Treat that as a new measured campaign and retain its reports. The local study dispatchers include host-specific Docker and external build-archive paths; the exporter is the portable handoff entry point. Neither the exported recipe nor the study dispatcher generates a board image.
 
-The same checkout includes the stable, repeat-qualified V118 100 MHz control. To begin its component integration independently of V120's open qualification, export it with its own exporter and manifest:
+The same checkout includes the stable, repeat-qualified V118 100 MHz control. To prepare that comparison source independently of the qualified V120 Source B handoff, export it with its own exporter and manifest:
 
 ```bash
 python3 scripts/cu66-v118/prepare_handoff.py \
@@ -47,6 +47,8 @@ The existing [board top](../../fpga/rtl/moonshine_top.sv) and [platform constrai
 
 The integration must provide bounded packet ingress, the complete reference-request/response tuple, accepted reference/generation and cache state, output backpressure and physical write acknowledgments. Keep provisional output separate from the displayed/accepted reference until all required checks and physical writes finish. A cancellation must drain accepted work before storage ownership is reused. The full interface and its debug/counter ports are in the selected top RTL.
 
+Keep the wide debug vectors internal to the board design; they are not a physical pin interface. Expose selected diagnostic counters through a registered, epoch-consistent snapshot or debug instrument. Preserve functional handshakes, error/revocation signals and ownership fences at their required latency. The OOC study preserves extensive observability, so a board design with different diagnostic connections needs its own implementation measurements and functional verification.
+
 The custom CS88/CU66 study uses a 720×480 coded profile and a 49,152-byte complete-packet cap. Production JPEG transport does not implicitly accept those packets. Profile negotiation, actual HUD semantics, C2/content/seal verification and safe presentation require the production adapter described in the [existing receiver contract](../cu66-v99/hardware-handoff.md). The study's abstract parent and software HUD oracle do not implement those missing production pieces.
 
 ## Staged tests and data to return
@@ -62,4 +64,4 @@ Return the tested Git commit, selected manifest hash, exact board/part, complete
 
 At an assumed 100 MHz for the complete parent, the fast and bounded-stall row fixtures take 11.45104 and 15.53197 ms from the final accepted input byte to validated commit. This leaves 21.88229 or 17.80136 ms within a 33.33333 ms frame period for all excluded work. It is a budget estimate, not sustained throughput or measured device latency. Both fixtures remain above the strict 10 ms target. Byte-at-a-time service already takes 37.04705/94.84147 ms and is unsuitable for the intended frame budget.
 
-The separate 125 MHz work remains experimental until its own source set passes functional regression and fresh routed timing. Do not mix that source into the measured 100 MHz handoff.
+The current Source B 125 MHz route still fails at −1.517 ns. Further 125 MHz source experiments remain separate from this pinned 100 MHz handoff; they need their own functional regression and fresh routed timing qualification.
