@@ -1,0 +1,43 @@
+{
+  "schema": "gamebub-v118-root-runner-preflight-v1",
+  "status": "STATIC_REVIEW_PASS_SELECTORS_PENDING",
+  "reviewed": [
+    "docs/cu66-v118/plan.md",
+    "experiments/python-gamebub-v118/study-policy.json",
+    "scripts/cu66-v118/spatial.py",
+    "scripts/cu66-v118/live_guard/qualify.py"
+  ],
+  "baseline_bindings": {
+    "all_four_policy_baseline_control_hashes_match": true,
+    "source_alias_count_and_order_are_derived_by_v117_source_contract": true,
+    "spatial_preflight_without_run_succeeded": true,
+    "selected_new_focused_proof_results_present": false
+  },
+  "semantic_comparator": {
+    "normalization": "Counter of canonical sorted JSON event records; remove cycle, first_cycle, last_cycle only",
+    "successful_case_scope": "id and memory_profile tuples whose stdout case record has error == 0",
+    "event_types_in_baseline": [
+      "transform",
+      "canonical",
+      "reference_request"
+    ],
+    "baseline_event_fields_containing_time": {
+      "transform": ["first_cycle", "last_cycle"],
+      "canonical": ["first_cycle", "last_cycle"],
+      "reference_request": ["cycle"]
+    },
+    "preserves_all_non_time_fields_and_multiplicity": true,
+    "canonical_bytes_checked_independently": true,
+    "stdout_cycle_equality_asserted": false,
+    "original_error_debt_held_and_directed_assertions_removed": false,
+    "assessment": "The successful-event comparator matches the declared changed-schedule contract. It is not a substitute for candidate assertions on malformed/error cases; those remain required in source-bound focused and component runs."
+  },
+  "preflight_findings": [
+    "The spatial source-order derivation and output source hashes use the established V117 alias/origin shape; eight replacements are asserted by alias basename.",
+    "Spatial simulation comparison is semantic for successful event tuples and does not assert old stdout/cycle equality. Exact canonical artifact hashes remain separately checked.",
+    "LIVE compares parent commitments, byte/hash/ACK accounting, service contract, and measured cycle deltas; it does not require equal cycles against V116 or V117.",
+    "The LIVE proof gate intentionally requires both new focused selector paths. Those result selectors are not present yet, so no source-bound run is presently eligible.",
+    "V118 C++ -O2 is host simulation optimization; the runner retains the no-cycle-skipping assertion."
+  ],
+  "action_before_run": "Publish and independently validate experiments/python-gamebub-v118/scratch/results.json and experiments/python-gamebub-v118/reconstruct/results.json, then rerun both read-only prepare paths."
+}

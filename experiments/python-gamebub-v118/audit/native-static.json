@@ -1,0 +1,46 @@
+{
+  "schema": "v118-native-preflight-audit-v1",
+  "status": "STATIC_REVIEW_PASS_NATIVE_NOT_READY",
+  "auditor": "v118_audit",
+  "reviewed": [
+    "scripts/cu66-v118/native.py",
+    "experiments/python-gamebub-v118/study-policy.json",
+    "fpga/experiments/cu66-v118-flow/run.tcl",
+    "fpga/experiments/cu66-v118-flow/report.tcl",
+    "fpga/experiments/cu66-v118-flow/clock-125.xdc",
+    "fpga/experiments/cu66-v118-flow/clock-100.xdc"
+  ],
+  "checks": {
+    "source_snapshots": false,
+    "recipes_and_tooling": false,
+    "functional_proofs": false,
+    "actual_clock_before_synthesis": true,
+    "image_content_id": false,
+    "bounded_resources_and_budget": true,
+    "unchanged_timing_constraints": true,
+    "no_hardware_or_bitstream": true
+  },
+  "findings": {
+    "clock_order": "run.tcl reads the selected 8 ns or 10 ns XDC before synth_design, starts from fresh RTL, and records the exact default synthesis command. No checkpoint is read.",
+    "source_qualification": "The code rebuilds the 18 alias source order from frozen V115 origins, expects 17 SV files plus the ROM include, hashes snapshots, and requires focused/inherited/peer proof selectors and the successful integrated LIVE parent selector with source and artifact pin verification.",
+    "functional_gate": "Spatial receipt must pass semantic successful-event comparison, independently exact canonical artifacts, two seeds, 44 case profiles and 42 directed checks, retained original oracles, and actual V97 transport proof. Focused receipts require assertions, strict warnings and -Werror.",
+    "schedule_budget": "Dispatch records are globally counted under experiments/python-gamebub-v118: max two distinct source compositions, four initial source/clock trials, two initial trials per clock, and two positive-repeat slots total with at most one per clock. A serialized root grant is still needed to avoid concurrent budget-check races.",
+    "resource_gate": "Preflight requires 8 GiB available, PSI full avg10 below 1 and combined used fraction below .85; Docker caps each native run at 2 CPUs, 8 GiB memory and 8 GiB memory+swap. Runtime stop checks cover available RAM, PSI and combined use.",
+    "license": "The license path is checked for existence, mounted read-only, and passed through the Vivado environment. The Python runner does not read or copy its contents and declares license_contents_logged false. Raw Vivado stdout is retained; add a post-run check or log filter if vendor license diagnostics must be guaranteed absent.",
+    "route_parser": "Route summary uses WNS/TNS/setup failures, WHS/THS/hold failures and WPWS/TPWS/pulse failures. Gate checks the exact clock period/waveform, zero setup/hold/pulse failures, no clock/unconstrained internal endpoints/loops/latches/multiple clocks, and fully routed nets with zero routing errors.",
+    "parser_control_replay": "Replayed parser on the retained V117 C route reports (read-only): it recognized both 8 ns/10 ns clocks and exact WNS values (-1.679/-0.317 ns), and correctly left both controls unqualified with zero routing errors.",
+    "old_cycle_schema": "The candidate spatial receipt gate explicitly requires B_all_stdout_records_events_and_cycles_exact=false and baseline_successful_event_semantics_exact=true. The original exact-cycle checker stays frozen; no native gate silently requires old cycle equality.",
+    "live_guard_shape": "The required LIVE selector and receipt use the path/sha256 wrapper emitted by live_guard/qualify.py; AREA resolves from an integrated-study/prepared/<name>/preflight.json parent path as intended. Native checks the V118 status, actual_RTL_run, pinned artifacts, four runs, and all 18 candidate source digests.",
+    "standalone_auditor": "audit_native.py imports the native driver without bytecode, sets AREA to the integrated-study directory from the preflight path correctly, then re-runs qualify() and global budget checks. It does not launch Vivado.",
+    "audit_xdc_gap": "audit_native.py checks the copied clock text and disallows a short list of timing commands, but does not hash component.xdc against the canonical selected clock file in fpga/experiments/cu66-v118-flow. Native preparation itself copies the canonical file, but an independent preflight should compare copied XDC bytes to that canonical file to detect edits to the prepared artifact.",
+    "selectors_currently": {
+      "scratch": "FAIL",
+      "reconstruct": "PASS",
+      "integrated_control_peer": "missing",
+      "integrated_spatial_canonical": "missing",
+      "integrated_live_parent": "missing"
+    }
+  },
+  "prelaunch_requirement": "Do not launch native until scratch is repaired and its PASS receipt is source/artifact pinned, the integrated peer selector exists and passes against the exact 18-source map, integrated spatial canonical passes, and integrated LIVE passes all four run/source/artifact checks.",
+  "native_launched": false
+}

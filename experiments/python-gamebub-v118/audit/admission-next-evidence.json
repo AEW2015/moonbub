@@ -1,0 +1,869 @@
+{
+  "schema": "v118-measured-admission-owner-v119-proposal-evidence-v1",
+  "status": "PASS_ANALYSIS_ONLY",
+  "future_version": "V119",
+  "production_RTL_modified": false,
+  "new_builds_launched": false,
+  "native_receipt": {
+    "path": "experiments/python-gamebub-v118/integrated-study/native/20261109T151432649740Z/receipt.json",
+    "sha256": "7dc1b3baa50f718b069095386faaadee58c5ebafcd466e2bdf40e6288d2b6c86"
+  },
+  "target": {
+    "part": "xc7a100tcsg324-1",
+    "period_ns": 8,
+    "result": {
+      "check_timing": {
+        "constant_clock": 0,
+        "generated_clocks": 0,
+        "latch_loops": 0,
+        "loops": 0,
+        "multiple_clock": 0,
+        "no_clock": 0,
+        "no_input_delay": 1101,
+        "no_output_delay": 12887,
+        "partial_input_delay": 0,
+        "partial_output_delay": 0,
+        "pulse_width_clock": 0,
+        "unconstrained_internal_endpoints": 0
+      },
+      "clock_target_matches": true,
+      "component_internal_target_pass": false,
+      "routing": {
+        "all_routable_nets_routed": true,
+        "fully_routed_nets": 74621,
+        "reported_net_counts": {
+          "of fully routed nets": 74621,
+          "of implicitly routed ports": 2186,
+          "of internally routed nets": 27797,
+          "of logical nets": 104670,
+          "of nets not needing routing": 30049,
+          "of nets with no loads": 66,
+          "of nets with routing errors": 0,
+          "of routable nets": 74621
+        },
+        "routable_nets": 74621,
+        "routing_errors": 0,
+        "zero_routing_errors": true
+      },
+      "target_frequency_MHz": 125.0,
+      "target_period_ns": 8.0,
+      "timing": {
+        "THS_ns": 0.0,
+        "TNS_ns": -4570.194,
+        "TPWS_ns": 0.0,
+        "WHS_ns": 0.096,
+        "WNS_ns": -1.499,
+        "WPWS_ns": 2.75,
+        "hold_failing": 0,
+        "hold_total": 103125,
+        "pulse_failing": 0,
+        "pulse_total": 43818,
+        "setup_failing": 12667,
+        "setup_total": 103125
+      },
+      "worst_setup_path": {
+        "data_path_delay_ns": 9.496,
+        "destination": "coefficients/child/scratch/busy_owned_reg/D",
+        "logic_levels": 14,
+        "slack_ns": -1.499,
+        "source": "coefficients/child/packet_decoder/synchronous.ingress/raw_mode_reg_rep/C"
+      }
+    }
+  },
+  "retained_reports": {
+    "experiments/python-gamebub-v118/integrated-study/native/20261109T151432649740Z/reports/route-setup-paths.rpt": "10fe6b0cf48509264c19ab545de9c9542b1662c9cde0878521a776d15b62c8f5",
+    "experiments/python-gamebub-v118/integrated-study/native/20261109T151432649740Z/reports/route-timing-summary.rpt": "59ac24d377bf8a5653bb95329d8a6ec98def92706892f911cfedb01703eca3eb",
+    "experiments/python-gamebub-v118/integrated-study/native/20261109T151432649740Z/reports/route-methodology.json": "af813a2ea340445963213f6f565a8768df8277efa194adb979a091612082125e"
+  },
+  "source_pins": [
+    {
+      "path": "fpga/experiments/cu66-v110-ready/cs88_coefficients_v91k.sv",
+      "sha256": "b5f9dce886ce9d6d1460ac6d8579512750bc66504e306ecabf8bdd7f11bb40fd",
+      "spans": [
+        {
+          "first_line": 1165,
+          "last_line": 1177,
+          "text": "    always_ff @(posedge clk) begin\n        if(reset||abort_packet)begin\n            begin state<=IDLE;frame_running_owned<=1'b0; end error<=0;fault_o<=(0)!=0;done<=0;plane<=0;tile_cursor<=0;producer_cell_cache<=0;mapped_tile<=0;mapped_cell<=0;mapped_scale<=0;\n            expected_block<=0;refill_cursor<=0;selected_offset<=0;selected_length<=0;selected_blocks<=0;\n            frame_epoch<=0;latched_size<=0;current_child_epoch<=0;refill_data<=0;child_owned<=0;\n            core_starts<=0;refill_bytes<=0;blocked_starts<=0;replay_reads<=0;\n        end else begin\n            if(start&&!start_ready)blocked_starts<=blocked_starts+1;\n            if(accepted_start)begin\n                begin state<=ADMIT;frame_running_owned<=1'b1; end error<=0;fault_o<=(0)!=0;done<=0;frame_epoch<=epoch;latched_size<=packet_bytes;\n                plane<=0;tile_cursor<=0;producer_cell_cache<=0;expected_block<=0;child_owned<=0;core_starts<=0;refill_bytes<=0;replay_reads<=0;\n                if(epoch==0||epoch<=last_frame_epoch)begin begin state<=FAILED;frame_running_owned<=1'b0; end error<=65;fault_o<=(65)!=0;end\n                else last_frame_epoch<=epoch;"
+        },
+        {
+          "first_line": 1192,
+          "last_line": 1205,
+          "text": "                    CHECK_ENTROPY:begin\n                        if((fork_blocks[0]!=0&&fork_entropy[0]!=2)||(fork_blocks[1]!=0&&fork_entropy[1]!=2)||(fork_blocks[2]!=0&&fork_entropy[2]!=2))begin\n                            begin state<=FAILED;frame_running_owned<=1'b0; end error<=64;fault_o<=(64)!=0;\n                        end else if({32'd0,child_nonce}+64'(fork_blocks[0]!=0)+64'(fork_blocks[1]!=0)+64'(fork_blocks[2]!=0)>64'hffffffff)begin\n                            begin state<=FAILED;frame_running_owned<=1'b0; end error<=66;fault_o<=(66)!=0;\n                        end else begin plane<=0;producer_cell_cache<=quant_cell(0,tile_cursor);begin state<=PREP_PLANE;frame_running_owned<=1'b1; end end\n                    end\n                    PREP_PLANE:begin\n                        if(fork_blocks[plane]==0)begin state<=NEXT_PLANE;frame_running_owned<=1'b1; end \n                        else begin\n                            selected_offset<=fork_offsets[plane];selected_length<=fork_lengths[plane];selected_blocks<=17'(fork_blocks[plane]);\n                            tile_cursor<=0;producer_cell_cache<=0;expected_block<=0;refill_cursor<=0;begin state<=ALLOCATE;frame_running_owned<=1'b1; end \n                        end\n                    end"
+        },
+        {
+          "first_line": 1239,
+          "last_line": 1255,
+          "text": "                    WAIT_DONE:if(child_done&&!child_busy&&!child_draining)begin state<=NEXT_PLANE;frame_running_owned<=1'b1; end \n                    NEXT_PLANE:begin\n                        if(plane==2)begin done<=1;begin state<=FINISHED;frame_running_owned<=1'b0; end end\n                        else begin plane<=plane+1;producer_cell_cache<=quant_cell(plane+2'd1,tile_cursor);begin state<=PREP_PLANE;frame_running_owned<=1'b1; end end\n                    end\n                    default:begin end\n                endcase\n            end\n        end\n    end\n`ifndef SYNTHESIS\n    always_ff @(posedge clk) if(!reset&&!abort_packet)begin\n        assert(producer_cell_cache==quant_cell(plane,tile_cursor))else $fatal(1,\"producer quant-cell cache mismatch\");\n        assert(!(child_start&&(child_busy||child_draining)))else $fatal(1,\"start before prior child ownership drain\");\n        assert(!out_valid||state==DISPATCH)else $fatal(1,\"coefficient without positional binding\");\n        assert(!frame_read_req||frame_read_addr<latched_size)else $fatal(1,\"outer packet replay bound\");\n        if(REFILL_OVERLAP!=0&&frame_read_req)assert(queue_req_epoch==frame_epoch)else $fatal(1,\"refill request frame epoch mismatch\");"
+        }
+      ]
+    },
+    {
+      "path": "fpga/experiments/cu66-v116-admission/cs88_admission_v91i2a.sv",
+      "sha256": "584491cbcd6168cb87ea1c0dafb59ae6c7fdaec2bcd22cf0210ad82085844ac7",
+      "spans": [
+        {
+          "first_line": 291,
+          "last_line": 315,
+          "text": "        assert(q_run_byte==qbuffer[q_index[8:0]])\n            else $fatal(1,\"quant run-byte cache mismatch\");\n    end\n`endif\n`ifndef SYNTHESIS\n    // Every real HEADER_CHECK follows a complete sequential header load. The\n    // caches need no reset: cancelled parses cannot consume them, and a new\n    // parse recaptures all fields. Prepared-state tests bind these invariants.\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&state==HEADER_CHECK)begin\n        assert(header_mode_start==35'd128+{3'd0,h32(36)}) else $fatal(1,\"header mode-start cache\");\n        assert(header_residual_start==35'd128+{3'd0,h32(36)}+{3'd0,h32(40)}) else $fatal(1,\"header residual-start cache\");\n        assert(header_hud_tail==35'd4+{3'd0,h32(44)}) else $fatal(1,\"header HUD-tail cache\");\n        assert(header_residual_end==35'd128+{3'd0,h32(36)}+{3'd0,h32(40)}+{3'd0,h32(48)}) else $fatal(1,\"header residual-end cache\");\n        assert(header_packet_total==35'd132+{3'd0,h32(36)}+{3'd0,h32(40)}+{3'd0,h32(44)}+{3'd0,h32(48)}) else $fatal(1,\"header packet-total cache\");\n    end\n`endif\n    task automatic residual_tile;\n`ifndef SYNTHESIS\n        assert(coord_valid && plane<=2 && tile<tile_count(plane));\n        assert(coord_cell<1350 && 32'(coord_cell)==cell_index(plane,tile));\n`endif\n        active_cell[coord_cell]<=1'b1;\n        plane_blocks[plane]<=plane_blocks[plane]+1;\n    endtask\n"
+        },
+        {
+          "first_line": 455,
+          "last_line": 475,
+          "text": "                    padding_ok=1;\n                    for(integer k=116;k<128;k=k+1)if(header[k]!=0)padding_ok=0;\n                    if(h32(0)!=32'h43533838||header[4]!=1||header[6]!=16||\n                       h16(28)!=32||h32(32)!=65536||\n                       (header[5]==1?header[7]!=0:header[7]!=3))reject(4);\n                    else if(header[5]>1||h16(24)!=720||h16(26)!=480||h16(30)!=0||!padding_ok||\n                        h32(36)>976||h32(40)<16||h32(40)>354||h32(44)<110||h32(44)>49152||\n                        header_packet_total!={3'd0,size_bytes})reject(5);\n                    else if(h32(8)==32'hffffffff||{h32(16),h32(20)}==0||\n                        (snapshot_valid&&(h32(8)<=snapshot_fid||{h32(16),h32(20)}<=snapshot_generation)))reject(6);\n                    else if(header[5]==1?h32(12)!=32'hffffffff:(!snapshot_valid||h32(12)!=snapshot_fid))reject(7);\n                    else if(header[5]==1&&h32(36)!=0)reject(8);\n                    else begin\n                        fid<=h32(8);refid<=h32(12);generation<={h32(16),h32(20)};key_frame<=header[5]==1;\n                        mode_bytes<=h32(36);qmap_bytes<=h32(40);hud_bytes<=h32(44);data_bytes<=h32(48);\n                        q_start<=header_mode_start[31:0];residual_start<=header_residual_start[31:0];\n                        residual_end<=header_residual_end[31:0];\n                        clear_coordinate();coord_valid<=1;\n                        plane<=0;tile<=0;mode_cursor<=128;bits_left<=0;bit_cache<=0;\n                        state<=header[5]==1?KEY_TILE:GROUP_BEGIN;\n                    end"
+        },
+        {
+          "first_line": 490,
+          "last_line": 497,
+          "text": "                    group_visible<=32'(visibility_count(group_visibility_mask));mixed_ones<=0;\n                    tag_second<=0;mixed_bit<=0;state<=MODE_BIT;\n                end\n                MODE_BIT:begin\n                    if(bits_left==0)begin\n                        if(mode_cursor>=128+mode_bytes)reject(8);\n                        else begin mode_cursor<=mode_cursor+1;request_byte(mode_cursor,MODE_LOADED);end\n                    end else begin"
+        },
+        {
+          "first_line": 534,
+          "last_line": 544,
+          "text": "                MODE_END:begin\n                    coord_valid<=0;\n                    if(!key_frame&&(mode_cursor!=128+mode_bytes||bit_cache!=0))reject(8);\n                    else begin active_index<=0;required_cells<=0;state<=ACTIVE_SCAN;end\n                end\n                ACTIVE_SCAN:begin\n                    if(active_index==1350)begin q_index<=0;q_crc<=32'hffffffff;q_trailer<=0;state<=Q_LOAD;end\n                    else begin\n                        if(active_cell[active_index[10:0]])required_cells<=required_cells+1;\n                        active_index<=active_index+1;\n                    end"
+        }
+      ]
+    },
+    {
+      "path": "fpga/experiments/cu66-v118-reconstruct/cu66_reconstruct_stream_v91k.sv",
+      "sha256": "9caa5626404853d35cc0e39b9727ceeea60afe971916d9afe289edc5af25461c",
+      "spans": [
+        {
+          "first_line": 158,
+          "last_line": 169,
+          "text": "    assign ref_req_valid=running&&state==REF_REQ&&!ref_pending&&!kill;\n    assign ref_req_epoch=frame_epoch;assign ref_req_fid=snapshot_ref_fid;\n    assign ref_req_generation=snapshot_ref_generation;assign ref_req_plane=plane;assign ref_req_tile=tile;\n    assign ref_rsp_ready=ref_pending;\n    assign ref_match=ref_rsp_epoch==pending_epoch&&ref_rsp_fid==pending_fid&&\n        ref_rsp_generation==pending_generation&&ref_rsp_plane==pending_plane&&ref_rsp_tile==pending_tile;\n\n    // The physical inactive-slot write has only registered local ownership.\n    // On a kill edge the private copy may occur, but no logical owner is granted.\n    assign storage_copy=state==COPY;\n    assign owner_copy=running&&state==COPY&&copy_beat==3&&!kill;\n    assign response_failure=ref_rsp_valid&&ref_rsp_ready&&!discard_ref&&running&&(!ref_match||ref_rsp_error);"
+        },
+        {
+          "first_line": 192,
+          "last_line": 202,
+          "text": "    // Physical response ownership survives local reset/cancellation. Declaration\n    // initialization only establishes power-on empty, not a warm-reset flush.\n    initial ref_pending=0;\n    always_ff @(posedge clk)begin\n        owner_initialized<=1;\n        if(ref_req_valid&&ref_req_ready)begin\n            ref_pending<=1;pending_epoch<=ref_req_epoch;pending_fid<=ref_req_fid;\n            pending_generation<=ref_req_generation;pending_plane<=ref_req_plane;pending_tile<=ref_req_tile;\n        end\n        if(ref_rsp_valid&&ref_rsp_ready&&ref_match)ref_pending<=0;\n    end"
+        },
+        {
+          "first_line": 227,
+          "last_line": 240,
+          "text": "        end else begin\n            if(ref_rsp_valid&&ref_rsp_ready)begin\n                if(ref_match)begin\n                    count_ref_acks<=count_ref_acks+1;\n                    if(discard_ref||!running)count_ref_discarded<=count_ref_discarded+1;\n                    else if(ref_rsp_error)fail(3);\n                    else begin reference_pixels<=ref_rsp_pixels;state<=MATH_SEND;end\n                end else if(running&&!discard_ref)fail(3);\n            end\n            if(running&&!fault_o&&!response_failure)begin\n                // Acceptance only captures whole immutable ownership; it does\n                // not use validation results to write the wide residual bank.\n                accepted_valid<=in_valid&&in_ready;\n                if(in_valid&&in_ready)begin"
+        },
+        {
+          "first_line": 282,
+          "last_line": 296,
+          "text": "                    RESIDUAL:if(checked_valid)begin\n                        if(!checked_good)fail(4);\n                        else begin\n                            for(integer word_index=0;word_index<64;word_index=word_index+1)begin\n                                if(checked_index==6'(word_index))residual[word_index*24+:24]<=checked_value;\n                            end\n                            count_residuals<=count_residuals+1;\n                            if(checked_index==63)begin\n                                residual_block[plane]<=residual_block[plane]+1;\n                                if(snapshot_key)state<=MATH_SEND;\n                                else if(!snapshot_ref_valid)fail(2);\n                                else state<=REF_REQ;\n                            end\n                        end\n                    end"
+        }
+      ]
+    }
+  ],
+  "bounded_top50_counts": {
+    "other": 26,
+    "plane_blocks": 12,
+    "mode_bytes": 2,
+    "pending_fid": 10
+  },
+  "representative_paths": [
+    {
+      "report_line": 93,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[2]/CE",
+      "slack_ns": -1.403,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.114,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.141
+    },
+    {
+      "report_line": 604,
+      "family": "mode_bytes",
+      "source": "coefficients/admission/mode_bytes_reg[8]/C",
+      "destination": "coefficients/admission/active_index_reg[1]/CE",
+      "slack_ns": -1.347,
+      "logic_levels": 12,
+      "mapped_cells": "CARRY4=7 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.058,
+      "logic_delay_ns": 3.224,
+      "route_delay_ns": 5.834
+    },
+    {
+      "report_line": 2692,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[888]/CE",
+      "slack_ns": -1.164,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.875,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.656
+    }
+  ],
+  "all_bounded_paths": [
+    {
+      "report_line": 15,
+      "family": "other",
+      "source": "coefficients/child/packet_decoder/synchronous.ingress/raw_mode_reg_rep/C",
+      "destination": "coefficients/child/scratch/busy_owned_reg/D",
+      "slack_ns": -1.499,
+      "logic_levels": 14,
+      "mapped_cells": "CARRY4=3 LUT3=2 LUT6=9",
+      "data_delay_ns": 9.496,
+      "logic_delay_ns": 2.934,
+      "route_delay_ns": 6.562
+    },
+    {
+      "report_line": 93,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[2]/CE",
+      "slack_ns": -1.403,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.114,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.141
+    },
+    {
+      "report_line": 180,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[6]/CE",
+      "slack_ns": -1.403,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.114,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.141
+    },
+    {
+      "report_line": 267,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[5]/CE",
+      "slack_ns": -1.36,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.107,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.134
+    },
+    {
+      "report_line": 354,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[8]/CE",
+      "slack_ns": -1.36,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.107,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.134
+    },
+    {
+      "report_line": 441,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[9]/CE",
+      "slack_ns": -1.36,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.107,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.134
+    },
+    {
+      "report_line": 528,
+      "family": "other",
+      "source": "coefficients/child/packet_decoder/synchronous.ingress/raw_mode_reg_rep/C",
+      "destination": "coefficients/child/scratch/error_reg[0]/D",
+      "slack_ns": -1.352,
+      "logic_levels": 13,
+      "mapped_cells": "CARRY4=3 LUT2=1 LUT3=2 LUT6=7",
+      "data_delay_ns": 9.347,
+      "logic_delay_ns": 2.81,
+      "route_delay_ns": 6.537
+    },
+    {
+      "report_line": 604,
+      "family": "mode_bytes",
+      "source": "coefficients/admission/mode_bytes_reg[8]/C",
+      "destination": "coefficients/admission/active_index_reg[1]/CE",
+      "slack_ns": -1.347,
+      "logic_levels": 12,
+      "mapped_cells": "CARRY4=7 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.058,
+      "logic_delay_ns": 3.224,
+      "route_delay_ns": 5.834
+    },
+    {
+      "report_line": 682,
+      "family": "other",
+      "source": "coefficients/child/scratch/output_block_reg[1]/C",
+      "destination": "coefficients/child/scratch/return_state_reg[1]/CE",
+      "slack_ns": -1.33,
+      "logic_levels": 11,
+      "mapped_cells": "CARRY4=5 LUT3=1 LUT6=5",
+      "data_delay_ns": 9.041,
+      "logic_delay_ns": 3.36,
+      "route_delay_ns": 5.681
+    },
+    {
+      "report_line": 756,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[0]/CE",
+      "slack_ns": -1.318,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.065,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.092
+    },
+    {
+      "report_line": 843,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[10]/CE",
+      "slack_ns": -1.318,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.065,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.092
+    },
+    {
+      "report_line": 930,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[1]/CE",
+      "slack_ns": -1.307,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.054,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.081
+    },
+    {
+      "report_line": 1017,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[3]/CE",
+      "slack_ns": -1.307,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.054,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.081
+    },
+    {
+      "report_line": 1104,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[4]/CE",
+      "slack_ns": -1.307,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.054,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.081
+    },
+    {
+      "report_line": 1191,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/producer_cell_cache_reg[7]/CE",
+      "slack_ns": -1.307,
+      "logic_levels": 16,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT4=2 LUT5=1 LUT6=4",
+      "data_delay_ns": 9.054,
+      "logic_delay_ns": 2.973,
+      "route_delay_ns": 6.081
+    },
+    {
+      "report_line": 1278,
+      "family": "other",
+      "source": "coefficients/child/packet_decoder/synchronous.ingress/memory_reg_0_5/CLKBWRCLK",
+      "destination": "coefficients/child/packet_decoder/synchronous.ingress/fetch_bytes_reg[28][5]/D",
+      "slack_ns": -1.232,
+      "logic_levels": 1,
+      "mapped_cells": "RAMB36E1=1",
+      "data_delay_ns": 9.103,
+      "logic_delay_ns": 3.297,
+      "route_delay_ns": 5.806
+    },
+    {
+      "report_line": 1329,
+      "family": "other",
+      "source": "coefficients/child/packet_decoder/synchronous.ingress/memory_reg_0_5/CLKBWRCLK",
+      "destination": "coefficients/child/packet_decoder/synchronous.ingress/fetch_bytes_reg[24][5]/D",
+      "slack_ns": -1.23,
+      "logic_levels": 1,
+      "mapped_cells": "RAMB36E1=1",
+      "data_delay_ns": 9.118,
+      "logic_delay_ns": 3.297,
+      "route_delay_ns": 5.821
+    },
+    {
+      "report_line": 1380,
+      "family": "other",
+      "source": "coefficients/admission/active_index_reg[1]/C",
+      "destination": "coefficients/admission/required_cells_reg[1]/CE",
+      "slack_ns": -1.216,
+      "logic_levels": 10,
+      "mapped_cells": "LUT6=5 MUXF7=3 MUXF8=2",
+      "data_delay_ns": 8.963,
+      "logic_delay_ns": 2.576,
+      "route_delay_ns": 6.387
+    },
+    {
+      "report_line": 1447,
+      "family": "other",
+      "source": "coefficients/admission/active_index_reg[1]/C",
+      "destination": "coefficients/admission/required_cells_reg[2]/CE",
+      "slack_ns": -1.216,
+      "logic_levels": 10,
+      "mapped_cells": "LUT6=5 MUXF7=3 MUXF8=2",
+      "data_delay_ns": 8.963,
+      "logic_delay_ns": 2.576,
+      "route_delay_ns": 6.387
+    },
+    {
+      "report_line": 1514,
+      "family": "other",
+      "source": "coefficients/admission/active_index_reg[1]/C",
+      "destination": "coefficients/admission/required_cells_reg[3]/CE",
+      "slack_ns": -1.216,
+      "logic_levels": 10,
+      "mapped_cells": "LUT6=5 MUXF7=3 MUXF8=2",
+      "data_delay_ns": 8.963,
+      "logic_delay_ns": 2.576,
+      "route_delay_ns": 6.387
+    },
+    {
+      "report_line": 1581,
+      "family": "other",
+      "source": "coefficients/admission/active_index_reg[1]/C",
+      "destination": "coefficients/admission/required_cells_reg[4]/CE",
+      "slack_ns": -1.216,
+      "logic_levels": 10,
+      "mapped_cells": "LUT6=5 MUXF7=3 MUXF8=2",
+      "data_delay_ns": 8.963,
+      "logic_delay_ns": 2.576,
+      "route_delay_ns": 6.387
+    },
+    {
+      "report_line": 1648,
+      "family": "other",
+      "source": "coefficients/admission/active_index_reg[1]/C",
+      "destination": "coefficients/admission/required_cells_reg[6]/CE",
+      "slack_ns": -1.216,
+      "logic_levels": 10,
+      "mapped_cells": "LUT6=5 MUXF7=3 MUXF8=2",
+      "data_delay_ns": 8.963,
+      "logic_delay_ns": 2.576,
+      "route_delay_ns": 6.387
+    },
+    {
+      "report_line": 1715,
+      "family": "other",
+      "source": "coefficients/admission/active_index_reg[1]/C",
+      "destination": "coefficients/admission/required_cells_reg[8]/CE",
+      "slack_ns": -1.216,
+      "logic_levels": 10,
+      "mapped_cells": "LUT6=5 MUXF7=3 MUXF8=2",
+      "data_delay_ns": 8.963,
+      "logic_delay_ns": 2.576,
+      "route_delay_ns": 6.387
+    },
+    {
+      "report_line": 1782,
+      "family": "other",
+      "source": "coefficients/child/packet_decoder/synchronous.ingress/memory_reg_0_2/CLKBWRCLK",
+      "destination": "coefficients/child/packet_decoder/synchronous.ingress/threshold_pipes[2].cross_s1_reg/A[10]",
+      "slack_ns": -1.2,
+      "logic_levels": 1,
+      "mapped_cells": "RAMB36E1=1",
+      "data_delay_ns": 8.754,
+      "logic_delay_ns": 3.297,
+      "route_delay_ns": 5.457
+    },
+    {
+      "report_line": 1834,
+      "family": "other",
+      "source": "coefficients/child/packet_decoder/synchronous.ingress/memory_reg_0_0/CLKBWRCLK",
+      "destination": "coefficients/child/packet_decoder/synchronous.ingress/fetch_bytes_reg[38][0]/D",
+      "slack_ns": -1.198,
+      "logic_levels": 1,
+      "mapped_cells": "RAMB36E1=1",
+      "data_delay_ns": 9.047,
+      "logic_delay_ns": 3.297,
+      "route_delay_ns": 5.75
+    },
+    {
+      "report_line": 1885,
+      "family": "plane_blocks",
+      "source": "coefficients/admission/plane_blocks_reg[2][20]/C",
+      "destination": "coefficients/frame_running_owned_reg/D",
+      "slack_ns": -1.197,
+      "logic_levels": 18,
+      "mapped_cells": "CARRY4=8 LUT2=1 LUT3=1 LUT4=2 LUT5=1 LUT6=5",
+      "data_delay_ns": 9.145,
+      "logic_delay_ns": 3.221,
+      "route_delay_ns": 5.924
+    },
+    {
+      "report_line": 1976,
+      "family": "other",
+      "source": "coefficients/child/packet_decoder/synchronous.ingress/memory_reg_0_2/CLKBWRCLK",
+      "destination": "coefficients/child/packet_decoder/synchronous.ingress/plan_align2_reg[30]/D",
+      "slack_ns": -1.189,
+      "logic_levels": 3,
+      "mapped_cells": "CARRY4=2 RAMB36E1=1",
+      "data_delay_ns": 9.167,
+      "logic_delay_ns": 4.156,
+      "route_delay_ns": 5.011
+    },
+    {
+      "report_line": 2033,
+      "family": "other",
+      "source": "coefficients/admission/header_reg[15][3]/C",
+      "destination": "coefficients/admission/tile_reg[1]/CE",
+      "slack_ns": -1.184,
+      "logic_levels": 9,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT5=3 LUT6=2",
+      "data_delay_ns": 8.895,
+      "logic_delay_ns": 2.281,
+      "route_delay_ns": 6.614
+    },
+    {
+      "report_line": 2101,
+      "family": "other",
+      "source": "coefficients/child/packet_decoder/synchronous.ingress/memory_reg_0_6/CLKBWRCLK",
+      "destination": "coefficients/child/packet_decoder/synchronous.ingress/fetch_bytes_reg[31][6]/D",
+      "slack_ns": -1.179,
+      "logic_levels": 1,
+      "mapped_cells": "RAMB36E1=1",
+      "data_delay_ns": 9.034,
+      "logic_delay_ns": 3.297,
+      "route_delay_ns": 5.737
+    },
+    {
+      "report_line": 2152,
+      "family": "other",
+      "source": "coefficients/child/scratch/request_epoch_reg[4]/C",
+      "destination": "coefficients/tile_cursor_reg[11]_rep__2/CE",
+      "slack_ns": -1.178,
+      "logic_levels": 10,
+      "mapped_cells": "CARRY4=3 LUT3=2 LUT4=1 LUT6=4",
+      "data_delay_ns": 8.889,
+      "logic_delay_ns": 2.524,
+      "route_delay_ns": 6.365
+    },
+    {
+      "report_line": 2222,
+      "family": "other",
+      "source": "coefficients/child/scratch/request_epoch_reg[4]/C",
+      "destination": "coefficients/tile_cursor_reg[11]_rep__3/CE",
+      "slack_ns": -1.178,
+      "logic_levels": 10,
+      "mapped_cells": "CARRY4=3 LUT3=2 LUT4=1 LUT6=4",
+      "data_delay_ns": 8.889,
+      "logic_delay_ns": 2.524,
+      "route_delay_ns": 6.365
+    },
+    {
+      "report_line": 2292,
+      "family": "other",
+      "source": "coefficients/child/packet_decoder/synchronous.ingress/raw_mode_reg_rep/C",
+      "destination": "coefficients/child/scratch/state_reg[1]_rep/D",
+      "slack_ns": -1.177,
+      "logic_levels": 13,
+      "mapped_cells": "CARRY4=3 LUT2=1 LUT3=1 LUT4=1 LUT6=7",
+      "data_delay_ns": 9.124,
+      "logic_delay_ns": 2.81,
+      "route_delay_ns": 6.314
+    },
+    {
+      "report_line": 2368,
+      "family": "other",
+      "source": "coefficients/admission/header_reg[15][3]/C",
+      "destination": "coefficients/admission/tile_reg[7]/CE",
+      "slack_ns": -1.175,
+      "logic_levels": 9,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT5=3 LUT6=2",
+      "data_delay_ns": 8.886,
+      "logic_delay_ns": 2.281,
+      "route_delay_ns": 6.605
+    },
+    {
+      "report_line": 2436,
+      "family": "other",
+      "source": "coefficients/admission/header_reg[15][3]/C",
+      "destination": "coefficients/admission/tile_reg[23]/CE",
+      "slack_ns": -1.171,
+      "logic_levels": 9,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT5=3 LUT6=2",
+      "data_delay_ns": 8.882,
+      "logic_delay_ns": 2.281,
+      "route_delay_ns": 6.601
+    },
+    {
+      "report_line": 2504,
+      "family": "other",
+      "source": "coefficients/admission/header_reg[15][3]/C",
+      "destination": "coefficients/admission/tile_reg[24]/CE",
+      "slack_ns": -1.171,
+      "logic_levels": 9,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT5=3 LUT6=2",
+      "data_delay_ns": 8.882,
+      "logic_delay_ns": 2.281,
+      "route_delay_ns": 6.601
+    },
+    {
+      "report_line": 2572,
+      "family": "other",
+      "source": "coefficients/admission/header_reg[15][3]/C",
+      "destination": "coefficients/admission/tile_reg[6]/CE",
+      "slack_ns": -1.171,
+      "logic_levels": 9,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT5=3 LUT6=2",
+      "data_delay_ns": 8.882,
+      "logic_delay_ns": 2.281,
+      "route_delay_ns": 6.601
+    },
+    {
+      "report_line": 2640,
+      "family": "other",
+      "source": "coefficients/child/packet_decoder/synchronous.ingress/memory_reg_0_4/CLKBWRCLK",
+      "destination": "coefficients/child/packet_decoder/synchronous.ingress/threshold_pipes[1].cross_s1_reg/A[12]",
+      "slack_ns": -1.165,
+      "logic_levels": 1,
+      "mapped_cells": "RAMB36E1=1",
+      "data_delay_ns": 8.719,
+      "logic_delay_ns": 3.297,
+      "route_delay_ns": 5.422
+    },
+    {
+      "report_line": 2692,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[888]/CE",
+      "slack_ns": -1.164,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.875,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.656
+    },
+    {
+      "report_line": 2758,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[889]/CE",
+      "slack_ns": -1.164,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.875,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.656
+    },
+    {
+      "report_line": 2824,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[890]/CE",
+      "slack_ns": -1.164,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.875,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.656
+    },
+    {
+      "report_line": 2890,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[891]/CE",
+      "slack_ns": -1.164,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.875,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.656
+    },
+    {
+      "report_line": 2956,
+      "family": "mode_bytes",
+      "source": "coefficients/admission/mode_bytes_reg[8]/C",
+      "destination": "coefficients/admission/active_index_reg[0]/CE",
+      "slack_ns": -1.151,
+      "logic_levels": 12,
+      "mapped_cells": "CARRY4=7 LUT5=1 LUT6=4",
+      "data_delay_ns": 8.862,
+      "logic_delay_ns": 3.224,
+      "route_delay_ns": 5.638
+    },
+    {
+      "report_line": 3034,
+      "family": "other",
+      "source": "coefficients/admission/header_reg[15][3]/C",
+      "destination": "coefficients/admission/tile_reg[11]/CE",
+      "slack_ns": -1.148,
+      "logic_levels": 9,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT5=3 LUT6=2",
+      "data_delay_ns": 8.895,
+      "logic_delay_ns": 2.281,
+      "route_delay_ns": 6.614
+    },
+    {
+      "report_line": 3102,
+      "family": "other",
+      "source": "coefficients/admission/header_reg[15][3]/C",
+      "destination": "coefficients/admission/tile_reg[9]/CE",
+      "slack_ns": -1.148,
+      "logic_levels": 9,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT5=3 LUT6=2",
+      "data_delay_ns": 8.895,
+      "logic_delay_ns": 2.281,
+      "route_delay_ns": 6.614
+    },
+    {
+      "report_line": 3170,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[769]/CE",
+      "slack_ns": -1.145,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.856,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.637
+    },
+    {
+      "report_line": 3236,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[770]/CE",
+      "slack_ns": -1.145,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.856,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.637
+    },
+    {
+      "report_line": 3302,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[771]/CE",
+      "slack_ns": -1.145,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.856,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.637
+    },
+    {
+      "report_line": 3368,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[777]/CE",
+      "slack_ns": -1.144,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.855,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.636
+    },
+    {
+      "report_line": 3434,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[778]/CE",
+      "slack_ns": -1.144,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.855,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.636
+    },
+    {
+      "report_line": 3500,
+      "family": "pending_fid",
+      "source": "reconstruction/pending_fid_reg[4]/C",
+      "destination": "reconstruction/residual_reg[779]/CE",
+      "slack_ns": -1.144,
+      "logic_levels": 8,
+      "mapped_cells": "CARRY4=3 LUT3=1 LUT6=4",
+      "data_delay_ns": 8.855,
+      "logic_delay_ns": 2.219,
+      "route_delay_ns": 6.636
+    }
+  ],
+  "checks": [
+    {
+      "check": "actualA125finalnegative",
+      "status": "PASS"
+    },
+    {
+      "check": "retained report reports/route-setup-paths.rpt",
+      "status": "PASS"
+    },
+    {
+      "check": "retained report reports/route-timing-summary.rpt",
+      "status": "PASS"
+    },
+    {
+      "check": "retained report reports/route-methodology.json",
+      "status": "PASS"
+    },
+    {
+      "check": "boundedtop50families",
+      "status": "PASS"
+    },
+    {
+      "check": "actual native source fpga/experiments/cu66-v110-ready/cs88_coefficients_v91k.sv",
+      "status": "PASS"
+    },
+    {
+      "check": "actual native source fpga/experiments/cu66-v116-admission/cs88_admission_v91i2a.sv",
+      "status": "PASS"
+    },
+    {
+      "check": "actual native source fpga/experiments/cu66-v118-reconstruct/cu66_reconstruct_stream_v91k.sv",
+      "status": "PASS"
+    },
+    {
+      "check": "reachableauxactualPASS",
+      "status": "PASS"
+    },
+    {
+      "check": "auxsameunchangedproduction",
+      "status": "PASS"
+    },
+    {
+      "check": "auxcoverage",
+      "status": "PASS"
+    }
+  ],
+  "proposals": [
+    "Hypothesis-directed candidate: prove redundant CHECK_ENTROPY cachewrite thenremove; preservegeometryoracle andexactprivatevalues. Actualflattenedcritical-chainattributionremainsopen.",
+    "Exactnoncebudget withthree nonzeroplanes count0..3 andupper30bit reduction plus3bit lowadd; preserve64before66priorityandnoncewarmresetlifetime.",
+    "Reuse coherentq_start low32 capturedmodeendbound; preservefull32wrappedsource semantics andoriginalMODE_BIT/MODE_END errors/arbitration.",
+    "Phase-local physicalresidual writer separatedfromphysicalreferencecomparison afterinductivephaseproof; retainlogicalfirstfault priority/reset-modedata events/ACKdebt."
+  ],
+  "required_future_qualification": [
+    "Actualowner invariants andallclear/firstfault/physicalretry matrix beforeCEguard removal.",
+    "Existing fullsource/transport/LIVE byte-row functionality withorderedcanonical/debt semantics.",
+    "Coordinated rawmode/scratch/producer/admission/reconstruction source; onefamilyfix doesnotcloseall.",
+    "Fixed fresh125route+100control; positiveclockneedsidenticalsourcetoolmethod independentrepeat."
+  ],
+  "response_auxiliary": {
+    "selector": "experiments/python-gamebub-v118/response-priority/results.json",
+    "selector_sha256": "ce1ed87b0cbade699a82c730097ed3626ab73e2102e7884aa36401dd7c03bb3c",
+    "receipt": "experiments/python-gamebub-v118/response-priority/attempts/20261109T150847798371Z/receipt.json",
+    "receipt_sha256": "b09ef186af759c3429424a06c47c327341929b06cf4f507c4ac110d7a6ab299a",
+    "scope": "Bounded natural-trace ownership evidence only, notformalallhardwarestatesproof."
+  },
+  "scope": "Read-only measuredpath/source audit plusfutureV119architecture proposal. No RTL implementation/performancegain/timingclosure claim.",
+  "mapping_limitations": [
+    "plane_blocks to producer_cell_cache CE is measured, but assigning its flattenedcriticalcarrychain specificallytoCHECK_ENTROPYnoncebudget is anunprovensourcehypothesis. No checkpointfanin/primitiveequation analysiswaslaunched.",
+    "The original source expression sums exactlythreeboolean nonzero-plane predicates; its countdomain0..3 is a mathematicalsourceproperty, notaproof that thosepredicatesarethe criticalmappedcarrychain."
+  ]
+}

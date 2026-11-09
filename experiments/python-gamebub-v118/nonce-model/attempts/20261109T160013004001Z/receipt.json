@@ -1,0 +1,268 @@
+{
+  "actual_Python_model_run": true,
+  "actual_RTL_run": false,
+  "analytic_argument": [
+    "The source has exactly three Boolean nonzero-plane terms, so count is in0..3 regardless of the full32-bit block count magnitudes.",
+    "For any32-bit x, write x=4h+l with l in0..3 and h in0..2^30-1.",
+    "If h<2^30-1 then x<=2^32-5, hence x+count<=2^32-2 and no overflow can occur.",
+    "If h=2^30-1 then x=2^32-4+l, so x+count>2^32-1 exactly when l+count>3.",
+    "The widened source sum is at most2^32+2, below2^64; its64-bit arithmetic cannot itself wrap in this domain."
+  ],
+  "assumptions": [
+    "Unsigned32-bit child nonce and three full32-bit block count inputs.",
+    "Entropy values are two-bit inputs; a nonzero plane requires entropy2.",
+    "Combinational arithmetic model only; no receipt-stage ownership or temporal state modeled."
+  ],
+  "checks": {
+    "bounded_widths": [
+      {
+        "cases": 16,
+        "overflow_cases": 6,
+        "width": 2
+      },
+      {
+        "cases": 32,
+        "overflow_cases": 6,
+        "width": 3
+      },
+      {
+        "cases": 64,
+        "overflow_cases": 6,
+        "width": 4
+      },
+      {
+        "cases": 128,
+        "overflow_cases": 6,
+        "width": 5
+      },
+      {
+        "cases": 256,
+        "overflow_cases": 6,
+        "width": 6
+      },
+      {
+        "cases": 512,
+        "overflow_cases": 6,
+        "width": 7
+      },
+      {
+        "cases": 1024,
+        "overflow_cases": 6,
+        "width": 8
+      },
+      {
+        "cases": 2048,
+        "overflow_cases": 6,
+        "width": 9
+      },
+      {
+        "cases": 4096,
+        "overflow_cases": 6,
+        "width": 10
+      },
+      {
+        "cases": 8192,
+        "overflow_cases": 6,
+        "width": 11
+      },
+      {
+        "cases": 16384,
+        "overflow_cases": 6,
+        "width": 12
+      },
+      {
+        "cases": 32768,
+        "overflow_cases": 6,
+        "width": 13
+      },
+      {
+        "cases": 65536,
+        "overflow_cases": 6,
+        "width": 14
+      },
+      {
+        "cases": 131072,
+        "overflow_cases": 6,
+        "width": 15
+      },
+      {
+        "cases": 262144,
+        "overflow_cases": 6,
+        "width": 16
+      }
+    ],
+    "entropy_nonce_priority": {
+      "accept0": 2700,
+      "cases": 12288,
+      "entropy_and_nonce_bad_priority64": 2772,
+      "entropy_reject64": 9288,
+      "nonce_reject66": 300,
+      "zero_plane_bad_entropy_ignored": 2808
+    },
+    "full32_endpoints": {
+      "cases": 80,
+      "nonces": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        2147483646,
+        2147483647,
+        2147483648,
+        2147483649,
+        4294967288,
+        4294967289,
+        4294967290,
+        4294967291,
+        4294967292,
+        4294967293,
+        4294967294,
+        4294967295
+      ],
+      "overflow_cases": 6
+    },
+    "seeded_full32": [
+      {
+        "cases": 250000,
+        "endpoint_bias_every": 16,
+        "overflow_cases": 2956,
+        "seed": 118661
+      },
+      {
+        "cases": 250000,
+        "endpoint_bias_every": 16,
+        "overflow_cases": 2945,
+        "seed": 118662
+      }
+    ],
+    "upper_classes": {
+      "cases": 80,
+      "counts": 4,
+      "low_values": 4,
+      "overflow_cases": 6,
+      "upper_values": [
+        0,
+        1,
+        536870911,
+        1073741822,
+        1073741823
+      ]
+    }
+  },
+  "failures": [],
+  "root_grant": "ROOT_V118_NONCE_1",
+  "schema": "v118-source32-nonce-budget-arithmetic-prototype-v1",
+  "scope_limits": [
+    "No RTL edit, FPGA synthesis, placement, route, frequency or timing-improvement claim.",
+    "Does not map the observed eight CARRY4 cells to this source branch.",
+    "Does not validate nonce anti-replay lifetime, warm-reset behavior, child allocation or physical drain.",
+    "Does not prove arbitrary private state reachability or host/ESP32/FPGA throughput."
+  ],
+  "source_contract": {
+    "branch": "                    CHECK_ENTROPY:begin\n                        if((fork_blocks[0]!=0&&fork_entropy[0]!=2)||(fork_blocks[1]!=0&&fork_entropy[1]!=2)||(fork_blocks[2]!=0&&fork_entropy[2]!=2))begin\n                            begin state<=FAILED;frame_running_owned<=1'b0; end error<=64;fault_o<=(64)!=0;\n                        end else if({32'd0,child_nonce}+64'(fork_blocks[0]!=0)+64'(fork_blocks[1]!=0)+64'(fork_blocks[2]!=0)>64'hffffffff)begin\n                            begin state<=FAILED;frame_running_owned<=1'b0; end error<=66;fault_o<=(66)!=0;\n                        end else begin plane<=0;producer_cell_cache<=quant_cell(0,tile_cursor);begin state<=PREP_PLANE;frame_running_owned<=1'b1; end end\n                    end\n",
+    "first_line": 1192,
+    "input_domain": {
+      "arithmetic_extension_bits": 64,
+      "block_count_bits": 32,
+      "child_nonce_bits": 32,
+      "entropy_bits": 2,
+      "nonzero_plane_count_max": 3,
+      "nonzero_plane_count_min": 0,
+      "planes": 3
+    },
+    "path": "fpga/experiments/cu66-v110-ready/cs88_coefficients_v91k.sv",
+    "sha256": "b5f9dce886ce9d6d1460ac6d8579512750bc66504e306ecabf8bdd7f11bb40fd"
+  },
+  "source_sha256": {
+    "fpga/experiments/cu66-v110-ready/cs88_coefficients_v91k.sv": "b5f9dce886ce9d6d1460ac6d8579512750bc66504e306ecabf8bdd7f11bb40fd",
+    "scripts/cu66-v118/nonce_model.py": "62a8f603bd8310ccbfd0c1a308ac38a07287ff0cda832f5b7df6a172f34c34f6"
+  },
+  "status": "PASS_PYTHON_ARITHMETIC_ONLY",
+  "wall_seconds": 0.6101597198285162,
+  "witnesses": [
+    {
+      "count": 0,
+      "nonce": 4294967292,
+      "overflow": false
+    },
+    {
+      "count": 1,
+      "nonce": 4294967292,
+      "overflow": false
+    },
+    {
+      "count": 2,
+      "nonce": 4294967292,
+      "overflow": false
+    },
+    {
+      "count": 3,
+      "nonce": 4294967292,
+      "overflow": false
+    },
+    {
+      "count": 0,
+      "nonce": 4294967293,
+      "overflow": false
+    },
+    {
+      "count": 1,
+      "nonce": 4294967293,
+      "overflow": false
+    },
+    {
+      "count": 2,
+      "nonce": 4294967293,
+      "overflow": false
+    },
+    {
+      "count": 3,
+      "nonce": 4294967293,
+      "overflow": true
+    },
+    {
+      "count": 0,
+      "nonce": 4294967294,
+      "overflow": false
+    },
+    {
+      "count": 1,
+      "nonce": 4294967294,
+      "overflow": false
+    },
+    {
+      "count": 2,
+      "nonce": 4294967294,
+      "overflow": true
+    },
+    {
+      "count": 3,
+      "nonce": 4294967294,
+      "overflow": true
+    },
+    {
+      "count": 0,
+      "nonce": 4294967295,
+      "overflow": false
+    },
+    {
+      "count": 1,
+      "nonce": 4294967295,
+      "overflow": true
+    },
+    {
+      "count": 2,
+      "nonce": 4294967295,
+      "overflow": true
+    },
+    {
+      "count": 3,
+      "nonce": 4294967295,
+      "overflow": true
+    }
+  ]
+}

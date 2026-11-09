@@ -1,0 +1,99 @@
+{
+  "all_original_assertion_blocks_retained": true,
+  "contract": "Exactly two logical tile owners with separate gather and ordered emission frontiers; one existing math engine plus a real registered 512-bit COPY edge. Old math_out views are independently captured completed-head response fields, not current engine fields. Public ports unchanged, scheduling intentionally changes. Physical payload COPY enable is registered COPY/bank only; immediate logical publication/engine consume remains kill-masked.",
+  "derived": "fpga/experiments/cu66-v117-throughput/cu66_reconstruct_stream_v91k.sv",
+  "derived_sha256": "5b12193073a8410ad0d05d251c061f7379cd9dba5a9677e5f8f20da4c581be06",
+  "edits": [
+    {
+      "after": "RESIDUAL=4,REF_REQ=5,REF_WAIT=6,MATH_SEND=7,MATH_WAIT=8,EMIT=9,WAIT_DONE=10,COPY=11;",
+      "before": "RESIDUAL=4,REF_REQ=5,REF_WAIT=6,MATH_SEND=7,MATH_WAIT=8,EMIT=9,WAIT_DONE=10;"
+    },
+    {
+      "after": "    logic [31:0] tile_id,gather_tile_id;\n    // Exactly two logical tile owners. The gather FSM owns owner_tail until\n    // conversion is copied; owner_head independently holds ordered scanout.\n    localparam logic [1:0] O_FREE=0,O_FILL=1,O_MATH=2,O_READY=3;\n    logic [1:0] owner_state [0:1];\n    logic owner_head,owner_tail,owner_copy;\n    logic [1:0] owned_tiles,max_owned_tiles;\n    logic [1:0] owner_plane [0:1],owner_mode [0:1];\n    logic [12:0] owner_tile [0:1];\n    logic [511:0] owner_pixels [0:1];\n    logic [31:0] owner_math_id [0:1];\n    logic owner_math_error [0:1];\n    logic engine_out_valid,engine_out_error;\n    logic [31:0] engine_out_id;\n    logic [511:0] engine_out_pixels;\n    logic response_failure;\n",
+      "before": "    logic [31:0] tile_id;\n"
+    },
+    {
+      "after": "error<=reason;fault_o<=(reason)!=0;fault_pending_o<=(reason)!=0&&!fault_ack_i&&!fault_o;running<=0;done<=0;state<=IDLE;discard_ref<=1;\n        owner_state[0]<=O_FREE;owner_state[1]<=O_FREE;",
+      "before": "error<=reason;fault_o<=(reason)!=0;fault_pending_o<=(reason)!=0&&!fault_ack_i&&!fault_o;running<=0;done<=0;state<=IDLE;discard_ref<=1;"
+    },
+    {
+      "after": "    assign gather_tile_id=32'(plane==0?0:plane==1?5400:6750)+32'(tile);\n    assign tile_id=32'(out_plane==0?0:out_plane==1?5400:6750)+32'(out_tile);\n    assign lookup_tile=13'(gather_tile_id);assign lookup_cell=cached_cell;\n    assign lookup_req=running&&state==MODE_REQ&&owner_state[owner_tail]==O_FREE&&!kill;\n    assign in_ready=running&&state==RESIDUAL&&owner_state[owner_tail]==O_FILL&&!kill;\n    // These historical math_out_* views now name the completed head record,\n    // independently copied from the actual engine response. The old output\n    // owner assertion therefore still compares response ID against coordinates.\n    assign math_out_valid=owner_state[owner_head]==O_READY;\n    assign math_out_pixels=owner_pixels[owner_head];\n    assign math_out_id=owner_math_id[owner_head];\n    assign math_out_error=owner_math_error[owner_head];\n    assign owned_tiles=2'(owner_state[0]!=O_FREE)+2'(owner_state[1]!=O_FREE);\n    assign out_valid=running&&math_out_valid&&!math_out_error&&!kill;\n    assign out_epoch=frame_epoch;assign out_fid=frame_id;\n    assign out_plane=owner_plane[owner_head];assign out_tile=owner_tile[owner_head];assign out_mode=owner_mode[owner_head];\n",
+      "before": "    assign tile_id=32'(plane==0?0:plane==1?5400:6750)+32'(tile);\n    assign lookup_tile=13'(tile_id);assign lookup_cell=cached_cell;\n    assign lookup_req=running&&state==MODE_REQ&&!kill;\n    assign in_ready=running&&state==RESIDUAL&&!kill;\n    assign out_valid=running&&state==EMIT&&math_out_valid&&!math_out_error&&!kill;\n    assign out_epoch=frame_epoch;assign out_fid=frame_id;\n    assign out_plane=plane;assign out_tile=tile;assign out_mode=mode;\n"
+    },
+    {
+      "after": "    assign owner_copy=running&&state==COPY&&!kill;\n    assign response_failure=ref_rsp_valid&&ref_rsp_ready&&!discard_ref&&running&&(!ref_match||ref_rsp_error);\n    // Real 64-byte parallel copy on a registered local COPY edge. Payloads are\n    // not reset and cannot be rewritten while their logical owner is ready.\n    for(genvar b=0;b<2;b=b+1)begin: canonical_owners\n        for(genvar w=0;w<64;w=w+1)begin: bytes\n            logic [7:0] value;\n            always_ff @(posedge clk)if(owner_copy&&owner_tail==1'(b))value<=engine_out_pixels[w*8+:8];\n            assign owner_pixels[b][w*8+:8]=value;\n        end\n        always_ff @(posedge clk)if(owner_copy&&owner_tail==1'(b))begin\n            owner_math_id[b]<=engine_out_id;owner_math_error[b]<=engine_out_error;\n        end\n    end\n    cu66_reconstruct_tile reconstruct (\n",
+      "before": "    cu66_reconstruct_tile reconstruct (\n"
+    },
+    {
+      "after": ".in_id(gather_tile_id),.in_key(snapshot_key),.in_hidden(mode==1),.in_residual(residual),",
+      "before": ".in_id(tile_id),.in_key(snapshot_key),.in_hidden(mode==1),.in_residual(residual),"
+    },
+    {
+      "after": ".ref_tile_id(gather_tile_id),.ref_pixels(reference_pixels),\n        .out_valid(engine_out_valid),.out_ready(owner_copy),\n        .out_id(engine_out_id),.out_pixels(engine_out_pixels),.out_error(engine_out_error));",
+      "before": ".ref_tile_id(tile_id),.ref_pixels(reference_pixels),\n        .out_valid(math_out_valid),.out_ready(running&&state==EMIT&&out_ready&&emit_index==63&&!kill),\n        .out_id(math_out_id),.out_pixels(math_out_pixels),.out_error(math_out_error));"
+    },
+    {
+      "after": "            cached_cell<=0;y_column<=0;y_odd_row<=0;\n            owner_state[0]<=O_FREE;owner_state[1]<=O_FREE;owner_head<=0;owner_tail<=0;\n",
+      "before": "            cached_cell<=0;y_column<=0;y_odd_row<=0;\n"
+    },
+    {
+      "after": "                count_output_stalls<=0;count_ref_wait<=0;max_owned_tiles<=0;\n",
+      "before": "                count_output_stalls<=0;count_ref_wait<=0;\n"
+    },
+    {
+      "after": "                if(out_valid&&!out_ready)count_output_stalls<=count_output_stalls+1;\n                if(ref_pending)count_ref_wait<=count_ref_wait+1;\n                if(owned_tiles>max_owned_tiles)max_owned_tiles<=owned_tiles;\n                if(out_valid&&out_ready)begin\n                    count_outputs<=count_outputs+1;\n                    if(emit_index==63)begin owner_state[owner_head]<=O_FREE;owner_head<=!owner_head;emit_index<=0;end\n                    else emit_index<=emit_index+1;\n                end\n",
+      "before": "                if(out_valid&&!out_ready)count_output_stalls<=count_output_stalls+1;\n                if(ref_pending)count_ref_wait<=count_ref_wait+1;\n"
+    },
+    {
+      "after": "                    WAIT_ADMISSION:if(admitted_ready&&!ref_pending)begin\n",
+      "before": "                    WAIT_ADMISSION:if(admitted_ready)begin\n"
+    },
+    {
+      "after": "                    MODE_REQ:if(lookup_req&&lookup_ready)begin state<=MODE_WAIT;owner_state[owner_tail]<=O_FILL;end",
+      "before": "                    MODE_REQ:if(lookup_ready)state<=MODE_WAIT;"
+    },
+    {
+      "after": "                        count_modes<=count_modes+1;mode<=lookup_mode;scale<=lookup_scale;\n                        owner_plane[owner_tail]<=plane;owner_tile[owner_tail]<=tile;owner_mode[owner_tail]<=lookup_mode;\n",
+      "before": "                        count_modes<=count_modes+1;mode<=lookup_mode;scale<=lookup_scale;\n"
+    },
+    {
+      "after": "                    MATH_SEND:if(math_in_ready)begin state<=MATH_WAIT;owner_state[owner_tail]<=O_MATH;end\n                    MATH_WAIT:if(engine_out_valid)begin\n                        if(engine_out_error||engine_out_id!=gather_tile_id)fail(5);\n                        else state<=COPY;\n                    end\n                    COPY:if(owner_copy)begin\n                            owner_state[owner_tail]<=O_READY;owner_tail<=!owner_tail;\n",
+      "before": "                    MATH_SEND:if(math_in_ready)state<=MATH_WAIT;\n                    MATH_WAIT:if(math_out_valid)begin\n                        if(math_out_error||math_out_id!=tile_id)fail(5);\n                        else begin emit_index<=0;state<=EMIT;end\n                    end\n                    EMIT:if(out_valid&&out_ready)begin\n                        count_outputs<=count_outputs+1;\n                        if(emit_index==63)begin\n                            emit_index<=0;\n"
+    },
+    {
+      "after": "                    end\n                    WAIT_DONE:if(input_done&&!ref_pending&&owned_tiles==0&&!engine_out_valid)begin running<=0;done<=1;state<=IDLE;end\n",
+      "before": "                        end else emit_index<=emit_index+1;\n                    end\n                    WAIT_DONE:if(input_done&&!ref_pending)begin running<=0;done<=1;state<=IDLE;end\n"
+    },
+    {
+      "after": "                endcase\n                if(response_failure)begin owner_state[0]<=O_FREE;owner_state[1]<=O_FREE;end\n            end\n        end\n    end\n`ifndef SYNTHESIS",
+      "before": "                endcase\n            end\n        end\n    end\n`ifndef SYNTHESIS"
+    },
+    {
+      "after": "`ifndef SYNTHESIS\n    logic copy_checked,copy_bank_checked,held_checked;\n    logic [511:0] copied_pixels,held_pixels;\n    logic [31:0] copied_id,held_id;\n    logic copied_error,held_error;\n    logic [1:0] copied_plane,held_plane,copied_mode,held_mode;\n    logic [12:0] copied_tile,held_tile;\n    logic [5:0] held_index;\n    always_ff @(posedge clk)begin\n        if(kill)begin copy_checked<=0;held_checked<=0;end\n        else begin\n            if(copy_checked)assert(owner_pixels[copy_bank_checked]==copied_pixels&&owner_math_id[copy_bank_checked]==copied_id&&\n                owner_math_error[copy_bank_checked]==copied_error&&owner_plane[copy_bank_checked]==copied_plane&&\n                owner_tile[copy_bank_checked]==copied_tile&&owner_mode[copy_bank_checked]==copied_mode)\n                else $fatal(1,\"reconstruction whole engine response copy mismatch\");\n            copy_checked<=owner_copy;\n            if(owner_copy)begin\n                assert(engine_out_valid&&!engine_out_error&&engine_out_id==gather_tile_id&&owner_state[owner_tail]==O_MATH)\n                    else $fatal(1,\"reconstruction copy without complete engine owner\");\n                assert(!(out_valid&&owner_head==owner_tail))else $fatal(1,\"reconstruction overwrote offered head\");\n                copy_bank_checked<=owner_tail;copied_pixels<=engine_out_pixels;copied_id<=engine_out_id;copied_error<=engine_out_error;\n                copied_plane<=owner_plane[owner_tail];copied_tile<=owner_tile[owner_tail];copied_mode<=owner_mode[owner_tail];\n            end\n            if(held_checked)assert(out_valid&&math_out_pixels==held_pixels&&math_out_id==held_id&&math_out_error==held_error&&\n                out_plane==held_plane&&out_tile==held_tile&&out_mode==held_mode&&out_index==held_index)\n                else $fatal(1,\"reconstruction held head storage or owner changed\");\n            held_checked<=out_valid&&!out_ready;\n            if(out_valid&&!out_ready)begin held_pixels<=math_out_pixels;held_id<=math_out_id;held_error<=math_out_error;\n                held_plane<=out_plane;held_tile<=out_tile;held_mode<=out_mode;held_index<=out_index;end\n            if(running)begin\n                assert(owned_tiles<=2)else $fatal(1,\"reconstruction exceeded two owners\");\n                assert(state!=EMIT)else $fatal(1,\"reconstruction reentered legacy serialized emit state\");\n                if(lookup_req)assert(owner_state[owner_tail]==O_FREE)else $fatal(1,\"reconstruction lookup reused owner\");\n                if(in_ready)assert(owner_state[owner_tail]==O_FILL)else $fatal(1,\"reconstruction residual without fill owner\");\n                if(out_valid)assert(owner_state[owner_head]==O_READY)else $fatal(1,\"reconstruction output without completed owner\");\n                if(state==COPY)assert(engine_out_valid)else $fatal(1,\"reconstruction registered copy lost engine response\");\n            end\n            if(done)assert(owned_tiles==0&&!engine_out_valid)else $fatal(1,\"reconstruction done with private ownership\");\n        end\n    end\n`endif\nendmodule",
+      "before": "endmodule"
+    },
+    {
+      "after": "logic owner_head,owner_tail,owner_copy,storage_copy;",
+      "before": "logic owner_head,owner_tail,owner_copy;"
+    },
+    {
+      "after": "    // The physical inactive-slot write has only registered local ownership.\n    // On a kill edge the private copy may occur, but no logical owner is granted.\n    assign storage_copy=state==COPY;\n    assign owner_copy=running&&state==COPY&&!kill;",
+      "before": "    assign owner_copy=running&&state==COPY&&!kill;"
+    },
+    {
+      "after": "always_ff @(posedge clk)if(storage_copy&&owner_tail==1'(b))value<=engine_out_pixels[w*8+:8];",
+      "before": "always_ff @(posedge clk)if(owner_copy&&owner_tail==1'(b))value<=engine_out_pixels[w*8+:8];"
+    },
+    {
+      "after": "always_ff @(posedge clk)if(storage_copy&&owner_tail==1'(b))begin",
+      "before": "always_ff @(posedge clk)if(owner_copy&&owner_tail==1'(b))begin"
+    },
+    {
+      "after": "`ifndef SYNTHESIS\n    logic revoked_storage_copy_checked;\n    always_ff @(posedge clk)begin\n        if(!owner_initialized)revoked_storage_copy_checked<=0;\n        else begin\n            if(revoked_storage_copy_checked)assert(owner_state[0]==O_FREE&&owner_state[1]==O_FREE&&!out_valid)\n                else $fatal(1,\"killed private reconstruction copy acquired a logical owner\");\n            revoked_storage_copy_checked<=storage_copy&&kill;\n            if(storage_copy)begin\n                assert(owner_state[owner_tail]==O_MATH&&engine_out_valid)\n                    else $fatal(1,\"private reconstruction copy without reserved complete response\");\n                assert(owner_state[owner_head]!=O_READY||owner_tail!=owner_head)\n                    else $fatal(1,\"private reconstruction copy overwrote READY head\");\n                if(kill)assert(!owner_copy&&!out_valid)else $fatal(1,\"killed reconstruction copy published\");\n                else assert(owner_copy)else $fatal(1,\"normal private and logical reconstruction copy diverged\");\n            end\n        end\n    end\n`endif\nendmodule",
+      "before": "endmodule"
+    }
+  ],
+  "original": "fpga/experiments/cu66-v110-fault/cu66_reconstruct_stream_v91k.sv",
+  "original_sha256": "f9dc06f183010a3486f387075b702a4cc7d9b4a06c1f4b0174cddad5813bf149",
+  "schema": "v117-two-owner-reconstruction-edit-v1"
+}

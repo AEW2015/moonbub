@@ -1,0 +1,23 @@
+{
+  "actual_RTL_run": false,
+  "additional_payload_bits": 64,
+  "all_original_assertion_blocks_retained": true,
+  "candidate": "fpga/experiments/cu66-v118-replay/cs88_coefficients_v91k.sv",
+  "candidate_sha256": "14e2711e88866b1fd1d45a6f6cb608e57b1be6f35217e36c6fee258a91cfc203",
+  "claim": "Source hypothesis only; no source qualification, timing or hardware claim. Requires fresh mode0/mode1 proof and original wrapper/peer/fullbench evidence before integration.",
+  "edits": [
+    {
+      "after": "    logic [31:0] replay_rsp_addr, replay_rsp_epoch;\n    // V118 dormant hypothesis: record the actual accepted physical read owner.\n    // This is one synchronous response lease, not a new byte queue or buffer.\n    // No reset payload is needed: REFILL_WAIT follows a real accepted request.\n    // A response compares with immutable request tags, never a later cursor.\n    logic [31:0] accepted_replay_address, accepted_replay_epoch;\n    always_ff @(posedge clk)if(frame_read_req)begin\n        accepted_replay_address<=frame_read_addr;\n        accepted_replay_epoch<=frame_epoch;\n    end\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!reset && !abort_packet && state==REFILL_WAIT && REFILL_OVERLAP==0)begin\n        assert(accepted_replay_address==selected_offset+refill_cursor && accepted_replay_epoch==frame_epoch)\n            else $fatal(1,\"V118 physical replay lease differs from original stable refill owner\");\n    end\n`endif",
+      "before": "    logic [31:0] replay_rsp_addr, replay_rsp_epoch;"
+    },
+    {
+      "after": "if(replay_rsp_addr!=accepted_replay_address||replay_rsp_epoch!=accepted_replay_epoch)begin",
+      "before": "if(replay_rsp_addr!=selected_offset+refill_cursor||replay_rsp_epoch!=frame_epoch)begin"
+    }
+  ],
+  "original": "fpga/experiments/cu66-v110-ready/cs88_coefficients_v91k.sv",
+  "original_sha256": "b5f9dce886ce9d6d1460ac6d8579512750bc66504e306ecabf8bdd7f11bb40fd",
+  "public_edge_delta_hypothesis": 0,
+  "schema": "v118-dormant-accepted-replay-lease-v1",
+  "status": "PREPARED_NOT_QUALIFIED_NOT_INTEGRATED"
+}
