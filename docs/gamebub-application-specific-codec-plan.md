@@ -1,5 +1,15 @@
 # Game Bub application-specific codec: selected direction and gates
 
+**V123 measured continuation:** [the rank-mask experiment](cu66-v123/README.md)
+passes focused/full/transport/peer/parent checks with zero public-cycle delta.
+Global 125 MHz WNS improves **−1.949 → −1.086 ns**, absolute TNS falls 62.81%
+and setup failures fall to 6,724. Timing still fails, so no 125 MHz promotion.
+The next measured target is bank metadata selection through the owner/ready
+return. Finite-slot Python prototypes suggest owned-buffer overlap before more
+lanes under their explicit synthetic costs; actual overlap remains unimplemented.
+Source B100 is unchanged. Sustained hardware 30 fps and validated hardware <10 ms
+remain open.
+
 **V122 measured continuation:** [the bounds and memory-service study](cu66-v122/README.md)
 passes focused/full/transport/peer/parent checks with unchanged public cycles.
 Admission cursor/state gains 1.097 ns but still fails at −0.250 ns; overall

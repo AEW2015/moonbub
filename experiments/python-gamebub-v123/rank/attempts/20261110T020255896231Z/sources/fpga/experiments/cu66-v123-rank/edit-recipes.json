@@ -1,0 +1,199 @@
+{
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/observed_original.sv",
+      "candidate_sha256": "4699ea4d77444793403e4e6c06c0e3c846c6f364554e00f5ab7e85ca29eb955f",
+      "edits": [
+        {
+          "after": "module observed_original ",
+          "before": "module packed_scratch_v91g2 "
+        },
+        {
+          "after": ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);",
+          "before": "\n);"
+        },
+        {
+          "after": "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule",
+          "before": "\nendmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v119-scratch/packed_scratch_v91g2.sv",
+      "original_sha256": "49a1731b2259dc089ca8d5e24b17e162b8c7bbd94c983cea938a793d3fdbda72"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/observed_candidate.sv",
+      "candidate_sha256": "963bdc1ad35abe51e127dac74abaac6e38d4890a903b96f83d33dc7f40febcc4",
+      "edits": [
+        {
+          "after": "module observed_candidate ",
+          "before": "module packed_scratch_v91g2 "
+        },
+        {
+          "after": ",\n    output logic [511:0] verify_cache_data,\n    output logic [1215:0] verify_positions,\n    output logic [95:0] verify_heads,\n    output logic [56:0] verify_head_positions,\n    output logic [95:0] verify_cursors,\n    output logic [31:0] verify_read_word,\n    output logic [31:0] verify_read_position,\n    output logic [31:0] verify_read_address,\n    output logic [1:0] verify_read_segment,\n    output logic [1:0] verify_read_band,\n    output logic  verify_position_use\n);",
+          "before": "\n);"
+        },
+        {
+          "after": "\n    assign verify_read_word=read_word;assign verify_read_position=read_position;\n    assign verify_read_address=read_address;assign verify_read_segment=read_segment;assign verify_read_band=read_band;\n    assign verify_position_use=state==AC_EXTRACT && !cancel && !response_failure &&\n        cache_valid[read_segment] && cache_address[read_segment]==18'(read_address & 32'hfffffff0);\n    for(genvar b=0;b<4;b=b+1)begin: observed_cache\n        assign verify_cache_data[b*128+:128]=cache_data[b];\n        for(genvar o=0;o<16;o=o+1)begin: observed_offset\n            assign verify_positions[(b*16+o)*19+:19]=cache_positions[b][o];\n        end\n    end\n    for(genvar b=1;b<=3;b=b+1)begin: observed_heads\n        assign verify_heads[(b-1)*32+:32]=heads[b];\n        assign verify_cursors[(b-1)*32+:32]=cursors[b];\n        assign verify_head_positions[(b-1)*19+:19]=head_positions[b];\n    end\n\nendmodule",
+          "before": "\nendmodule"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v123-rank/packed_scratch_v91g2.sv",
+      "original_sha256": "12ad772136053d040d09770e0e98df6a49889757919993e3725c3ac70bafc5d7"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/packed_scratch_reference.sv",
+      "candidate_sha256": "8998425023293555dd408af3645d71f912e4e976a8927c290441e6dcdf62d590",
+      "edits": [
+        {
+          "after": "module packed_scratch_reference (",
+          "before": "module packed_scratch_v91g2 ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v119-scratch/packed_scratch_v91g2.sv",
+      "original_sha256": "49a1731b2259dc089ca8d5e24b17e162b8c7bbd94c983cea938a793d3fdbda72"
+    }
+  ],
+  "added_payload_bits": 64,
+  "declared_public_cycle_delta": 0,
+  "fixture_adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/tb_ac.cpp",
+      "candidate_sha256": "77048a1fda1272dbd11d3a595523199886bd9519f876f76f6a1df3a26ab08114",
+      "edits": [
+        {
+          "after": "#include \"tb_ac_base.cpp\"\n#include \"rank_priming.hpp\"\n",
+          "before": "#include \"tb_ac_base.cpp\"\n"
+        },
+        {
+          "after": "   if(previous)prime_rank_threshold(d,c,phase,(order==0?uint32_t((raw?block*64U+index:phase==0?block:block*64U+ranks[index])-1U):order==1?(raw?block*64U+index:phase==0?block:block*64U+ranks[index]):order==2?uint32_t((raw?block*64U+index:phase==0?block:block*64U+ranks[index])+1U):0xffffffffU)&63U);\n   record_context(d,phase,raw!=0,37);",
+          "before": "   record_context(d,phase,raw!=0,37);"
+        },
+        {
+          "after": "int inherited_v119_rank_main(int argc,char**argv)",
+          "before": "int main(int argc,char**argv)"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v119-scratch/verification/tb_ac.cpp",
+      "original_sha256": "82c395e1940203d03a16fe2a03f31324e500ff4e023e3269fcc2ea3dc28474c7"
+    }
+  ],
+  "old_assertions_removed": 0,
+  "old_require_checks_removed": 0,
+  "recipes": [
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/packed_scratch_v91g2.sv",
+      "candidate_sha256": "12ad772136053d040d09770e0e98df6a49889757919993e3725c3ac70bafc5d7",
+      "edits": [
+        {
+          "after": "    logic input_raster_bad,input_dc_bad,input_ac_bad;\n    // V123: APPEND prepares only the six-bit rank relation. The live full32\n    // high/block terms preserve generic previous-position semantics.\n    logic [63:0] rank_threshold_mask;\n    logic input_sparse_order_bad;\n    assign input_sparse_order_bad=(previous_position[31:22]!=0) ||\n        (coef_block<previous_position[21:6]) ||\n        ((coef_block==previous_position[21:6]) && rank_threshold_mask[coef_index]);\n`ifndef SYNTHESIS\n    logic rank_owner_valid=0;\n    logic [5:0] rank_owner_threshold;\n    logic [2:0] rank_owner_phase;\n    logic [31:0] rank_owner_epoch;\n    always_ff @(posedge clk)begin\n        if(cancel || state==BEGIN_COMMIT || state==NEXT_BAND)rank_owner_valid<=0;\n        else if(tile_case_eligible && state==APPEND)begin\n            rank_owner_valid<=1;rank_owner_threshold<=pending_position[5:0];\n            rank_owner_phase<=phase;rank_owner_epoch<=active_epoch;\n        end\n    end\n    always_ff @(posedge clk)if(tile_case_eligible && state==INGEST &&\n        coef_valid && previous_valid && !raw_mode)begin\n        assert(rank_owner_valid && rank_owner_threshold==previous_position[5:0] &&\n            rank_owner_phase==phase && rank_owner_epoch==active_epoch)\n            else $fatal(1,\"V123 sparse rank threshold mixed owner\");\n        for(integer rank_index=0;rank_index<64;rank_index=rank_index+1)\n            assert(rank_threshold_mask[rank_index]==\n                (zigzag(6'(rank_index))<=previous_position[5:0]))\n                else $fatal(1,\"V123 rank mask differs from literal zigzag threshold\");\n        assert(input_sparse_order_bad==(input_sparse_position<=previous_position))\n            else $fatal(1,\"V123 generic full32 sparse ordering mismatch\");\n    end\n`endif",
+          "before": "    logic input_raster_bad,input_dc_bad,input_ac_bad;",
+          "reason": "Add one unreset 64-bit threshold mask and verification-only low6/phase/epoch ownership; live high/block terms stay full-width."
+        },
+        {
+          "after": "        (previous_valid && input_sparse_order_bad);",
+          "before": "        (previous_valid && input_sparse_position<=previous_position);",
+          "reason": "Replace only sparse order subpredicate; retain all scalar full32 reference assertions."
+        },
+        {
+          "after": "                APPEND: begin\n                    // Same original edge and outer priority as previous_position.\n                    for(integer rank_index=0;rank_index<64;rank_index=rank_index+1)\n                        rank_threshold_mask[rank_index]<=\n                            zigzag(6'(rank_index))<=pending_position[5:0];\n",
+          "before": "                APPEND: begin\n",
+          "reason": "Capture the complete threshold from pending_position on the original previous_position write; no new phase or payload reset."
+        }
+      ],
+      "original": "fpga/experiments/cu66-v119-scratch/packed_scratch_v91g2.sv",
+      "original_sha256": "49a1731b2259dc089ca8d5e24b17e162b8c7bbd94c983cea938a793d3fdbda72"
+    }
+  ],
+  "schema": "v123-append-rank-mask-recipe-v1",
+  "unchanged_caller": {
+    "path": "fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv",
+    "sha256": "2eef50dfe32a5c84cebf207dc9c56ac69b933ea0371e0b7e372681adacc4ad0e"
+  },
+  "unchanged_verification": [
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/scratch_probe.sv",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/scratch_probe.sv",
+      "sha256": "db1a604675ecd92604f66ea436b5b7aacb444c0761de976e79ba5544acbdbdd0"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/br88_pipeline_reference.sv",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/br88_pipeline_reference.sv",
+      "sha256": "a749b8af01a78920c42bcfe5815d2e5ca01e9de6c0fe27031dbfc2e16e3704a6"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/tb_ac_base.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/tb_ac_base.cpp",
+      "sha256": "75eb2d55d5e1cb0ca6f3adad818cf4592e37995deb5d387bf1302d2c676bcfde"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/br88_pipeline_candidate.sv",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/br88_pipeline_candidate.sv",
+      "sha256": "6696d9dcfddff31801c89209565e5d0b8d101d8fdf8b4a7af4a3874d19e11a21"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/tb_prepare.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/tb_prepare.cpp",
+      "sha256": "1b6a2445ca9c70b9b5a34d12775f4ec9d0539dc5d46b2da522b1984e7441abb2"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/record_base.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/record_base.cpp",
+      "sha256": "50d7d7335bce35f0dbef1f64c20681863be4aceeb07d8c9d37d813415520824c"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/pair_adapter.hpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/pair_adapter.hpp",
+      "sha256": "e9dda3b7a5f825dcdda6417c453dbd8c9dfb5ccb3928bf361f7afd5d06dcf104"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/tb_pipeline.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/tb_pipeline.cpp",
+      "sha256": "0ecf82fb877d9c7d45ea30fb24ed1dc689af456e151d7997ccb174d7ad35b7a6"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/br88_pipeline_pair.sv",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/br88_pipeline_pair.sv",
+      "sha256": "44a4a0836d834c68fd9bbfdbb8618016690ead937702c67657de2842f24abc1b"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/clock_adapter.hpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/clock_adapter.hpp",
+      "sha256": "2a3e48ec7c46cc1a68ea3eac3ba8d5d52cc2fe09aaf228bc044a3c5bef0936b1"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/tb_record.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/tb_record.cpp",
+      "sha256": "8b06728bdcfe7d438e8110c9084bdc5ee264586af042988417132c5ff8a2f7c5"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/historical_hazards.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/historical_hazards.cpp",
+      "sha256": "6e3e5b824ac06eeb16c3227abda964fe84a5f01579c949b06943234e9fdf843a"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/caller_prepare.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/caller_prepare.cpp",
+      "sha256": "527a10a69996ac5fe2a7d89241242ff3a93173bb9eb34d041b3ff08afeeecf15"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/tb_slot.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/tb_slot.cpp",
+      "sha256": "72f267f4b0f2d41aa7ab96364c838bad0cee44b19c082da8b3df5125d716f6ff"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/tb_bank.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/tb_bank.cpp",
+      "sha256": "dfea8a9f36cbc48a38d257e51099f245e391a9753196c6827707c89c94e31892"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/tb_scratch.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/tb_scratch.cpp",
+      "sha256": "5515780dd96e2ed7640cf7e6741f54ca084536a0f5793c689e6cef37959edc16"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v123-rank/verification/tb_control.cpp",
+      "original": "fpga/experiments/cu66-v119-scratch/verification/tb_control.cpp",
+      "sha256": "4dc828da4d4c8f6fd8f8227494a60dd1b7a647077077d9d947e67e3e501998f9"
+    }
+  ]
+}

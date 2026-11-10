@@ -1,5 +1,14 @@
 # Game Bub: spatial architecture review and V121–V125 exploration plan
 
+**V123 measured follow-up:** [prepared scratch rank](cu66-v123/README.md) passes
+all functional gates with exact cycles. The fresh 125 MHz route improves from
+V122's −1.949 ns to **−1.086 ns WNS**, with 6,724 setup failures; it remains
+unqualified. The mask's all-endpoint worst is +0.159 ns, while RAW and the new
+emit-bank/owner-ready return still fail. Independent Python rank checks and a
+causal finite-slot overlap prototype support the next experiments. Synthetic
+two-slot gains are not measured hardware performance; the modeled-parent
+<1,250,000-cycle exit, physical memory and hardware 30 fps / <10 ms remain open.
+
 **V122 measured follow-up:** [bounds pipeline and service study](cu66-v122/README.md)
 passes all four functional stages with zero public-cycle change. Admission
 cursor/state improves from −1.347 ns to −0.250 ns, but global routed setup

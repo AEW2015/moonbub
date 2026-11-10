@@ -1,0 +1,23 @@
+{
+  "original": "fpga/experiments/cu66-v117-peer-wordbank/tb_peer.cpp",
+  "original_sha256": "a3587961a1ca412b08513cf536b637f67d02494e43e1fb01a7811df349ce887e",
+  "candidate": "fpga/experiments/cu66-v118-peer/tb_peer.cpp",
+  "candidate_sha256": "495fd0a4a100dc42be9ef0f5d39ae5587a63476d4fb03102f701d99604933679",
+  "edits": [
+    {
+      "before": "  // Actual fail-edge central defaults revoke both predicted physical CE strobes.\n  P(reconstruction__DOT__storage_copy_bank0)=0;P(reconstruction__DOT__storage_copy_bank1)=0;",
+      "after": "  // Exact V118 fail-task poststate. Aggregate bank strobes are readonly views.\n  P(reconstruction__DOT__accepted_valid)=0;P(reconstruction__DOT__checked_valid)=0;\n  P(reconstruction__DOT__accepted_last)=0;\n  P(reconstruction__DOT__storage_copy_lane0)=0;P(reconstruction__DOT__storage_copy_lane1)=0;"
+    },
+    {
+      "before": " if(peer!=2)need(!P(reconstruction__DOT__storage_copy_bank0)&&!P(reconstruction__DOT__storage_copy_bank1),\"prepared reconstruction fail edge retained predicted physical COPY strobe\");",
+      "after": " if(peer!=2)need(!P(reconstruction__DOT__storage_copy_bank0)&&!P(reconstruction__DOT__storage_copy_bank1),\"prepared reconstruction fail edge retained predicted physical COPY strobe\");\n if(peer!=2)need(!P(reconstruction__DOT__accepted_valid)&&!P(reconstruction__DOT__checked_valid)&&!P(reconstruction__DOT__accepted_last)&&!P(reconstruction__DOT__storage_copy_lane0)&&!P(reconstruction__DOT__storage_copy_lane1),\"V118 actual fail-task pipeline/lane poststate differs\");"
+    }
+  ],
+  "header": {
+    "original": "fpga/experiments/cu66-v117-peer-wordbank/bench_peer_base.hpp",
+    "candidate": "fpga/experiments/cu66-v118-peer/bench_peer_base.hpp",
+    "sha256": "e56c4eb4a7a479c123baae06a7ad137b7c90e637735ccb6890c62f2df87c59dc"
+  },
+  "old_need_checks_removed": 0,
+  "scope": "V118 prepared actual fail-task poststate extends to owned residual acceptance stages and real fourbeat lane strobes. All inherited independent need checks remain. No physical debt or payload assigned, no additional tick."
+}

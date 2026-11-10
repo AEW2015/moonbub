@@ -1,5 +1,9 @@
 # V122: prepared admission bounds and memory-service study
 
+Continuation: [V123 rank-mask and spatial studies](../cu66-v123/README.md)
+improve the 125 MHz result to −1.086 ns WNS, while setup and hardware milestones
+remain open. Qualified Source B100 stays unchanged.
+
 The new admission bounds pipeline passes focused, full decoder/transport,
 physical-debt peer and byte/row parent checks with **zero public-cycle change**.
 The qualified V120 100 MHz Source B remains byte-identical to its published
