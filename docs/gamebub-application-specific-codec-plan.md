@@ -1,5 +1,14 @@
 # Game Bub application-specific codec: selected direction and gates
 
+**Next five versions, updated 2026-11-10:** the
+[V126–V130 execution plan](gamebub-v126-v130-timing-streaming-plan.md) now leads
+the work: producer pipeline cut; scratch/admission control and repeated 125 MHz
+closure; validated-decode overlap with a strict cycle budget; actual custom
+host/ESP32/full-parent integration; then remote hardware 30 fps and <10 ms gates.
+Latency-aware pipeline contracts are permitted when explicitly verified.
+Timing, latency and full-system qualification remain separate; older unmet
+gates carry forward and no version label automatically passes them.
+
 **V125 measured continuation, 2026-11-10:** [prepared tile predicates](cu66-v125/README.md)
 pass the focused and full functional suite with zero public-cycle change.
 The matched tile → tile path improves **−1.170 → +2.447 ns**, but tile →

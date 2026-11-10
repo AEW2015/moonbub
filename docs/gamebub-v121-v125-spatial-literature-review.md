@@ -1,5 +1,11 @@
 # Game Bub: spatial architecture review and V121–V125 exploration plan
 
+**Next execution sequence, 2026-11-10:** use the
+[V126–V130 timing and streaming plan](gamebub-v126-v130-timing-streaming-plan.md)
+for the next five versions. It retains this review's architectural direction
+and carries forward the incomplete component, full-system and hardware exits.
+The historical roadmap below remains a record of proposed work, not passed gates.
+
 **V125 measured follow-up, 2026-11-10:** [existing-edge tile predicates](cu66-v125/README.md)
 pass all functional gates with unchanged public cycles. Tile → tile improves
 −1.170 → +2.447 ns, but the full 125 MHz route fails at **−1.224 ns WNS,
