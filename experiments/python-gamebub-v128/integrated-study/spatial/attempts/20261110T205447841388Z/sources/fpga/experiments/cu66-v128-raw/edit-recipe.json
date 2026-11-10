@@ -1,0 +1,162 @@
+{
+  "declared_public_cycle_delta": 0,
+  "expected_changed_aliases": [
+    "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv",
+    "fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv",
+    "fpga/experiments/cu66-v91h/br88_packet_ingress_v91h.sv",
+    "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv"
+  ],
+  "original_assertion_blocks_retained_byte_exact": true,
+  "parent": {
+    "path": "experiments/python-gamebub-v127/integration/results.json",
+    "sha256": "d16589645d3824399a4df4559a84405051547a48e236dc0aa0e1841812f5ce39"
+  },
+  "phase_encodings": 8,
+  "preparer": {
+    "path": "scripts/cu66-v128/raw/prepare.py",
+    "sha256": "ea9ee4d9fc832265a95912a8c80f4ad30fd4bab19640f100babe258508dad178"
+  },
+  "production": {
+    "child": {
+      "alias": "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv",
+      "candidate": {
+        "path": "fpga/experiments/cu66-v128-raw/br88_pipeline_v91h.sv",
+        "sha256": "bc48a9d8e33165b71c29b758626f067da2e8154dd0719b5d282c514850f6809c"
+      },
+      "edits": [
+        {
+          "new": "    logic [31:0] coef_epoch;\n    logic coef_select_raw;\n    logic [31:0] coef_raw_epoch;\n    logic [15:0] coef_raw_block;\n    logic [5:0] coef_raw_index;\n    logic signed [15:0] coef_raw_value;\n    logic [1:0] coef_raw_band;\n    logic [31:0] coef_context_epoch;\n    logic [15:0] coef_context_block;\n    logic [5:0] coef_context_index;\n    logic signed [15:0] coef_context_value;\n    logic [1:0] coef_context_band;\n",
+          "occurrences": 1,
+          "old": "    logic [31:0] coef_epoch;\n",
+          "tag": "private-sparse-view-wires"
+        },
+        {
+          "new": "        .view_select_raw(coef_select_raw),\n        .view_raw_epoch(coef_raw_epoch),\n        .view_raw_block(coef_raw_block),\n        .view_raw_index(coef_raw_index),\n        .view_raw_value(coef_raw_value),\n        .view_raw_band(coef_raw_band),\n        .view_context_epoch(coef_context_epoch),\n        .view_context_block(coef_context_block),\n        .view_context_index(coef_context_index),\n        .view_context_value(coef_context_value),\n        .view_context_band(coef_context_band),\n        .out_band(coef_band), .meta_valid(meta_valid), .meta_ready(meta_ready),\n",
+          "occurrences": 1,
+          "old": "        .out_band(coef_band), .meta_valid(meta_valid), .meta_ready(meta_ready),\n",
+          "tag": "packet-direct-view-forwarding"
+        },
+        {
+          "new": "        .coef_value(coef_value), .coef_epoch(coef_epoch),\n        .coef_select_raw(coef_select_raw),\n        .coef_raw_epoch(coef_raw_epoch),\n        .coef_raw_block(coef_raw_block),\n        .coef_raw_index(coef_raw_index),\n        .coef_raw_value(coef_raw_value),\n        .coef_raw_band(coef_raw_band),\n        .coef_context_epoch(coef_context_epoch),\n        .coef_context_block(coef_context_block),\n        .coef_context_index(coef_context_index),\n        .coef_context_value(coef_context_value),\n        .coef_context_band(coef_context_band),\n",
+          "occurrences": 1,
+          "old": "        .coef_value(coef_value), .coef_epoch(coef_epoch),\n",
+          "tag": "scratch-direct-view-inputs"
+        }
+      ],
+      "original": {
+        "path": "fpga/experiments/cu66-v127-owner/br88_pipeline_v91h.sv",
+        "sha256": "0596dce08b8d38651eb303b531e971de604d5ad7f45818a4a2d0d222d0a049cb"
+      },
+      "retained_original_guarded_blocks": 2,
+      "reverse_reconstruction_exact": true
+    },
+    "scratch": {
+      "alias": "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv",
+      "candidate": {
+        "path": "fpga/experiments/cu66-v128-raw/packed_scratch_v91g2.sv",
+        "sha256": "4254026004142414376d9b848f7b50f05d8a484b7f932b5c91d0a5a7efde92c4"
+      },
+      "edits": [
+        {
+          "new": "    input logic [31:0] coef_epoch,\n    input logic coef_select_raw,\n    input logic [31:0] coef_raw_epoch,\n    input logic [15:0] coef_raw_block,\n    input logic [5:0] coef_raw_index,\n    input logic signed [15:0] coef_raw_value,\n    input logic [1:0] coef_raw_band,\n    input logic [31:0] coef_context_epoch,\n    input logic [15:0] coef_context_block,\n    input logic [5:0] coef_context_index,\n    input logic signed [15:0] coef_context_value,\n    input logic [1:0] coef_context_band,\n",
+          "occurrences": 1,
+          "old": "    input logic [31:0] coef_epoch,\n",
+          "tag": "direct-view-input-ports"
+        },
+        {
+          "new": "    // V128_RAW_VALIDATION_BEGIN: compare full direct tuples before ingress\n    // mode selects Boolean decisions. Stored scratch raw_mode remains a\n    // separate format selector, including invalid/unready/transitional views.\n    logic [1:0] ingress_epoch_bad;\n    logic [7:0] ingress_phase_bad [0:1];\n    logic input_epoch_bad;\n    for(genvar validation_lane=0;validation_lane<2;validation_lane=validation_lane+1)begin: ingress_validation\n        wire [31:0] lane_epoch=validation_lane==0 ? coef_raw_epoch : coef_context_epoch;\n        wire [15:0] lane_block=validation_lane==0 ? coef_raw_block : coef_context_block;\n        wire [5:0] lane_index=validation_lane==0 ? coef_raw_index : coef_context_index;\n        wire signed [15:0] lane_value=validation_lane==0 ? coef_raw_value : coef_context_value;\n        wire [1:0] lane_band=validation_lane==0 ? coef_raw_band : coef_context_band;\n        wire [31:0] lane_raster_position={10'd0,lane_block,lane_index};\n        wire lane_raster_bad=lane_raster_position!=written;\n        wire lane_dc_bad=lane_index!=0 || 32'(lane_block)!=written;\n        // Preserve the implemented full32 high/block + arbitrary64 rank-mask\n        // contract. Literal-position equivalence needs its original owner.\n        wire lane_sparse_order_bad=(previous_position[31:22]!=0) ||\n            (lane_block<previous_position[21:6]) ||\n            ((lane_block==previous_position[21:6]) && rank_threshold_mask[lane_index]);\n        wire lane_ac_bad=!band_matches(lane_band,lane_index) || lane_value==0 ||\n            (previous_valid && lane_sparse_order_bad);\n        assign ingress_epoch_bad[validation_lane]=lane_epoch!=active_epoch;\n        for(genvar lane_phase=0;lane_phase<8;lane_phase=lane_phase+1)begin: phase_lane\n            assign ingress_phase_bad[validation_lane][lane_phase]=\n                ingress_epoch_bad[validation_lane] || lane_band!=2'(lane_phase) ||\n                lane_block>=16'(blocks) || lane_value < -2048 || lane_value > 2048 ||\n                written>=counts[lane_phase & 3] ||\n                (raw_mode ? lane_raster_bad : lane_phase==0 ? lane_dc_bad : lane_ac_bad);\n        end\n    end\n    assign input_epoch_bad=coef_select_raw ? ingress_epoch_bad[0] : ingress_epoch_bad[1];\n    // V128_RAW_VALIDATION_END\n`ifndef SYNTHESIS\n    // V128_SELECTED_INPUT_IDENTITIES_BEGIN: valid offers include unready ones.\n    // The all-cycle two-state prepared probe independently covers unowned views.\n    always_ff @(posedge clk)if(!cancel && !response_failure && state==INGEST && coef_valid)begin\n        assert({coef_epoch,coef_block,coef_index,coef_value,coef_band}==\n            (coef_select_raw ?\n             {coef_raw_epoch,coef_raw_block,coef_raw_index,coef_raw_value,coef_raw_band} :\n             {coef_context_epoch,coef_context_block,coef_context_index,coef_context_value,coef_context_band}))\n            else $fatal(1,\"V128 selected full sparse tuple differs from ingress views\");\n        assert(input_epoch_bad==(coef_epoch!=active_epoch))\n            else $fatal(1,\"V128 selected full epoch error class differs\");\n        assert((coef_select_raw ? ingress_validation[0].lane_raster_bad : ingress_validation[1].lane_raster_bad)==input_raster_bad)\n            else $fatal(1,\"V128 selected raster format decision differs\");\n        assert((coef_select_raw ? ingress_validation[0].lane_dc_bad : ingress_validation[1].lane_dc_bad)==input_dc_bad)\n            else $fatal(1,\"V128 selected DC format decision differs\");\n        assert((coef_select_raw ? ingress_validation[0].lane_ac_bad : ingress_validation[1].lane_ac_bad)==input_ac_bad)\n            else $fatal(1,\"V128 selected AC format decision differs\");\n        assert((coef_select_raw ? ingress_validation[0].lane_sparse_order_bad : ingress_validation[1].lane_sparse_order_bad)==input_sparse_order_bad)\n            else $fatal(1,\"V128 selected implemented rank-mask decision differs\");\n    end\n    // V128_SELECTED_INPUT_IDENTITIES_END\n`endif\n    for(genvar checking_phase=0;checking_phase<8;checking_phase=checking_phase+1)begin: phase_validation\n",
+          "occurrences": 1,
+          "old": "    for(genvar checking_phase=0;checking_phase<8;checking_phase=checking_phase+1)begin: phase_validation\n",
+          "tag": "full-two-lane-validation"
+        },
+        {
+          "new": "        assign phase_input_bad[checking_phase]=coef_select_raw ?\n            ingress_phase_bad[0][checking_phase] : ingress_phase_bad[1][checking_phase];\n",
+          "occurrences": 1,
+          "old": "        assign phase_input_bad[checking_phase]=coef_epoch!=active_epoch || coef_band!=2'(checking_phase) ||\n            coef_block>=16'(blocks) || coef_value < -2048 || coef_value > 2048 ||\n            written>=counts[checking_phase & 3] ||\n            (raw_mode ? input_raster_bad : checking_phase==0 ? input_dc_bad : input_ac_bad);\n",
+          "tag": "select-complete-Boolean-phase-result"
+        },
+        {
+          "new": "                            error<=input_epoch_bad ? 2 : 3;\n",
+          "occurrences": 1,
+          "old": "                            error<=coef_epoch!=active_epoch ? 2 : 3;\n",
+          "tag": "preserve-epoch-first-error-class"
+        }
+      ],
+      "original": {
+        "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+        "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+      },
+      "retained_original_guarded_blocks": 12,
+      "reverse_reconstruction_exact": true
+    },
+    "sync": {
+      "alias": "fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv",
+      "candidate": {
+        "path": "fpga/experiments/cu66-v128-raw/br88_packet_ingress_sync_v91h.sv",
+        "sha256": "908aff5e690200ded17a6148fcbc0bbd5978ff658eee0c1a084df0bae6a8436b"
+      },
+      "edits": [
+        {
+          "new": "    output logic [31:0] out_epoch,\n    output logic view_select_raw,\n    output logic [31:0] view_raw_epoch,\n    output logic [15:0] view_raw_block,\n    output logic [5:0] view_raw_index,\n    output logic signed [15:0] view_raw_value,\n    output logic [1:0] view_raw_band,\n    output logic [31:0] view_context_epoch,\n    output logic [15:0] view_context_block,\n    output logic [5:0] view_context_index,\n    output logic signed [15:0] view_context_value,\n    output logic [1:0] view_context_band,\n",
+          "occurrences": 1,
+          "old": "    output logic [31:0] out_epoch,\n",
+          "tag": "direct-view-output-ports"
+        },
+        {
+          "new": "        out_epoch=raw_mode ? context_epoch : ctx_epoch;\n        view_select_raw=raw_mode;\n        view_raw_epoch=context_epoch; view_raw_block=16'(raw_position>>6);\n        view_raw_index=raw_position[5:0]; view_raw_value=raw_coefficient; view_raw_band=2'd0;\n        view_context_epoch=ctx_epoch; view_context_block=ctx_block;\n        view_context_index=ctx_index; view_context_value=ctx_coefficient; view_context_band=band;\n",
+          "occurrences": 1,
+          "old": "        out_epoch=raw_mode ? context_epoch : ctx_epoch;\n",
+          "tag": "direct-existing-register-views"
+        }
+      ],
+      "original": {
+        "path": "fpga/experiments/cu66-v120-range/br88_packet_ingress_sync_v91h.sv",
+        "sha256": "82f6e3be050d0848e0d9e29439ac31a1a78e981f3a5b9f74f2b6180925c6a2e4"
+      },
+      "retained_original_guarded_blocks": 7,
+      "reverse_reconstruction_exact": true
+    },
+    "wrapper": {
+      "alias": "fpga/experiments/cu66-v91h/br88_packet_ingress_v91h.sv",
+      "candidate": {
+        "path": "fpga/experiments/cu66-v128-raw/br88_packet_ingress_v91h.sv",
+        "sha256": "9c691e181cd58e8e7ed9438907bc01c1298b7fa217674805878874d06a5b9b2f"
+      },
+      "edits": [
+        {
+          "new": "    output logic [31:0] out_epoch,\n    output logic view_select_raw,\n    output logic [31:0] view_raw_epoch,\n    output logic [15:0] view_raw_block,\n    output logic [5:0] view_raw_index,\n    output logic signed [15:0] view_raw_value,\n    output logic [1:0] view_raw_band,\n    output logic [31:0] view_context_epoch,\n    output logic [15:0] view_context_block,\n    output logic [5:0] view_context_index,\n    output logic signed [15:0] view_context_value,\n    output logic [1:0] view_context_band,\n",
+          "occurrences": 1,
+          "old": "    output logic [31:0] out_epoch,\n",
+          "tag": "direct-view-output-ports"
+        },
+        {
+          "new": "        assign view_select_raw=1'b0;\n        assign view_raw_epoch=out_epoch;\n        assign view_raw_block=out_block;\n        assign view_raw_index=out_index;\n        assign view_raw_value=out_coefficient;\n        assign view_raw_band=out_band;\n        assign view_context_epoch=out_epoch;\n        assign view_context_block=out_block;\n        assign view_context_index=out_index;\n        assign view_context_value=out_coefficient;\n        assign view_context_band=out_band;\n    function automatic logic [31:0] capacity_legacy_upper(input logic [27:0] units);\n",
+          "occurrences": 1,
+          "old": "    function automatic logic [31:0] capacity_legacy_upper(input logic [27:0] units);\n",
+          "tag": "legacy-exact-selected-view-fallback"
+        },
+        {
+          "new": "    end else begin: synchronous\n        br88_packet_ingress_sync_v91h #(.MAX_PACKET_BYTES(MAX_PACKET_BYTES)) ingress (\n            .meta_prefix1(meta_prefix1),.meta_prefix12(meta_prefix12),.meta_prefix123(meta_prefix123),\n            .meta_threshold1(meta_threshold1),.meta_threshold2(meta_threshold2),.meta_threshold3(meta_threshold3),\n            .meta_capacity_upper(meta_capacity_upper),.meta_capacity_lower(meta_capacity_lower),.meta_capacity_wrap(meta_capacity_wrap),\n            .clk(clk),\n            .reset(reset),\n            .start(start),\n            .abort_packet(abort_packet),\n            .packet_bytes(packet_bytes),\n            .blocks(blocks),\n            .epoch(epoch),\n            .word16(word16),\n            .serial_mode(serial_mode),\n            .in_valid(in_valid),\n            .in_ready(in_ready),\n            .in_data(in_data),\n            .in_last(in_last),\n            .out_valid(out_valid),\n            .out_ready(out_ready),\n            .out_block(out_block),\n            .out_index(out_index),\n            .out_coefficient(out_coefficient),\n            .out_epoch(out_epoch),\n            .view_select_raw(view_select_raw),\n            .view_raw_epoch(view_raw_epoch),\n            .view_raw_block(view_raw_block),\n            .view_raw_index(view_raw_index),\n            .view_raw_value(view_raw_value),\n            .view_raw_band(view_raw_band),\n            .view_context_epoch(view_context_epoch),\n            .view_context_block(view_context_block),\n            .view_context_index(view_context_index),\n            .view_context_value(view_context_value),\n            .view_context_band(view_context_band),\n",
+          "occurrences": 1,
+          "old": "    end else begin: synchronous\n        br88_packet_ingress_sync_v91h #(.MAX_PACKET_BYTES(MAX_PACKET_BYTES)) ingress (\n            .meta_prefix1(meta_prefix1),.meta_prefix12(meta_prefix12),.meta_prefix123(meta_prefix123),\n            .meta_threshold1(meta_threshold1),.meta_threshold2(meta_threshold2),.meta_threshold3(meta_threshold3),\n            .meta_capacity_upper(meta_capacity_upper),.meta_capacity_lower(meta_capacity_lower),.meta_capacity_wrap(meta_capacity_wrap),\n            .clk(clk),\n            .reset(reset),\n            .start(start),\n            .abort_packet(abort_packet),\n            .packet_bytes(packet_bytes),\n            .blocks(blocks),\n            .epoch(epoch),\n            .word16(word16),\n            .serial_mode(serial_mode),\n            .in_valid(in_valid),\n            .in_ready(in_ready),\n            .in_data(in_data),\n            .in_last(in_last),\n            .out_valid(out_valid),\n            .out_ready(out_ready),\n            .out_block(out_block),\n            .out_index(out_index),\n            .out_coefficient(out_coefficient),\n            .out_epoch(out_epoch),\n",
+          "tag": "synchronous-direct-view-forwarding"
+        }
+      ],
+      "original": {
+        "path": "fpga/experiments/cu66-v108-capacity/br88_packet_ingress_v91h.sv",
+        "sha256": "9529b8a76b531d22f7d0a4498295153f8a397c004725787c34af9824ee84cfb1"
+      },
+      "retained_original_guarded_blocks": 0,
+      "reverse_reconstruction_exact": true
+    }
+  },
+  "schema": "v128-full-sparse-validation-factor-edit-recipe-v1",
+  "selector_false_lane": 1,
+  "selector_true_lane": 0,
+  "source_register_bits_added": 0,
+  "source_reset_changes": 0,
+  "status": "SOURCE_PREPARED_NOT_RTL_QUALIFIED",
+  "synthesis_attributes_added": 0,
+  "tuple_bits": 72,
+  "validation_lanes": 2
+}

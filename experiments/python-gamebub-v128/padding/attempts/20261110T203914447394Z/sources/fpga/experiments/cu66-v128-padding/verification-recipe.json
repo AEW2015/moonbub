@@ -1,0 +1,67 @@
+{
+  "actual_FSM_executed": false,
+  "bench": {
+    "path": "fpga/experiments/cu66-v128-padding/verification/tb_padding.cpp",
+    "sha256": "80e3ccd003480d8bbcdb4698b2a599ebd1366786553d1f096fcc53c954bd5058"
+  },
+  "candidate": {
+    "path": "fpga/experiments/cu66-v128-padding/cs88_admission_v91i2a.sv",
+    "sha256": "75305fd64f8b1b0e092f82fed74fbc9ea8b7a2a1e538cabdf57375fee77b0c3f"
+  },
+  "full_admission_model": false,
+  "full_component_actual_admission_required_separately": true,
+  "kernel_bundle_sha256": "ff756f01a40fac7f5fbe166a2af51e3b43e23c14a5ce31d237650cd20060c2b9",
+  "kernel_includes_current_byte_forwarding": true,
+  "kernel_includes_original_and_new_owner_assertions": true,
+  "kernel_modules": [
+    {
+      "path": "fpga/experiments/cu66-v128-padding/verification/padding_original_kernel.sv",
+      "sha256": "9ccca6d75739ba36604ca736cb2593b274184e844cf07e8f12ac89c181f606e0"
+    },
+    {
+      "path": "fpga/experiments/cu66-v128-padding/verification/padding_candidate_kernel.sv",
+      "sha256": "8ce5afdf679198b90c61ee228f58860a3a213fd17aa1aa0f7e0d48eb588b0dda"
+    },
+    {
+      "path": "fpga/experiments/cu66-v128-padding/verification/padding_probe.sv",
+      "sha256": "6ec93b22d4ddd15c217464abb4dd96e4dca4b334db20cceb715dd4bfa488052f"
+    }
+  ],
+  "original": {
+    "path": "fpga/experiments/cu66-v125-tile/cs88_admission_v91i2a.sv",
+    "sha256": "2f65ff770775404071e383890c75549ccb08ec9998993c86f1662cfed65d71eb"
+  },
+  "preparer": {
+    "path": "scripts/cu66-v128/padding/prepare_verification.py",
+    "sha256": "a2b2242c72937faa31c1b89d009b7989e73b34e4868962febfe0609393c94954"
+  },
+  "private_new_payload_or_owner_forces": 0,
+  "schema": "v128-padding-source-extraction-v1",
+  "scoped_source_kernel": true,
+  "seeds": [
+    128701,
+    128702
+  ],
+  "source_fragments": {
+    "cache": "    // V128_PADDING_CACHE_BEGIN: one unreset Boolean payload, owned only\n    // after the current header's ordered116..127 byte-load edges. The final\n    // byte is forwarded here while header[127] still has its old NBA value.\n    logic prepared_header_padding_ok;\n    always_ff @(posedge clk)if(state==HEADER_BYTE && header_index>=116 && header_index<=127)\n        prepared_header_padding_ok<=header_index==116 ? byte_value==0 :\n            prepared_header_padding_ok && byte_value==0;\n    // V128_PADDING_CACHE_END\n",
+    "helpers": "    function automatic logic [31:0] h32(input integer n);\n        return {header[n],header[n+1],header[n+2],header[n+3]};\n    endfunction\n    function automatic logic [15:0] h16(input integer n);\n        return {header[n],header[n+1]};\n    endfunction\n",
+    "new_consumer": "                    logic padding_ok;\n                    padding_ok=prepared_header_padding_ok;\n",
+    "newowner": "`ifndef SYNTHESIS\n    // V128_PADDING_OWNER_BEGIN: verification-only freshness, not payload reset.\n    logic padding_owner_valid=0;\n    logic [31:0] padding_owner_epoch,padding_owner_size,padding_owner_next;\n    logic padding_reference_ok;\n    always_comb begin\n        padding_reference_ok=1;\n        for(integer padding_index=116;padding_index<128;padding_index=padding_index+1)\n            if(header[padding_index]!=0)padding_reference_ok=0;\n    end\n    always_ff @(posedge clk)begin\n        if(reset||start||abort_packet)padding_owner_valid<=0;\n        else if(state==HEADER_BYTE && header_index>=116 && header_index<=127)begin\n            if(header_index==116)begin\n                padding_owner_valid<=1;\n                padding_owner_epoch<=receipt_epoch;padding_owner_size<=size_bytes;\n            end else begin\n                assert(padding_owner_valid && padding_owner_epoch==receipt_epoch &&\n                    padding_owner_size==size_bytes && padding_owner_next==header_index)\n                    else $fatal(1,\"V128 padding byte sequence lost its complete owner\");\n            end\n            padding_owner_next<=header_index+32'd1;\n        end else if(state==HEADER_CHECK)padding_owner_valid<=0;\n    end\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&state==HEADER_CHECK)begin\n        assert(padding_owner_valid && padding_owner_epoch==receipt_epoch &&\n            padding_owner_size==size_bytes && padding_owner_next==128 && header_index==127)\n            else $fatal(1,\"V128 padding consume without full owned116..127 writer sequence\");\n        assert(prepared_header_padding_ok==padding_reference_ok)\n            else $fatal(1,\"V128 padding cache differs from current complete header\");\n    end\n    // V128_PADDING_OWNER_END\n`endif\n",
+    "old_consumer": "                    logic padding_ok;\n                    padding_ok=1;\n                    for(integer k=116;k<128;k=k+1)if(header[k]!=0)padding_ok=0;\n",
+    "owner": "`ifndef SYNTHESIS\n    logic header_match_owner_valid;\n    logic [31:0] header_match_owner_epoch, header_match_owner_size;\n    logic [34:0] header_match_owner_total;\n    always_ff @(posedge clk)begin\n        if(reset||start||abort_packet)header_match_owner_valid<=0;\n        else if(state==HEADER_BYTE&&header_index==127)begin\n            header_match_owner_valid<=1;\n            header_match_owner_epoch<=receipt_epoch;\n            header_match_owner_size<=size_bytes;\n            header_match_owner_total<=header_packet_total;\n        end else if(state==HEADER_CHECK)header_match_owner_valid<=0;\n    end\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&state==HEADER_CHECK)begin\n        assert(header_match_owner_valid&&header_index==127&&\n            header_match_owner_epoch==receipt_epoch&&header_match_owner_size==size_bytes&&\n            header_match_owner_total==header_packet_total)\n            else $fatal(1,\"V120 header equality complete owner mismatch\");\n        assert(prepared_header_total_matches==(header_packet_total=={3'd0,size_bytes}))\n            else $fatal(1,\"V120 full35 header equality payload mismatch\");\n    end\n`endif\n",
+    "reject": "                    if(h32(0)!=32'h43533838||header[4]!=1||header[6]!=16||\n                       h16(28)!=32||h32(32)!=65536||\n                       (header[5]==1?header[7]!=0:header[7]!=3))reject(4);\n                    else if(header[5]>1||h16(24)!=720||h16(26)!=480||h16(30)!=0||!padding_ok||\n                        h32(36)>976||h32(40)<16||h32(40)>354||h32(44)<110||h32(44)>49152||\n                        !prepared_header_total_matches)reject(5);\n                    else if(h32(8)==32'hffffffff||{h32(16),h32(20)}==0||\n                        (snapshot_valid&&(h32(8)<=snapshot_fid||{h32(16),h32(20)}<=snapshot_generation)))reject(6);\n                    else if(header[5]==1?h32(12)!=32'hffffffff:(!snapshot_valid||h32(12)!=snapshot_fid))reject(7);\n                    else if(header[5]==1&&h32(36)!=0)reject(8);\n",
+    "total": "    logic prepared_header_total_matches;\n    always_ff @(posedge clk)if(state==HEADER_BYTE)\n        prepared_header_total_matches<=header_packet_total=={3'd0,size_bytes};\n",
+    "writer": "                    header[header_index[6:0]]<=byte_value;\n"
+  },
+  "status": "FIXTURE_PREPARED_NOT_RTL_EXECUTED",
+  "target": {
+    "path": "fpga/experiments/cu66-v128-padding/verification/padding_probe.sv",
+    "sha256": "6ec93b22d4ddd15c217464abb4dd96e4dca4b334db20cceb715dd4bfa488052f"
+  },
+  "verification_adaptations": [
+    "Move static local padding_ok declaration to kernel scope for observation; retain update/hold behavior.",
+    "Retain source HEADER_BYTE/header-write and HEADER_CHECK consumers with original reset/start/abort priority.",
+    "Copy original ordered error4..8 predicates exactly; replace reject task actions by corresponding error assignment and success by error0.",
+    "Parameterize source-state/header-index ports as prepared contexts; these are not natural fetch/read caller transactions."
+  ]
+}

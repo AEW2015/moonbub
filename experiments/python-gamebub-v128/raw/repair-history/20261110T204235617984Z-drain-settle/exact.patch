@@ -1,0 +1,11 @@
+--- fpga/experiments/cu66-v128-raw/verification/tb_raw.cpp.before
++++ fpga/experiments/cu66-v128-raw/verification/tb_raw.cpp.after
+@@ -70,7 +70,7 @@
+  void offer(const Tuple&t,bool select,bool other_bad=true){d.coef_select_raw=select;Tuple other=t;if(other_bad){other.epoch^=0x80000000U;other.block=65535;other.value=-2049;}tuple(d,select,t);tuple(d,!select,other);}
+  void send(const Tuple&t,bool select){wait_ingest();offer(t,select);d.coef_valid=1;tick();d.coef_valid=0;if(!d.error)wait_ingest();}
+  void end_band(unsigned band){wait_ingest();d.band_end_valid=1;d.band_end_band=band;d.band_end_epoch=epoch;tick();d.band_end_valid=0;if(!d.error&&band<3)wait_ingest();}
+- void drain(bool reset){d.coef_valid=d.band_end_valid=0;d.abort_epoch=d.owned_abort_epoch;d.abort_valid=!reset;d.reset=reset;tick();d.abort_valid=d.reset=0;hold=wrong=error_response=false;block_requests=false;for(unsigned i=0;pending||d.busy;++i){need(i<200,"physical debt drain watchdog");tick();}need(d.begin_ready&&!d.debug_outstanding,"cancel/retry not quiescent");}
++ void drain(bool reset){d.coef_valid=d.band_end_valid=0;d.abort_epoch=d.owned_abort_epoch;d.abort_valid=!reset;d.reset=reset;tick();d.abort_valid=d.reset=0;d.eval();check();hold=wrong=error_response=false;block_requests=false;for(unsigned i=0;pending||d.busy;++i){need(i<200,"physical debt drain watchdog");tick();}need(d.begin_ready&&!d.debug_outstanding,"cancel/retry not quiescent");}
+ };
+ static int clock_suite(unsigned seed){
+  uint64_t clocks=0,evals=0,requests=0,acks=0;unsigned cases=0,epoch_errors=0,format_errors=0,phase_mask=0,selector_mask=0,format_mask=0,pending_faults=0,wrong_ack=0,cancel_cases=0,unready=0,band_errors=0,accept_fault=0,retries=0;

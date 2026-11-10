@@ -1,0 +1,33 @@
+{
+  "actual_RTL_run": false,
+  "actual_backend": "Verilator 5.020",
+  "actual_warning_code": "BLKSEQ",
+  "actual_warning_count": 3,
+  "cause": "Moving the original local blocking padding temporary to module scope exposes a sequential blocking assignment to strict lint. Original and candidate kernels fail before elaborated simulation.",
+  "compile_log": {
+    "path": "experiments/python-gamebub-v128/padding/attempts/20261110T203914447394Z/compile.log",
+    "sha256": "06a083f70f016b2382d3ebd0ccccf506086d9e75190b2b25ffe7ac7cabe17a7d"
+  },
+  "failed_receipt": {
+    "path": "experiments/python-gamebub-v128/padding/attempts/20261110T203914447394Z/receipt.json",
+    "sha256": "cdbee9dd7171ef4291e6d4b69cc5d8cc4c155376d24a0c5be960838d6c229eaf"
+  },
+  "failure_class": "verification_adapter_strict_lint_before_RTL_execution",
+  "new_backend_proposed": false,
+  "primary_references": [
+    {
+      "url": "https://verilator.org/guide/latest/warnings.html#cmdoption-arg-BLKSEQ",
+      "version_scope": "Guide currently5.054; definition agrees withactual5.020 diagnostics; newer docs do not establisholddefaultflags."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/verilator/verilator/v5.020/src/V3Active.cpp",
+      "version_scope": "Exact5.020 release source, ActiveDlyVisitor::visit(AstAssign*) lines360-377 checkssequentialblocking andexemptsloopindices/temporaryvars."
+    }
+  ],
+  "production_RTL_change_proposed": false,
+  "proposed_verification_only_repair": "Evaluate source-extracted padding fold/cache expression in combinational temporary; update observed static padding view byNBA onlyonoriginal HEADER_CHECK noncancel edge; original orderedrejects readthecurrent evaluatedtemporary. Preserve allsourcecode/Cpporacles/flags and oldfailedsnapshot.",
+  "schema": "v128-padding-verification-warning-research-v1",
+  "status": "DIAGNOSED_NOT_REPAIRED_OR_RERUN",
+  "warning_suppression_proposed": false,
+  "workaround_verified": false
+}

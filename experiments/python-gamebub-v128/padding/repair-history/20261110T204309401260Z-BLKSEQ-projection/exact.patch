@@ -1,0 +1,171 @@
+--- before/scripts/cu66-v128/padding/prepare_verification.py
++++ after/scripts/cu66-v128/padding/prepare_verification.py
+@@ -55,23 +55,26 @@
+  for candidate in (False,True):
+   name='padding_candidate_kernel' if candidate else 'padding_original_kernel'
+   selected_ports=ports if candidate else ports.replace('    output logic [7:0] error,\n    output logic observed_cache,owner_complete\n','    output logic [7:0] error\n')
+-  pre='module '+name+'(\n'+selected_ports+');\n    localparam logic [7:0] HEADER_BYTE=4, HEADER_CHECK=5;\n    logic [7:0] header [0:127];\n    logic padding_ok;\n'
++  pre='module '+name+'(\n'+selected_ports+');\n    localparam logic [7:0] HEADER_BYTE=4, HEADER_CHECK=5;\n    logic [7:0] header [0:127];\n    logic evaluated_padding;\n'
+   if candidate:pre+=f['cache']+f['newowner']
+   pre+=f['total']+f['owner']+f['helpers']
+   consumer=f['new_consumer'] if candidate else f['old_consumer'];consumer=consumer.replace('                    logic padding_ok;\n','')
+-  reject=f['reject']
++  consumer=re.sub(r'\bpadding_ok\b','evaluated_padding',consumer)
++  reject=re.sub(r'\bpadding_ok\b','evaluated_padding',f['reject'])
+   for n in range(4,9):assert reject.count(f'reject({n});')==1;reject=reject.replace(f'reject({n});',f"error<=8'd{n};")
+-  body='''    always_ff @(posedge clk)begin
++  body='''    always_comb begin
++'''+consumer+'''    end
++    always_ff @(posedge clk)begin
+         if(reset||start||abort_packet)error<=0;
+         else begin
+             if(state==HEADER_BYTE)begin
+ '''+f['writer']+'''            end
+             if(state==HEADER_CHECK)begin
+-'''+consumer+reject+'''                    else error<=0;
++                    observed_padding<=evaluated_padding;
++'''+reject+'''                    else error<=0;
+             end
+         end
+     end
+-    assign observed_padding=padding_ok;
+ '''
+   if candidate:body+='    assign observed_cache=prepared_header_padding_ok;\n    assign owner_complete=padding_owner_valid && padding_owner_next==128;\n'
+   body+='endmodule\n';sources.append(pre+body)
+@@ -126,7 +129,7 @@
+  if bench.exists():
+   recipe={'schema':'v128-padding-source-extraction-v1','status':'FIXTURE_PREPARED_NOT_RTL_EXECUTED','preparer':pin(Path(__file__)),'original':pin(OLD),'candidate':pin(NEW),'target':pin(target),'kernel_modules':[pin(V/name) for name in files],'kernel_bundle_sha256':hashlib.sha256(''.join(files.values()).encode()).hexdigest(),'bench':pin(bench),'source_fragments':f,
+    'private_new_payload_or_owner_forces':0,'scoped_source_kernel':True,'full_admission_model':False,'actual_FSM_executed':False,
+-   'verification_adaptations':['Move static local padding_ok declaration to kernel scope for observation; retain update/hold behavior.','Retain source HEADER_BYTE/header-write and HEADER_CHECK consumers with original reset/start/abort priority.','Copy original ordered error4..8 predicates exactly; replace reject task actions by corresponding error assignment and success by error0.','Parameterize source-state/header-index ports as prepared contexts; these are not natural fetch/read caller transactions.'],
++   'verification_adaptations':['Evaluate the source local padding expression in combinational temporary evaluated_padding; NBA-capture its held observable value only on original noncancel HEADER_CHECK edge; unchanged reject predicates read current evaluated_padding.','Retain source HEADER_BYTE/header-write and HEADER_CHECK consumers with original reset/start/abort priority.','Copy original ordered error4..8 predicates exactly; replace reject task actions by corresponding error assignment and success by error0.','Parameterize source-state/header-index ports as prepared contexts; these are not natural fetch/read caller transactions.'],
+    'kernel_includes_current_byte_forwarding':True,'kernel_includes_original_and_new_owner_assertions':True,'seeds':[128701,128702],
+    'full_component_actual_admission_required_separately':True}
+   if a.write:(AREA/'verification-recipe.json').write_text(json.dumps(recipe,indent=2,sort_keys=True)+'\n')
+--- before/fpga/experiments/cu66-v128-padding/verification-recipe.json
++++ after/fpga/experiments/cu66-v128-padding/verification-recipe.json
+@@ -10,17 +10,17 @@
+   },
+   "full_admission_model": false,
+   "full_component_actual_admission_required_separately": true,
+-  "kernel_bundle_sha256": "ff756f01a40fac7f5fbe166a2af51e3b43e23c14a5ce31d237650cd20060c2b9",
++  "kernel_bundle_sha256": "4327c1cb6a1ba8b8633f653e76cca36f41c073be95982edf0dc60a8b0f746a62",
+   "kernel_includes_current_byte_forwarding": true,
+   "kernel_includes_original_and_new_owner_assertions": true,
+   "kernel_modules": [
+     {
+       "path": "fpga/experiments/cu66-v128-padding/verification/padding_original_kernel.sv",
+-      "sha256": "9ccca6d75739ba36604ca736cb2593b274184e844cf07e8f12ac89c181f606e0"
++      "sha256": "f6f56b62e245c8d7ea9e69d318485e8183f8579534dac4e3d8b04af30e536484"
+     },
+     {
+       "path": "fpga/experiments/cu66-v128-padding/verification/padding_candidate_kernel.sv",
+-      "sha256": "8ce5afdf679198b90c61ee228f58860a3a213fd17aa1aa0f7e0d48eb588b0dda"
++      "sha256": "a18bce91c048b7b2949ed9dbc3f02427841ef12c54b3b28fbe45a520fee37952"
+     },
+     {
+       "path": "fpga/experiments/cu66-v128-padding/verification/padding_probe.sv",
+@@ -33,7 +33,7 @@
+   },
+   "preparer": {
+     "path": "scripts/cu66-v128/padding/prepare_verification.py",
+-    "sha256": "a2b2242c72937faa31c1b89d009b7989e73b34e4868962febfe0609393c94954"
++    "sha256": "de2d3dd206034f212aab27f75ec78b2b1609fd47b22a5c67f3f36d37c90b9034"
+   },
+   "private_new_payload_or_owner_forces": 0,
+   "schema": "v128-padding-source-extraction-v1",
+@@ -59,7 +59,7 @@
+     "sha256": "6ec93b22d4ddd15c217464abb4dd96e4dca4b334db20cceb715dd4bfa488052f"
+   },
+   "verification_adaptations": [
+-    "Move static local padding_ok declaration to kernel scope for observation; retain update/hold behavior.",
++    "Evaluate the source local padding expression in combinational temporary evaluated_padding; NBA-capture its held observable value only on original noncancel HEADER_CHECK edge; unchanged reject predicates read current evaluated_padding.",
+     "Retain source HEADER_BYTE/header-write and HEADER_CHECK consumers with original reset/start/abort priority.",
+     "Copy original ordered error4..8 predicates exactly; replace reject task actions by corresponding error assignment and success by error0.",
+     "Parameterize source-state/header-index ports as prepared contexts; these are not natural fetch/read caller transactions."
+--- before/fpga/experiments/cu66-v128-padding/verification/padding_original_kernel.sv
++++ after/fpga/experiments/cu66-v128-padding/verification/padding_original_kernel.sv
+@@ -10,7 +10,7 @@
+ );
+     localparam logic [7:0] HEADER_BYTE=4, HEADER_CHECK=5;
+     logic [7:0] header [0:127];
+-    logic padding_ok;
++    logic evaluated_padding;
+     logic prepared_header_total_matches;
+     always_ff @(posedge clk)if(state==HEADER_BYTE)
+         prepared_header_total_matches<=header_packet_total=={3'd0,size_bytes};
+@@ -42,6 +42,10 @@
+     function automatic logic [15:0] h16(input integer n);
+         return {header[n],header[n+1]};
+     endfunction
++    always_comb begin
++                    evaluated_padding=1;
++                    for(integer k=116;k<128;k=k+1)if(header[k]!=0)evaluated_padding=0;
++    end
+     always_ff @(posedge clk)begin
+         if(reset||start||abort_packet)error<=0;
+         else begin
+@@ -49,12 +53,11 @@
+                     header[header_index[6:0]]<=byte_value;
+             end
+             if(state==HEADER_CHECK)begin
+-                    padding_ok=1;
+-                    for(integer k=116;k<128;k=k+1)if(header[k]!=0)padding_ok=0;
++                    observed_padding<=evaluated_padding;
+                     if(h32(0)!=32'h43533838||header[4]!=1||header[6]!=16||
+                        h16(28)!=32||h32(32)!=65536||
+                        (header[5]==1?header[7]!=0:header[7]!=3))error<=8'd4;
+-                    else if(header[5]>1||h16(24)!=720||h16(26)!=480||h16(30)!=0||!padding_ok||
++                    else if(header[5]>1||h16(24)!=720||h16(26)!=480||h16(30)!=0||!evaluated_padding||
+                         h32(36)>976||h32(40)<16||h32(40)>354||h32(44)<110||h32(44)>49152||
+                         !prepared_header_total_matches)error<=8'd5;
+                     else if(h32(8)==32'hffffffff||{h32(16),h32(20)}==0||
+@@ -65,6 +68,5 @@
+             end
+         end
+     end
+-    assign observed_padding=padding_ok;
+ endmodule
+ 
+--- before/fpga/experiments/cu66-v128-padding/verification/padding_candidate_kernel.sv
++++ after/fpga/experiments/cu66-v128-padding/verification/padding_candidate_kernel.sv
+@@ -11,7 +11,7 @@
+ );
+     localparam logic [7:0] HEADER_BYTE=4, HEADER_CHECK=5;
+     logic [7:0] header [0:127];
+-    logic padding_ok;
++    logic evaluated_padding;
+     // V128_PADDING_CACHE_BEGIN: one unreset Boolean payload, owned only
+     // after the current header's ordered116..127 byte-load edges. The final
+     // byte is forwarded here while header[127] still has its old NBA value.
+@@ -84,6 +84,9 @@
+     function automatic logic [15:0] h16(input integer n);
+         return {header[n],header[n+1]};
+     endfunction
++    always_comb begin
++                    evaluated_padding=prepared_header_padding_ok;
++    end
+     always_ff @(posedge clk)begin
+         if(reset||start||abort_packet)error<=0;
+         else begin
+@@ -91,11 +94,11 @@
+                     header[header_index[6:0]]<=byte_value;
+             end
+             if(state==HEADER_CHECK)begin
+-                    padding_ok=prepared_header_padding_ok;
++                    observed_padding<=evaluated_padding;
+                     if(h32(0)!=32'h43533838||header[4]!=1||header[6]!=16||
+                        h16(28)!=32||h32(32)!=65536||
+                        (header[5]==1?header[7]!=0:header[7]!=3))error<=8'd4;
+-                    else if(header[5]>1||h16(24)!=720||h16(26)!=480||h16(30)!=0||!padding_ok||
++                    else if(header[5]>1||h16(24)!=720||h16(26)!=480||h16(30)!=0||!evaluated_padding||
+                         h32(36)>976||h32(40)<16||h32(40)>354||h32(44)<110||h32(44)>49152||
+                         !prepared_header_total_matches)error<=8'd5;
+                     else if(h32(8)==32'hffffffff||{h32(16),h32(20)}==0||
+@@ -106,7 +109,6 @@
+             end
+         end
+     end
+-    assign observed_padding=padding_ok;
+     assign observed_cache=prepared_header_padding_ok;
+     assign owner_complete=padding_owner_valid && padding_owner_next==128;
+ endmodule

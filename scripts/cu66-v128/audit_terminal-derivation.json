@@ -1,0 +1,96 @@
+{
+  "candidate": {
+    "path": "scripts/cu66-v128/audit_terminal.py",
+    "sha256": "246dfb50cc107cc9c9657a5634a34e6ac639f5396bf1693cd550302378122360"
+  },
+  "edits": [
+    {
+      "new": "OUTPUT = ROOT/'experiments/python-gamebub-v128/audit/native-independent.json'",
+      "occurrences": 1,
+      "old": "OUTPUT = ROOT/'experiments/python-gamebub-v127/audit/native-independent.json'"
+    },
+    {
+      "new": "CURRENT_CANDIDATES={SCRATCH:'fpga/experiments/cu66-v128-raw/packed_scratch_v91g2.sv',CHILD:'fpga/experiments/cu66-v128-raw/br88_pipeline_v91h.sv','fpga/experiments/cu66-v91h/br88_packet_ingress_sync_v91h.sv':'fpga/experiments/cu66-v128-raw/br88_packet_ingress_sync_v91h.sv','fpga/experiments/cu66-v91h/br88_packet_ingress_v91h.sv':'fpga/experiments/cu66-v128-raw/br88_packet_ingress_v91h.sv',ADMISSION:'fpga/experiments/cu66-v128-padding/cs88_admission_v91i2a.sv'}",
+      "occurrences": 1,
+      "old": "CURRENT_CANDIDATES={SCRATCH:'fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv',CHILD:'fpga/experiments/cu66-v127-owner/br88_pipeline_v91h.sv',PRODUCER:CANDIDATE}"
+    },
+    {
+      "new": "V127_INDEX = ROOT/'experiments/python-gamebub-v127/integration/results.json'\nV127_NATIVE = ROOT/'experiments/python-gamebub-v127/native/20261110T190637913699Z/receipt.json'\nCHILD='fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv'",
+      "occurrences": 1,
+      "old": "CHILD='fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv'"
+    },
+    {
+      "new": "'v128-independent-terminal-native-audit-v1'",
+      "occurrences": 1,
+      "old": "'v127-independent-terminal-native-audit-v1'"
+    },
+    {
+      "new": "        v127_native=load(V127_NATIVE)\n        audit.check(sha(V127_NATIVE)=='47ca8bedc398933be0b70b79f94d1a93ecb9672e94c06139dbf0886d86d9557e','Frozen V127125 primary QoR receipt identity')\n        audit.hashes(v127_native['retained_artifact_sha256'],'Frozen V127125 artifact',V127_NATIVE.parent)\n        v127_timing=timing((V127_NATIVE.parent/'reports/route-timing-summary.rpt').read_text())\n        audit.check(v127_timing==v127_native['result']['timing'] and v127_timing['WNS_ns']==-1.193 and v127_timing['TNS_ns']==-1762.554 and v127_timing['setup_failing']==6980,'Independent primary V127125 QoR baseline')\n        result['baseline_V127125']=dict(receipt=pin(V127_NATIVE),actual_timing=v127_timing,role='Primary prior composition comparison; failed125MHz, not qualified hardware control')\n        origins = receipt['source_contract']['source_origins']\n",
+      "occurrences": 1,
+      "old": "        origins = receipt['source_contract']['source_origins']\n"
+    },
+    {
+      "new": "        v127=load(V127_INDEX)\n        audit.check(sha(V127_INDEX)=='d16589645d3824399a4df4559a84405051547a48e236dc0aa0e1841812f5ce39','Frozen V127 functional comparison identity')\n        changed=[alias for alias in origins if origins[alias]!=v127['source_origins'][alias]]",
+      "occurrences": 1,
+      "old": "        changed=[alias for alias in origins if origins[alias]!=v126['source_origins'][alias]]"
+    },
+    {
+      "new": "len(changed)==5,'Exactly declared RAW4 and padding1 origins change from V127'",
+      "occurrences": 1,
+      "old": "len(changed)==3,'Exactly declared scratch/child/producer origins change from V126'"
+    },
+    {
+      "new": "Selected frozen five-origin candidate: ",
+      "occurrences": 1,
+      "old": "Selected frozen three-origin candidate: "
+    },
+    {
+      "new": "synthesis_attribute_identity(ROOT/v127['source_origins'][alias]['path'])",
+      "occurrences": 1,
+      "old": "synthesis_attribute_identity(ROOT/v126['source_origins'][alias]['path'])"
+    },
+    {
+      "new": "audit.check(v127['source_origins'][ADMISSION]==v125['source_origins'][ADMISSION] and v127['source_origins'][ADMISSION]['sha256']=='2f65ff770775404071e383890c75549ccb08ec9998993c86f1662cfed65d71eb', 'Frozen V127 admission retains V125 three-predicate source')\n        audit.check(origins[PRODUCER]==v127['source_origins'][PRODUCER], 'V127 producer owner/successor source remains unchanged in V128')\n        selected=load(ROOT/'fpga/experiments/cu66-v128-raw/selected-composition.json')\n        audit.check(selected['complete_source_origins']==origins and selected['changed_aliases']==sorted(CURRENT_CANDIDATES), 'V128 aggregate raw/padding composition identity')\n        audit.check(selected['declared_public_cycle_delta']==0 and selected['source_payload_bits_added']==1 and selected['old_resets_removed']==0 and selected['new_synthesis_attributes']==0, 'V128 declared source/cycle scope')\n        for role,meta in selected['component_recipes'].items():\n            audit.check(sha(ROOT/meta['path'])==meta['sha256'], 'V128 component edit recipe pin: '+role)\n        result['V128_source_scope']=dict(raw_tuple_bits=72,raw_validation_lanes=2,phase_encodings=8,new_padding_payload_bits=1,old_payload_resets_removed=0,new_synthesis_attributes=0,public_cycle_delta=0)",
+      "occurrences": 1,
+      "old": "audit.check(origins[ADMISSION]==v125['source_origins'][ADMISSION] and origins[ADMISSION]['sha256']=='2f65ff770775404071e383890c75549ccb08ec9998993c86f1662cfed65d71eb', 'Frozen V125 three-predicate admission source remains unchanged')"
+    },
+    {
+      "new": "receipt['tooling_sha256']['scripts/cu66-v128/native.py']",
+      "occurrences": 1,
+      "old": "receipt['tooling_sha256']['scripts/cu66-v127/native.py']"
+    },
+    {
+      "new": "PASS_V128_NATIVE_PREFLIGHT_AUDIT",
+      "occurrences": 1,
+      "old": "PASS_V127_NATIVE_PREFLIGHT_AUDIT"
+    },
+    {
+      "new": "timing_delta_from_V126125={key:actual_timing[key]-v126_timing[key]for key in actual_timing},\n                          timing_delta_from_V127125={key:actual_timing[key]-v127_timing[key]for key in actual_timing})",
+      "occurrences": 1,
+      "old": "timing_delta_from_V126125={key:actual_timing[key]-v126_timing[key]for key in actual_timing})"
+    },
+    {
+      "new": "            result['mapped_inventory']=dict(candidate=mapped,baseline_B125=old_mapping)\n            primary_resources={stage:resource_utilization((V127_NATIVE.parent/'reports'/(stage+'-utilization.rpt')).read_text()) for stage in ('synth','route')}\n            primary_controls={stage:control_sets((V127_NATIVE.parent/'reports'/(stage+'-control-sets.rpt')).read_text()) for stage in ('synth','route')}\n            result['baseline_V127125_resource_utilization']=primary_resources\n            result['baseline_V127125_control_sets']=primary_controls\n            result['resource_delta_from_V127125']={stage:{name:value-primary_resources[stage][name] for name,value in resource_rows[stage].items()} for stage in ('synth','route')}\n            result['control_set_delta_from_V127125']={stage:control_rows[stage]-primary_controls[stage] for stage in ('synth','route')}\n            result['methodology']['baseline_V127125']=methodology(V127_NATIVE.parent/'reports')\n            result['padding_mapped_observations']={}\n            for stage in ('synth','route'):\n                if mapped[stage]['available']:\n                    names=mapped[stage]['admission_FF_register_counts']\n                    owners={name:count for name,count in names.items() if name.startswith('padding_owner')}\n                    audit.check(not owners, 'V128 padding verification owners absent from actual EDIF: '+stage)\n                    count=names.get('prepared_header_padding_ok',0)\n                    result['padding_mapped_observations'][stage]=dict(named_cache_FFs=count,declared_payload_bits=1,verification_owner_FDs=owners,absence_or_replication_is_naming_gap=count!=1)\n",
+      "occurrences": 1,
+      "old": "            result['mapped_inventory']=dict(candidate=mapped,baseline_B125=old_mapping)"
+    },
+    {
+      "new": "PASS_V128_INDEPENDENT_TERMINAL_EVIDENCE",
+      "occurrences": 1,
+      "old": "PASS_V127_INDEPENDENT_TERMINAL_EVIDENCE"
+    },
+    {
+      "new": "FAIL_V128_INDEPENDENT_TERMINAL_EVIDENCE",
+      "occurrences": 1,
+      "old": "FAIL_V127_INDEPENDENT_TERMINAL_EVIDENCE"
+    }
+  ],
+  "old_core_recipe_not_modified": true,
+  "qualification_not_run": true,
+  "reverse_reconstruction_exact": true,
+  "schema": "v128-native-tool-explicit-derivation-v1",
+  "source": {
+    "path": "scripts/cu66-v127/audit_terminal.py",
+    "sha256": "adc328d52b8e550c877efadd92e88011761b9b4aae05d421a1e355d3c6352487"
+  }
+}

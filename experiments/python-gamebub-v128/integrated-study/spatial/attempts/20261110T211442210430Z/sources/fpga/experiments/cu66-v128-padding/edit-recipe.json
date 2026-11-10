@@ -1,0 +1,61 @@
+{
+  "added_public_cycles": 0,
+  "added_synthesis_attributes": 0,
+  "additive_assertion_fragment": "`ifndef SYNTHESIS\n    // V128_PADDING_OWNER_BEGIN: verification-only freshness, not payload reset.\n    logic padding_owner_valid=0;\n    logic [31:0] padding_owner_epoch,padding_owner_size,padding_owner_next;\n    logic padding_reference_ok;\n    always_comb begin\n        padding_reference_ok=1;\n        for(integer padding_index=116;padding_index<128;padding_index=padding_index+1)\n            if(header[padding_index]!=0)padding_reference_ok=0;\n    end\n    always_ff @(posedge clk)begin\n        if(reset||start||abort_packet)padding_owner_valid<=0;\n        else if(state==HEADER_BYTE && header_index>=116 && header_index<=127)begin\n            if(header_index==116)begin\n                padding_owner_valid<=1;\n                padding_owner_epoch<=receipt_epoch;padding_owner_size<=size_bytes;\n            end else begin\n                assert(padding_owner_valid && padding_owner_epoch==receipt_epoch &&\n                    padding_owner_size==size_bytes && padding_owner_next==header_index)\n                    else $fatal(1,\"V128 padding byte sequence lost its complete owner\");\n            end\n            padding_owner_next<=header_index+32'd1;\n        end else if(state==HEADER_CHECK)padding_owner_valid<=0;\n    end\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&state==HEADER_CHECK)begin\n        assert(padding_owner_valid && padding_owner_epoch==receipt_epoch &&\n            padding_owner_size==size_bytes && padding_owner_next==128 && header_index==127)\n            else $fatal(1,\"V128 padding consume without full owned116..127 writer sequence\");\n        assert(prepared_header_padding_ok==padding_reference_ok)\n            else $fatal(1,\"V128 padding cache differs from current complete header\");\n    end\n    // V128_PADDING_OWNER_END\n`endif\n",
+  "alias": "fpga/experiments/cu66-v91i2/cs88_admission_v91i2a.sv",
+  "cache_writer_indices": [
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127
+  ],
+  "candidate": {
+    "path": "fpga/experiments/cu66-v128-padding/cs88_admission_v91i2a.sv",
+    "sha256": "75305fd64f8b1b0e092f82fed74fbc9ea8b7a2a1e538cabdf57375fee77b0c3f"
+  },
+  "edits": [
+    {
+      "new": "    // V128_PADDING_CACHE_BEGIN: one unreset Boolean payload, owned only\n    // after the current header's ordered116..127 byte-load edges. The final\n    // byte is forwarded here while header[127] still has its old NBA value.\n    logic prepared_header_padding_ok;\n    always_ff @(posedge clk)if(state==HEADER_BYTE && header_index>=116 && header_index<=127)\n        prepared_header_padding_ok<=header_index==116 ? byte_value==0 :\n            prepared_header_padding_ok && byte_value==0;\n    // V128_PADDING_CACHE_END\n`ifndef SYNTHESIS\n    // V128_PADDING_OWNER_BEGIN: verification-only freshness, not payload reset.\n    logic padding_owner_valid=0;\n    logic [31:0] padding_owner_epoch,padding_owner_size,padding_owner_next;\n    logic padding_reference_ok;\n    always_comb begin\n        padding_reference_ok=1;\n        for(integer padding_index=116;padding_index<128;padding_index=padding_index+1)\n            if(header[padding_index]!=0)padding_reference_ok=0;\n    end\n    always_ff @(posedge clk)begin\n        if(reset||start||abort_packet)padding_owner_valid<=0;\n        else if(state==HEADER_BYTE && header_index>=116 && header_index<=127)begin\n            if(header_index==116)begin\n                padding_owner_valid<=1;\n                padding_owner_epoch<=receipt_epoch;padding_owner_size<=size_bytes;\n            end else begin\n                assert(padding_owner_valid && padding_owner_epoch==receipt_epoch &&\n                    padding_owner_size==size_bytes && padding_owner_next==header_index)\n                    else $fatal(1,\"V128 padding byte sequence lost its complete owner\");\n            end\n            padding_owner_next<=header_index+32'd1;\n        end else if(state==HEADER_CHECK)padding_owner_valid<=0;\n    end\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&state==HEADER_CHECK)begin\n        assert(padding_owner_valid && padding_owner_epoch==receipt_epoch &&\n            padding_owner_size==size_bytes && padding_owner_next==128 && header_index==127)\n            else $fatal(1,\"V128 padding consume without full owned116..127 writer sequence\");\n        assert(prepared_header_padding_ok==padding_reference_ok)\n            else $fatal(1,\"V128 padding cache differs from current complete header\");\n    end\n    // V128_PADDING_OWNER_END\n`endif\n    logic prepared_header_total_matches;\n",
+      "occurrences": 1,
+      "old": "    logic prepared_header_total_matches;\n",
+      "tag": "unreset-owned-incremental-padding-payload"
+    },
+    {
+      "new": "                    logic padding_ok;\n                    padding_ok=prepared_header_padding_ok;\n",
+      "occurrences": 1,
+      "old": "                    logic padding_ok;\n                    padding_ok=1;\n                    for(integer k=116;k<128;k=k+1)if(header[k]!=0)padding_ok=0;\n",
+      "tag": "consume-owned-current-header-padding"
+    }
+  ],
+  "existing_error_priority_unchanged": true,
+  "final_byte_forwarding": true,
+  "initialize_writer_index": 116,
+  "old_guarded_blocks_byte_exact": true,
+  "old_guarded_blocks_retained": 16,
+  "old_padding_view_hold_outside_HEADER_CHECK": true,
+  "original": {
+    "path": "fpga/experiments/cu66-v125-tile/cs88_admission_v91i2a.sv",
+    "sha256": "2f65ff770775404071e383890c75549ccb08ec9998993c86f1662cfed65d71eb"
+  },
+  "original_RAM_module_tail_byte_exact": true,
+  "preparer": {
+    "path": "scripts/cu66-v128/padding/prepare.py",
+    "sha256": "ee61be657dc40ff9ebcaa1b1e72cd52d135e587f0f89cdeea26df5fbffb6b9cd"
+  },
+  "production_cache_fragment": "    // V128_PADDING_CACHE_BEGIN: one unreset Boolean payload, owned only\n    // after the current header's ordered116..127 byte-load edges. The final\n    // byte is forwarded here while header[127] still has its old NBA value.\n    logic prepared_header_padding_ok;\n    always_ff @(posedge clk)if(state==HEADER_BYTE && header_index>=116 && header_index<=127)\n        prepared_header_padding_ok<=header_index==116 ? byte_value==0 :\n            prepared_header_padding_ok && byte_value==0;\n    // V128_PADDING_CACHE_END\n",
+  "qualification_scope": "Cache correctness requires actual complete owned116..127 writer sequence; no arbitrary missing-writer consume claim.",
+  "reverse_reconstruction_exact": true,
+  "schema": "v128-owned-header-padding-edit-recipe-v1",
+  "source_payload_bits_added": 1,
+  "source_payload_reset_added": false,
+  "source_production_sequential_block_delta": 1,
+  "status": "SOURCE_PREPARED_NOT_RTL_QUALIFIED"
+}

@@ -1,5 +1,9 @@
 # Game Bub application-specific codec: selected direction and gates
 
+**V128 measured continuation, 2026-11-10:** [parallel full-tuple validation and incremental header padding](cu66-v128/README.md) pass focused RTL and all four decoder/transport, two peer and four byte/row parent comparisons with zero public-cycle change. The targeted RAW-mode-to-scratch-state family improved **−1.193 → +1.118 ns**, but global 125 MHz timing regressed to **−1.320 ns WNS / −3,146.811 ns TNS / 10,006 failing setup endpoints**. The new worst path is in the Rice parser; a dense-owner return and scratch write-control paths also fail. V128 is not a timing-closed promotion. The [next timing proposal](cu66-v128/next-timing.md) follows the actual routed paths and retains explicit ownership, cancellation and memory-debt verification for any latency-changing pipeline.
+
+The row profiles still require **1,145,104 / 1,553,197 cycles** from the final accepted outer input to validated commit: at an assumed complete-parent 125 MHz, **9.160832 / 12.425576 ms**. At least **303,198 stalled-profile cycles** must be removed for strictly under 10 ms. The original V128 cycle-reduction exit, complete-parent clock qualification, calibrated ESP32 Wi-Fi/QSPI and physical memory service, and hardware 30 fps / sub-10-ms milestones remain open. [Detailed routed results](cu66-v128/timing-results.md) retain query gaps and methodology limitations.
+
 **V127 measured continuation, 2026-11-10:** [full-owner comparison before mode selection](cu66-v127/README.md)
 passes six focused seeds and all ten full raw stream sets with zero public-cycle
 change. The old tile-mode all-endpoint path improves **−1.867 → +0.451 ns**;

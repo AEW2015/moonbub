@@ -1,0 +1,114 @@
+{
+  "baseline": {
+    "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+    "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+  },
+  "baseline_module_rename_only": true,
+  "candidate": {
+    "path": "fpga/experiments/cu66-v128-raw/packed_scratch_v91g2.sv",
+    "sha256": "4254026004142414376d9b848f7b50f05d8a484b7f932b5c91d0a5a7efde92c4"
+  },
+  "files": {
+    "fpga/experiments/cu66-v128-raw/verification/raw_probe.sv": "4f3d188fdebcb6a33f19b713e0d2d038477cf87590d22c1939f9b8c4627f2777",
+    "fpga/experiments/cu66-v128-raw/verification/tb_raw.cpp": "a6003eb3ab53958f9c4882516425adda5333d19de4b08db5200a67136447424f",
+    "fpga/experiments/cu66-v128-raw/verification/v128_raw_scalar_probe.sv": "6289232c28fd324a87bdfbff6f07a9f3f0fdca50169db3fba704baa4676e6e95",
+    "fpga/experiments/cu66-v128-raw/verification/v128_scratch_baseline.sv": "699dee3e6100aa335b10997d62985ea092036dfb2ffda8fe82b0cf4a915c47e9"
+  },
+  "fragments": [
+    {
+      "fragment": "    function automatic logic [5:0] zigzag(input logic [5:0] raster);\n        integer rank;\n        integer sum;\n        integer row;\n        begin\n            rank=0; zigzag=0;\n            for(integer diagonal=0;diagonal<15;diagonal=diagonal+1)\n                for(integer step=0;step<8;step=step+1) begin\n                    row=(diagonal%2==1) ? step : 7-step;\n                    sum=diagonal-row;\n                    if(sum>=0 && sum<8) begin\n                        if(row*8+sum==integer'(raster)) zigzag=6'(rank);\n                        rank=rank+1;\n                    end\n                end\n        end\n    endfunction",
+      "role": "zigzag",
+      "source": {
+        "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+        "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+      }
+    },
+    {
+      "fragment": "    function automatic logic band_matches(input logic [1:0] band, input logic [5:0] index);\n        logic [5:0] z;\n        begin\n            z=zigzag(index);\n            case(band)\n                1: band_matches=z>=1 && z<6;\n                2: band_matches=z>=6 && z<21;\n                3: band_matches=z>=21;\n                default: band_matches=index==0;\n            endcase\n        end\n    endfunction",
+      "role": "band_matches",
+      "source": {
+        "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+        "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+      }
+    },
+    {
+      "fragment": "    assign input_sparse_order_bad=(previous_position[31:22]!=0) ||\n        (coef_block<previous_position[21:6]) ||\n        ((coef_block==previous_position[21:6]) && rank_threshold_mask[coef_index]);",
+      "role": "input_sparse_order_bad",
+      "source": {
+        "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+        "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+      }
+    },
+    {
+      "fragment": "    assign input_raster_position={10'd0,coef_block,coef_index};",
+      "role": "input_raster_position",
+      "source": {
+        "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+        "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+      }
+    },
+    {
+      "fragment": "    assign input_raster_bad=input_raster_position!=written;",
+      "role": "input_raster_bad",
+      "source": {
+        "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+        "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+      }
+    },
+    {
+      "fragment": "    assign input_dc_bad=coef_index!=0 || 32'(coef_block)!=written;",
+      "role": "input_dc_bad",
+      "source": {
+        "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+        "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+      }
+    },
+    {
+      "fragment": "    assign input_ac_bad=!band_matches(coef_band,coef_index) || coef_value==0 ||\n        (previous_valid && input_sparse_order_bad);",
+      "role": "input_ac_bad",
+      "source": {
+        "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+        "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+      }
+    },
+    {
+      "fragment": "    for(genvar checking_phase=0;checking_phase<8;checking_phase=checking_phase+1)begin: phase_validation\n        wire [31:0] phase_position=raw_mode ? (32'(coef_block)*64+32'(coef_index)) :\n            (checking_phase==0 ? 32'(coef_block) : (32'(coef_block)*64+32'(input_zigzag)));\n        assign phase_input_bad[checking_phase]=coef_epoch!=active_epoch || coef_band!=2'(checking_phase) ||\n            coef_block>=16'(blocks) || coef_value < -2048 || coef_value > 2048 ||\n            written>=counts[checking_phase & 3] ||\n            (raw_mode ? input_raster_bad : checking_phase==0 ? input_dc_bad : input_ac_bad);\n",
+      "role": "old-eight-phase-implementation",
+      "source": {
+        "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+        "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+      }
+    },
+    {
+      "fragment": "assert(phase_input_bad[checking_phase]==(coef_epoch!=active_epoch || coef_band!=2'(checking_phase) ||\n                coef_block>=16'(blocks) || coef_value < -2048 || coef_value > 2048 ||\n                written>=counts[checking_phase & 3] ||\n                (raw_mode ? phase_position!=written : checking_phase==0 ?\n                 (coef_index!=0 || 32'(coef_block)!=written) :\n                 (!band_matches(coef_band,coef_index) || coef_value==0 ||\n                  (previous_valid && phase_position<=previous_position)))))\n                else $fatal(1,\"V119 full phase format decision mismatch\")",
+      "role": "old-literal-guarded-oracle",
+      "source": {
+        "path": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+        "sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc"
+      }
+    },
+    {
+      "fragment": "    // V128_RAW_VALIDATION_BEGIN: compare full direct tuples before ingress\n    // mode selects Boolean decisions. Stored scratch raw_mode remains a\n    // separate format selector, including invalid/unready/transitional views.\n    logic [1:0] ingress_epoch_bad;\n    logic [7:0] ingress_phase_bad [0:1];\n    logic input_epoch_bad;\n    for(genvar validation_lane=0;validation_lane<2;validation_lane=validation_lane+1)begin: ingress_validation\n        wire [31:0] lane_epoch=validation_lane==0 ? coef_raw_epoch : coef_context_epoch;\n        wire [15:0] lane_block=validation_lane==0 ? coef_raw_block : coef_context_block;\n        wire [5:0] lane_index=validation_lane==0 ? coef_raw_index : coef_context_index;\n        wire signed [15:0] lane_value=validation_lane==0 ? coef_raw_value : coef_context_value;\n        wire [1:0] lane_band=validation_lane==0 ? coef_raw_band : coef_context_band;\n        wire [31:0] lane_raster_position={10'd0,lane_block,lane_index};\n        wire lane_raster_bad=lane_raster_position!=written;\n        wire lane_dc_bad=lane_index!=0 || 32'(lane_block)!=written;\n        // Preserve the implemented full32 high/block + arbitrary64 rank-mask\n        // contract. Literal-position equivalence needs its original owner.\n        wire lane_sparse_order_bad=(previous_position[31:22]!=0) ||\n            (lane_block<previous_position[21:6]) ||\n            ((lane_block==previous_position[21:6]) && rank_threshold_mask[lane_index]);\n        wire lane_ac_bad=!band_matches(lane_band,lane_index) || lane_value==0 ||\n            (previous_valid && lane_sparse_order_bad);\n        assign ingress_epoch_bad[validation_lane]=lane_epoch!=active_epoch;\n        for(genvar lane_phase=0;lane_phase<8;lane_phase=lane_phase+1)begin: phase_lane\n            assign ingress_phase_bad[validation_lane][lane_phase]=\n                ingress_epoch_bad[validation_lane] || lane_band!=2'(lane_phase) ||\n                lane_block>=16'(blocks) || lane_value < -2048 || lane_value > 2048 ||\n                written>=counts[lane_phase & 3] ||\n                (raw_mode ? lane_raster_bad : lane_phase==0 ? lane_dc_bad : lane_ac_bad);\n        end\n    end\n    assign input_epoch_bad=coef_select_raw ? ingress_epoch_bad[0] : ingress_epoch_bad[1];\n    // V128_RAW_VALIDATION_END\n",
+      "role": "new-two-full-tuple-lanes",
+      "source": {
+        "path": "fpga/experiments/cu66-v128-raw/packed_scratch_v91g2.sv",
+        "sha256": "4254026004142414376d9b848f7b50f05d8a484b7f932b5c91d0a5a7efde92c4"
+      }
+    },
+    {
+      "fragment": "        assign phase_input_bad[checking_phase]=coef_select_raw ?\n            ingress_phase_bad[0][checking_phase] : ingress_phase_bad[1][checking_phase];",
+      "role": "new-Boolean-selection",
+      "source": {
+        "path": "fpga/experiments/cu66-v128-raw/packed_scratch_v91g2.sv",
+        "sha256": "4254026004142414376d9b848f7b50f05d8a484b7f932b5c91d0a5a7efde92c4"
+      }
+    }
+  ],
+  "original_assertions_retained": true,
+  "preparer": {
+    "path": "scripts/cu66-v128/raw/prepare_verification.py",
+    "sha256": "d0e59fa42514c599d4d43d434322b62e768d67718840e8547624ffcb6f61920f"
+  },
+  "schema": "v128-raw-verification-source-binding-v1",
+  "source_payload_or_owner_forces": 0
+}

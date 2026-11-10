@@ -1,0 +1,40 @@
+--- spatial.py.before
++++ spatial.py.after
+@@ -95,8 +95,9 @@
+    for n,h in inner['source_sha256'].items():assert sha(ROOT/n)==h,n
+    artifacts=inner.get('artifact_sha256',inner.get('artifacts_sha256',{}));assert artifacts
+    for n,h in artifacts.items():assert sha(selected.parent/n)==h,n
+- packaging=ROOT/'fpga/experiments/cu66-v128-padding/packaging.json'
+- files=set(contract['files']()+sources+[BENCH,FULL_BENCH,API_DERIVATION,FORWARD,HARNESS/'transport.cpp',HARNESS/'admission_monitor.hpp',HARNESS/'bench_transport_base.hpp',HARNESS/'derivation.json',packaging,Path(__file__).resolve(),PRIMARY_RUNNER,NATIVE,BASELINE,baseline_receipt])
++ packaging_tool=ROOT/'scripts/cu66-v128/padding/prepare_compile_packaging.py'
++ packaging=runpy.run_path(str(packaging_tool))['verify']()
++ files=set(contract['files']()+sources+[BENCH,FULL_BENCH,API_DERIVATION,FORWARD,HARNESS/'transport.cpp',HARNESS/'admission_monitor.hpp',HARNESS/'bench_transport_base.hpp',HARNESS/'derivation.json',packaging,packaging_tool,Path(__file__).resolve(),PRIMARY_RUNNER,NATIVE,BASELINE,baseline_receipt])
+  b=load(B_CANONICAL);assert b['status']=='PASS_V127_FINAL_SPATIAL_CANONICAL'and b['actual_RTL_run'] is True
+  bp=ROOT/b['selected_receipt'];assert load(bp)=={k:v for k,v in b.items()if k!='selected_receipt'}
+  for n,h in b['source_sha256'].items():assert sha(ROOT/n)==h,n
+--- derivation.json.before
++++ derivation.json.after
+@@ -5,7 +5,7 @@
+   "sources": [
+     {
+       "candidate": "scripts/cu66-v128/integration/spatial.py",
+-      "candidate_sha256": "c84b62293589cafec6d419a80237af9cebe155ca234e8f23287b9e7530cd0131",
++      "candidate_sha256": "fcaa593491fd9d0a0aba7be1476595c2cf4516c1ed1deb434955c5a60270532f",
+       "edits": [
+         {
+           "after": "scripts/cu66-v128/integration/contract.py",
+@@ -108,8 +108,13 @@
+           "count": 1
+         },
+         {
+-          "after": "packaging=ROOT/'fpga/experiments/cu66-v128-padding/packaging.json'",
++          "after": "packaging_tool=ROOT/'scripts/cu66-v128/padding/prepare_compile_packaging.py'\n packaging=runpy.run_path(str(packaging_tool))['verify']()",
+           "before": "packaging=ROOT/'fpga/experiments/cu66-v125-tile/packaging.json'",
++          "count": 1
++        },
++        {
++          "after": "HARNESS/'derivation.json',packaging,packaging_tool,Path(__file__).resolve()",
++          "before": "HARNESS/'derivation.json',packaging,Path(__file__).resolve()",
+           "count": 1
+         }
+       ],

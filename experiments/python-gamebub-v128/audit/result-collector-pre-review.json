@@ -1,0 +1,197 @@
+{
+  "V127_evidence_pins": {
+    "functional_index_sha256": "d16589645d3824399a4df4559a84405051547a48e236dc0aa0e1841812f5ce39",
+    "live_parent_receipt_sha256": "51961f0c0f16f78f74fb57b1660bc0cfcc07c537fcc4d4e2354eac5390a643ea",
+    "native_receipt_sha256": "47ca8bedc398933be0b70b79f94d1a93ecb9672e94c06139dbf0886d86d9557e",
+    "root_results_sha256": "5e872674c6243a3faf4aafab1a3df5cca842e23b8427ce91403130a30c6d40b9"
+  },
+  "V128_functional_and_native_results_present": false,
+  "baseline_review_schema_evidence": {
+    "fields": [
+      "base_commit",
+      "current_V127_selected_source_audit",
+      "hardware_goals",
+      "machine_snapshot",
+      "protected_markers",
+      "qualified_B100_physical_source_audit",
+      "review_scope",
+      "row_parent",
+      "schema",
+      "timing_baseline",
+      "v127_pins",
+      "write_scope"
+    ],
+    "path": "experiments/python-gamebub-v128/audit/baseline-review.json",
+    "schema": "v128-baseline-review-v1",
+    "status_absent": true
+  },
+  "check_count": 8,
+  "checks": [
+    {
+      "detail": {
+        "ast": "valid",
+        "sha256": "bc7cba39b7bdd79b637f036a5441c25b399ec217a5bf60c40b2b3415311fa39f"
+      },
+      "name": "collector_syntax_and_hash",
+      "pass": true
+    },
+    {
+      "detail": {
+        "cycle_delta": 0,
+        "oracles_retained": true,
+        "sha256": "7d8356692caee95d5b6c7e7037a94732983b5d2f7dc2f92ea671a3b4366f1e61",
+        "source_count": 83,
+        "status": "FROZEN_AFTER_VERIFICATION_ONLY_REPAIRS"
+      },
+      "name": "revision2_freeze_identity",
+      "pass": true
+    },
+    {
+      "detail": {
+        "functional_index_sha256": "d16589645d3824399a4df4559a84405051547a48e236dc0aa0e1841812f5ce39",
+        "functional_status": "PASS_V127_OWNER_FULL_FUNCTIONAL",
+        "root_sha256": "5e872674c6243a3faf4aafab1a3df5cca842e23b8427ce91403130a30c6d40b9"
+      },
+      "name": "V127_result_and_functional_parent_pins",
+      "pass": true
+    },
+    {
+      "detail": {
+        "cycles_path": "runs[*].live_case",
+        "run_count": 4,
+        "sha256": "51961f0c0f16f78f74fb57b1660bc0cfcc07c537fcc4d4e2354eac5390a643ea"
+      },
+      "name": "V127_parent_runner_receipt_schema_and_profile_fields",
+      "pass": true
+    },
+    {
+      "detail": {
+        "sha256": "47ca8bedc398933be0b70b79f94d1a93ecb9672e94c06139dbf0886d86d9557e",
+        "status": "COMPONENT_ROUTE_FINISHED_SIGNOFF_OPEN",
+        "timing_fields": [
+          "THS_ns",
+          "TNS_ns",
+          "TPWS_ns",
+          "WHS_ns",
+          "WNS_ns",
+          "WPWS_ns",
+          "hold_failing",
+          "hold_total",
+          "pulse_failing",
+          "pulse_total",
+          "setup_failing",
+          "setup_total"
+        ]
+      },
+      "name": "V127_125MHz_native_comparator_schema",
+      "pass": true
+    },
+    {
+      "detail": {
+        "fields": [
+          "base_commit",
+          "current_V127_selected_source_audit",
+          "hardware_goals",
+          "machine_snapshot",
+          "protected_markers",
+          "qualified_B100_physical_source_audit",
+          "review_scope",
+          "row_parent",
+          "schema",
+          "timing_baseline",
+          "v127_pins",
+          "write_scope"
+        ],
+        "has_status": false,
+        "path": "experiments/python-gamebub-v128/audit/baseline-review.json",
+        "schema": "v128-baseline-review-v1"
+      },
+      "name": "baseline_review_schema_compatible_with_collector_gate",
+      "pass": false
+    },
+    {
+      "detail": "Script checks generic FROZEN prefix + schema + source list, but contains no expected SHA for the revision2 freeze.",
+      "name": "collector_pins_exact_revision2_freeze_digest",
+      "pass": false
+    },
+    {
+      "detail": "Conditional only checks passed_checks/check_count; local review schemas include passed_count/check_count and check_counts dictionaries.",
+      "name": "review_counts_support_all_referenced_review_schemas",
+      "pass": false
+    }
+  ],
+  "collector": {
+    "ast_valid": true,
+    "path": "scripts/cu66-v128/collect_results.py",
+    "sha256": "bc7cba39b7bdd79b637f036a5441c25b399ec217a5bf60c40b2b3415311fa39f"
+  },
+  "failed_count": 3,
+  "findings": [
+    {
+      "evidence": {
+        "baseline_review_has_status": false,
+        "baseline_review_schema": "v128-baseline-review-v1",
+        "baseline_review_sha256": "28fe2073abc5a8456b58197e0e1b7591dca950d9155998b394a9a71f3e0eebe1",
+        "collector": "scripts/cu66-v128/collect_results.py"
+      },
+      "finding": "The references loop unconditionally evaluates review['status']. baseline-review.json has no top-level status field, so collection stops with KeyError at baseline_review before writing results.json.",
+      "id": "COLLECTOR-001",
+      "recommended_correction": "Add a schema-specific baseline review validation (its audit fields and counts) instead of requiring a status key.",
+      "severity": "BLOCKER"
+    },
+    {
+      "evidence": {
+        "collector_has_freeze_digest_literal": false,
+        "expected_revision2_sha256": "7d8356692caee95d5b6c7e7037a94732983b5d2f7dc2f92ea671a3b4366f1e61",
+        "freeze_status": "FROZEN_AFTER_VERIFICATION_ONLY_REPAIRS"
+      },
+      "finding": "The collector accepts any freeze JSON with the expected schema, a status beginning FROZEN, the selected-composition pin, and a self-consistent source_sha256 map. It does not require the frozen revision2 digest or verify revision2 contract fields such as inherited baseline checks, repair review pin, no-RLT-run, and expected source count/oracle assertions. A rewritten or downgraded freeze could pass its current gate.",
+      "id": "COLLECTOR-002",
+      "recommended_correction": "Pin the frozen revision2 digest and check its frozen contract fields before collecting.",
+      "severity": "HIGH"
+    },
+    {
+      "evidence": {
+        "baseline_query_review_fields": [
+          "check_counts",
+          "checks",
+          "failure",
+          "fresh_retry",
+          "limitations",
+          "prior_path_minima_comparison",
+          "schema",
+          "scope",
+          "source_script_hashes",
+          "status"
+        ],
+        "focused_repair_review_fields": [
+          "REV2_freeze_review_only",
+          "actual_RTL_run_for_repairs",
+          "check_count",
+          "checks",
+          "failed_count",
+          "frozen_functional_tooling_sha256",
+          "functional_qualification",
+          "native_timing_qualification",
+          "padding_repair_manifest",
+          "passed_count",
+          "raw_repair_manifest",
+          "schema",
+          "scope",
+          "selected_composition_sha256",
+          "status"
+        ]
+      },
+      "finding": "Review validation only compares passed_checks with check_count when those exact keys exist. Current focused-repair and prelaunch reviews use passed_count/check_count, and query review uses check_counts; the collector checks only their PASS-prefixed status, so it can accept a contradictory count record.",
+      "id": "COLLECTOR-003",
+      "recommended_correction": "Validate each review schema\u2019s count representation and require passed equals total with zero failures.",
+      "severity": "MEDIUM"
+    }
+  ],
+  "no_collector_execution": true,
+  "no_source_edits": true,
+  "passed_count": 5,
+  "schema": "v128-result-collector-static-prereview-v1",
+  "scope": "Read-only static review of the unexecuted result collector against the current revision2 freeze, baseline audit schemas, and immutable V127 root/integration/native/parent receipt schemas. No collector execution or heavy job.",
+  "status": "NEEDS_FIX_BEFORE_COLLECTION"
+}

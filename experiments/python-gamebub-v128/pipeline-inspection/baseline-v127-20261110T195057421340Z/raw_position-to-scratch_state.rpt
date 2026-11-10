@@ -1,0 +1,1052 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (lin64) Build 6511674 Tue Jun 16 11:01:26 MDT 2026
+| Date         : Tue Nov 10 19:51:27 2026
+| Host         : geto running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_timing -from [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *synchronous.ingress/raw_position_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == Q}] -to [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *scratch/state_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == D || REF_PIN_NAME == CE || REF_PIN_NAME == R || REF_PIN_NAME == S}] -delay_type max -max_paths 50 -nworst 1 -path_type full_clock_expanded -file /output/raw_position-to-scratch_state.rpt
+| Design       : cs88_pipeline_v91k
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -0.719ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[3]_rep__0/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.666ns  (logic 2.342ns (27.027%)  route 6.324ns (72.973%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.807     7.618    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X44Y159        LUT6 (Prop_lut6_I4_O)        0.124     7.742 f  coefficients/child/scratch/state[3]_i_7__3/O
+                         net (fo=1, routed)           0.996     8.738    coefficients/child/scratch/state[3]_i_7__3_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I3_O)        0.124     8.862 f  coefficients/child/scratch/state[3]_i_2__5/O
+                         net (fo=5, routed)           0.652     9.515    coefficients/child/scratch/state[3]_i_2__5_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I2_O)        0.124     9.639 r  coefficients/child/scratch/state[3]_rep__0_i_1__0/O
+                         net (fo=1, routed)           0.000     9.639    coefficients/child/scratch/state[3]_rep__0_i_1__0_n_0
+    SLICE_X43Y152        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__0/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y152        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__0/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y152        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[3]_rep__0
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.639    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.719    <hidden>
+
+Slack (VIOLATED) :        -0.668ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[3]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.615ns  (logic 2.342ns (27.185%)  route 6.273ns (72.815%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.807     7.618    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X44Y159        LUT6 (Prop_lut6_I4_O)        0.124     7.742 f  coefficients/child/scratch/state[3]_i_7__3/O
+                         net (fo=1, routed)           0.996     8.738    coefficients/child/scratch/state[3]_i_7__3_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I3_O)        0.124     8.862 f  coefficients/child/scratch/state[3]_i_2__5/O
+                         net (fo=5, routed)           0.602     9.464    coefficients/child/scratch/state[3]_i_2__5_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     9.588 r  coefficients/child/scratch/state[3]_i_1__4/O
+                         net (fo=1, routed)           0.000     9.588    coefficients/child/scratch/state[3]_i_1__4_n_0
+    SLICE_X43Y151        FDRE                                         r  coefficients/child/scratch/state_reg[3]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y151        FDRE                                         r  coefficients/child/scratch/state_reg[3]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y151        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[3]
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.588    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.668    <hidden>
+
+Slack (VIOLATED) :        -0.639ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[3]_rep__2/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.587ns  (logic 2.342ns (27.274%)  route 6.245ns (72.726%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.807     7.618    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X44Y159        LUT6 (Prop_lut6_I4_O)        0.124     7.742 f  coefficients/child/scratch/state[3]_i_7__3/O
+                         net (fo=1, routed)           0.996     8.738    coefficients/child/scratch/state[3]_i_7__3_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I3_O)        0.124     8.862 f  coefficients/child/scratch/state[3]_i_2__5/O
+                         net (fo=5, routed)           0.573     9.436    coefficients/child/scratch/state[3]_i_2__5_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I2_O)        0.124     9.560 r  coefficients/child/scratch/state[3]_rep__2_i_1__0/O
+                         net (fo=1, routed)           0.000     9.560    coefficients/child/scratch/state[3]_rep__2_i_1__0_n_0
+    SLICE_X43Y152        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__2/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y152        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__2/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y152        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/state_reg[3]_rep__2
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -9.560    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.639    <hidden>
+
+Slack (VIOLATED) :        -0.557ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[3]_rep/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.504ns  (logic 2.342ns (27.539%)  route 6.162ns (72.461%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.807     7.618    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X44Y159        LUT6 (Prop_lut6_I4_O)        0.124     7.742 f  coefficients/child/scratch/state[3]_i_7__3/O
+                         net (fo=1, routed)           0.996     8.738    coefficients/child/scratch/state[3]_i_7__3_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I3_O)        0.124     8.862 f  coefficients/child/scratch/state[3]_i_2__5/O
+                         net (fo=5, routed)           0.491     9.353    coefficients/child/scratch/state[3]_i_2__5_n_0
+    SLICE_X43Y154        LUT6 (Prop_lut6_I2_O)        0.124     9.477 r  coefficients/child/scratch/state[3]_rep_i_1__0/O
+                         net (fo=1, routed)           0.000     9.477    coefficients/child/scratch/state[3]_rep_i_1__0_n_0
+    SLICE_X43Y154        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y154        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y154        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[3]_rep
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.477    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.557    <hidden>
+
+Slack (VIOLATED) :        -0.531ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[3]_rep__1/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.479ns  (logic 2.342ns (27.622%)  route 6.137ns (72.378%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.807     7.618    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X44Y159        LUT6 (Prop_lut6_I4_O)        0.124     7.742 f  coefficients/child/scratch/state[3]_i_7__3/O
+                         net (fo=1, routed)           0.996     8.738    coefficients/child/scratch/state[3]_i_7__3_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I3_O)        0.124     8.862 f  coefficients/child/scratch/state[3]_i_2__5/O
+                         net (fo=5, routed)           0.465     9.328    coefficients/child/scratch/state[3]_i_2__5_n_0
+    SLICE_X43Y150        LUT6 (Prop_lut6_I2_O)        0.124     9.452 r  coefficients/child/scratch/state[3]_rep__1_i_1__0/O
+                         net (fo=1, routed)           0.000     9.452    coefficients/child/scratch/state[3]_rep__1_i_1__0_n_0
+    SLICE_X43Y150        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__1/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y150        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__1/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y150        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/state_reg[3]_rep__1
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -9.452    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.531    <hidden>
+
+Slack (VIOLATED) :        -0.387ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[1]_rep__1/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.334ns  (logic 2.342ns (28.101%)  route 5.992ns (71.898%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 f  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.669     7.480    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X47Y159        LUT6 (Prop_lut6_I0_O)        0.124     7.604 r  coefficients/child/scratch/state[4]_i_12__0/O
+                         net (fo=3, routed)           0.454     8.058    coefficients/child/scratch/state[4]_i_12__0_n_0
+    SLICE_X49Y158        LUT6 (Prop_lut6_I1_O)        0.124     8.182 f  coefficients/child/scratch/state[1]_i_2__6/O
+                         net (fo=4, routed)           1.001     9.183    coefficients/child/scratch/state[1]_i_2__6_n_0
+    SLICE_X41Y153        LUT6 (Prop_lut6_I2_O)        0.124     9.307 r  coefficients/child/scratch/state[1]_rep__1_i_1/O
+                         net (fo=1, routed)           0.000     9.307    coefficients/child/scratch/state[1]_rep__1_i_1_n_0
+    SLICE_X41Y153        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep__1/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X41Y153        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep__1/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X41Y153        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[1]_rep__1
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.307    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.387    <hidden>
+
+Slack (VIOLATED) :        -0.345ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[1]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.290ns  (logic 2.342ns (28.251%)  route 5.948ns (71.749%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 f  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.669     7.480    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X47Y159        LUT6 (Prop_lut6_I0_O)        0.124     7.604 r  coefficients/child/scratch/state[4]_i_12__0/O
+                         net (fo=3, routed)           0.454     8.058    coefficients/child/scratch/state[4]_i_12__0_n_0
+    SLICE_X49Y158        LUT6 (Prop_lut6_I1_O)        0.124     8.182 f  coefficients/child/scratch/state[1]_i_2__6/O
+                         net (fo=4, routed)           0.957     9.139    coefficients/child/scratch/state[1]_i_2__6_n_0
+    SLICE_X43Y153        LUT6 (Prop_lut6_I2_O)        0.124     9.263 r  coefficients/child/scratch/state[1]_i_1__6/O
+                         net (fo=1, routed)           0.000     9.263    coefficients/child/scratch/state[1]_i_1__6_n_0
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[1]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y153        FDRE (Setup_fdre_C_D)        0.029     8.918    coefficients/child/scratch/state_reg[1]
+  -------------------------------------------------------------------
+                         required time                          8.918    <hidden>
+                         arrival time                          -9.263    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.345    <hidden>
+
+Slack (VIOLATED) :        -0.262ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[1]_rep/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.210ns  (logic 2.342ns (28.526%)  route 5.868ns (71.474%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 f  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.669     7.480    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X47Y159        LUT6 (Prop_lut6_I0_O)        0.124     7.604 r  coefficients/child/scratch/state[4]_i_12__0/O
+                         net (fo=3, routed)           0.454     8.058    coefficients/child/scratch/state[4]_i_12__0_n_0
+    SLICE_X49Y158        LUT6 (Prop_lut6_I1_O)        0.124     8.182 f  coefficients/child/scratch/state[1]_i_2__6/O
+                         net (fo=4, routed)           0.877     9.059    coefficients/child/scratch/state[1]_i_2__6_n_0
+    SLICE_X43Y155        LUT6 (Prop_lut6_I2_O)        0.124     9.183 r  coefficients/child/scratch/state[1]_rep_i_1/O
+                         net (fo=1, routed)           0.000     9.183    coefficients/child/scratch/state[1]_rep_i_1_n_0
+    SLICE_X43Y155        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y155        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y155        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/state_reg[1]_rep
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -9.183    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.262    <hidden>
+
+Slack (VIOLATED) :        -0.213ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[4]_rep__1/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.089ns  (logic 2.342ns (28.954%)  route 5.747ns (71.046%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.669     7.480    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X47Y159        LUT6 (Prop_lut6_I0_O)        0.124     7.604 f  coefficients/child/scratch/state[4]_i_12__0/O
+                         net (fo=3, routed)           0.713     8.317    coefficients/child/scratch/state[4]_i_12__0_n_0
+    SLICE_X43Y157        LUT6 (Prop_lut6_I3_O)        0.124     8.441 r  coefficients/child/scratch/state[4]_i_4__1/O
+                         net (fo=4, routed)           0.166     8.607    coefficients/child/scratch/state[4]_i_4__1_n_0
+    SLICE_X43Y157        LUT6 (Prop_lut6_I3_O)        0.124     8.731 r  coefficients/child/scratch/state[4]_rep__1_i_1/O
+                         net (fo=1, routed)           0.331     9.062    coefficients/child/scratch/state[4]_rep__1_i_1_n_0
+    SLICE_X43Y158        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep__1/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y158        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep__1/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y158        FDRE (Setup_fdre_C_D)       -0.040     8.849    coefficients/child/scratch/state_reg[4]_rep__1
+  -------------------------------------------------------------------
+                         required time                          8.849    <hidden>
+                         arrival time                          -9.062    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.213    <hidden>
+
+Slack (VIOLATED) :        -0.207ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[1]_rep__0/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.154ns  (logic 2.342ns (28.721%)  route 5.812ns (71.279%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 f  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.669     7.480    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X47Y159        LUT6 (Prop_lut6_I0_O)        0.124     7.604 r  coefficients/child/scratch/state[4]_i_12__0/O
+                         net (fo=3, routed)           0.454     8.058    coefficients/child/scratch/state[4]_i_12__0_n_0
+    SLICE_X49Y158        LUT6 (Prop_lut6_I1_O)        0.124     8.182 f  coefficients/child/scratch/state[1]_i_2__6/O
+                         net (fo=4, routed)           0.821     9.003    coefficients/child/scratch/state[1]_i_2__6_n_0
+    SLICE_X43Y154        LUT6 (Prop_lut6_I2_O)        0.124     9.127 r  coefficients/child/scratch/state[1]_rep__0_i_1/O
+                         net (fo=1, routed)           0.000     9.127    coefficients/child/scratch/state[1]_rep__0_i_1_n_0
+    SLICE_X43Y154        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep__0/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y154        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep__0/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y154        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[1]_rep__0
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.127    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.207    <hidden>
+
+Slack (VIOLATED) :        -0.116ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[4]_rep__0/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.063ns  (logic 2.342ns (29.044%)  route 5.721ns (70.956%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.669     7.480    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X47Y159        LUT6 (Prop_lut6_I0_O)        0.124     7.604 f  coefficients/child/scratch/state[4]_i_12__0/O
+                         net (fo=3, routed)           0.713     8.317    coefficients/child/scratch/state[4]_i_12__0_n_0
+    SLICE_X43Y157        LUT6 (Prop_lut6_I3_O)        0.124     8.441 r  coefficients/child/scratch/state[4]_i_4__1/O
+                         net (fo=4, routed)           0.472     8.912    coefficients/child/scratch/state[4]_i_4__1_n_0
+    SLICE_X43Y153        LUT6 (Prop_lut6_I3_O)        0.124     9.036 r  coefficients/child/scratch/state[4]_rep__0_i_1/O
+                         net (fo=1, routed)           0.000     9.036    coefficients/child/scratch/state[4]_rep__0_i_1_n_0
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep__0/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep__0/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y153        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/state_reg[4]_rep__0
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -9.036    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.116    <hidden>
+
+Slack (VIOLATED) :        -0.112ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[4]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.058ns  (logic 2.342ns (29.062%)  route 5.716ns (70.937%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.669     7.480    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X47Y159        LUT6 (Prop_lut6_I0_O)        0.124     7.604 f  coefficients/child/scratch/state[4]_i_12__0/O
+                         net (fo=3, routed)           0.713     8.317    coefficients/child/scratch/state[4]_i_12__0_n_0
+    SLICE_X43Y157        LUT6 (Prop_lut6_I3_O)        0.124     8.441 r  coefficients/child/scratch/state[4]_i_4__1/O
+                         net (fo=4, routed)           0.467     8.907    coefficients/child/scratch/state[4]_i_4__1_n_0
+    SLICE_X43Y153        LUT6 (Prop_lut6_I3_O)        0.124     9.031 r  coefficients/child/scratch/state[4]_i_1__1/O
+                         net (fo=1, routed)           0.000     9.031    coefficients/child/scratch/state[4]_i_1__1_n_0
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[4]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[4]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y153        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[4]
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.031    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.112    <hidden>
+
+Slack (VIOLATED) :        -0.055ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[0]_rep/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.003ns  (logic 2.342ns (29.263%)  route 5.661ns (70.737%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.809     7.620    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X46Y158        LUT6 (Prop_lut6_I0_O)        0.124     7.744 f  coefficients/child/scratch/state[0]_i_6__3/O
+                         net (fo=1, routed)           0.571     8.315    coefficients/child/scratch/state[0]_i_6__3_n_0
+    SLICE_X43Y158        LUT6 (Prop_lut6_I2_O)        0.124     8.439 f  coefficients/child/scratch/state[0]_i_3__3/O
+                         net (fo=2, routed)           0.414     8.852    coefficients/child/scratch/state[0]_i_3__3_n_0
+    SLICE_X43Y158        LUT6 (Prop_lut6_I3_O)        0.124     8.976 r  coefficients/child/scratch/state[0]_rep_i_1__0/O
+                         net (fo=1, routed)           0.000     8.976    coefficients/child/scratch/state[0]_rep_i_1__0_n_0
+    SLICE_X43Y158        FDRE                                         r  coefficients/child/scratch/state_reg[0]_rep/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y158        FDRE                                         r  coefficients/child/scratch/state_reg[0]_rep/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y158        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/state_reg[0]_rep
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -8.976    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.055    <hidden>
+
+Slack (VIOLATED) :        -0.049ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[0]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.044ns  (logic 2.342ns (29.116%)  route 5.702ns (70.884%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.809     7.620    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X46Y158        LUT6 (Prop_lut6_I0_O)        0.124     7.744 f  coefficients/child/scratch/state[0]_i_6__3/O
+                         net (fo=1, routed)           0.571     8.315    coefficients/child/scratch/state[0]_i_6__3_n_0
+    SLICE_X43Y158        LUT6 (Prop_lut6_I2_O)        0.124     8.439 f  coefficients/child/scratch/state[0]_i_3__3/O
+                         net (fo=2, routed)           0.454     8.893    coefficients/child/scratch/state[0]_i_3__3_n_0
+    SLICE_X38Y158        LUT6 (Prop_lut6_I3_O)        0.124     9.017 r  coefficients/child/scratch/state[0]_i_1__5/O
+                         net (fo=1, routed)           0.000     9.017    coefficients/child/scratch/state[0]_i_1__5_n_0
+    SLICE_X38Y158        FDRE                                         r  coefficients/child/scratch/state_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X38Y158        FDRE                                         r  coefficients/child/scratch/state_reg[0]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X38Y158        FDRE (Setup_fdre_C_D)        0.079     8.968    coefficients/child/scratch/state_reg[0]
+  -------------------------------------------------------------------
+                         required time                          8.968    <hidden>
+                         arrival time                          -9.017    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.049    <hidden>
+
+Slack (MET) :             0.041ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[4]_rep/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.906ns  (logic 2.342ns (29.623%)  route 5.564ns (70.377%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X51Y156        FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X51Y156        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_position_reg[6]/Q
+                         net (fo=4, routed)           1.222     2.651    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/out[6]
+    SLICE_X49Y165        LUT3 (Prop_lut3_I0_O)        0.124     2.775 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[0]_INST_0/O
+                         net (fo=11, routed)          0.744     3.519    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/raw_position_reg[6]
+    SLICE_X49Y166        LUT6 (Prop_lut6_I0_O)        0.124     3.643 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219/O
+                         net (fo=1, routed)           0.000     3.643    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_219_n_0
+    SLICE_X49Y166        CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     4.175 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156/CO[3]
+                         net (fo=1, routed)           0.000     4.175    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_156_n_0
+    SLICE_X49Y167        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     4.332 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_89/CO[1]
+                         net (fo=1, routed)           0.826     5.158    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/input_sparse_order_bad1129_in
+    SLICE_X44Y168        LUT6 (Prop_lut6_I0_O)        0.329     5.487 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58/O
+                         net (fo=1, routed)           0.324     5.812    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_58_n_0
+    SLICE_X46Y167        LUT6 (Prop_lut6_I1_O)        0.124     5.936 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_39/O
+                         net (fo=4, routed)           0.751     6.687    coefficients/child/scratch/write_slot_valid_i_9_0
+    SLICE_X51Y166        LUT6 (Prop_lut6_I2_O)        0.124     6.811 r  coefficients/child/scratch/state[4]_i_26__0/O
+                         net (fo=5, routed)           0.669     7.480    coefficients/child/scratch/state[4]_i_26__0_n_0
+    SLICE_X47Y159        LUT6 (Prop_lut6_I0_O)        0.124     7.604 f  coefficients/child/scratch/state[4]_i_12__0/O
+                         net (fo=3, routed)           0.713     8.317    coefficients/child/scratch/state[4]_i_12__0_n_0
+    SLICE_X43Y157        LUT6 (Prop_lut6_I3_O)        0.124     8.441 r  coefficients/child/scratch/state[4]_i_4__1/O
+                         net (fo=4, routed)           0.314     8.755    coefficients/child/scratch/state[4]_i_4__1_n_0
+    SLICE_X43Y155        LUT6 (Prop_lut6_I3_O)        0.124     8.879 r  coefficients/child/scratch/state[4]_rep_i_1/O
+                         net (fo=1, routed)           0.000     8.879    coefficients/child/scratch/state[4]_rep_i_1_n_0
+    SLICE_X43Y155        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y155        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y155        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[4]_rep
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -8.879    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.041    <hidden>
+
+
+
+

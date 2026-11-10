@@ -1,0 +1,131 @@
+--- spatial.py.before
++++ spatial.py.after
+@@ -141,10 +141,11 @@
+  r['B_exact_control']=dict(selector=rel(B_CANONICAL),selector_sha256=sha(B_CANONICAL),receipt=rel(broot/'receipt.json'),receipt_sha256=sha(broot/'receipt.json'),scope='V120 targets exact V119 stdout, events and cycles plus independent V113 canonical goldens; all older checkers frozen.')
+  started=time.monotonic();worker=threading.local()
+  def command(argv,name,cap):
+-  gate=memory();assert gate['available_bytes']>=8*1024**3 and gate['psi_full_avg10']<1 and gate['combined_used_ratio']<.85,gate
++  import runpy
++  launch_gate_wait_samples=[];gate=runpy.run_path(str(ROOT/'scripts/cu66-v128/integration/resource_gate.py'))['wait_ready'](memory,launch_gate_wait_samples);r.setdefault('launch_gate_waits',[]).append(dict(command=name,samples=launch_gate_wait_samples));assert gate['available_bytes']>=8*1024**3 and gate['psi_full_avg10']<1 and gate['combined_used_ratio']<.85,gate
+   container='gamebub-v128-raw-spatial-'+stamp.lower()+'-'+name.split('.')[0]
+   cmd=['docker','run','--rm','--init','--name',container,'--memory','8g','--memory-swap','8g','--cpus','2','--pids-limit','2048','--network','none','--ulimit','core=0','--mount',f'type=bind,src={out},dst={out},readonly','--mount',f'type=bind,src={build},dst={mapped}','-w',mapped,IMAGE,'timeout','--kill-after=5s',str(cap)+'s',*argv]
+-  record=dict(argv=cmd,timeout_seconds=cap,resource_before=gate);r['commands'].append(record);began=time.monotonic()
++  record=dict(argv=cmd,timeout_seconds=cap,resource_before=gate,launch_gate_wait_samples=launch_gate_wait_samples);r['commands'].append(record);began=time.monotonic()
+   with(out/name).open('w')as log:
+    if argv[0] in (mapped+'/obj/Vcs88_pipeline_v91k',mapped+'/custom_transport'):r['actual_RTL_run']=True;r['simulation_started']=True
+    write(out/'receipt.json',r)
+--- peer.py.before
++++ peer.py.after
+@@ -39,8 +39,9 @@
+  r=dict(schema='v120-actual-full-top-peer-and-public-pending-cancel-v1',status='FAIL',actual_RTL_run=False,simulation_started=False,backend='Verilator',image_id=m.IMAGE,strict_warnings=True,assertions_disabled_or_downgraded=False,source_sha256={m.rel(p):sha(p)for p in files},rtl_source_order=[m.rel(p)for p in sources],source_origins=origins,replacements=replacements,bench_api_derivation=dict(path=m.rel(m.API_DERIVATION),sha256=sha(m.API_DERIVATION)),commands=[],runs=[],memory_samples=[],scope='Separate verification-only prepared child fault states during actual accepted scratch write/read and queued synchronous replay ownership; original independent functional/held/physical-owner checks retained; complete canonical retries; six real-parent abort/reset checks over all three scratch preparation boundaries with independent anti-replay/physical-owner/canonical retry checks; no production source or selected proof changes',original_oracle_checks_removed=0)
+  started=time.monotonic()
+  def command(argv,name,cap):
+-  gate=m.memory();assert gate['available_bytes']>=8*1024**3 and gate['psi_full_avg10']<1 and gate['combined_used_ratio']<.85,gate;container='gamebub-v128-raw-peer-final-'+stamp.lower()+'-'+str(len(r['commands']))
+-  cmd=['docker','run','--rm','--init','--name',container,'--memory','8g','--memory-swap','8g','--cpus','2','--pids-limit','2048','--network','none','--ulimit','core=0','--mount',f'type=bind,src={out},dst={out},readonly','--mount',f'type=bind,src={build},dst={mapped}','-w',mapped,m.IMAGE,'timeout','--kill-after=5s',str(cap)+'s',*argv];c=dict(argv=cmd,timeout_seconds=cap,resource_before=gate);r['commands'].append(c);t=time.monotonic()
++  import runpy
++  launch_gate_wait_samples=[];gate=runpy.run_path(str(R/'scripts/cu66-v128/integration/resource_gate.py'))['wait_ready'](m.memory,launch_gate_wait_samples);r.setdefault('launch_gate_waits',[]).append(dict(command=name,samples=launch_gate_wait_samples));assert gate['available_bytes']>=8*1024**3 and gate['psi_full_avg10']<1 and gate['combined_used_ratio']<.85,gate;container='gamebub-v128-raw-peer-final-'+stamp.lower()+'-'+str(len(r['commands']))
++  cmd=['docker','run','--rm','--init','--name',container,'--memory','8g','--memory-swap','8g','--cpus','2','--pids-limit','2048','--network','none','--ulimit','core=0','--mount',f'type=bind,src={out},dst={out},readonly','--mount',f'type=bind,src={build},dst={mapped}','-w',mapped,m.IMAGE,'timeout','--kill-after=5s',str(cap)+'s',*argv];c=dict(argv=cmd,timeout_seconds=cap,resource_before=gate,launch_gate_wait_samples=launch_gate_wait_samples);r['commands'].append(c);t=time.monotonic()
+   with(out/name).open('w')as f:
+    if argv[0]==mapped+'/obj/Vcs88_pipeline_v91k':r['actual_RTL_run']=True;r['simulation_started']=True
+    write(out/'receipt.json',r)
+--- live_guard/qualify.py.before
++++ live_guard/qualify.py.after
+@@ -221,13 +221,16 @@
+         write(out/'receipt.json', report)
+ 
+     def command(argv, name, cap, simulation=False):
+-        gate = memory()
++        import runpy
++        launch_gate_wait_samples = []
++        gate = runpy.run_path(str(ROOT/'scripts/cu66-v128/integration/resource_gate.py'))['wait_ready'](memory, launch_gate_wait_samples)
++        report.setdefault('launch_gate_waits', []).append(dict(command=name, samples=launch_gate_wait_samples))
+         assert gate['available_bytes'] >= 8*GIB and gate['psi_full_avg10'] < 1 and gate['combined_used_ratio'] < .85, gate
+         container = 'gamebub-v128-raw-live-guard-'+stamp.lower()+'-'+str(len(report['commands']))
+         cmd = ['docker','run','--rm','--init','--name',container,'--cpus','2','--memory','8g','--memory-swap','8g','--pids-limit','2048',
+                '--network','none','--ulimit','core=0','--mount',f'type=bind,src={out},dst={out},readonly',
+                '--mount',f'type=bind,src={build},dst={mapped}','-w',mapped,IMAGE,'timeout','--kill-after=5s',str(cap)+'s',*argv]
+-        record = dict(argv=cmd, log=name, timeout_seconds=cap, resource_before=gate, simulation=simulation)
++        record = dict(argv=cmd, log=name, timeout_seconds=cap, resource_before=gate, simulation=simulation, launch_gate_wait_samples=launch_gate_wait_samples)
+         report['commands'].append(record)
+         if simulation:
+             report['actual_RTL_run'] = True
+--- derivation.json.before
++++ derivation.json.after
+@@ -5,7 +5,7 @@
+   "sources": [
+     {
+       "candidate": "scripts/cu66-v128/integration/spatial.py",
+-      "candidate_sha256": "fcaa593491fd9d0a0aba7be1476595c2cf4516c1ed1deb434955c5a60270532f",
++      "candidate_sha256": "d075d3d37f2dd853990247ee026566d97d2cabdca60b35026eff28b2e643b961",
+       "edits": [
+         {
+           "after": "scripts/cu66-v128/integration/contract.py",
+@@ -115,6 +115,16 @@
+         {
+           "after": "HARNESS/'derivation.json',packaging,packaging_tool,Path(__file__).resolve()",
+           "before": "HARNESS/'derivation.json',packaging,Path(__file__).resolve()",
++          "count": 1
++        },
++        {
++          "after": "  import runpy\n  launch_gate_wait_samples=[];gate=runpy.run_path(str(ROOT/'scripts/cu66-v128/integration/resource_gate.py'))['wait_ready'](memory,launch_gate_wait_samples);r.setdefault('launch_gate_waits',[]).append(dict(command=name,samples=launch_gate_wait_samples));assert gate",
++          "before": "  gate=memory();assert gate",
++          "count": 1
++        },
++        {
++          "after": "timeout_seconds=cap,resource_before=gate,launch_gate_wait_samples=launch_gate_wait_samples);r['commands']",
++          "before": "timeout_seconds=cap,resource_before=gate);r['commands']",
+           "count": 1
+         }
+       ],
+@@ -123,7 +133,7 @@
+     },
+     {
+       "candidate": "scripts/cu66-v128/integration/peer.py",
+-      "candidate_sha256": "8811cc69f70bb4abbdacc2231e5ed92f88d45b45e15ffff9d47f331ae9a4f62c",
++      "candidate_sha256": "b59fd24b1fa773b2bf0dd6f1268e9bf2cbb85df99a126f5317b9412850e8b6a8",
+       "edits": [
+         {
+           "after": "scripts/cu66-v128/integration/contract.py",
+@@ -158,6 +168,16 @@
+         {
+           "after": "'V128_CONTROL_PEER'",
+           "before": "'V127_CONTROL_PEER'",
++          "count": 1
++        },
++        {
++          "after": "  import runpy\n  launch_gate_wait_samples=[];gate=runpy.run_path(str(R/'scripts/cu66-v128/integration/resource_gate.py'))['wait_ready'](m.memory,launch_gate_wait_samples);r.setdefault('launch_gate_waits',[]).append(dict(command=name,samples=launch_gate_wait_samples));assert gate",
++          "before": "  gate=m.memory();assert gate",
++          "count": 1
++        },
++        {
++          "after": "timeout_seconds=cap,resource_before=gate,launch_gate_wait_samples=launch_gate_wait_samples);r['commands']",
++          "before": "timeout_seconds=cap,resource_before=gate);r['commands']",
+           "count": 1
+         }
+       ],
+@@ -166,7 +186,7 @@
+     },
+     {
+       "candidate": "scripts/cu66-v128/integration/live_guard/qualify.py",
+-      "candidate_sha256": "933048ba0c2677df9b73501ccee1d1821d1051608625eeb2e4640f1485f46832",
++      "candidate_sha256": "3fea8ecc37fe4f63ce07bbdce9996bc397d0c8e436fd619021cacc377f3031f5",
+       "edits": [
+         {
+           "after": "scripts/cu66-v128/integration/contract.py",
+@@ -231,6 +251,16 @@
+         {
+           "after": "                                 (ROOT/'experiments/python-gamebub-v128/focused/results.json', ROOT/'fpga/experiments/cu66-v128-raw/packed_scratch_v91g2.sv'),\n                                 (ROOT/'experiments/python-gamebub-v128/focused/results.json', ROOT/'fpga/experiments/cu66-v128-raw/br88_pipeline_v91h.sv'),\n                                 (ROOT/'experiments/python-gamebub-v128/focused/results.json', ROOT/'fpga/experiments/cu66-v128-raw/br88_packet_ingress_sync_v91h.sv'),\n                                 (ROOT/'experiments/python-gamebub-v128/focused/results.json', ROOT/'fpga/experiments/cu66-v128-raw/br88_packet_ingress_v91h.sv'),\n                                 (ROOT/'experiments/python-gamebub-v128/focused/results.json', ROOT/'fpga/experiments/cu66-v128-padding/cs88_admission_v91i2a.sv'),",
+           "before": "                                 (ROOT/'experiments/python-gamebub-v127/owner/results.json', ROOT/'fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv'),\n                                 (ROOT/'experiments/python-gamebub-v127/owner/results.json', ROOT/'fpga/experiments/cu66-v127-owner/br88_pipeline_v91h.sv'),",
++          "count": 1
++        },
++        {
++          "after": "        import runpy\n        launch_gate_wait_samples = []\n        gate = runpy.run_path(str(ROOT/'scripts/cu66-v128/integration/resource_gate.py'))['wait_ready'](memory, launch_gate_wait_samples)\n        report.setdefault('launch_gate_waits', []).append(dict(command=name, samples=launch_gate_wait_samples))\n        assert gate",
++          "before": "        gate = memory()\n        assert gate",
++          "count": 1
++        },
++        {
++          "after": "resource_before=gate, simulation=simulation, launch_gate_wait_samples=launch_gate_wait_samples)",
++          "before": "resource_before=gate, simulation=simulation)",
+           "count": 1
+         }
+       ],

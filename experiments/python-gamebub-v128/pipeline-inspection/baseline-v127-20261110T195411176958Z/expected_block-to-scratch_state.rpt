@@ -1,0 +1,1440 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (lin64) Build 6511674 Tue Jun 16 11:01:26 MDT 2026
+| Date         : Tue Nov 10 19:54:40 2026
+| Host         : geto running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_timing -from [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *coefficients/expected_block_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == Q}] -to [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *scratch/state_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == D || REF_PIN_NAME == CE || REF_PIN_NAME == R || REF_PIN_NAME == S}] -delay_type max -max_paths 50 -nworst 1 -path_type full_clock_expanded -file /output/expected_block-to-scratch_state.rpt
+| Design       : cs88_pipeline_v91k
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -0.422ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[2]_rep__0/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.295ns  (logic 2.759ns (33.262%)  route 5.536ns (66.738%))
+  Logic Levels:           13  (CARRY4=2 LUT2=1 LUT3=1 LUT5=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.525     6.699    coefficients/child/scratch/dense_ready0
+    SLICE_X43Y148        LUT6 (Prop_lut6_I3_O)        0.124     6.823 f  coefficients/child/scratch/busy_owned_i_14/O
+                         net (fo=1, routed)           0.292     7.116    coefficients/child/scratch/busy_owned_i_14_n_0
+    SLICE_X43Y150        LUT6 (Prop_lut6_I4_O)        0.124     7.240 r  coefficients/child/scratch/busy_owned_i_7/O
+                         net (fo=2, routed)           0.302     7.541    coefficients/child/scratch/busy_owned_i_7_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I0_O)        0.124     7.665 f  coefficients/child/scratch/state[4]_i_6__1/O
+                         net (fo=1, routed)           0.289     7.955    coefficients/child/scratch/state[4]_i_6__1_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I0_O)        0.124     8.079 r  coefficients/child/scratch/state[4]_i_2__1/O
+                         net (fo=19, routed)          0.734     8.812    coefficients/child/scratch/state[4]_i_2__1_n_0
+    SLICE_X43Y157        LUT5 (Prop_lut5_I1_O)        0.124     8.936 r  coefficients/child/scratch/state[2]_rep__0_i_1__1/O
+                         net (fo=1, routed)           0.331     9.268    coefficients/child/scratch/state[2]_rep__0_i_1__1_n_0
+    SLICE_X43Y158        FDRE                                         r  coefficients/child/scratch/state_reg[2]_rep__0/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y158        FDRE                                         r  coefficients/child/scratch/state_reg[2]_rep__0/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y158        FDRE (Setup_fdre_C_D)       -0.043     8.846    coefficients/child/scratch/state_reg[2]_rep__0
+  -------------------------------------------------------------------
+                         required time                          8.846    <hidden>
+                         arrival time                          -9.268    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.422    <hidden>
+
+Slack (VIOLATED) :        -0.417ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[4]_rep__1/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.293ns  (logic 2.759ns (33.268%)  route 5.534ns (66.732%))
+  Logic Levels:           13  (CARRY4=2 LUT2=1 LUT3=1 LUT6=9)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.525     6.699    coefficients/child/scratch/dense_ready0
+    SLICE_X43Y148        LUT6 (Prop_lut6_I3_O)        0.124     6.823 f  coefficients/child/scratch/busy_owned_i_14/O
+                         net (fo=1, routed)           0.292     7.116    coefficients/child/scratch/busy_owned_i_14_n_0
+    SLICE_X43Y150        LUT6 (Prop_lut6_I4_O)        0.124     7.240 r  coefficients/child/scratch/busy_owned_i_7/O
+                         net (fo=2, routed)           0.302     7.541    coefficients/child/scratch/busy_owned_i_7_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I0_O)        0.124     7.665 f  coefficients/child/scratch/state[4]_i_6__1/O
+                         net (fo=1, routed)           0.289     7.955    coefficients/child/scratch/state[4]_i_6__1_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I0_O)        0.124     8.079 r  coefficients/child/scratch/state[4]_i_2__1/O
+                         net (fo=19, routed)          0.733     8.811    coefficients/child/scratch/state[4]_i_2__1_n_0
+    SLICE_X43Y157        LUT6 (Prop_lut6_I1_O)        0.124     8.935 r  coefficients/child/scratch/state[4]_rep__1_i_1/O
+                         net (fo=1, routed)           0.331     9.266    coefficients/child/scratch/state[4]_rep__1_i_1_n_0
+    SLICE_X43Y158        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep__1/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y158        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep__1/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y158        FDRE (Setup_fdre_C_D)       -0.040     8.849    coefficients/child/scratch/state_reg[4]_rep__1
+  -------------------------------------------------------------------
+                         required time                          8.849    <hidden>
+                         arrival time                          -9.266    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.417    <hidden>
+
+Slack (VIOLATED) :        -0.318ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[4]_rep__0/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.266ns  (logic 2.759ns (33.377%)  route 5.507ns (66.623%))
+  Logic Levels:           13  (CARRY4=2 LUT2=1 LUT3=2 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 r  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.708     7.346    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X45Y151        LUT3 (Prop_lut3_I1_O)        0.124     7.470 r  coefficients/child/scratch/state[4]_i_8__1/O
+                         net (fo=2, routed)           0.416     7.886    coefficients/child/scratch/state[4]_i_8__1_n_0
+    SLICE_X45Y152        LUT6 (Prop_lut6_I2_O)        0.124     8.010 r  coefficients/child/scratch/state[4]_i_10__1/O
+                         net (fo=1, routed)           0.509     8.520    coefficients/child/scratch/state[4]_i_10__1_n_0
+    SLICE_X43Y157        LUT6 (Prop_lut6_I1_O)        0.124     8.644 r  coefficients/child/scratch/state[4]_i_4__1/O
+                         net (fo=4, routed)           0.472     9.115    coefficients/child/scratch/state[4]_i_4__1_n_0
+    SLICE_X43Y153        LUT6 (Prop_lut6_I3_O)        0.124     9.239 r  coefficients/child/scratch/state[4]_rep__0_i_1/O
+                         net (fo=1, routed)           0.000     9.239    coefficients/child/scratch/state[4]_rep__0_i_1_n_0
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep__0/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep__0/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y153        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/state_reg[4]_rep__0
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -9.239    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.318    <hidden>
+
+Slack (VIOLATED) :        -0.314ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[4]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.261ns  (logic 2.759ns (33.397%)  route 5.502ns (66.603%))
+  Logic Levels:           13  (CARRY4=2 LUT2=1 LUT3=2 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 r  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.708     7.346    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X45Y151        LUT3 (Prop_lut3_I1_O)        0.124     7.470 r  coefficients/child/scratch/state[4]_i_8__1/O
+                         net (fo=2, routed)           0.416     7.886    coefficients/child/scratch/state[4]_i_8__1_n_0
+    SLICE_X45Y152        LUT6 (Prop_lut6_I2_O)        0.124     8.010 r  coefficients/child/scratch/state[4]_i_10__1/O
+                         net (fo=1, routed)           0.509     8.520    coefficients/child/scratch/state[4]_i_10__1_n_0
+    SLICE_X43Y157        LUT6 (Prop_lut6_I1_O)        0.124     8.644 r  coefficients/child/scratch/state[4]_i_4__1/O
+                         net (fo=4, routed)           0.467     9.110    coefficients/child/scratch/state[4]_i_4__1_n_0
+    SLICE_X43Y153        LUT6 (Prop_lut6_I3_O)        0.124     9.234 r  coefficients/child/scratch/state[4]_i_1__1/O
+                         net (fo=1, routed)           0.000     9.234    coefficients/child/scratch/state[4]_i_1__1_n_0
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[4]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[4]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y153        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[4]
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.234    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.314    <hidden>
+
+Slack (VIOLATED) :        -0.287ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[3]_rep__0/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.234ns  (logic 2.759ns (33.506%)  route 5.475ns (66.494%))
+  Logic Levels:           13  (CARRY4=2 LUT2=2 LUT3=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 f  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 f  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 f  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 f  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 f  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 f  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 f  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.338     6.976    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X48Y147        LUT2 (Prop_lut2_I1_O)        0.124     7.100 f  coefficients/child/scratch/done_i_2__5/O
+                         net (fo=6, routed)           0.213     7.314    coefficients/child/scratch/done_i_2__5_n_0
+    SLICE_X48Y147        LUT6 (Prop_lut6_I5_O)        0.124     7.438 f  coefficients/child/scratch/state[3]_i_9__3/O
+                         net (fo=1, routed)           0.870     8.307    coefficients/child/scratch/state[3]_i_9__3_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I5_O)        0.124     8.431 f  coefficients/child/scratch/state[3]_i_2__5/O
+                         net (fo=5, routed)           0.652     9.083    coefficients/child/scratch/state[3]_i_2__5_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I2_O)        0.124     9.207 r  coefficients/child/scratch/state[3]_rep__0_i_1__0/O
+                         net (fo=1, routed)           0.000     9.207    coefficients/child/scratch/state[3]_rep__0_i_1__0_n_0
+    SLICE_X43Y152        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__0/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y152        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__0/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y152        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[3]_rep__0
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.207    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.287    <hidden>
+
+Slack (VIOLATED) :        -0.267ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[1]_rep/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.215ns  (logic 2.759ns (33.585%)  route 5.456ns (66.415%))
+  Logic Levels:           13  (CARRY4=2 LUT2=2 LUT3=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 r  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.338     6.976    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X48Y147        LUT2 (Prop_lut2_I1_O)        0.124     7.100 r  coefficients/child/scratch/done_i_2__5/O
+                         net (fo=6, routed)           0.597     7.697    coefficients/child/scratch/done_i_2__5_n_0
+    SLICE_X45Y146        LUT6 (Prop_lut6_I0_O)        0.124     7.821 r  coefficients/child/scratch/state[1]_i_7__4/O
+                         net (fo=1, routed)           0.504     8.324    coefficients/child/scratch/state[1]_i_7__4_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I4_O)        0.124     8.448 r  coefficients/child/scratch/state[1]_i_3__6/O
+                         net (fo=4, routed)           0.616     9.064    coefficients/child/scratch/state[1]_i_3__6_n_0
+    SLICE_X43Y155        LUT6 (Prop_lut6_I3_O)        0.124     9.188 r  coefficients/child/scratch/state[1]_rep_i_1/O
+                         net (fo=1, routed)           0.000     9.188    coefficients/child/scratch/state[1]_rep_i_1_n_0
+    SLICE_X43Y155        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y155        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y155        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/state_reg[1]_rep
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -9.188    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.267    <hidden>
+
+Slack (VIOLATED) :        -0.243ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[1]_rep__1/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.190ns  (logic 2.759ns (33.687%)  route 5.431ns (66.313%))
+  Logic Levels:           13  (CARRY4=2 LUT2=2 LUT3=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 r  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.338     6.976    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X48Y147        LUT2 (Prop_lut2_I1_O)        0.124     7.100 r  coefficients/child/scratch/done_i_2__5/O
+                         net (fo=6, routed)           0.597     7.697    coefficients/child/scratch/done_i_2__5_n_0
+    SLICE_X45Y146        LUT6 (Prop_lut6_I0_O)        0.124     7.821 r  coefficients/child/scratch/state[1]_i_7__4/O
+                         net (fo=1, routed)           0.504     8.324    coefficients/child/scratch/state[1]_i_7__4_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I4_O)        0.124     8.448 r  coefficients/child/scratch/state[1]_i_3__6/O
+                         net (fo=4, routed)           0.591     9.039    coefficients/child/scratch/state[1]_i_3__6_n_0
+    SLICE_X41Y153        LUT6 (Prop_lut6_I3_O)        0.124     9.163 r  coefficients/child/scratch/state[1]_rep__1_i_1/O
+                         net (fo=1, routed)           0.000     9.163    coefficients/child/scratch/state[1]_rep__1_i_1_n_0
+    SLICE_X41Y153        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep__1/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X41Y153        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep__1/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X41Y153        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[1]_rep__1
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.163    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.243    <hidden>
+
+Slack (VIOLATED) :        -0.237ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[3]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.184ns  (logic 2.759ns (33.713%)  route 5.425ns (66.287%))
+  Logic Levels:           13  (CARRY4=2 LUT2=2 LUT3=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 f  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 f  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 f  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 f  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 f  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 f  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 f  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.338     6.976    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X48Y147        LUT2 (Prop_lut2_I1_O)        0.124     7.100 f  coefficients/child/scratch/done_i_2__5/O
+                         net (fo=6, routed)           0.213     7.314    coefficients/child/scratch/done_i_2__5_n_0
+    SLICE_X48Y147        LUT6 (Prop_lut6_I5_O)        0.124     7.438 f  coefficients/child/scratch/state[3]_i_9__3/O
+                         net (fo=1, routed)           0.870     8.307    coefficients/child/scratch/state[3]_i_9__3_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I5_O)        0.124     8.431 f  coefficients/child/scratch/state[3]_i_2__5/O
+                         net (fo=5, routed)           0.602     9.033    coefficients/child/scratch/state[3]_i_2__5_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     9.157 r  coefficients/child/scratch/state[3]_i_1__4/O
+                         net (fo=1, routed)           0.000     9.157    coefficients/child/scratch/state[3]_i_1__4_n_0
+    SLICE_X43Y151        FDRE                                         r  coefficients/child/scratch/state_reg[3]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y151        FDRE                                         r  coefficients/child/scratch/state_reg[3]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y151        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[3]
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.157    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.237    <hidden>
+
+Slack (VIOLATED) :        -0.208ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[3]_rep__2/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.156ns  (logic 2.759ns (33.829%)  route 5.397ns (66.171%))
+  Logic Levels:           13  (CARRY4=2 LUT2=2 LUT3=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 f  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 f  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 f  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 f  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 f  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 f  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 f  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.338     6.976    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X48Y147        LUT2 (Prop_lut2_I1_O)        0.124     7.100 f  coefficients/child/scratch/done_i_2__5/O
+                         net (fo=6, routed)           0.213     7.314    coefficients/child/scratch/done_i_2__5_n_0
+    SLICE_X48Y147        LUT6 (Prop_lut6_I5_O)        0.124     7.438 f  coefficients/child/scratch/state[3]_i_9__3/O
+                         net (fo=1, routed)           0.870     8.307    coefficients/child/scratch/state[3]_i_9__3_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I5_O)        0.124     8.431 f  coefficients/child/scratch/state[3]_i_2__5/O
+                         net (fo=5, routed)           0.573     9.005    coefficients/child/scratch/state[3]_i_2__5_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I2_O)        0.124     9.129 r  coefficients/child/scratch/state[3]_rep__2_i_1__0/O
+                         net (fo=1, routed)           0.000     9.129    coefficients/child/scratch/state[3]_rep__2_i_1__0_n_0
+    SLICE_X43Y152        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__2/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y152        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__2/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y152        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/state_reg[3]_rep__2
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -9.129    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.208    <hidden>
+
+Slack (VIOLATED) :        -0.182ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[4]_rep/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.129ns  (logic 2.759ns (33.942%)  route 5.370ns (66.058%))
+  Logic Levels:           13  (CARRY4=2 LUT2=1 LUT3=1 LUT6=9)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.525     6.699    coefficients/child/scratch/dense_ready0
+    SLICE_X43Y148        LUT6 (Prop_lut6_I3_O)        0.124     6.823 f  coefficients/child/scratch/busy_owned_i_14/O
+                         net (fo=1, routed)           0.292     7.116    coefficients/child/scratch/busy_owned_i_14_n_0
+    SLICE_X43Y150        LUT6 (Prop_lut6_I4_O)        0.124     7.240 r  coefficients/child/scratch/busy_owned_i_7/O
+                         net (fo=2, routed)           0.302     7.541    coefficients/child/scratch/busy_owned_i_7_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I0_O)        0.124     7.665 f  coefficients/child/scratch/state[4]_i_6__1/O
+                         net (fo=1, routed)           0.289     7.955    coefficients/child/scratch/state[4]_i_6__1_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I0_O)        0.124     8.079 r  coefficients/child/scratch/state[4]_i_2__1/O
+                         net (fo=19, routed)          0.899     8.978    coefficients/child/scratch/state[4]_i_2__1_n_0
+    SLICE_X43Y155        LUT6 (Prop_lut6_I1_O)        0.124     9.102 r  coefficients/child/scratch/state[4]_rep_i_1/O
+                         net (fo=1, routed)           0.000     9.102    coefficients/child/scratch/state[4]_rep_i_1_n_0
+    SLICE_X43Y155        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y155        FDRE                                         r  coefficients/child/scratch/state_reg[4]_rep/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y155        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[4]_rep
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.102    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.182    <hidden>
+
+Slack (VIOLATED) :        -0.155ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[1]_rep__0/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.102ns  (logic 2.759ns (34.054%)  route 5.343ns (65.946%))
+  Logic Levels:           13  (CARRY4=2 LUT2=1 LUT3=1 LUT6=9)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.525     6.699    coefficients/child/scratch/dense_ready0
+    SLICE_X43Y148        LUT6 (Prop_lut6_I3_O)        0.124     6.823 f  coefficients/child/scratch/busy_owned_i_14/O
+                         net (fo=1, routed)           0.292     7.116    coefficients/child/scratch/busy_owned_i_14_n_0
+    SLICE_X43Y150        LUT6 (Prop_lut6_I4_O)        0.124     7.240 r  coefficients/child/scratch/busy_owned_i_7/O
+                         net (fo=2, routed)           0.302     7.541    coefficients/child/scratch/busy_owned_i_7_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I0_O)        0.124     7.665 f  coefficients/child/scratch/state[4]_i_6__1/O
+                         net (fo=1, routed)           0.289     7.955    coefficients/child/scratch/state[4]_i_6__1_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I0_O)        0.124     8.079 r  coefficients/child/scratch/state[4]_i_2__1/O
+                         net (fo=19, routed)          0.872     8.951    coefficients/child/scratch/state[4]_i_2__1_n_0
+    SLICE_X43Y154        LUT6 (Prop_lut6_I1_O)        0.124     9.075 r  coefficients/child/scratch/state[1]_rep__0_i_1/O
+                         net (fo=1, routed)           0.000     9.075    coefficients/child/scratch/state[1]_rep__0_i_1_n_0
+    SLICE_X43Y154        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep__0/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y154        FDRE                                         r  coefficients/child/scratch/state_reg[1]_rep__0/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y154        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[1]_rep__0
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.075    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.155    <hidden>
+
+Slack (VIOLATED) :        -0.134ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[0]_rep/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.082ns  (logic 2.759ns (34.138%)  route 5.323ns (65.862%))
+  Logic Levels:           13  (CARRY4=2 LUT2=1 LUT3=1 LUT6=9)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.525     6.699    coefficients/child/scratch/dense_ready0
+    SLICE_X43Y148        LUT6 (Prop_lut6_I3_O)        0.124     6.823 f  coefficients/child/scratch/busy_owned_i_14/O
+                         net (fo=1, routed)           0.292     7.116    coefficients/child/scratch/busy_owned_i_14_n_0
+    SLICE_X43Y150        LUT6 (Prop_lut6_I4_O)        0.124     7.240 r  coefficients/child/scratch/busy_owned_i_7/O
+                         net (fo=2, routed)           0.302     7.541    coefficients/child/scratch/busy_owned_i_7_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I0_O)        0.124     7.665 f  coefficients/child/scratch/state[4]_i_6__1/O
+                         net (fo=1, routed)           0.289     7.955    coefficients/child/scratch/state[4]_i_6__1_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I0_O)        0.124     8.079 r  coefficients/child/scratch/state[4]_i_2__1/O
+                         net (fo=19, routed)          0.852     8.931    coefficients/child/scratch/state[4]_i_2__1_n_0
+    SLICE_X43Y158        LUT6 (Prop_lut6_I1_O)        0.124     9.055 r  coefficients/child/scratch/state[0]_rep_i_1__0/O
+                         net (fo=1, routed)           0.000     9.055    coefficients/child/scratch/state[0]_rep_i_1__0_n_0
+    SLICE_X43Y158        FDRE                                         r  coefficients/child/scratch/state_reg[0]_rep/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y158        FDRE                                         r  coefficients/child/scratch/state_reg[0]_rep/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y158        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/state_reg[0]_rep
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -9.055    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.134    <hidden>
+
+Slack (VIOLATED) :        -0.132ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[0]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.127ns  (logic 2.759ns (33.950%)  route 5.368ns (66.050%))
+  Logic Levels:           13  (CARRY4=2 LUT2=1 LUT3=1 LUT6=9)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.525     6.699    coefficients/child/scratch/dense_ready0
+    SLICE_X43Y148        LUT6 (Prop_lut6_I3_O)        0.124     6.823 f  coefficients/child/scratch/busy_owned_i_14/O
+                         net (fo=1, routed)           0.292     7.116    coefficients/child/scratch/busy_owned_i_14_n_0
+    SLICE_X43Y150        LUT6 (Prop_lut6_I4_O)        0.124     7.240 r  coefficients/child/scratch/busy_owned_i_7/O
+                         net (fo=2, routed)           0.302     7.541    coefficients/child/scratch/busy_owned_i_7_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I0_O)        0.124     7.665 f  coefficients/child/scratch/state[4]_i_6__1/O
+                         net (fo=1, routed)           0.289     7.955    coefficients/child/scratch/state[4]_i_6__1_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I0_O)        0.124     8.079 r  coefficients/child/scratch/state[4]_i_2__1/O
+                         net (fo=19, routed)          0.897     8.976    coefficients/child/scratch/state[4]_i_2__1_n_0
+    SLICE_X38Y158        LUT6 (Prop_lut6_I1_O)        0.124     9.100 r  coefficients/child/scratch/state[0]_i_1__5/O
+                         net (fo=1, routed)           0.000     9.100    coefficients/child/scratch/state[0]_i_1__5_n_0
+    SLICE_X38Y158        FDRE                                         r  coefficients/child/scratch/state_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X38Y158        FDRE                                         r  coefficients/child/scratch/state_reg[0]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X38Y158        FDRE (Setup_fdre_C_D)        0.079     8.968    coefficients/child/scratch/state_reg[0]
+  -------------------------------------------------------------------
+                         required time                          8.968    <hidden>
+                         arrival time                          -9.100    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.132    <hidden>
+
+Slack (VIOLATED) :        -0.126ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[3]_rep/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.073ns  (logic 2.759ns (34.175%)  route 5.314ns (65.825%))
+  Logic Levels:           13  (CARRY4=2 LUT2=2 LUT3=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 f  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 f  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 f  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 f  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 f  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 f  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 f  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.338     6.976    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X48Y147        LUT2 (Prop_lut2_I1_O)        0.124     7.100 f  coefficients/child/scratch/done_i_2__5/O
+                         net (fo=6, routed)           0.213     7.314    coefficients/child/scratch/done_i_2__5_n_0
+    SLICE_X48Y147        LUT6 (Prop_lut6_I5_O)        0.124     7.438 f  coefficients/child/scratch/state[3]_i_9__3/O
+                         net (fo=1, routed)           0.870     8.307    coefficients/child/scratch/state[3]_i_9__3_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I5_O)        0.124     8.431 f  coefficients/child/scratch/state[3]_i_2__5/O
+                         net (fo=5, routed)           0.491     8.922    coefficients/child/scratch/state[3]_i_2__5_n_0
+    SLICE_X43Y154        LUT6 (Prop_lut6_I2_O)        0.124     9.046 r  coefficients/child/scratch/state[3]_rep_i_1__0/O
+                         net (fo=1, routed)           0.000     9.046    coefficients/child/scratch/state[3]_rep_i_1__0_n_0
+    SLICE_X43Y154        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y154        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y154        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[3]_rep
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -9.046    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.126    <hidden>
+
+Slack (VIOLATED) :        -0.114ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[1]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.059ns  (logic 2.759ns (34.236%)  route 5.300ns (65.764%))
+  Logic Levels:           13  (CARRY4=2 LUT2=2 LUT3=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 r  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.338     6.976    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X48Y147        LUT2 (Prop_lut2_I1_O)        0.124     7.100 r  coefficients/child/scratch/done_i_2__5/O
+                         net (fo=6, routed)           0.597     7.697    coefficients/child/scratch/done_i_2__5_n_0
+    SLICE_X45Y146        LUT6 (Prop_lut6_I0_O)        0.124     7.821 r  coefficients/child/scratch/state[1]_i_7__4/O
+                         net (fo=1, routed)           0.504     8.324    coefficients/child/scratch/state[1]_i_7__4_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I4_O)        0.124     8.448 r  coefficients/child/scratch/state[1]_i_3__6/O
+                         net (fo=4, routed)           0.459     8.908    coefficients/child/scratch/state[1]_i_3__6_n_0
+    SLICE_X43Y153        LUT6 (Prop_lut6_I3_O)        0.124     9.032 r  coefficients/child/scratch/state[1]_i_1__6/O
+                         net (fo=1, routed)           0.000     9.032    coefficients/child/scratch/state[1]_i_1__6_n_0
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[1]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y153        FDRE (Setup_fdre_C_D)        0.029     8.918    coefficients/child/scratch/state_reg[1]
+  -------------------------------------------------------------------
+                         required time                          8.918    <hidden>
+                         arrival time                          -9.032    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.114    <hidden>
+
+Slack (VIOLATED) :        -0.100ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[3]_rep__1/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.048ns  (logic 2.759ns (34.283%)  route 5.289ns (65.717%))
+  Logic Levels:           13  (CARRY4=2 LUT2=2 LUT3=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 f  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 f  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 f  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 f  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 f  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 f  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 f  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.338     6.976    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X48Y147        LUT2 (Prop_lut2_I1_O)        0.124     7.100 f  coefficients/child/scratch/done_i_2__5/O
+                         net (fo=6, routed)           0.213     7.314    coefficients/child/scratch/done_i_2__5_n_0
+    SLICE_X48Y147        LUT6 (Prop_lut6_I5_O)        0.124     7.438 f  coefficients/child/scratch/state[3]_i_9__3/O
+                         net (fo=1, routed)           0.870     8.307    coefficients/child/scratch/state[3]_i_9__3_n_0
+    SLICE_X45Y151        LUT6 (Prop_lut6_I5_O)        0.124     8.431 f  coefficients/child/scratch/state[3]_i_2__5/O
+                         net (fo=5, routed)           0.465     8.897    coefficients/child/scratch/state[3]_i_2__5_n_0
+    SLICE_X43Y150        LUT6 (Prop_lut6_I2_O)        0.124     9.021 r  coefficients/child/scratch/state[3]_rep__1_i_1__0/O
+                         net (fo=1, routed)           0.000     9.021    coefficients/child/scratch/state[3]_rep__1_i_1__0_n_0
+    SLICE_X43Y150        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__1/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y150        FDRE                                         r  coefficients/child/scratch/state_reg[3]_rep__1/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y150        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/state_reg[3]_rep__1
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -9.021    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.100    <hidden>
+
+Slack (MET) :             0.119ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[2]_rep/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.826ns  (logic 2.759ns (35.256%)  route 5.067ns (64.744%))
+  Logic Levels:           13  (CARRY4=2 LUT2=1 LUT3=1 LUT5=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.525     6.699    coefficients/child/scratch/dense_ready0
+    SLICE_X43Y148        LUT6 (Prop_lut6_I3_O)        0.124     6.823 f  coefficients/child/scratch/busy_owned_i_14/O
+                         net (fo=1, routed)           0.292     7.116    coefficients/child/scratch/busy_owned_i_14_n_0
+    SLICE_X43Y150        LUT6 (Prop_lut6_I4_O)        0.124     7.240 r  coefficients/child/scratch/busy_owned_i_7/O
+                         net (fo=2, routed)           0.302     7.541    coefficients/child/scratch/busy_owned_i_7_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I0_O)        0.124     7.665 f  coefficients/child/scratch/state[4]_i_6__1/O
+                         net (fo=1, routed)           0.289     7.955    coefficients/child/scratch/state[4]_i_6__1_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I0_O)        0.124     8.079 r  coefficients/child/scratch/state[4]_i_2__1/O
+                         net (fo=19, routed)          0.596     8.675    coefficients/child/scratch/state[4]_i_2__1_n_0
+    SLICE_X43Y154        LUT5 (Prop_lut5_I1_O)        0.124     8.799 r  coefficients/child/scratch/state[2]_rep_i_1__1/O
+                         net (fo=1, routed)           0.000     8.799    coefficients/child/scratch/state[2]_rep_i_1__1_n_0
+    SLICE_X43Y154        FDRE                                         r  coefficients/child/scratch/state_reg[2]_rep/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y154        FDRE                                         r  coefficients/child/scratch/state_reg[2]_rep/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y154        FDRE (Setup_fdre_C_D)        0.029     8.918    coefficients/child/scratch/state_reg[2]_rep
+  -------------------------------------------------------------------
+                         required time                          8.918    <hidden>
+                         arrival time                          -8.799    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.119    <hidden>
+
+Slack (MET) :             0.140ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[2]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.805ns  (logic 2.635ns (33.760%)  route 5.170ns (66.240%))
+  Logic Levels:           12  (CARRY4=2 LUT2=2 LUT3=1 LUT5=1 LUT6=6)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.340     6.514    coefficients/child/scratch/dense_ready0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I5_O)        0.124     6.638 r  coefficients/child/scratch/dbg_tile_release_INST_0/O
+                         net (fo=17, routed)          0.338     6.976    coefficients/child/scratch/tile_emit_index_reg[4]_0
+    SLICE_X48Y147        LUT2 (Prop_lut2_I1_O)        0.124     7.100 r  coefficients/child/scratch/done_i_2__5/O
+                         net (fo=6, routed)           0.853     7.953    coefficients/child/scratch/done_i_2__5_n_0
+    SLICE_X43Y155        LUT6 (Prop_lut6_I5_O)        0.124     8.077 f  coefficients/child/scratch/state[2]_i_2__5/O
+                         net (fo=4, routed)           0.577     8.654    coefficients/child/scratch/state[2]_i_2__5_n_0
+    SLICE_X43Y152        LUT5 (Prop_lut5_I2_O)        0.124     8.778 r  coefficients/child/scratch/state[2]_i_1__5/O
+                         net (fo=1, routed)           0.000     8.778    coefficients/child/scratch/state[2]_i_1__5_n_0
+    SLICE_X43Y152        FDRE                                         r  coefficients/child/scratch/state_reg[2]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y152        FDRE                                         r  coefficients/child/scratch/state_reg[2]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y152        FDRE (Setup_fdre_C_D)        0.029     8.918    coefficients/child/scratch/state_reg[2]
+  -------------------------------------------------------------------
+                         required time                          8.918    <hidden>
+                         arrival time                          -8.778    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.140    <hidden>
+
+Slack (MET) :             0.273ns  (required time - arrival time)
+  Source:                 coefficients/expected_block_reg[8]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/state_reg[2]_rep__1/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.674ns  (logic 2.759ns (35.954%)  route 4.915ns (64.046%))
+  Logic Levels:           13  (CARRY4=2 LUT2=1 LUT3=1 LUT5=1 LUT6=8)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44139, unset)        0.973     0.973    coefficients/clk
+    SLICE_X50Y152        FDRE                                         r  coefficients/expected_block_reg[8]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X50Y152        FDRE (Prop_fdre_C_Q)         0.478     1.451 r  coefficients/expected_block_reg[8]/Q
+                         net (fo=5, routed)           1.225     2.676    coefficients/child/scratch/tile_owner_match_inferred_i_6_0[8]
+    SLICE_X50Y155        LUT6 (Prop_lut6_I1_O)        0.296     2.972 r  coefficients/child/scratch/tile_owner_match_inferred_i_27/O
+                         net (fo=1, routed)           0.000     2.972    coefficients/child/scratch/tile_owner_match_inferred_i_27_n_0
+    SLICE_X50Y155        CARRY4 (Prop_carry4_S[2]_CO[3])
+                                                      0.380     3.352 r  coefficients/child/scratch/tile_owner_match_inferred_i_11/CO[3]
+                         net (fo=1, routed)           0.000     3.352    coefficients/child/scratch/tile_owner_match_inferred_i_11_n_0
+    SLICE_X50Y156        CARRY4 (Prop_carry4_CI_CO[1])
+                                                      0.157     3.509 r  coefficients/child/scratch/tile_owner_match_inferred_i_4/CO[1]
+                         net (fo=1, routed)           0.755     4.264    coefficients/child/scratch/tile_owner_match_orig10_out
+    SLICE_X51Y149        LUT2 (Prop_lut2_I1_O)        0.332     4.596 r  coefficients/child/scratch/tile_owner_match_inferred_i_1/O
+                         net (fo=1, routed)           0.263     4.858    coefficients/child/scratch/out[1]
+    SLICE_X51Y149        LUT6 (Prop_lut6_I0_O)        0.124     4.982 r  coefficients/child/scratch/coefficient_valid_INST_0_i_6/O
+                         net (fo=2, routed)           0.310     5.293    coefficients/child/scratch/coefficient_valid_INST_0_i_6_n_0
+    SLICE_X51Y147        LUT6 (Prop_lut6_I0_O)        0.124     5.417 r  coefficients/child/scratch/coefficient_valid_INST_0_i_4/O
+                         net (fo=3, routed)           0.325     5.741    coefficients/child/scratch/coefficient_valid_INST_0_i_4_n_0
+    SLICE_X50Y146        LUT6 (Prop_lut6_I0_O)        0.124     5.865 r  coefficients/child/scratch/count_dense[63]_i_3/O
+                         net (fo=5, routed)           0.185     6.050    coefficients/child/scratch/child_out_ready
+    SLICE_X50Y146        LUT3 (Prop_lut3_I2_O)        0.124     6.174 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_1/O
+                         net (fo=13, routed)          0.525     6.699    coefficients/child/scratch/dense_ready0
+    SLICE_X43Y148        LUT6 (Prop_lut6_I3_O)        0.124     6.823 f  coefficients/child/scratch/busy_owned_i_14/O
+                         net (fo=1, routed)           0.292     7.116    coefficients/child/scratch/busy_owned_i_14_n_0
+    SLICE_X43Y150        LUT6 (Prop_lut6_I4_O)        0.124     7.240 r  coefficients/child/scratch/busy_owned_i_7/O
+                         net (fo=2, routed)           0.302     7.541    coefficients/child/scratch/busy_owned_i_7_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I0_O)        0.124     7.665 f  coefficients/child/scratch/state[4]_i_6__1/O
+                         net (fo=1, routed)           0.289     7.955    coefficients/child/scratch/state[4]_i_6__1_n_0
+    SLICE_X43Y152        LUT6 (Prop_lut6_I0_O)        0.124     8.079 r  coefficients/child/scratch/state[4]_i_2__1/O
+                         net (fo=19, routed)          0.444     8.523    coefficients/child/scratch/state[4]_i_2__1_n_0
+    SLICE_X43Y153        LUT5 (Prop_lut5_I1_O)        0.124     8.647 r  coefficients/child/scratch/state[2]_rep__1_i_1__0/O
+                         net (fo=1, routed)           0.000     8.647    coefficients/child/scratch/state[2]_rep__1_i_1__0_n_0
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[2]_rep__1/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44139, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X43Y153        FDRE                                         r  coefficients/child/scratch/state_reg[2]_rep__1/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X43Y153        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/child/scratch/state_reg[2]_rep__1
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -8.647    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.273    <hidden>
+
+
+
+
