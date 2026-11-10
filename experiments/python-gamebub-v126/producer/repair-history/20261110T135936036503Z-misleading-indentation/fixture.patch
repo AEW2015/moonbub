@@ -1,0 +1,14 @@
+--- before/fpga/experiments/cu66-v126-producer/verification/tb_successor.cpp
++++ after/fpga/experiments/cu66-v126-producer/verification/tb_successor.cpp
+@@ -10,7 +10,10 @@
+         successor_context(d,p,mode,0x80000000U+seed,0,2,recon);tick_owner(d);
+         require_owner(NEW(state)==(mode==2U?11U:9U)&&NEW(tile_cursor)==(mode==2U?0U:1U)&&NEW(producer_cell_cache)==successor_oracle(p,mode==2U?0U:1U),"actual earliest mode2/skip producer result");
+         if(mode==2U)require_owner(d.out_qcell==0U&&d.out_qscale==2U&&NEW(cell_owner_valid),"mode2 uses old current scale/cell, not successor or reconstruction result");
+-        if(recon)require_owner(d.reconstruct_lookup_rsp,"concurrent reconstruction response remains separately owned");++early_cases;
++        if(recon){
++            require_owner(d.reconstruct_lookup_rsp,"concurrent reconstruction response remains separately owned");
++        }
++        ++early_cases;
+     }
+     // Consecutive real skips cross pair/row and LUT bank boundaries without
+     // restoring cursor under an old owner. Full13 wrap is isolated scalar proof.

@@ -1,0 +1,84 @@
+{
+  "candidate_source_current_unfrozen": {
+    "matches_edit_recipe": true,
+    "path": "fpga/experiments/cu66-v126-producer/cs88_coefficients_v91k.sv",
+    "sha256": "5dec7454e6bfae4f7a9d7f64ecfbef8568665ddaa2dc00d4a76de1167a3c7292"
+  },
+  "check_count": 10,
+  "checks": [
+    {
+      "check": "python_ast",
+      "detail": "AST parse succeeds",
+      "pass": true
+    },
+    {
+      "check": "docker_resource_caps",
+      "detail": "Docker is bounded to 2 CPUs, 8 GiB memory and 8 GiB memory+swap, no network, and each command has a finite timeout",
+      "pass": true
+    },
+    {
+      "check": "host_prelaunch_psi_gate",
+      "detail": "Before every subprocess, requires 8 GiB available, PSI full avg10 < 1, combined host memory+swap below 85%",
+      "pass": true
+    },
+    {
+      "check": "host_live_stop_gates",
+      "detail": "During execution, stops on low available memory, high combined use, repeated high PSI, or cap+15 host watchdog; external timeout kill-after is 5 s",
+      "pass": true
+    },
+    {
+      "check": "backend_strict_verilator_cpp",
+      "detail": "Verilator commands use --assert/-Wall and no -Wno-fatal; C++ flags include -Wall -Wextra -Werror; compile output rejects %Warning-",
+      "pass": true
+    },
+    {
+      "check": "actual_pass_gate",
+      "detail": "PASS assigned only after all seeded scalar/generic/caller checks complete; command nonzero is failure",
+      "pass": true
+    },
+    {
+      "check": "unique_paths",
+      "detail": "UTC microsecond attempt/build names and exclusive mkdir; collisions fail instead of overwriting",
+      "pass": true
+    },
+    {
+      "check": "precommand_receipt",
+      "detail": "Command and resource snapshot are persisted before each subprocess; attempt receipt receives later error/final artifact state",
+      "pass": true
+    },
+    {
+      "check": "actual_rtl_semantics_note",
+      "detail": "Review note: actual_RTL_run is set before Popen; a Docker process-creation failure could leave it true though no simulator started",
+      "pass": true
+    },
+    {
+      "check": "known_fixture_gate_is_pending",
+      "detail": "Current fixture/scalar/successor verifier blockers are documented as pending prerequisites, not treated as runtime-policy defects",
+      "pass": true
+    }
+  ],
+  "comparison_runners": {
+    "scripts/cu66-v124/owner/qualify.py": "d822922c0d978c6d537996eca40c3920240c528b43a8ab6c23664479a8a62af8",
+    "scripts/cu66-v125/tile/qualify.py": "39814e729ad63b93014f60c8682121cf197194434f3c18e9e4279042f46b42cd"
+  },
+  "gates": [
+    "Current source hash is unfrozen and must be rechecked at final source freeze.",
+    "No actual RTL run or PASS was claimed."
+  ],
+  "notes": [
+    "The configured runtime caps, host PSI gates, compiler strictness, finite timeout and unique timestamped attempt paths match the retained V125 focused runner pattern.",
+    "The known fixture and scalar/successor contract blockers remain pending and were not classified as defects.",
+    "actual_RTL_run is persisted true before subprocess.Popen for simulation commands; if Docker fails to spawn, the receipt may overstate simulator invocation. Consider setting the flag at the invocation boundary while preserving pre-launch receipt durability.",
+    "The attempt receipt is first persisted by command() after snapshot/setup staging; a staging failure can leave an empty attempt directory without receipt. This is also the established V125 runner pattern."
+  ],
+  "passed_checks": 10,
+  "runner": {
+    "ast": "PASS",
+    "frozen": false,
+    "path": "scripts/cu66-v126/producer/qualify.py",
+    "sha256_current_unfrozen": "0a2607c407f1d88761ace07605de4c2dd50b190ddb9b2c6dbf93d411d8d8cda9"
+  },
+  "schema": "v126-focused-producer-runtime-review-v1",
+  "scope": "Static runtime/resource/backend review only; no runner invocation, container, simulation, or fixture edit.",
+  "status": "PASS_STATIC_WITH_SEMANTIC_NOTE"
+}

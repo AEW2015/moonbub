@@ -1,0 +1,11 @@
+--- before/fpga/experiments/cu66-v126-producer/verification/tb_successor.cpp
++++ after/fpga/experiments/cu66-v126-producer/verification/tb_successor.cpp
+@@ -37,7 +37,7 @@
+     }
+     for(unsigned p=0;p<3;++p)for(uint32_t epoch:epochs)for(unsigned fault=0;fault<2;++fault){
+         successor_context(d,p,2,epoch,65535U,3);d.out_ready=1;
+-        if(fault==0U)BS(bank_epoch[0],epoch^0x80000000U);else BS(bank_block[0],65535U^0x8000U);
++        if(fault==0U)BOTH(current_child_epoch,epoch^0x80000000U);else BOTH(expected_block,65535U^0x8000U);
+         tick_owner(d);require_owner(NEW(state)==15U&&d.error==67U&&NEW(tile_cursor)==0U&&NEW(producer_cell_cache)==0U&&!NEW(cell_owner_valid),"original bad owner wins before prepared cell consumption");++bad_owner;
+     }
+     // Every actual preparation/earliest-response stage sees reset, abort and

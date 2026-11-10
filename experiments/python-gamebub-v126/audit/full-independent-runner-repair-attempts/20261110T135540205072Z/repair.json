@@ -1,0 +1,43 @@
+{
+  "candidate": {
+    "path": "scripts/cu66-v126/producer/qualify.py",
+    "sha256": "fd9c710d471baee6aa274f7df7447bc645169393cf368d23941292296552873b"
+  },
+  "edits": [
+    {
+      "after": "\ndef memory():\n    raw = Path('/proc/meminfo').read_text()\n    mem = {x.split(':')[0]:int(x.split()[1])*1024 for x in raw.splitlines()}\n    pressure = Path('/proc/pressure/memory').read_text()\n    full = next(x for x in pressure.splitlines() if x.startswith('full '))\n    # Combined host memory+swap utilization; swap is not added to containers.\n    combined = (mem['MemTotal'] - mem['MemAvailable'] + mem['SwapTotal'] - mem['SwapFree']) / (mem['MemTotal'] + mem['SwapTotal'])\n    return dict(monotonic=time.monotonic(), available_bytes=mem['MemAvailable'], psi_full_avg10=float(full.split('avg10=')[1].split()[0]),\n                combined=combined, meminfo=raw, memory_pressure=pressure)\n\n\ndef main():\n",
+      "before": "\ndef main():\n",
+      "count": 1
+    }
+  ],
+  "failed_attempt": {
+    "actual_RTL_run": false,
+    "commands": 0,
+    "error": "name 'memory' is not defined",
+    "path": "experiments/python-gamebub-v126/producer/attempts/20261110T135405341398Z/receipt.json",
+    "sha256": "791ed8d966e1eb47a3c28044bb29aefabb15baea6fc7861884b42a311f65b089",
+    "status": "FAIL"
+  },
+  "inherited_helper": {
+    "function": "memory",
+    "function_sha256": "d28d4d2b689350d0566973e3b4f4ccc3235a98611f9588dea893c2c4fccb2853",
+    "source": "scripts/cu66-v125/tile/qualify.py",
+    "source_sha256": "39814e729ad63b93014f60c8682121cf197194434f3c18e9e4279042f46b42cd"
+  },
+  "initial_freeze": {
+    "path": "experiments/python-gamebub-v126/audit/full-independent-runner-repair-attempts/20261110T135540205072Z/initial-tooling-freeze.json",
+    "sha256": "ca31924cb6092460d2889b95ef4e31a31372f2b1cd2b399901e91bfbb8d26f44"
+  },
+  "initial_runner_derivation": {
+    "path": "experiments/python-gamebub-v126/audit/full-independent-runner-repair-attempts/20261110T135540205072Z/focused-runner-derivation-before.json",
+    "sha256": "5ec9faf00fa29e6e4b600295e0b9fee8a48c158d07848f2cdec01325e5e75b0d"
+  },
+  "new_RTL_or_Docker_job_started": false,
+  "original": {
+    "path": "experiments/python-gamebub-v126/audit/full-independent-runner-repair-attempts/20261110T135540205072Z/qualify-before.py",
+    "sha256": "b52c84a25154a498112587ec5b674c17ddcf997843cc92182927ab06b738783f"
+  },
+  "production_or_fixture_changed": false,
+  "schema": "v126-pre-docker-runner-memory-helper-repair-v1",
+  "warning_or_resource_gate_relaxed": false
+}

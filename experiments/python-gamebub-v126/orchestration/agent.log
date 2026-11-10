@@ -1,0 +1,19 @@
+V126 architectural timing experiment; existing skill authorization applies.
+
+TIMING-16 understanding (before selected RTL implementation)
+Problem: V125 producer tile_cursor[0]/C -> producer_cell_cache[10]/D is -1.224 ns at 8 ns; detailed path is 9.171 ns, 3 CARRY4 + 5 LUT6, fanout504 on an address select.
+Evidence: frozen V125 native67ac131f..., matched producer observation5a8a3d00..., source963b46c3..., next-timing2eacb22b....
+Cause: observed successor addition plus lookup and distribution; routing is75.968% of data delay. Exact physical effects remain measurements, not a source-only proof.
+Intent: user-approved V126 pipeline separation on existing edges, unchanged functional/public-cycle contract; target125MHz.
+Resolution: prepare address first, then ROM cell on MAP_REQ, then consume on original advance. Keep NEXT_PLANE exact current-cell behavior.
+Alternatives: bank-local or separately registered lookup only if a measured ROM-only failure warrants a new fully proved source; no clock relaxation or exceptions.
+Risks: stale/uninitialized preparation, modulo13 wrap, empty planes, rejected starts, new control-set/fanout routes and worse neighboring families.
+Verification: new full keys/validity assertions plus complete inherited focused/full/parent comparisons before native launch; inspect both sides of all new registers after route.
+Authorization: explicit user request to implement V126 and prior approved source-bound plan; no new constraints or ambiguous clock choice is inferred.
+Confidence: high on observed source/path chronology and intent; timing improvement remains unproven until fresh native result.
+
+TIMING-18 understanding
+Problem: component OOC analysis lacks external input/output delays (V1251101/12884); board interface behavior is not qualified.
+Intent: keep unchanged component recipe; actual full-board timing is a later gate using real board/interface contracts.
+Resolution: report omissions explicitly. Do not guess I/O values, add false paths, waive checks or call component timing a board pass.
+Confidence: high on retained limitation; no external constraint correction is authorized or attempted in V126.

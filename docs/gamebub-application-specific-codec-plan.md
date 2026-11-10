@@ -1,5 +1,18 @@
 # Game Bub application-specific codec: selected direction and gates
 
+**V126 measured continuation, 2026-11-10:** the [producer successor pipeline](cu66-v126/README.md)
+passes focused and full functional qualification with zero public-cycle change.
+The old cursor → cache path improves **−1.224 → +0.246 ns**; the new address →
+ROM-result and result → cache paths are **+0.256 / +4.802 ns**. The new address
+CE still fails at −0.086 ns, and global 125 MHz regresses to **−1.867 ns WNS,
+−4,427.979 ns TNS / 10,868 setup endpoints**. This candidate is not promoted.
+The routed worst path is scratch tile-mode → owner/ready return → scratch state;
+[V127’s proposal](cu66-v126/next-timing.md) targets that actual dependency and
+retains an explicitly verified elastic-control option. Keep the better historical
+V123 global comparison and qualified B100 control; do not automatically stack
+this globally worse experiment. Row cycles remain 1,145,104 / 1,553,197, so
+hardware 30 fps and validated <10 ms remain open. See [complete routed results](cu66-v126/timing-results.md).
+
 **Next five versions, updated 2026-11-10:** the
 [V126–V130 execution plan](gamebub-v126-v130-timing-streaming-plan.md) now leads
 the work: producer pipeline cut; scratch/admission control and repeated 125 MHz

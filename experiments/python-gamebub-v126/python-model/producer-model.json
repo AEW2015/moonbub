@@ -1,0 +1,52 @@
+{
+  "bindings": {
+    "docs/cu66-v125/next-timing.md": {
+      "sha256": "2eacb22b6e913343f23360daf135ed1711780b0df532ae78ec753448f09621e7"
+    },
+    "docs/gamebub-v126-v130-timing-streaming-plan.md": {
+      "sha256": "d70d0fc7e8313e58b27945f20c6873bd738fdfb6f443ec3a69f92db2f9acd87b"
+    },
+    "extracted_quant_cell_table_sha256": "da7d1eccd80b49caa082c52fe878d863ae1c91b3ea3a8f5e499f6dabe4fca310",
+    "fpga/experiments/cu66-v124-owner/cs88_coefficients_v91k.sv": {
+      "sha256": "963b46c3449d3a31e5ae85763f0681c6e68156c8d8c2c4c330d834ed2554fb53"
+    }
+  },
+  "counts": {
+    "accepted_start_invalidations": 1,
+    "blocked_start_preserves": 1,
+    "empty_plane_transitions": 1,
+    "held_dispatch_cycles": 5,
+    "map_req_error67_cases": 1,
+    "mapwait_skip_consumes": 7,
+    "mode2_dispatch_consumes": 1,
+    "next_plane_current_cache_tuples": 32768,
+    "priority_error_cases": 3,
+    "quant_cell_full_domain_tuples": 32768,
+    "reachable_map_req_captures": 8,
+    "reset_abort_invalidations": 1,
+    "source_lut_bank_count": 64,
+    "source_lut_truth_words": 704,
+    "stale_or_wrong_owner_rejections": 6,
+    "successor_rom_full_domain_tuples": 32768,
+    "t_plus_two_writer_full_domain_tuples": 32768,
+    "uint13_wrap_successors": 4
+  },
+  "limitations": [
+    "The truth table is decoded from the pinned source and is not an independent image-quality or external golden oracle.",
+    "This is a finite Python model, not RTL equivalence, formal proof, synthesis, routed timing, resources, FPS, or hardware qualification.",
+    "No V126 candidate RTL existed in this model binding; the source and proposal are frozen V125/V124 inputs. A future candidate review must bind its exact producer source without rewriting prior results.",
+    "The model does not prove the proposed existing-edge writer schedule is naturally reached by all transactions; full controller regressions remain required."
+  ],
+  "model_kind": "Python finite Boolean/transition model with exact extracted SV LUT truth tables; no RTL execution",
+  "python": "3.14.4",
+  "schema": "v126-producer-successor-address-model-v1",
+  "scope": {
+    "error_priority": "Queue error, then child error, then foreign child owner are checked before successful dispatch consumption.",
+    "full_domain": "All 8192 uint13 tile values for each of four two-bit planes are decoded from the source's complete 64-bank\u00d711-bit LUT truth table; successor/ROM/t+2 identities checked for each tuple.",
+    "natural_transition_sample": "Finite in-range state model covers tile skip, one-cycle MAP_REQ capture, MAP_WAIT mode2 hold, repeated DISPATCH hold, accepted nonterminal consume, terminal no-advance, empty-plane hold, NEXT_PLANE current-cell recompute, reset/abort/retry and blocked-start preservation.",
+    "ownership": "Full 32-bit frame epoch, two-bit plane and full 13-bit current tile witness; stale or mismatched address/cell owners are rejected. Payload may remain stale after invalidation but cannot authorize consume.",
+    "wrap": "13-bit t+1/t+2 arithmetic includes 8191 wrap. Those full-domain wrap contexts are algebraic only; actual MAP_REQ rejects current tiles at or beyond tile_count."
+  },
+  "script_sha256": "2edb601e3e253f29567bbe9423c0330d70331dec5aeaac74e1bba31be5d87a96",
+  "status": "PASS_FINITE_SOURCE_BOUND_ALGEBRA"
+}

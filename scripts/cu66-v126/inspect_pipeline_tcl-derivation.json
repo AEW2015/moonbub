@@ -1,0 +1,36 @@
+{
+  "candidate": "scripts/cu66-v126/inspect_pipeline.tcl",
+  "candidate_sha256": "79bdfc937db3ca11cd1f183dfa314c5ae61021b39caac36e55b168661e6ec509",
+  "edits": [
+    {
+      "after": "V126",
+      "before": "V125",
+      "count": 2
+    },
+    {
+      "after": "inspect_pipeline.tcl",
+      "before": "inspect_tile.tcl",
+      "count": 1
+    },
+    {
+      "after": "# Retained V125 admission predicate sources",
+      "before": "# V126 admission predicate sources",
+      "count": 1
+    },
+    {
+      "after": "# V126 producer pipeline families, including both new register boundaries.\n# Actual source widths: cursor13/cache11/plane2/state8/successor13/cell11.\nset producer_sources [dict create]\nforeach {family pattern width} {\n    producer_tile_cursor *coefficients/tile_cursor_reg* 13\n    producer_cell_cache *coefficients/producer_cell_cache_reg* 11\n    producer_plane *coefficients/plane_reg* 2\n    producer_state *coefficients/state_reg* 8\n    prepared_successor_tile *coefficients/prepared_successor_tile_reg* 13\n    prepared_successor_cell *coefficients/prepared_successor_cell_reg* 11\n} {dict set producer_sources $family [sequential_group $family $pattern $width]}\nset producer_targets [dict create]\nforeach {family pattern} {\n    producer_cell_cache *coefficients/producer_cell_cache_reg*\n    producer_tile_cursor *coefficients/tile_cursor_reg*\n    producer_state *coefficients/state_reg*\n    prepared_successor_tile *coefficients/prepared_successor_tile_reg*\n    prepared_successor_cell *coefficients/prepared_successor_cell_reg*\n} {\n    set cells [get_cells -quiet -hierarchical -filter \"NAME =~ $pattern && REF_NAME =~ FD*\"]\n    dict set producer_targets $family [endpoint_group ${family}_D_CE $cells \\\n        {REF_PIN_NAME == D || REF_PIN_NAME == CE}]\n}\ndict for {family pins} $producer_sources {\n    inspect_paths ${family}-all-endpoints $pins ALL_ENDPOINTS\n    dict for {target endpoints} $producer_targets {inspect_paths ${family}-to-${target} $pins $endpoints}\n}\nemit SUMMARY current QUALIFICATION NONE_READONLY_CHECKPOINT_OBSERVATION",
+      "before": "emit SUMMARY current QUALIFICATION NONE_READONLY_CHECKPOINT_OBSERVATION",
+      "count": 1
+    },
+    {
+      "after": "V126_PIPELINE_READONLY_INSPECTION_COMPLETE",
+      "before": "V126_TILE_READONLY_INSPECTION_COMPLETE",
+      "count": 1
+    }
+  ],
+  "forward_reverse_exact": true,
+  "original": "scripts/cu66-v125/inspect_tile.tcl",
+  "original_sha256": "39486c9de01a27b96652345200ff1a8437a1b584310fb638d4ff547444cc7a7b",
+  "schema": "v126-pipeline-observation-reversible-derivation-v1",
+  "scope": "Bounded readonly existing-checkpoint observation; old family queries preserved plus exact producer/new register families. No implementation or constraint/checkpoint writes."
+}

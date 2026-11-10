@@ -1,0 +1,80 @@
+{
+  "added_public_cycles": 0,
+  "added_source_payload_bits": 24,
+  "added_synthesis_attributes": 0,
+  "candidate": "fpga/experiments/cu66-v126-producer/cs88_coefficients_v91k.sv",
+  "candidate_sha256": "5dec7454e6bfae4f7a9d7f64ecfbef8568665ddaa2dc00d4a76de1167a3c7292",
+  "edits": [
+    {
+      "after": "    logic [10:0] producer_cell_cache;\n    // V126: private geometry stages, with no public state/cycle added.\n    logic [12:0] prepared_successor_tile;\n    logic [10:0] prepared_successor_cell;\n`ifndef SYNTHESIS\n    logic address_owner_valid, cell_owner_valid;\n    logic [31:0] address_owner_frame, cell_owner_frame, cell_owner_child_epoch;\n    logic [1:0] address_owner_plane, cell_owner_plane;\n    logic [12:0] address_owner_tile, cell_owner_tile, cell_owner_address;\n`endif",
+      "before": "    logic [10:0] producer_cell_cache;",
+      "reason": "Add exactly24 unreset production payload bits; all owner fields are verification-only."
+    },
+    {
+      "after": "\n    // Successor address is ready before MAP_REQ. On a current-tile advance,\n    // next_address is literal uint13(old tile+2), not an add feeding the ROM.\n    task automatic prepare_successor_address(input logic [12:0] next_tile,\n                                             input logic [12:0] next_address);\n        prepared_successor_tile<=next_address;\n`ifndef SYNTHESIS\n        address_owner_valid<=1;address_owner_frame<=frame_epoch;\n        address_owner_plane<=plane;address_owner_tile<=next_tile;\n        cell_owner_valid<=0;\n`endif\n    endtask\n    // This unreset payload can sample an old MAP_REQ on a cancellation edge.\n    // Logical cancellation invalidates its owner in the original priority tree.\n    always_ff @(posedge clk)if(state==MAP_REQ)\n        prepared_successor_cell<=quant_cell(plane,prepared_successor_tile);\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!reset&&!abort_packet&&!accepted_start&&\n        !(REFILL_OVERLAP!=0&&frame_running&&queue_error!=0)&&\n        !(frame_running&&child_owned&&child_error!=0))begin\n        if(state==MAP_REQ&&tile_cursor<tiles(plane))begin\n            assert(address_owner_valid&&address_owner_frame==frame_epoch&&\n                address_owner_plane==plane&&address_owner_tile==tile_cursor&&\n                prepared_successor_tile==tile_cursor+13'd1)\n                else $fatal(1,\"V126 full13 successor address ownership\");\n        end\n        if((state==MAP_WAIT&&lookup_rsp&&lookup_mode!=2)||\n           (state==DISPATCH&&!(child_out_valid&&!child_owner_match)&&\n            out_valid&&out_ready&&out_index==63&&\n            32'(expected_block)+1!=32'(selected_blocks)))begin\n            assert(address_owner_valid&&address_owner_frame==frame_epoch&&\n                address_owner_plane==plane&&address_owner_tile==tile_cursor&&\n                prepared_successor_tile==tile_cursor+13'd1)\n                else $fatal(1,\"V126 address key stable at original advance\");\n            assert(cell_owner_valid&&cell_owner_frame==frame_epoch&&\n                cell_owner_child_epoch==current_child_epoch&&\n                cell_owner_plane==plane&&cell_owner_tile==tile_cursor&&\n                cell_owner_address==prepared_successor_tile&&\n                prepared_successor_cell==quant_cell(plane,tile_cursor+13'd1))\n                else $fatal(1,\"V126 complete successor cell ownership\");\n        end\n    end\n`endif\n    assign frame_running=frame_running_owned;",
+      "before": "    assign frame_running=frame_running_owned;",
+      "reason": "Separate ROM-only MAP_REQ payload from increment, with consumer assertions under exact original fault priority."
+    },
+    {
+      "after": "        if(reset||abort_packet)begin\n`ifndef SYNTHESIS\n            address_owner_valid<=0;cell_owner_valid<=0;\n`endif\n            begin state<=IDLE;frame_running_owned<=1'b0; end error<=0;",
+      "before": "        if(reset||abort_packet)begin\n            begin state<=IDLE;frame_running_owned<=1'b0; end error<=0;",
+      "reason": "Original reset/abort current-cache values retained; only new owner validity resets."
+    },
+    {
+      "after": "            if(accepted_start)begin\n`ifndef SYNTHESIS\n                address_owner_valid<=0;cell_owner_valid<=0;\n`endif\n                begin state<=ADMIT;",
+      "before": "            if(accepted_start)begin\n                begin state<=ADMIT;",
+      "reason": "Accepted start revokes prior frame; blocked raw start continues the original frame untouched."
+    },
+    {
+      "after": "                if(REFILL_OVERLAP!=0&&frame_running&&queue_error!=0)begin\n`ifndef SYNTHESIS\n                    address_owner_valid<=0;cell_owner_valid<=0;\n`endif\n                    begin state<=FAILED;",
+      "before": "                if(REFILL_OVERLAP!=0&&frame_running&&queue_error!=0)begin\n                    begin state<=FAILED;",
+      "reason": "Queue error retains first priority and invalidates unobservable preparation."
+    },
+    {
+      "after": "                end else if(frame_running&&child_owned&&child_error!=0)begin\n`ifndef SYNTHESIS\n                    address_owner_valid<=0;cell_owner_valid<=0;\n`endif\n                    begin state<=FAILED;",
+      "before": "                end else if(frame_running&&child_owned&&child_error!=0)begin\n                    begin state<=FAILED;",
+      "reason": "Child error keeps original priority ahead of state-specific advance."
+    },
+    {
+      "after": "                        if(fork_blocks[plane]==0)begin\n`ifndef SYNTHESIS\n                            address_owner_valid<=0;cell_owner_valid<=0;\n`endif\n                            begin state<=NEXT_PLANE;frame_running_owned<=1'b1; end\n                        end ",
+      "before": "                        if(fork_blocks[plane]==0)begin state<=NEXT_PLANE;frame_running_owned<=1'b1; end ",
+      "reason": "Empty plane creates no address/ROM work and retains original held current geometry."
+    },
+    {
+      "after": "                            prepare_successor_address(13'd0,13'd1);\n                            tile_cursor<=0;producer_cell_cache<=0;expected_block<=0;refill_cursor<=0;",
+      "before": "                            tile_cursor<=0;producer_cell_cache<=0;expected_block<=0;refill_cursor<=0;",
+      "reason": "Nonempty plane establishes successor1 at the original zero-tile writer."
+    },
+    {
+      "after": "                    MAP_REQ:begin\n`ifndef SYNTHESIS\n                        if(tile_cursor<tiles(plane))begin\n                            cell_owner_valid<=1;cell_owner_frame<=frame_epoch;\n                            cell_owner_child_epoch<=current_child_epoch;\n                            cell_owner_plane<=plane;cell_owner_tile<=tile_cursor;\n                            cell_owner_address<=prepared_successor_tile;\n                        end else begin address_owner_valid<=0;cell_owner_valid<=0;end\n`endif\n                        if(tile_cursor>=tiles(plane))",
+      "before": "                    MAP_REQ:begin\n                        if(tile_cursor>=tiles(plane))",
+      "reason": "Bind ROM result to actual request geometry and current allocated child epoch; malformed bound keeps error67."
+    },
+    {
+      "after": "                        end else begin prepare_successor_address(tile_cursor+13'd1,tile_cursor+13'd2);tile_cursor<=tile_cursor+1;producer_cell_cache<=prepared_successor_cell;begin state<=MAP_REQ;frame_running_owned<=1'b1; end end",
+      "before": "                        end else begin tile_cursor<=tile_cursor+1;producer_cell_cache<=quant_cell(plane,tile_cursor+13'd1);begin state<=MAP_REQ;frame_running_owned<=1'b1; end end",
+      "reason": "MAP_WAIT skip consumes owned ROM result on old edge and prepares following full13 address in parallel."
+    },
+    {
+      "after": "                        if(child_out_valid&&!child_owner_match)begin\n`ifndef SYNTHESIS\n                            address_owner_valid<=0;cell_owner_valid<=0;\n`endif\n                            begin state<=FAILED;",
+      "before": "                        if(child_out_valid&&!child_owner_match)begin begin state<=FAILED;",
+      "reason": "Bad child owner retains error67 precedence over last coefficient acceptance."
+    },
+    {
+      "after": "                            else begin prepare_successor_address(tile_cursor+13'd1,tile_cursor+13'd2);tile_cursor<=tile_cursor+1;producer_cell_cache<=prepared_successor_cell;begin state<=MAP_REQ;frame_running_owned<=1'b1; end end",
+      "before": "                            else begin tile_cursor<=tile_cursor+1;producer_cell_cache<=quant_cell(plane,tile_cursor+13'd1);begin state<=MAP_REQ;frame_running_owned<=1'b1; end end",
+      "reason": "Nonterminal accepted coefficient63 consumes owned ROM result; terminal block path is unchanged."
+    },
+    {
+      "after": "                    NEXT_PLANE:begin\n`ifndef SYNTHESIS\n                        address_owner_valid<=0;cell_owner_valid<=0;\n`endif\n                        if(plane==2)",
+      "before": "                    NEXT_PLANE:begin\n                        if(plane==2)",
+      "reason": "Revoke prior plane ownership while preserving direct current-cell recomputation and empty-plane intermediate values."
+    }
+  ],
+  "old_assertions_removed": 0,
+  "old_private_value_contract_changes": 0,
+  "original": "fpga/experiments/cu66-v124-owner/cs88_coefficients_v91k.sv",
+  "original_sha256": "963b46c3449d3a31e5ae85763f0681c6e68156c8d8c2c4c330d834ed2554fb53",
+  "schema": "v126-producer-production-derivation-v1",
+  "unchanged_other_origins": 17
+}
