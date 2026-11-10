@@ -1,5 +1,16 @@
 # Game Bub: spatial architecture review and V121–V125 exploration plan
 
+**V122 measured follow-up:** [bounds pipeline and service study](cu66-v122/README.md)
+passes all four functional stages with zero public-cycle change. Admission
+cursor/state improves from −1.347 ns to −0.250 ns, but global routed setup
+regresses to −1.949 ns with 11,866 failing endpoints. No 125 MHz promotion.
+Retained row accounting identifies 70,080 eight-byte writes; analytical burst
+sensitivities and a synthetic edge-trace validator prepare the next experiment.
+Actual exclusive-edge instrumentation, physical memory service and the remaining
+V122 roadmap exits are still open. The next measured timing target is RAW
+geometry/order validation into scratch state; see the
+[bounded experiment proposal](cu66-v122/next-timing.md).
+
 **V121 follow-up measured:** [existing-edge request preparation](cu66-v121/README.md)
 passes focused/full/transport/peer/parent checks with zero public-cycle change.
 The targeted issued → RAM-enable path now has +0.303 ns slack, and the new

@@ -1,5 +1,10 @@
 # V121: refill request timing repair
 
+Continuation: [V122 bounds and memory-service study](../cu66-v122/README.md)
+retains exact functional cycles and improves the admission family, but regresses
+overall 125 MHz timing. V121 remains historical evidence; qualified Source B100
+is unchanged.
+
 **The targeted request path is fixed at 125 MHz; the complete component still
 fails 125 MHz timing.** All four functional stages pass with exact Source B
 public cycles. No new clock or hardware milestone is qualified.

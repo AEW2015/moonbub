@@ -1,5 +1,15 @@
 # Game Bub application-specific codec: selected direction and gates
 
+**V122 measured continuation:** [the bounds and memory-service study](cu66-v122/README.md)
+passes focused/full/transport/peer/parent checks with unchanged public cycles.
+Admission cursor/state gains 1.097 ns but still fails at −0.250 ns; overall
+125 MHz setup regresses to −1.949 ns WNS, −4,597.575 ns TNS and 11,866 failures.
+The candidate is not promoted. A measured RAW-to-scratch ordering cone guides
+the next control cut. Row-service analysis and synthetic trace validation are
+prerequisites for further memory experiments, not measured latency gains.
+Qualified Source B100 stays unchanged; physical 30 fps and validated hardware
+<10 ms remain open.
+
 **V121 measured continuation:** [the refill request repair](cu66-v121/README.md)
 passes all four functional stages with zero public-cycle change. Its targeted
 125 MHz issued-counter → RAM-enable path improves from −1.517 ns to +0.303 ns;
