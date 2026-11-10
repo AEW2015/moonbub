@@ -1,0 +1,36 @@
+{
+  "candidate": "scripts/cu66-v127/inspect_pipeline.tcl",
+  "candidate_sha256": "0e1286e4e3a56b403ca4434649f29cfb783e403a2c668ce083d53067b4965ea6",
+  "core_implementation_recipe_changed": false,
+  "edits": [
+    {
+      "after": "v127",
+      "before": "v126",
+      "occurrences": 0
+    },
+    {
+      "after": "V127",
+      "before": "V126",
+      "occurrences": 2
+    },
+    {
+      "after": "    emit_bank *scratch/emit_bank_reg* 1\n    tile_overlap_mode *scratch/tile_overlap_mode_reg* 1\n    scratch_raw_mode *scratch/raw_mode_reg* 1\n    scalar_epoch *scratch/active_epoch_reg* 32\n    scalar_block *scratch/output_block_reg* 16\n",
+      "before": "    emit_bank *scratch/emit_bank_reg* 1\n",
+      "occurrences": 1
+    },
+    {
+      "after": "foreach pattern {*tile_owner_match* *scalar_owner_match* *child_owner_match*} {",
+      "before": "foreach pattern {*tile_owner_match* *child_owner_match*} {",
+      "occurrences": 1
+    },
+    {
+      "after": "        emit OWNER_LANE_NET $net PIN_COUNT [llength [get_pins -quiet -of_objects $net]]\n        # UG835 2026.1 all_fanin accepts a sink net as its positional object.\n        # Full timing-startpoint lists are retained; no netlist property is edited.\n        if {[llength $nets] <= 32} {\n            if {[catch {lsort [all_fanin -flat -startpoints_only $net]} starts]} {\n                gap $net OWNER_FANIN_UNAVAILABLE $starts\n            } else {\n                emit OWNER_LANE_FANIN $net STARTPOINT_COUNT [llength $starts]\n                emit OWNER_LANE_FANIN $net STARTPOINTS $starts\n                if {[llength $starts]==0} {gap $net NO_FANIN_STARTPOINTS {No topology claim from an empty fan-in observation}}\n            }\n        } else {\n            gap $pattern OWNER_FANIN_NOT_QUERIED {More than 32 named lane nets; bounded fan-in query not executed}\n        }\n",
+      "before": "        emit OWNER_LANE_NET $net PIN_COUNT [llength [get_pins -quiet -of_objects $net]]\n",
+      "occurrences": 1
+    }
+  ],
+  "forward_reverse_exact": true,
+  "original": "scripts/cu66-v126/inspect_pipeline.tcl",
+  "original_sha256": "79bdfc937db3ca11cd1f183dfa314c5ae61021b39caac36e55b168661e6ec509",
+  "schema": "v127-root-tool-reversible-derivation-v1"
+}

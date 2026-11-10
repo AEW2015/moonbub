@@ -1,0 +1,98 @@
+{
+  "added_public_cycles": 0,
+  "added_registers": 0,
+  "added_synthesis_attributes": 0,
+  "baseline_index": "experiments/python-gamebub-v126/integration/results.json",
+  "baseline_index_sha256": "7d534c343732bc50786bff874c9b6d536bceaa6298fc5e7f002d98b5216e732f",
+  "schema": "v127-owner-three-lane-production-derivation-v1",
+  "sources": [
+    {
+      "added_public_cycles": 0,
+      "added_registers": 0,
+      "added_synthesis_attributes": 0,
+      "alias": "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv",
+      "candidate": "fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv",
+      "candidate_sha256": "8cd259792d2d7ea0c603117591e5e6033fbded7bacea10d598851f0cc5853ffc",
+      "edits": [
+        {
+          "after": "    output logic [31:0] debug_bank_epoch [0:1],\n    output logic [31:0] debug_scalar_epoch,\n    output logic [15:0] debug_scalar_block,",
+          "before": "    output logic [31:0] debug_bank_epoch [0:1],",
+          "classification": "interface-only",
+          "reason": "Direct raw scalar register views, independent of tile mode/emit selector."
+        },
+        {
+          "after": "    assign debug_tile_mode=tile_mode;\n    assign debug_scalar_epoch=active_epoch;\n    assign debug_scalar_block=output_block;",
+          "before": "    assign debug_tile_mode=tile_mode;",
+          "classification": "interface-only",
+          "reason": "No state, validity, reset or ready gate on scalar metadata views."
+        }
+      ],
+      "old_assertions_removed": 0,
+      "original": "fpga/experiments/cu66-v123-rank/packed_scratch_v91g2.sv",
+      "original_sha256": "12ad772136053d040d09770e0e98df6a49889757919993e3725c3ac70bafc5d7"
+    },
+    {
+      "added_public_cycles": 0,
+      "added_registers": 0,
+      "added_synthesis_attributes": 0,
+      "alias": "fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv",
+      "candidate": "fpga/experiments/cu66-v127-owner/br88_pipeline_v91h.sv",
+      "candidate_sha256": "0596dce08b8d38651eb303b531e971de604d5ad7f45818a4a2d0d222d0a049cb",
+      "edits": [
+        {
+          "after": "    output logic [31:0] dbg_bank_epoch [0:1],\n    output logic [31:0] dbg_scalar_epoch,\n    output logic [15:0] dbg_scalar_block,",
+          "before": "    output logic [31:0] dbg_bank_epoch [0:1],",
+          "classification": "interface-only",
+          "reason": "Forward internal scratch scalar views without changing pipeline behavior."
+        },
+        {
+          "after": ".debug_bank_epoch(dbg_bank_epoch), .debug_scalar_epoch(dbg_scalar_epoch), .debug_scalar_block(dbg_scalar_block),",
+          "before": ".debug_bank_epoch(dbg_bank_epoch),",
+          "classification": "interface-only",
+          "reason": "Explicit new internal output connections; all old connections unchanged."
+        }
+      ],
+      "old_assertions_removed": 0,
+      "original": "fpga/experiments/cu66-v116b-control/br88_pipeline_v91h.sv",
+      "original_sha256": "2eef50dfe32a5c84cebf207dc9c56ac69b933ea0371e0b7e372681adacc4ad0e"
+    },
+    {
+      "added_public_cycles": 0,
+      "added_registers": 0,
+      "added_synthesis_attributes": 0,
+      "alias": "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv",
+      "candidate": "fpga/experiments/cu66-v127-owner/cs88_coefficients_v91k.sv",
+      "candidate_sha256": "a3b3f740ca033c626a7685c39a6774f6d5e13b2f374d492bce9cbe4af6079e04",
+      "edits": [
+        {
+          "after": "    logic child_owner_match;\n    logic [31:0] raw_scalar_epoch;\n    logic [15:0] raw_scalar_block;\n    logic scalar_owner_match;",
+          "before": "    logic child_owner_match;",
+          "classification": "interface-only",
+          "reason": "Private direct scalar view wires; producer public port list remains byte-identical."
+        },
+        {
+          "after": "    // V127: scalar and both bank comparisons precede mode/bank bit selection.\n    assign scalar_owner_match=raw_scalar_epoch==current_child_epoch &&\n        raw_scalar_block==expected_block;\n    assign child_owner_match=dbg_tile_mode ? tile_owner_match[dbg_emit_bank] :\n        scalar_owner_match;",
+          "before": "    assign child_owner_match=dbg_tile_mode ? tile_owner_match[dbg_emit_bank] :\n        (child_out_epoch==current_child_epoch && out_block==expected_block);",
+          "classification": "functional-comparator-factor",
+          "reason": "Exact full32/full16 third lane removes mode-selected scalar fields from comparison inputs."
+        },
+        {
+          "after": "        .dbg_bank_epoch(dbg_bank_epoch),\n        .dbg_scalar_epoch(raw_scalar_epoch),\n        .dbg_scalar_block(raw_scalar_block),",
+          "before": "        .dbg_bank_epoch(dbg_bank_epoch),",
+          "classification": "interface-only",
+          "reason": "Connect raw scalar views privately; no public top ports or state changes."
+        },
+        {
+          "after": "        assert(scalar_owner_match==(raw_scalar_epoch==current_child_epoch &&\n            raw_scalar_block==expected_block))\n            else $fatal(1,\"V127 full32/full16 scalar owner lane mismatch\");\n        if(!dbg_tile_mode)begin\n            assert(child_out_epoch==raw_scalar_epoch && out_block==raw_scalar_block)\n                else $fatal(1,\"V127 non-tile raw scalar views differ from selected fields\");\n        end\n        assert(child_owner_match==(child_out_epoch==current_child_epoch &&\n            out_block==expected_block))",
+          "before": "        assert(child_owner_match==(child_out_epoch==current_child_epoch &&\n            out_block==expected_block))",
+          "classification": "verification-only",
+          "reason": "Additional unconditional scalar lane/view identities; all original assertion bodies retained."
+        }
+      ],
+      "old_assertions_removed": 0,
+      "original": "fpga/experiments/cu66-v126-producer/cs88_coefficients_v91k.sv",
+      "original_sha256": "5dec7454e6bfae4f7a9d7f64ecfbef8568665ddaa2dc00d4a76de1167a3c7292"
+    }
+  ],
+  "unchanged_other_origins": 15
+}

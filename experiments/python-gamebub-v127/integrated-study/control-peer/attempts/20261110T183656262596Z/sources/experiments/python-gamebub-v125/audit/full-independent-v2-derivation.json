@@ -1,0 +1,23 @@
+{
+  "candidate": {
+    "path": "scripts/cu66-v125/audit_functional_v2.py",
+    "sha256": "d32422e163a841f3114d891bca65054f70b82b4412d3ec4a294eca0c7456552d"
+  },
+  "edits": [
+    {
+      "after": "            _, order_path, order_baseline = resolve_baseline(handoff['stages'][BASELINE_SELECTORS[name]])\n            baseline_admission = handoff['source_origins'][ADMISSION_ALIAS]['path']\n            expected_stage_order = [ADMISSION_CANDIDATE if p == baseline_admission else p\n                                    for p in order_baseline['rtl_source_order']]\n            need(receipt['rtl_source_order'][:18] == index['rtl_source_order'],\n                 name + ' core18 RTL/include source order differs from integration')\n            need(receipt['rtl_source_order'] == expected_stage_order,\n                 name + ' complete RTL/include source order differs from frozen V124 stage')",
+      "before": "            need(receipt['rtl_source_order']==index['rtl_source_order'], name + ' RTL/include source order differs from integration')",
+      "count": 1
+    }
+  ],
+  "new_RTL_jobs_started": false,
+  "old_assertions_disabled_or_downgraded": false,
+  "original": {
+    "path": "scripts/cu66-v125/audit_functional.py",
+    "sha256": "04cb427113091fc2eba1b06c71fe0564658a1eb6e8eac0de22ff2cbb5f5d5e6f"
+  },
+  "original_RTL_receipts_changed": false,
+  "reason": "Parent retains six original wrapper sources after the core18. Compare each complete order with its pinned V124 stage, changing only the admission physical path; retain exact core18 order.",
+  "schema": "v125-postrun-functional-auditor-order-correction-v1",
+  "status": "PREPARED_FOR_ROOT_REVIEW_NOT_EXECUTED"
+}

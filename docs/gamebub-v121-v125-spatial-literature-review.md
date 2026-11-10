@@ -1,5 +1,21 @@
 # Game Bub: spatial architecture review and V121–V125 exploration plan
 
+**V127 measured continuation, 2026-11-10:** [full-owner comparison before mode selection](cu66-v127/README.md)
+passes six focused seeds and all ten full raw stream sets with zero public-cycle
+change. The old tile-mode all-endpoint path improves **−1.867 → +0.451 ns**;
+global 125 MHz improves to **−1.193 ns WNS, −1,762.554 ns TNS / 6,980 failing
+setup endpoints**, so timing still fails and this candidate is not promoted.
+The new worst path is ingress RAW mode through selected context validation to
+scratch state; admission header→tile synchronous reset/control is close behind
+at −1.165 ns. Cursor→cache, prepared address→ROM and hidden-predicate/coordinate
+paths also retain failures. The [next timing proposal](cu66-v127/next-timing.md)
+uses these actual cones; a future latency-changing queue needs full ownership,
+error/cancel/debt and II=1 proof, not delayed ready alone. V127's timing exit
+carries forward before dependent qualification. Keep the qualified B100 control
+and historical V123 comparison. Row cycles stay 1,145,104 / 1,553,197; complete
+host/ESP32/parent integration, sustained hardware 30 fps and validated hardware
+<10 ms remain open. See [all routed results](cu66-v127/timing-results.md).
+
 **V126 measured continuation, 2026-11-10:** the [producer successor pipeline](cu66-v126/README.md)
 passes focused and full functional qualification with zero public-cycle change.
 The old cursor → cache path improves **−1.224 → +0.246 ns**; the new address →

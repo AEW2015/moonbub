@@ -1,0 +1,101 @@
+{
+  "candidate": "scripts/cu66-v127/audit_native.py",
+  "candidate_sha256": "d3994d57fe1a7d4b6023d2aa661b3577ae03cad49082145d7dec6320eb4402ee",
+  "core_implementation_recipe_changed": false,
+  "edits": [
+    {
+      "after": "v127",
+      "before": "v126",
+      "occurrences": 7
+    },
+    {
+      "after": "V127",
+      "before": "V126",
+      "occurrences": 5
+    },
+    {
+      "after": "PARENT = ROOT / 'experiments/python-gamebub-v126/integration/results.json'",
+      "before": "PARENT = ROOT / 'experiments/python-gamebub-v125/integration/results.json'",
+      "occurrences": 1
+    },
+    {
+      "after": "PARENT_SHA = '7d534c343732bc50786bff874c9b6d536bceaa6298fc5e7f002d98b5216e732f'",
+      "before": "PARENT_SHA = 'a06d14b48b89e672aa74c7675d21365cbf64e831f9327f4678e7ec7aee15e987'",
+      "occurrences": 1
+    },
+    {
+      "after": "CANDIDATES = {\n    'fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv':\n        'fpga/experiments/cu66-v127-owner/packed_scratch_v91g2.sv',\n    'fpga/experiments/cu66-v91h/br88_pipeline_v91h.sv':\n        'fpga/experiments/cu66-v127-owner/br88_pipeline_v91h.sv',\n    'fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv':\n        'fpga/experiments/cu66-v127-owner/cs88_coefficients_v91k.sv',\n}",
+      "before": "ALIAS = 'fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv'\nCANDIDATE = 'fpga/experiments/cu66-v127-producer/cs88_coefficients_v91k.sv'",
+      "occurrences": 1
+    },
+    {
+      "after": "PASS_V126_PRODUCER_FULL_FUNCTIONAL",
+      "before": "PASS_V125_TILE_FULL_FUNCTIONAL",
+      "occurrences": 1
+    },
+    {
+      "after": "PASS_V127_OWNER_FULL_FUNCTIONAL",
+      "before": "PASS_V127_PRODUCER_FULL_FUNCTIONAL",
+      "occurrences": 1
+    },
+    {
+      "after": "    need(p['source_contract']['changed_aliases'] == sorted(CANDIDATES), 'Expected exactly scratch/child/producer owner-selection sources')\n    for alias, candidate in CANDIDATES.items():\n        need(origins[alias]['path'] == candidate, 'Unexpected owner candidate path: ' + alias)",
+      "before": "    need(p['source_contract']['changed_aliases'] == [ALIAS], 'Expected only producer successor preparation changed')\n    need(origins[ALIAS]['path'] == CANDIDATE, 'Unexpected producer candidate path')",
+      "occurrences": 1
+    },
+    {
+      "after": "        if alias in CANDIDATES:\n            need(meta['sha256'] != base_origins[alias]['sha256'], 'Owner candidate did not change: ' + alias)",
+      "before": "        if alias == ALIAS:\n            need(meta['sha256'] != base_origins[alias]['sha256'], 'Producer candidate did not change')",
+      "occurrences": 1
+    },
+    {
+      "after": "'Unexpected unchanged V126 source drift: '",
+      "before": "'Non-producer V125 source changed: '",
+      "occurrences": 1
+    },
+    {
+      "after": "    need(sorted(changed) == sorted(CANDIDATES), 'Composition is not the exact three-source owner-selection change')",
+      "before": "    need(changed == [ALIAS], 'Composition is not a single producer-source change')",
+      "occurrences": 1
+    },
+    {
+      "after": "v127-owner-functional-composition-v1",
+      "before": "v127-producer-functional-composition-v1",
+      "occurrences": 1
+    },
+    {
+      "after": "        for alias, candidate in CANDIDATES.items():\n            need(selected_record.get('source_sha256', {}).get(candidate) == origins[alias]['sha256'],\n                 stage + ' selected stage is not candidate-source bound: ' + alias)",
+      "before": "        need(selected_record.get('source_sha256', {}).get(CANDIDATE) == origins[ALIAS]['sha256'],\n             stage + ' selected stage is not candidate-source bound')",
+      "occurrences": 1
+    },
+    {
+      "after": "    need(v125_native['source_contract']['source_origins'] == load(ROOT / 'experiments/python-gamebub-v125/integration/results.json')['source_origins'], 'V125 native/functional composition mismatch')",
+      "before": "    need(v125_native['source_contract']['source_origins'] == parent['source_origins'], 'V125 native/functional composition mismatch')",
+      "occurrences": 1
+    },
+    {
+      "after": "    controls['V125_125'] = v125_native\n    v126_root = ROOT / 'experiments/python-gamebub-v126/results.json'\n    need(sha(v126_root) == 'e42e0145e177d65f1499db79195caef8b8abb90fab1e5f235f79913c2056360f', 'Frozen V126 root results changed')\n    v126_pin = load(v126_root)['candidate_native_receipt']\n    v126_path = ROOT / v126_pin['path']\n    need(sha(v126_path) == v126_pin['sha256'], 'V126 native receipt changed')\n    v126_native = load(v126_path)\n    need(v126_native['clock_period_ns'] == 8.0 and v126_native['result']['timing']['WNS_ns'] == -1.867, 'V126125 control changed')\n    need(v126_native['source_contract']['source_origins'] == parent['source_origins'], 'V126 native/functional composition mismatch')\n    controls['V126_125'] = v126_native",
+      "before": "    controls['V125_125'] = v125_native",
+      "occurrences": 1
+    },
+    {
+      "after": "V126 functional parent changed",
+      "before": "V125 functional parent changed",
+      "occurrences": 1
+    },
+    {
+      "after": "Invalid V126 parent",
+      "before": "Invalid V125 parent",
+      "occurrences": 1
+    },
+    {
+      "after": "V126 source contract pin changed",
+      "before": "V125 source contract pin changed",
+      "occurrences": 1
+    }
+  ],
+  "forward_reverse_exact": true,
+  "original": "scripts/cu66-v126/audit_native.py",
+  "original_sha256": "a9a06166725e65d9a765f56fac3c6e3f86bdd96a63b37c1fc22bee95cd3d646a",
+  "schema": "v127-root-tool-reversible-derivation-v1"
+}

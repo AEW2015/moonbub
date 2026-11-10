@@ -1,0 +1,107 @@
+--- before/docs/cu66-v127/owner-design.md
++++ after/docs/cu66-v127/owner-design.md
+@@ -93,7 +93,8 @@
+ `prepare_verification.py` builds nine reversible adapters, four byte-identical
+ copies, an extended scalar probe and three authored verification inputs.
+ Original is the V126 producer with module renamed and the two added internal
+-child output ports explicitly disconnected. Candidate is the V127 producer
++child outputs bound to private verification wires checked against the actual
++scratch scalar registers. Candidate is the V127 producer
+ with module renamed only. Both use the new interface-only child/scratch;
+ their old functional bodies are exact. This avoids strict PINMISSING without
+ warning suppression. Source closure separately certifies those interface-only
+--- before/fpga/experiments/cu66-v127-owner/verification-recipe.json
++++ after/fpga/experiments/cu66-v127-owner/verification-recipe.json
+@@ -2,14 +2,18 @@
+   "adapters": [
+     {
+       "candidate": "fpga/experiments/cu66-v127-owner/verification/ready_original.sv",
+-      "candidate_sha256": "9f54d1edded33fcdf269216775d7e7d6a51a9622141901e4a3ede8493b264b8d",
++      "candidate_sha256": "5994fedee248fc181c0623754346a7c523f98602aa637d205b43352031b3c178",
+       "edits": [
+         {
+           "after": "module ready_original #",
+           "before": "module cs88_coefficients_v91k #"
+         },
+         {
+-          "after": "        .dbg_bank_epoch(dbg_bank_epoch),\n        .dbg_scalar_epoch(),\n        .dbg_scalar_block(),",
++          "after": "    logic child_owner_match;\n    logic [31:0] raw_scalar_epoch;\n    logic [15:0] raw_scalar_block;",
++          "before": "    logic child_owner_match;"
++        },
++        {
++          "after": "        .dbg_bank_epoch(dbg_bank_epoch),\n        .dbg_scalar_epoch(raw_scalar_epoch),\n        .dbg_scalar_block(raw_scalar_block),",
+           "before": "        .dbg_bank_epoch(dbg_bank_epoch),"
+         }
+       ],
+@@ -54,14 +58,14 @@
+     },
+     {
+       "candidate": "fpga/experiments/cu66-v127-owner/verification/ready_probe.sv",
+-      "candidate_sha256": "990a8b286c8fd6e8cc846c7c9068878eecf1086c994015c8e613539f3f9d3269",
++      "candidate_sha256": "26ec7150356be857a21789fc9bcfdacde9a2aa114207b3f33e93a185d783c750",
+       "edits": [
+         {
+           "after": "output logic probe_refill_overlap,\n    output logic probe_factor_equal,probe_factor_scalar_match,probe_factor_selected,\n    output logic [1:0] probe_factor_mode,probe_factor_bank_matches);",
+           "before": "output logic probe_refill_overlap);"
+         },
+         {
+-          "after": "\nassign probe_factor_mode={new_dut.child.scratch.tile_overlap_mode,new_dut.child.scratch.raw_mode};\nassign probe_factor_scalar_match=new_dut.scalar_owner_match;\nassign probe_factor_selected=new_dut.child_owner_match;\nassign probe_factor_bank_matches=new_dut.tile_owner_match;\nassign probe_factor_equal=\n    new_dut.raw_scalar_epoch==new_dut.child.scratch.active_epoch &&\n    new_dut.raw_scalar_block==new_dut.child.scratch.output_block &&\n    new_dut.raw_scalar_epoch==old_dut.child.scratch.active_epoch &&\n    new_dut.raw_scalar_block==old_dut.child.scratch.output_block &&\n    new_dut.child_owner_match==old_dut.child_owner_match &&\n    new_dut.scalar_owner_match==(old_dut.child.scratch.active_epoch==old_dut.current_child_epoch &&\n                                old_dut.child.scratch.output_block==old_dut.expected_block);\n\nendmodule",
++          "after": "\nassign probe_factor_mode={new_dut.child.scratch.tile_overlap_mode,new_dut.child.scratch.raw_mode};\nassign probe_factor_scalar_match=new_dut.scalar_owner_match;\nassign probe_factor_selected=new_dut.child_owner_match;\nassign probe_factor_bank_matches=new_dut.tile_owner_match;\nassign probe_factor_equal=\n    old_dut.raw_scalar_epoch==old_dut.child.scratch.active_epoch &&\n    old_dut.raw_scalar_block==old_dut.child.scratch.output_block &&\n    new_dut.raw_scalar_epoch==new_dut.child.scratch.active_epoch &&\n    new_dut.raw_scalar_block==new_dut.child.scratch.output_block &&\n    new_dut.raw_scalar_epoch==old_dut.child.scratch.active_epoch &&\n    new_dut.raw_scalar_block==old_dut.child.scratch.output_block &&\n    new_dut.child_owner_match==old_dut.child_owner_match &&\n    new_dut.scalar_owner_match==(old_dut.child.scratch.active_epoch==old_dut.current_child_epoch &&\n                                old_dut.child.scratch.output_block==old_dut.expected_block);\n\nendmodule",
+           "before": "\nendmodule"
+         }
+       ],
+--- before/fpga/experiments/cu66-v127-owner/verification/ready_original.sv
++++ after/fpga/experiments/cu66-v127-owner/verification/ready_original.sv
+@@ -1119,6 +1119,8 @@
+     // hierarchy, reset, new FF, or timing exception is introduced.
+     (* keep = "true" *) logic [1:0] tile_owner_match;
+     logic child_owner_match;
++    logic [31:0] raw_scalar_epoch;
++    logic [15:0] raw_scalar_block;
+     for(genvar owner_bank=0;owner_bank<2;owner_bank=owner_bank+1)begin: owner_lanes
+         assign tile_owner_match[owner_bank]=
+             dbg_bank_epoch[owner_bank]==current_child_epoch &&
+@@ -1462,8 +1464,8 @@
+         .dbg_prepare_block(dbg_prepare_block),
+         .dbg_bank_block(dbg_bank_block),
+         .dbg_bank_epoch(dbg_bank_epoch),
+-        .dbg_scalar_epoch(),
+-        .dbg_scalar_block(),
++        .dbg_scalar_epoch(raw_scalar_epoch),
++        .dbg_scalar_block(raw_scalar_block),
+         .dbg_tile_prepare_start(dbg_tile_prepare_start),
+         .dbg_tile_publish(dbg_tile_publish),
+         .dbg_tile_release(dbg_tile_release),
+--- before/fpga/experiments/cu66-v127-owner/verification/ready_probe.sv
++++ after/fpga/experiments/cu66-v127-owner/verification/ready_probe.sv
+@@ -344,6 +344,8 @@
+ assign probe_factor_selected=new_dut.child_owner_match;
+ assign probe_factor_bank_matches=new_dut.tile_owner_match;
+ assign probe_factor_equal=
++    old_dut.raw_scalar_epoch==old_dut.child.scratch.active_epoch &&
++    old_dut.raw_scalar_block==old_dut.child.scratch.output_block &&
+     new_dut.raw_scalar_epoch==new_dut.child.scratch.active_epoch &&
+     new_dut.raw_scalar_block==new_dut.child.scratch.output_block &&
+     new_dut.raw_scalar_epoch==old_dut.child.scratch.active_epoch &&
+--- before/scripts/cu66-v127/owner/prepare_verification.py
++++ after/scripts/cu66-v127/owner/prepare_verification.py
+@@ -22,7 +22,9 @@
+  def e(b,a):return dict(before=b,after=a)
+  for kind,source in [('original',OLD/'cs88_coefficients_v91k.sv'),('candidate',S/'cs88_coefficients_v91k.sv')]:
+   edits=[e('module cs88_coefficients_v91k #','module ready_'+kind+' #')]
+-  if kind=='original':edits.append(e('        .dbg_bank_epoch(dbg_bank_epoch),','        .dbg_bank_epoch(dbg_bank_epoch),\n        .dbg_scalar_epoch(),\n        .dbg_scalar_block(),'))
++  if kind=='original':
++   edits.append(e('    logic child_owner_match;','    logic child_owner_match;\n    logic [31:0] raw_scalar_epoch;\n    logic [15:0] raw_scalar_block;'))
++   edits.append(e('        .dbg_bank_epoch(dbg_bank_epoch),','        .dbg_bank_epoch(dbg_bank_epoch),\n        .dbg_scalar_epoch(raw_scalar_epoch),\n        .dbg_scalar_block(raw_scalar_block),'))
+   derive(source,V/('ready_'+kind+'.sv'),edits)
+  for name in ['tb_ready.cpp','tb_controller.cpp','successor_monitor.hpp','successor_priming.hpp']:
+   source=OV/name;target=V/name;target.write_bytes(source.read_bytes());unchanged.append(dict(original=rel(source),candidate=rel(target),sha256=sha(source)))
+@@ -38,6 +40,8 @@
+ assign probe_factor_selected=new_dut.child_owner_match;
+ assign probe_factor_bank_matches=new_dut.tile_owner_match;
+ assign probe_factor_equal=
++    old_dut.raw_scalar_epoch==old_dut.child.scratch.active_epoch &&
++    old_dut.raw_scalar_block==old_dut.child.scratch.output_block &&
+     new_dut.raw_scalar_epoch==new_dut.child.scratch.active_epoch &&
+     new_dut.raw_scalar_block==new_dut.child.scratch.output_block &&
+     new_dut.raw_scalar_epoch==old_dut.child.scratch.active_epoch &&

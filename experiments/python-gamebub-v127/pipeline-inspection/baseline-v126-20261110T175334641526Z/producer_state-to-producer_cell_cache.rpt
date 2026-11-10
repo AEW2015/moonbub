@@ -1,0 +1,1271 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (lin64) Build 6511674 Tue Jun 16 11:01:26 MDT 2026
+| Date         : Tue Nov 10 17:54:18 2026
+| Host         : geto running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_timing -from [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *coefficients/state_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == Q}] -to [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *coefficients/producer_cell_cache_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == D || REF_PIN_NAME == CE}] -delay_type max -max_paths 50 -nworst 1 -path_type full_clock_expanded -file /output/producer_state-to-producer_cell_cache.rpt
+| Design       : cs88_pipeline_v91k
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -0.698ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[1]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.408ns  (logic 1.572ns (18.695%)  route 6.836ns (81.305%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.736     9.381    coefficients/admission_n_127
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[1]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[1]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y111        FDRE (Setup_fdre_C_CE)      -0.205     8.684    coefficients/producer_cell_cache_reg[1]
+  -------------------------------------------------------------------
+                         required time                          8.684    <hidden>
+                         arrival time                          -9.381    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.698    <hidden>
+
+Slack (VIOLATED) :        -0.698ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[2]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.408ns  (logic 1.572ns (18.695%)  route 6.836ns (81.305%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.736     9.381    coefficients/admission_n_127
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[2]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[2]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y111        FDRE (Setup_fdre_C_CE)      -0.205     8.684    coefficients/producer_cell_cache_reg[2]
+  -------------------------------------------------------------------
+                         required time                          8.684    <hidden>
+                         arrival time                          -9.381    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.698    <hidden>
+
+Slack (VIOLATED) :        -0.698ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[5]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.408ns  (logic 1.572ns (18.695%)  route 6.836ns (81.305%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.736     9.381    coefficients/admission_n_127
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[5]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[5]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y111        FDRE (Setup_fdre_C_CE)      -0.205     8.684    coefficients/producer_cell_cache_reg[5]
+  -------------------------------------------------------------------
+                         required time                          8.684    <hidden>
+                         arrival time                          -9.381    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.698    <hidden>
+
+Slack (VIOLATED) :        -0.698ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[8]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.408ns  (logic 1.572ns (18.695%)  route 6.836ns (81.305%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.736     9.381    coefficients/admission_n_127
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[8]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[8]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y111        FDRE (Setup_fdre_C_CE)      -0.205     8.684    coefficients/producer_cell_cache_reg[8]
+  -------------------------------------------------------------------
+                         required time                          8.684    <hidden>
+                         arrival time                          -9.381    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.698    <hidden>
+
+Slack (VIOLATED) :        -0.661ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[0]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.372ns  (logic 1.572ns (18.778%)  route 6.800ns (81.222%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.699     9.345    coefficients/admission_n_127
+    SLICE_X31Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[0]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[0]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y112        FDRE (Setup_fdre_C_CE)      -0.205     8.684    coefficients/producer_cell_cache_reg[0]
+  -------------------------------------------------------------------
+                         required time                          8.684    <hidden>
+                         arrival time                          -9.345    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.661    <hidden>
+
+Slack (VIOLATED) :        -0.661ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[3]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.372ns  (logic 1.572ns (18.778%)  route 6.800ns (81.222%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.699     9.345    coefficients/admission_n_127
+    SLICE_X31Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[3]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[3]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y112        FDRE (Setup_fdre_C_CE)      -0.205     8.684    coefficients/producer_cell_cache_reg[3]
+  -------------------------------------------------------------------
+                         required time                          8.684    <hidden>
+                         arrival time                          -9.345    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.661    <hidden>
+
+Slack (VIOLATED) :        -0.652ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[7]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.399ns  (logic 1.572ns (18.716%)  route 6.827ns (81.284%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.727     9.372    coefficients/admission_n_127
+    SLICE_X38Y109        FDRE                                         r  coefficients/producer_cell_cache_reg[7]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X38Y109        FDRE                                         r  coefficients/producer_cell_cache_reg[7]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X38Y109        FDRE (Setup_fdre_C_CE)      -0.169     8.720    coefficients/producer_cell_cache_reg[7]
+  -------------------------------------------------------------------
+                         required time                          8.720    <hidden>
+                         arrival time                          -9.372    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.652    <hidden>
+
+Slack (VIOLATED) :        -0.627ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[9]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.338ns  (logic 1.572ns (18.854%)  route 6.766ns (81.146%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.665     9.311    coefficients/admission_n_127
+    SLICE_X39Y113        FDRE                                         r  coefficients/producer_cell_cache_reg[9]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X39Y113        FDRE                                         r  coefficients/producer_cell_cache_reg[9]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X39Y113        FDRE (Setup_fdre_C_CE)      -0.205     8.684    coefficients/producer_cell_cache_reg[9]
+  -------------------------------------------------------------------
+                         required time                          8.684    <hidden>
+                         arrival time                          -9.311    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.627    <hidden>
+
+Slack (VIOLATED) :        -0.551ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[4]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.262ns  (logic 1.572ns (19.027%)  route 6.690ns (80.973%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.589     9.235    coefficients/admission_n_127
+    SLICE_X33Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[4]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X33Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[4]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X33Y112        FDRE (Setup_fdre_C_CE)      -0.205     8.684    coefficients/producer_cell_cache_reg[4]
+  -------------------------------------------------------------------
+                         required time                          8.684    <hidden>
+                         arrival time                          -9.235    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.551    <hidden>
+
+Slack (VIOLATED) :        -0.512ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[6]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.223ns  (logic 1.572ns (19.117%)  route 6.651ns (80.883%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.550     9.196    coefficients/admission_n_127
+    SLICE_X36Y116        FDRE                                         r  coefficients/producer_cell_cache_reg[6]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X36Y116        FDRE                                         r  coefficients/producer_cell_cache_reg[6]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X36Y116        FDRE (Setup_fdre_C_CE)      -0.205     8.684    coefficients/producer_cell_cache_reg[6]
+  -------------------------------------------------------------------
+                         required time                          8.684    <hidden>
+                         arrival time                          -9.196    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.512    <hidden>
+
+Slack (VIOLATED) :        -0.507ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[10]/CE
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.254ns  (logic 1.572ns (19.045%)  route 6.682ns (80.955%))
+  Logic Levels:           9  (LUT4=1 LUT5=1 LUT6=7)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         1.011     2.440    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/limit0[3]
+    SLICE_X57Y141        LUT6 (Prop_lut6_I3_O)        0.124     2.564 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/parser/core_starts[31]_i_2/O
+                         net (fo=263, routed)         0.567     3.132    coefficients/child/packet_decoder/synchronous.ingress/state_reg[2]_0[0]
+    SLICE_X56Y145        LUT6 (Prop_lut6_I1_O)        0.124     3.256 f  coefficients/child/packet_decoder/synchronous.ingress/dbg_coef_ready_INST_0_i_1/O
+                         net (fo=12, routed)          1.101     4.356    coefficients/child/scratch/store_abort
+    SLICE_X48Y148        LUT5 (Prop_lut5_I0_O)        0.124     4.480 r  coefficients/child/scratch/dbg_tile_release_INST_0_i_2/O
+                         net (fo=31, routed)          0.611     5.091    coefficients/child/scratch/dbg_tile_release_INST_0_i_2_n_0
+    SLICE_X43Y151        LUT6 (Prop_lut6_I2_O)        0.124     5.215 r  coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2/O
+                         net (fo=6, routed)           0.338     5.554    coefficients/child/scratch/dbg_emitter_state[1]_INST_0_i_2_n_0
+    SLICE_X42Y150        LUT6 (Prop_lut6_I5_O)        0.124     5.678 r  coefficients/child/scratch/coefficient_valid_INST_0_i_1/O
+                         net (fo=5, routed)           0.335     6.013    coefficients/child/scratch/dense_valid
+    SLICE_X40Y150        LUT4 (Prop_lut4_I0_O)        0.124     6.137 f  coefficients/child/scratch/tile_cursor[12]_i_11/O
+                         net (fo=1, routed)           0.499     6.635    coefficients/child/scratch/tile_cursor[12]_i_11_n_0
+    SLICE_X41Y143        LUT6 (Prop_lut6_I0_O)        0.124     6.759 r  coefficients/child/scratch/tile_cursor[12]_i_4/O
+                         net (fo=6, routed)           1.143     7.902    coefficients/admission/producer_cell_cache_reg[0]_2
+    SLICE_X39Y122        LUT6 (Prop_lut6_I1_O)        0.124     8.026 r  coefficients/admission/producer_cell_cache[10]_i_4/O
+                         net (fo=1, routed)           0.496     8.522    coefficients/admission/mode_store/producer_cell_cache_reg[0]_0
+    SLICE_X39Y116        LUT6 (Prop_lut6_I2_O)        0.124     8.646 r  coefficients/admission/mode_store/producer_cell_cache[10]_i_1/O
+                         net (fo=11, routed)          0.582     9.227    coefficients/admission_n_127
+    SLICE_X34Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[10]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X34Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[10]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X34Y111        FDRE (Setup_fdre_C_CE)      -0.169     8.720    coefficients/producer_cell_cache_reg[10]
+  -------------------------------------------------------------------
+                         required time                          8.720    <hidden>
+                         arrival time                          -9.227    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.507    <hidden>
+
+Slack (MET) :             3.116ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[9]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        4.493ns  (logic 0.608ns (13.531%)  route 3.885ns (86.469%))
+  Logic Levels:           1  (LUT4=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         2.888     4.317    coefficients/frame_state[3]
+    SLICE_X37Y109        LUT4 (Prop_lut4_I2_O)        0.152     4.469 r  coefficients/producer_cell_cache[9]_i_1/O
+                         net (fo=1, routed)           0.998     5.466    coefficients/producer_cell_cache[9]_i_1_n_0
+    SLICE_X39Y113        FDRE                                         r  coefficients/producer_cell_cache_reg[9]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X39Y113        FDRE                                         r  coefficients/producer_cell_cache_reg[9]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X39Y113        FDRE (Setup_fdre_C_D)       -0.307     8.582    coefficients/producer_cell_cache_reg[9]
+  -------------------------------------------------------------------
+                         required time                          8.582    <hidden>
+                         arrival time                          -5.466    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  3.116    <hidden>
+
+Slack (MET) :             3.383ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[4]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        4.562ns  (logic 0.580ns (12.715%)  route 3.982ns (87.285%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         3.982     5.411    coefficients/frame_state[3]
+    SLICE_X33Y112        LUT6 (Prop_lut6_I5_O)        0.124     5.535 r  coefficients/producer_cell_cache[4]_i_1/O
+                         net (fo=1, routed)           0.000     5.535    coefficients/producer_cell_cache[4]_i_1_n_0
+    SLICE_X33Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[4]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X33Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[4]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X33Y112        FDRE (Setup_fdre_C_D)        0.029     8.918    coefficients/producer_cell_cache_reg[4]
+  -------------------------------------------------------------------
+                         required time                          8.918    <hidden>
+                         arrival time                          -5.535    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  3.383    <hidden>
+
+Slack (MET) :             3.532ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[3]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        4.413ns  (logic 0.580ns (13.144%)  route 3.833ns (86.856%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         3.833     5.262    coefficients/frame_state[3]
+    SLICE_X31Y112        LUT6 (Prop_lut6_I1_O)        0.124     5.386 r  coefficients/producer_cell_cache[3]_i_1/O
+                         net (fo=1, routed)           0.000     5.386    coefficients/producer_cell_cache[3]_i_1_n_0
+    SLICE_X31Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[3]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[3]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y112        FDRE (Setup_fdre_C_D)        0.029     8.918    coefficients/producer_cell_cache_reg[3]
+  -------------------------------------------------------------------
+                         required time                          8.918    <hidden>
+                         arrival time                          -5.386    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  3.532    <hidden>
+
+Slack (MET) :             3.535ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[0]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        4.412ns  (logic 0.580ns (13.147%)  route 3.832ns (86.853%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         3.832     5.261    coefficients/frame_state[3]
+    SLICE_X31Y112        LUT6 (Prop_lut6_I5_O)        0.124     5.385 r  coefficients/producer_cell_cache[0]_i_1/O
+                         net (fo=1, routed)           0.000     5.385    coefficients/producer_cell_cache[0]_i_1_n_0
+    SLICE_X31Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y112        FDRE                                         r  coefficients/producer_cell_cache_reg[0]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y112        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/producer_cell_cache_reg[0]
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -5.385    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  3.535    <hidden>
+
+Slack (MET) :             3.563ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[6]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        4.382ns  (logic 0.580ns (13.237%)  route 3.802ns (86.763%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         3.802     5.231    coefficients/frame_state[3]
+    SLICE_X36Y116        LUT6 (Prop_lut6_I1_O)        0.124     5.355 r  coefficients/producer_cell_cache[6]_i_1/O
+                         net (fo=1, routed)           0.000     5.355    coefficients/producer_cell_cache[6]_i_1_n_0
+    SLICE_X36Y116        FDRE                                         r  coefficients/producer_cell_cache_reg[6]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X36Y116        FDRE                                         r  coefficients/producer_cell_cache_reg[6]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X36Y116        FDRE (Setup_fdre_C_D)        0.029     8.918    coefficients/producer_cell_cache_reg[6]
+  -------------------------------------------------------------------
+                         required time                          8.918    <hidden>
+                         arrival time                          -5.355    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  3.563    <hidden>
+
+Slack (MET) :             3.778ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[2]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[8]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        4.170ns  (logic 0.580ns (13.908%)  route 3.590ns (86.092%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y140        FDRE                                         r  coefficients/state_reg[2]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y140        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[2]/Q
+                         net (fo=69, routed)          3.590     5.019    coefficients/frame_state[2]
+    SLICE_X31Y111        LUT6 (Prop_lut6_I5_O)        0.124     5.143 r  coefficients/producer_cell_cache[8]_i_1/O
+                         net (fo=1, routed)           0.000     5.143    coefficients/producer_cell_cache[8]_i_1_n_0
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[8]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[8]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y111        FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/producer_cell_cache_reg[8]
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -5.143    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  3.778    <hidden>
+
+Slack (MET) :             3.779ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[2]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[5]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        4.168ns  (logic 0.580ns (13.914%)  route 3.588ns (86.086%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y140        FDRE                                         r  coefficients/state_reg[2]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y140        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[2]/Q
+                         net (fo=69, routed)          3.588     5.017    coefficients/frame_state[2]
+    SLICE_X31Y111        LUT6 (Prop_lut6_I2_O)        0.124     5.141 r  coefficients/producer_cell_cache[5]_i_1/O
+                         net (fo=1, routed)           0.000     5.141    coefficients/producer_cell_cache[5]_i_1_n_0
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[5]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[5]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y111        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/producer_cell_cache_reg[5]
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -5.141    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  3.779    <hidden>
+
+Slack (MET) :             3.780ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[2]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[2]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        4.167ns  (logic 0.580ns (13.918%)  route 3.587ns (86.082%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y140        FDRE                                         r  coefficients/state_reg[2]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y140        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[2]/Q
+                         net (fo=69, routed)          3.587     5.016    coefficients/frame_state[2]
+    SLICE_X31Y111        LUT6 (Prop_lut6_I2_O)        0.124     5.140 r  coefficients/producer_cell_cache[2]_i_1/O
+                         net (fo=1, routed)           0.000     5.140    coefficients/producer_cell_cache[2]_i_1_n_0
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[2]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[2]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y111        FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/producer_cell_cache_reg[2]
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -5.140    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  3.780    <hidden>
+
+Slack (MET) :             3.917ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[7]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        4.076ns  (logic 0.580ns (14.229%)  route 3.496ns (85.771%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         3.496     4.925    coefficients/frame_state[3]
+    SLICE_X38Y109        LUT6 (Prop_lut6_I5_O)        0.124     5.049 r  coefficients/producer_cell_cache[7]_i_1/O
+                         net (fo=1, routed)           0.000     5.049    coefficients/producer_cell_cache[7]_i_1_n_0
+    SLICE_X38Y109        FDRE                                         r  coefficients/producer_cell_cache_reg[7]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X38Y109        FDRE                                         r  coefficients/producer_cell_cache_reg[7]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X38Y109        FDRE (Setup_fdre_C_D)        0.077     8.966    coefficients/producer_cell_cache_reg[7]
+  -------------------------------------------------------------------
+                         required time                          8.966    <hidden>
+                         arrival time                          -5.049    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  3.917    <hidden>
+
+Slack (MET) :             3.977ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[10]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        4.016ns  (logic 0.580ns (14.442%)  route 3.436ns (85.558%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         3.436     4.865    coefficients/frame_state[3]
+    SLICE_X34Y111        LUT6 (Prop_lut6_I4_O)        0.124     4.989 r  coefficients/producer_cell_cache[10]_i_2/O
+                         net (fo=1, routed)           0.000     4.989    coefficients/producer_cell_cache[10]_i_2_n_0
+    SLICE_X34Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[10]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X34Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[10]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X34Y111        FDRE (Setup_fdre_C_D)        0.077     8.966    coefficients/producer_cell_cache_reg[10]
+  -------------------------------------------------------------------
+                         required time                          8.966    <hidden>
+                         arrival time                          -4.989    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  3.977    <hidden>
+
+Slack (MET) :             4.215ns  (required time - arrival time)
+  Source:                 coefficients/state_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/producer_cell_cache_reg[1]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        3.730ns  (logic 0.580ns (15.551%)  route 3.150ns (84.449%))
+  Logic Levels:           1  (LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43974, unset)        0.973     0.973    coefficients/clk
+    SLICE_X57Y138        FDRE                                         r  coefficients/state_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X57Y138        FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/state_reg[3]/Q
+                         net (fo=155, routed)         3.150     4.579    coefficients/frame_state[3]
+    SLICE_X31Y111        LUT6 (Prop_lut6_I5_O)        0.124     4.703 r  coefficients/producer_cell_cache[1]_i_1/O
+                         net (fo=1, routed)           0.000     4.703    coefficients/producer_cell_cache[1]_i_1_n_0
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43974, unset)        0.924     8.924    coefficients/clk
+    SLICE_X31Y111        FDRE                                         r  coefficients/producer_cell_cache_reg[1]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X31Y111        FDRE (Setup_fdre_C_D)        0.029     8.918    coefficients/producer_cell_cache_reg[1]
+  -------------------------------------------------------------------
+                         required time                          8.918    <hidden>
+                         arrival time                          -4.703    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  4.215    <hidden>
+
+
+
+
