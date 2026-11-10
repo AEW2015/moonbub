@@ -1,0 +1,99 @@
+{
+  "added_public_cycles": 0,
+  "added_source_payload_bits": 3,
+  "added_synthesis_attributes": 0,
+  "candidate": "fpga/experiments/cu66-v125-tile/cs88_admission_v91i2a.sv",
+  "candidate_sha256": "2f65ff770775404071e383890c75549ccb08ec9998993c86f1662cfed65d71eb",
+  "edits": [
+    {
+      "after": "\n    // V125: register literal full32 scalar decisions at existing coordinate\n    // writers. Group equality is prepared on tag commit after GROUP_BEGIN has\n    // registered group_end; it never extends the tile+16/min input cone.\n    // All payload is unreset and consumed only under complete owned keys.\n    logic prepared_tile_hidden, prepared_tile_terminal, prepared_group_terminal;\n`ifndef SYNTHESIS\n    logic tile_pred_owner_valid, group_pred_owner_valid;\n    logic [31:0] tile_pred_owner_epoch, tile_pred_owner_tile;\n    logic [1:0] tile_pred_owner_plane;\n    logic [31:0] group_pred_owner_epoch, group_pred_owner_tile, group_pred_owner_end;\n    logic [1:0] group_pred_owner_plane;\n`endif\n    task automatic prepare_tile_key(input logic [1:0] next_plane,\n                                    input logic [31:0] next_tile);\n        prepared_tile_hidden<=hidden(next_plane,next_tile);\n        prepared_tile_terminal<=next_tile==tile_count(next_plane);\n`ifndef SYNTHESIS\n        tile_pred_owner_valid<=1;\n        tile_pred_owner_epoch<=receipt_epoch;\n        tile_pred_owner_plane<=next_plane;tile_pred_owner_tile<=next_tile;\n        group_pred_owner_valid<=0;\n`endif\n    endtask\n    task automatic prepare_group_key(input logic [1:0] next_plane,\n                                     input logic [31:0] next_tile,\n                                     input logic [31:0] owned_end);\n        // Atomic group snapshot intentionally refreshes all three scalars,\n        // including tile decisions when the tag commit leaves tile unchanged.\n        prepare_tile_key(next_plane,next_tile);\n        prepared_group_terminal<=next_tile==owned_end;\n`ifndef SYNTHESIS\n        group_pred_owner_valid<=1;\n        group_pred_owner_epoch<=receipt_epoch;\n        group_pred_owner_plane<=next_plane;group_pred_owner_tile<=next_tile;\n        group_pred_owner_end<=owned_end;\n`endif\n    endtask\n`ifndef SYNTHESIS\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&\n        (state==KEY_TILE||state==GROUP_TILE||state==GROUP_NEXT))begin\n        assert(tile_pred_owner_valid&&tile_pred_owner_epoch==receipt_epoch&&\n            tile_pred_owner_plane==plane&&tile_pred_owner_tile==tile)\n            else $fatal(1,\"V125 full tile predicate owner\");\n        assert(prepared_tile_hidden==hidden(plane,tile)&&\n            prepared_tile_terminal==(tile==tile_count(plane)))\n            else $fatal(1,\"V125 literal full32 tile predicates\");\n        if(state==GROUP_TILE)begin\n            assert(group_pred_owner_valid&&group_pred_owner_epoch==receipt_epoch&&\n                group_pred_owner_plane==plane&&group_pred_owner_tile==tile&&\n                group_pred_owner_end==group_end)\n                else $fatal(1,\"V125 full group predicate owner\");\n            assert(prepared_group_terminal==(tile==group_end))\n                else $fatal(1,\"V125 literal full32 group predicate\");\n        end\n    end\n`endif\n\n    // V112_VISIBILITY_BEGIN:",
+      "before": "    // V112_VISIBILITY_BEGIN:",
+      "reason": "Add three scalar payload FFs and verification-only complete-key owners; no reset or synthesis directives."
+    },
+    {
+      "after": "            coord_valid<=0;\n`ifndef SYNTHESIS\n            tile_pred_owner_valid<=0;group_pred_owner_valid<=0;\n`endif\n            state<=IDLE;",
+      "before": "            coord_valid<=0;\n            state<=IDLE;",
+      "reason": "Keep original reset/start/abort precedence; invalidate verification ownership only."
+    },
+    {
+      "after": "                        prepare_tile_key(2'd0,32'd0);\n                        plane<=0;tile<=0;mode_cursor<=128;",
+      "before": "                        plane<=0;tile<=0;mode_cursor<=128;",
+      "reason": "Successful header establishes first tile predicate key on original edge."
+    },
+    {
+      "after": "                KEY_TILE:begin\n                    if(prepared_tile_terminal)begin\n                        clear_coordinate();\n                        prepare_tile_key(plane==2?plane:plane+2'd1,32'd0);\n                        tile<=0;",
+      "before": "                KEY_TILE:begin\n                    if(tile==tile_count(plane))begin\n                        clear_coordinate();\n                        tile<=0;",
+      "reason": "Keep equality/terminal state semantics; prepare exact successor plane and zero tile."
+    },
+    {
+      "after": "                        if(!prepared_tile_hidden)residual_tile();\n                        prepare_tile_key(plane,tile+32'd1);\n                        advance_coordinate(1);tile<=tile+1;",
+      "before": "                        if(!hidden(plane,tile))residual_tile();\n                        advance_coordinate(1);tile<=tile+1;",
+      "reason": "KEY nonterminal consumes cached visibility and prepares wrapping uint32 successor."
+    },
+    {
+      "after": "                GROUP_BEGIN:begin\n`ifndef SYNTHESIS\n                    group_pred_owner_valid<=0;\n`endif\n                    group_end<=tile+16<tile_count(plane)?tile+16:tile_count(plane);",
+      "before": "                GROUP_BEGIN:begin\n                    group_end<=tile+16<tile_count(plane)?tile+16:tile_count(plane);",
+      "reason": "Keep original min expression byte-identical; group ownership waits for stable-end tag commit."
+    },
+    {
+      "after": "                            prepare_group_key(plane,tile+32'd1,group_end);\n                            advance_coordinate(1);tile<=tile+1;state<=GROUP_TILE;",
+      "before": "                            advance_coordinate(1);tile<=tile+1;state<=GROUP_TILE;",
+      "reason": "Mixed bit consume prepares successor group tuple on original tile write."
+    },
+    {
+      "after": "                            group_tag<={first_tag_bit,bit_cache[7]};\n                            prepare_group_key(plane,tile,group_end);\n                            if(group_visible==0)begin",
+      "before": "                            group_tag<={first_tag_bit,bit_cache[7]};\n                            if(group_visible==0)begin",
+      "reason": "Real architectural tag commit samples already-registered group end and atomically owns scalar tuple."
+    },
+    {
+      "after": "                                else begin prepare_group_key(plane,group_end,group_end);advance_coordinate(5'(group_end-tile));tile<=group_end;state<=GROUP_NEXT;end",
+      "before": "                                else begin advance_coordinate(5'(group_end-tile));tile<=group_end;state<=GROUP_NEXT;end",
+      "reason": "Accepted hidden-only group overrides the tag snapshot with its actual successor tile."
+    },
+    {
+      "after": "                GROUP_TILE:begin\n                    if(prepared_group_terminal)begin",
+      "before": "                GROUP_TILE:begin\n                    if(tile==group_end)begin",
+      "reason": "Terminal group equality retains first-fault precedence."
+    },
+    {
+      "after": "                    end else if(prepared_tile_hidden||group_tag==0)begin\n                        \n                        prepare_group_key(plane,tile+32'd1,group_end);\n                        advance_coordinate(1);tile<=tile+1;",
+      "before": "                    end else if(hidden(plane,tile)||group_tag==0)begin\n                        \n                        advance_coordinate(1);tile<=tile+1;",
+      "reason": "Hidden/tag-zero step retains mode/residual behavior and exact successor."
+    },
+    {
+      "after": "                        prepare_group_key(plane,tile+32'd1,group_end);\n                        residual_tile();advance_coordinate(1);tile<=tile+1;",
+      "before": "                        residual_tile();advance_coordinate(1);tile<=tile+1;",
+      "reason": "Tag-one residual step retains original write edge."
+    },
+    {
+      "after": "                GROUP_NEXT:begin\n                    if(prepared_tile_terminal)begin\n                        if(plane==2)state<=MODE_END;\n                        else begin prepare_tile_key(plane+2'd1,32'd0);clear_coordinate();plane<=plane+1;tile<=0;state<=GROUP_BEGIN;end",
+      "before": "                GROUP_NEXT:begin\n                    if(tile==tile_count(plane))begin\n                        if(plane==2)state<=MODE_END;\n                        else begin clear_coordinate();plane<=plane+1;tile<=0;state<=GROUP_BEGIN;end",
+      "reason": "Plane terminal equality and modulo two-bit successor remain exact."
+    },
+    {
+      "after": "            end else if(state==KEY_TILE&&!prepared_tile_terminal)begin",
+      "before": "            end else if(state==KEY_TILE&&tile!=tile_count(plane))begin",
+      "reason": "Canonical mode port uses same cached KEY terminal decision."
+    },
+    {
+      "after": "                mode_write_data=prepared_tile_hidden?2'd1:2'd2;",
+      "before": "                mode_write_data=hidden(plane,tile)?2'd1:2'd2;",
+      "reason": "Canonical mode port KEY visibility remains coupled to parser decision."
+    },
+    {
+      "after": "            end else if(state==GROUP_TILE&&!prepared_group_terminal)begin\n                if(prepared_tile_hidden||group_tag==0)begin",
+      "before": "            end else if(state==GROUP_TILE&&tile!=group_end)begin\n                if(hidden(plane,tile)||group_tag==0)begin",
+      "reason": "Canonical group mode port shares exact terminal and visibility decisions."
+    },
+    {
+      "after": "                    mode_write_data=prepared_tile_hidden?2'd1:2'd0;",
+      "before": "                    mode_write_data=hidden(plane,tile)?2'd1:2'd0;",
+      "reason": "Preserve hidden/tag-zero mode values on original edge."
+    }
+  ],
+  "old_assertions_removed": 0,
+  "old_private_value_contract_changes": 0,
+  "original": "fpga/experiments/cu66-v122-bounds/cs88_admission_v91i2a.sv",
+  "original_sha256": "54dc87ded7abf37a9dc6757a4dabe62d6530f8127989d0fef2a4fc0f723376cf",
+  "schema": "v125-tile-production-derivation-v1"
+}

@@ -1,0 +1,127 @@
+{
+  "constraints_implementation_properties_changed": false,
+  "mode_RAM_scope": "EN/WE pins include either port; DI* includes data/parity; explicit pins retained, not assumed write-port mapping.",
+  "new_sources": [
+    "tile32",
+    "plane2",
+    "group_end32",
+    "group_tag2",
+    "coord_cell11",
+    "three_predicate_scalars"
+  ],
+  "original_owner_RAW_rank_cursor_refill_queries_retained": true,
+  "records": [
+    {
+      "candidate": {
+        "path": "scripts/cu66-v125/inspect_tile.py",
+        "sha256": "8234488273ed84d6798d536d176de159c1675599b5ba355cffa4ba9f7c106dbc"
+      },
+      "edits": [
+        {
+          "after": "choices=('baseline-v123', 'baseline-v124', 'candidate')",
+          "before": "choices=('baseline-v123', 'candidate')"
+        },
+        {
+          "after": "HERE / 'inspect_tile.tcl'",
+          "before": "HERE / 'inspect_owner.tcl'"
+        },
+        {
+          "after": "spec_from_file_location('retained_v124_native_monitor', ROOT / 'scripts/cu66-v124/native.py')",
+          "before": "spec_from_file_location('v124_native_monitor', HERE / 'native.py')"
+        },
+        {
+          "after": "experiments/python-gamebub-v125/request-inspection",
+          "before": "experiments/python-gamebub-v124/request-inspection"
+        },
+        {
+          "after": "gamebub-v125-inspect-",
+          "before": "gamebub-v124-inspect-"
+        },
+        {
+          "after": "dst=/diagnostic/inspect_tile.tcl",
+          "before": "dst=/diagnostic/inspect_owner.tcl"
+        },
+        {
+          "after": "'/diagnostic/inspect_tile.tcl'",
+          "before": "'/diagnostic/inspect_owner.tcl'"
+        },
+        {
+          "after": "v125-readonly-tile-inspection-v1",
+          "before": "v124-readonly-owner-inspection-v1"
+        },
+        {
+          "after": "V125_READONLY_INSPECTION_STARTED",
+          "before": "V124_READONLY_INSPECTION_STARTED"
+        },
+        {
+          "after": "V125_TILE_READONLY_INSPECTION_COMPLETE",
+          "before": "V124_OWNER_READONLY_INSPECTION_COMPLETE"
+        }
+      ],
+      "forward_reverse_exact": true,
+      "parent": {
+        "path": "scripts/cu66-v124/inspect_owner.py",
+        "sha256": "b3baa61b54c274e60d1067c9aba307ca2f24d6a405e28fcbe3563a3cd3ff7852"
+      }
+    },
+    {
+      "candidate": {
+        "path": "scripts/cu66-v125/inspect_tile.tcl",
+        "sha256": "39486c9de01a27b96652345200ff1a8437a1b584310fb638d4ff547444cc7a7b"
+      },
+      "edits": [
+        {
+          "after": "inspect_tile.tcl -tclargs",
+          "before": "inspect_owner.tcl -tclargs"
+        },
+        {
+          "after": "# V125 admission predicate sources and local consumers. New scalar sources may\n# be absent in the two baseline checkpoints; preserve that gap explicitly.\nset tile_sources [dict create]\nforeach {family pattern width} {\n    admission_tile *admission/tile_reg* 32\n    admission_plane *admission/plane_reg* 2\n    admission_group_end *admission/group_end_reg* 32\n    admission_group_tag *admission/group_tag_reg* 2\n    admission_coord_cell *admission/coord_cell_reg* 11\n    prepared_tile_hidden *admission/prepared_tile_hidden_reg* 1\n    prepared_tile_terminal *admission/prepared_tile_terminal_reg* 1\n    prepared_group_terminal *admission/prepared_group_terminal_reg* 1\n} {dict set tile_sources $family [sequential_group $family $pattern $width]}\nset tile_targets [dict create]\nforeach {family pattern} {\n    admission_tile *admission/tile_reg*\n    admission_plane *admission/plane_reg*\n    admission_group_end *admission/group_end_reg*\n    admission_coordinate *admission/coord_*_reg*\n    admission_state *admission/state_reg*\n    prepared_tile_hidden *admission/prepared_tile_hidden_reg*\n    prepared_tile_terminal *admission/prepared_tile_terminal_reg*\n    prepared_group_terminal *admission/prepared_group_terminal_reg*\n} {\n    set cells [get_cells -quiet -hierarchical -filter \"NAME =~ $pattern && REF_NAME =~ FD*\"]\n    dict set tile_targets $family [endpoint_group ${family}_D_CE $cells \\\n        {REF_PIN_NAME == D || REF_PIN_NAME == CE}]\n}\nset mode_rams [get_cells -quiet -hierarchical -filter {NAME =~ *admission/mode_store/* && REF_NAME =~ RAMB*}]\ndict set tile_targets mode_RAM_EN_WE [endpoint_group mode_RAM_EN_WE $mode_rams \\\n    {REF_PIN_NAME =~ EN* || REF_PIN_NAME =~ WE*}]\ndict set tile_targets mode_RAM_data [endpoint_group mode_RAM_data $mode_rams \\\n    {REF_PIN_NAME =~ DI*}]\ndict for {family pins} $tile_sources {\n    inspect_paths ${family}-all-endpoints $pins ALL_ENDPOINTS\n    dict for {target endpoints} $tile_targets {inspect_paths ${family}-to-${target} $pins $endpoints}\n}\nemit SUMMARY current QUALIFICATION NONE_READONLY_CHECKPOINT_OBSERVATION",
+          "before": "emit SUMMARY current QUALIFICATION NONE_READONLY_CHECKPOINT_OBSERVATION"
+        },
+        {
+          "after": "V125_TILE_READONLY_INSPECTION_COMPLETE",
+          "before": "V124_OWNER_READONLY_INSPECTION_COMPLETE"
+        }
+      ],
+      "forward_reverse_exact": true,
+      "parent": {
+        "path": "scripts/cu66-v124/inspect_owner.tcl",
+        "sha256": "96088132460234d71466e4ff8d954837ee52a7419a4c271e03ee509fa7e551f7"
+      }
+    },
+    {
+      "candidate": {
+        "path": "scripts/cu66-v125/compare_observations.py",
+        "sha256": "9f6beffc8a534a0ff5bafa9c319b8b25b18aebaacfbe2fa52c8419da9d2de6ad"
+      },
+      "edits": [
+        {
+          "after": "scripts/cu66-v125/inspect_tile.py",
+          "before": "scripts/cu66-v124/inspect_owner.py"
+        },
+        {
+          "after": "scripts/cu66-v125/inspect_tile.tcl",
+          "before": "scripts/cu66-v124/inspect_owner.tcl"
+        },
+        {
+          "after": "experiments/python-gamebub-v125/tile-observations.json",
+          "before": "experiments/python-gamebub-v124/owner-observations.json"
+        },
+        {
+          "after": "v125-matched-readonly-tile-path-comparison-v1",
+          "before": "v124-matched-readonly-owner-path-comparison-v1"
+        },
+        {
+          "after": "a.output.resolve().relative_to(ROOT)",
+          "before": "a.output.relative_to(ROOT)"
+        }
+      ],
+      "forward_reverse_exact": true,
+      "parent": {
+        "path": "scripts/cu66-v124/compare_observations.py",
+        "sha256": "07657db0cbb8dbd701d889f9233e280f0ef668fd6d18c8dda58cc13c552596da"
+      }
+    }
+  ],
+  "schema": "v125-readonly-tile-query-derivation-v1"
+}

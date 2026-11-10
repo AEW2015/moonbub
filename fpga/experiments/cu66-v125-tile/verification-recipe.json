@@ -1,0 +1,388 @@
+{
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/admission_original.sv",
+      "candidate_sha256": "8fb38d648238854511bcd27aea01a4149dc4b5066112d5539396009fcf6c21da",
+      "edits": [
+        {
+          "after": "module admission_original (",
+          "before": "module cs88_admission_v91i2a ("
+        },
+        {
+          "after": ",\n    output logic verify_coord_valid,\n    output logic [1:0] verify_plane,\n    output logic [31:0] verify_tile,\n    output logic [10:0] verify_cell,\n    output logic [6:0] verify_column,\n    output logic verify_odd,\n    output logic [10:0] verify_pair_base,\n    output logic verify_residual,\n    output logic [10:0] verify_active_index,\n    output logic verify_active_value,\n    output logic [31:0] verify_q_index, verify_q_runs,\n    output logic [6:0] verify_q_remaining,\n    output logic [1:0] verify_q_value,\n    output logic [7:0] verify_q_selected, verify_q_cached,\n    output logic [31:0] verify_header_index,\n    output logic [34:0] verify_header_mode_start, verify_header_residual_start,\n    output logic [34:0] verify_header_hud_tail, verify_header_residual_end, verify_header_packet_total\n);\n    localparam logic [7:0] IDLE",
+          "before": "\n);\n    localparam logic [7:0] IDLE"
+        },
+        {
+          "after": "\n    assign verify_coord_valid=coord_valid;\n    assign verify_plane=plane;assign verify_tile=tile;assign verify_cell=coord_cell;\n    assign verify_column=coord_y_column;assign verify_odd=coord_y_odd;\n    assign verify_pair_base=coord_pair_base;\n    assign verify_residual=coord_valid && ((state==KEY_TILE && tile<tile_count(plane) && !hidden(plane,tile)) ||\n        (state==MODE_BIT && bits_left!=0 && mixed_bit && bit_cache[7]) ||\n        (state==GROUP_TILE && tile!=group_end && !hidden(plane,tile) && group_tag==1));\n    assign verify_active_index=active_index[10:0];\n    assign verify_active_value=active_index<1350 ? active_cell[active_index[10:0]] : 1'b0;\n\n    assign verify_q_index=q_index;assign verify_q_runs=q_runs;\n    assign verify_q_remaining=q_remaining;assign verify_q_value=q_value;\n    assign verify_q_selected=qbuffer[q_index[8:0]];\n    assign verify_q_cached=q_run_byte;\n    assign verify_header_index=header_index;\n    assign verify_header_mode_start=header_mode_start;\n    assign verify_header_residual_start=header_residual_start;\n    assign verify_header_hud_tail=header_hud_tail;\n    assign verify_header_residual_end=header_residual_end;\n    assign verify_header_packet_total=header_packet_total;\n\nendmodule\n\n// Isolated common-clock",
+          "before": "\nendmodule\n\n// Isolated common-clock"
+        },
+        {
+          "after": "    output logic [31:0] mode_bytes, qmap_bytes /* verilator public_flat_rw */, hud_bytes, data_bytes,",
+          "before": "    output logic [31:0] mode_bytes, qmap_bytes, hud_bytes, data_bytes,"
+        },
+        {
+          "after": "    logic [7:0] state /* verilator public_flat_rw */, fetch_return, word_return;",
+          "before": "    logic [7:0] state, fetch_return, word_return;"
+        },
+        {
+          "after": "    logic [7:0] header [0:127] /* verilator public_flat_rw */;",
+          "before": "    logic [7:0] header [0:127];"
+        },
+        {
+          "after": "    logic [7:0] qbuffer [0:353] /* verilator public_flat_rw */;",
+          "before": "    logic [7:0] qbuffer [0:353];"
+        },
+        {
+          "after": "    logic [7:0] q_run_byte /* verilator public_flat_rw */;",
+          "before": "    logic [7:0] q_run_byte;"
+        },
+        {
+          "after": "    logic [6:0] q_remaining /* verilator public_flat_rw */;",
+          "before": "    logic [6:0] q_remaining;"
+        },
+        {
+          "after": "    logic [1:0] q_value /* verilator public_flat_rw */;",
+          "before": "    logic [1:0] q_value;"
+        },
+        {
+          "after": "    logic [7:0] ram_data, byte_value /* verilator public_flat_rw */;",
+          "before": "    logic [7:0] ram_data, byte_value;"
+        },
+        {
+          "after": "    logic [31:0] size_bytes /* verilator public_flat_rw */, received, outer_crc, outer_trailer;",
+          "before": "    logic [31:0] size_bytes, received, outer_crc, outer_trailer;"
+        },
+        {
+          "after": "    logic snapshot_valid /* verilator public_flat_rw */, snapshot_cache;",
+          "before": "    logic snapshot_valid, snapshot_cache;"
+        },
+        {
+          "after": "    logic [31:0] snapshot_fid /* verilator public_flat_rw */;",
+          "before": "    logic [31:0] snapshot_fid;"
+        },
+        {
+          "after": "    logic [63:0] snapshot_generation /* verilator public_flat_rw */;",
+          "before": "    logic [63:0] snapshot_generation;"
+        },
+        {
+          "after": "    logic [31:0] cursor, q_start /* verilator public_flat_rw */, residual_start /* verilator public_flat_rw */, residual_end /* verilator public_flat_rw */;",
+          "before": "    logic [31:0] cursor, q_start, residual_start, residual_end;"
+        },
+        {
+          "after": "    logic [34:0] header_mode_start /* verilator public_flat_rw */, header_residual_start /* verilator public_flat_rw */, header_hud_tail /* verilator public_flat_rw */;",
+          "before": "    logic [34:0] header_mode_start, header_residual_start, header_hud_tail;"
+        },
+        {
+          "after": "    logic [34:0] header_residual_end /* verilator public_flat_rw */, header_packet_total /* verilator public_flat_rw */;",
+          "before": "    logic [34:0] header_residual_end, header_packet_total;"
+        },
+        {
+          "after": "    logic [31:0] header_index /* verilator public_flat_rw */, q_index /* verilator public_flat_rw */, q_crc, q_trailer, q_runs /* verilator public_flat_rw */;",
+          "before": "    logic [31:0] header_index, q_index, q_crc, q_trailer, q_runs;"
+        },
+        {
+          "after": "    logic coord_valid /* verilator public_flat_rw */;",
+          "before": "    logic coord_valid;"
+        },
+        {
+          "after": "    logic prepared_header_total_matches /* verilator public_flat_rw */;",
+          "before": "    logic prepared_header_total_matches;"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v122-bounds/cs88_admission_v91i2a.sv",
+      "original_sha256": "54dc87ded7abf37a9dc6757a4dabe62d6530f8127989d0fef2a4fc0f723376cf"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/admission_candidate.sv",
+      "candidate_sha256": "0ccb1de5d56be738329bbd4ba4d97db19db86d05595541f538ccfdbb53267ae7",
+      "edits": [
+        {
+          "after": "module admission_candidate (",
+          "before": "module cs88_admission_v91i2a ("
+        },
+        {
+          "after": ",\n    output logic verify_coord_valid,\n    output logic [1:0] verify_plane,\n    output logic [31:0] verify_tile,\n    output logic [10:0] verify_cell,\n    output logic [6:0] verify_column,\n    output logic verify_odd,\n    output logic [10:0] verify_pair_base,\n    output logic verify_residual,\n    output logic [10:0] verify_active_index,\n    output logic verify_active_value,\n    output logic [31:0] verify_q_index, verify_q_runs,\n    output logic [6:0] verify_q_remaining,\n    output logic [1:0] verify_q_value,\n    output logic [7:0] verify_q_selected, verify_q_cached,\n    output logic [31:0] verify_header_index,\n    output logic [34:0] verify_header_mode_start, verify_header_residual_start,\n    output logic [34:0] verify_header_hud_tail, verify_header_residual_end, verify_header_packet_total\n);\n    localparam logic [7:0] IDLE",
+          "before": "\n);\n    localparam logic [7:0] IDLE"
+        },
+        {
+          "after": "\n    assign verify_coord_valid=coord_valid;\n    assign verify_plane=plane;assign verify_tile=tile;assign verify_cell=coord_cell;\n    assign verify_column=coord_y_column;assign verify_odd=coord_y_odd;\n    assign verify_pair_base=coord_pair_base;\n    assign verify_residual=coord_valid && ((state==KEY_TILE && tile<tile_count(plane) && !hidden(plane,tile)) ||\n        (state==MODE_BIT && bits_left!=0 && mixed_bit && bit_cache[7]) ||\n        (state==GROUP_TILE && tile!=group_end && !hidden(plane,tile) && group_tag==1));\n    assign verify_active_index=active_index[10:0];\n    assign verify_active_value=active_index<1350 ? active_cell[active_index[10:0]] : 1'b0;\n\n    assign verify_q_index=q_index;assign verify_q_runs=q_runs;\n    assign verify_q_remaining=q_remaining;assign verify_q_value=q_value;\n    assign verify_q_selected=qbuffer[q_index[8:0]];\n    assign verify_q_cached=q_run_byte;\n    assign verify_header_index=header_index;\n    assign verify_header_mode_start=header_mode_start;\n    assign verify_header_residual_start=header_residual_start;\n    assign verify_header_hud_tail=header_hud_tail;\n    assign verify_header_residual_end=header_residual_end;\n    assign verify_header_packet_total=header_packet_total;\n\nendmodule\n\n// Isolated common-clock",
+          "before": "\nendmodule\n\n// Isolated common-clock"
+        },
+        {
+          "after": "    output logic [31:0] mode_bytes, qmap_bytes /* verilator public_flat_rw */, hud_bytes, data_bytes,",
+          "before": "    output logic [31:0] mode_bytes, qmap_bytes, hud_bytes, data_bytes,"
+        },
+        {
+          "after": "    logic [7:0] state /* verilator public_flat_rw */, fetch_return, word_return;",
+          "before": "    logic [7:0] state, fetch_return, word_return;"
+        },
+        {
+          "after": "    logic [7:0] header [0:127] /* verilator public_flat_rw */;",
+          "before": "    logic [7:0] header [0:127];"
+        },
+        {
+          "after": "    logic [7:0] qbuffer [0:353] /* verilator public_flat_rw */;",
+          "before": "    logic [7:0] qbuffer [0:353];"
+        },
+        {
+          "after": "    logic [7:0] q_run_byte /* verilator public_flat_rw */;",
+          "before": "    logic [7:0] q_run_byte;"
+        },
+        {
+          "after": "    logic [6:0] q_remaining /* verilator public_flat_rw */;",
+          "before": "    logic [6:0] q_remaining;"
+        },
+        {
+          "after": "    logic [1:0] q_value /* verilator public_flat_rw */;",
+          "before": "    logic [1:0] q_value;"
+        },
+        {
+          "after": "    logic [7:0] ram_data, byte_value /* verilator public_flat_rw */;",
+          "before": "    logic [7:0] ram_data, byte_value;"
+        },
+        {
+          "after": "    logic [31:0] size_bytes /* verilator public_flat_rw */, received, outer_crc, outer_trailer;",
+          "before": "    logic [31:0] size_bytes, received, outer_crc, outer_trailer;"
+        },
+        {
+          "after": "    logic snapshot_valid /* verilator public_flat_rw */, snapshot_cache;",
+          "before": "    logic snapshot_valid, snapshot_cache;"
+        },
+        {
+          "after": "    logic [31:0] snapshot_fid /* verilator public_flat_rw */;",
+          "before": "    logic [31:0] snapshot_fid;"
+        },
+        {
+          "after": "    logic [63:0] snapshot_generation /* verilator public_flat_rw */;",
+          "before": "    logic [63:0] snapshot_generation;"
+        },
+        {
+          "after": "    logic [31:0] cursor, q_start /* verilator public_flat_rw */, residual_start /* verilator public_flat_rw */, residual_end /* verilator public_flat_rw */;",
+          "before": "    logic [31:0] cursor, q_start, residual_start, residual_end;"
+        },
+        {
+          "after": "    logic [34:0] header_mode_start /* verilator public_flat_rw */, header_residual_start /* verilator public_flat_rw */, header_hud_tail /* verilator public_flat_rw */;",
+          "before": "    logic [34:0] header_mode_start, header_residual_start, header_hud_tail;"
+        },
+        {
+          "after": "    logic [34:0] header_residual_end /* verilator public_flat_rw */, header_packet_total /* verilator public_flat_rw */;",
+          "before": "    logic [34:0] header_residual_end, header_packet_total;"
+        },
+        {
+          "after": "    logic [31:0] header_index /* verilator public_flat_rw */, q_index /* verilator public_flat_rw */, q_crc, q_trailer, q_runs /* verilator public_flat_rw */;",
+          "before": "    logic [31:0] header_index, q_index, q_crc, q_trailer, q_runs;"
+        },
+        {
+          "after": "    logic coord_valid /* verilator public_flat_rw */;",
+          "before": "    logic coord_valid;"
+        },
+        {
+          "after": "    logic prepared_header_total_matches /* verilator public_flat_rw */;",
+          "before": "    logic prepared_header_total_matches;"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v125-tile/cs88_admission_v91i2a.sv",
+      "original_sha256": "2f65ff770775404071e383890c75549ccb08ec9998993c86f1662cfed65d71eb"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/tb_admission_legacy.cpp",
+      "candidate_sha256": "d36fe2abb8ee81b8a867f82a7bac30fb1ca0bce267030373295694fab32c99a7",
+      "edits": [
+        {
+          "after": "#include \"tile_monitor.hpp\"\nclass Bench {\n",
+          "before": "class Bench {\n"
+        },
+        {
+          "after": "#include \"bounds_priming.hpp\"\n#include \"tile_priming.hpp\"\n",
+          "before": "#include \"bounds_priming.hpp\"\n"
+        },
+        {
+          "after": "        const auto tile_observed=tile_before(x,true);\n        x.clk=1;x.eval();require(!x.mismatch,\"full module public output mismatch high\");\n        tile_after(x,tile_observed,true);",
+          "before": "        x.clk=1;x.eval();require(!x.mismatch,\"full module public output mismatch high\");"
+        },
+        {
+          "after": "static uint64_t prepared_mode_ports(unsigned seed) {\n const uint64_t primer_start=tile_priming_edges;\n",
+          "before": "static uint64_t prepared_mode_ports(unsigned seed) {\n"
+        },
+        {
+          "after": "  if(c.guard==0U&&(c.state==6U||c.state==10U||c.state==11U))prime_tile_key(d,r);\n  d.eval();require(!d.mismatch,\"preedge public output mismatch\");",
+          "before": "  d.eval();require(!d.mismatch,\"preedge public output mismatch\");"
+        },
+        {
+          "after": "  const auto tile_observed=tile_before(d,false);\n  d.clk=1;d.eval();require(!d.mismatch,\"postedge public output mismatch\");\n  tile_after(d,tile_observed,false);",
+          "before": "  d.clk=1;d.eval();require(!d.mismatch,\"postedge public output mismatch\");"
+        },
+        {
+          "after": "<<cases+2+tile_priming_edges-primer_start<<",
+          "before": "<<cases+2<<"
+        },
+        {
+          "after": " std::cout<<\"{\\\"type\\\":\\\"v125_retained_mode_ledger\\\",\\\"status\\\":\\\"TEST_PASS\\\",\\\"semantic_cases\\\":\"<<cases<<\",\\\"original_clock_edges\\\":\"<<cases+2<<\",\\\"primer_clock_edges\\\":\"<<tile_priming_edges-primer_start<<\",\\\"total_clock_edges\\\":\"<<cases+2+tile_priming_edges-primer_start<<\"}\\n\";\n d.final();return cases+2+tile_priming_edges-primer_start;\n}",
+          "before": " d.final();return cases+2;\n}"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v122-bounds/verification/tb_admission_legacy.cpp",
+      "original_sha256": "7f21d576cf613a90799b0dde72e92bf509cb0367efb7e0b1e3ed2f456ce97613"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/tb_bounds.cpp",
+      "candidate_sha256": "d025d900c4ae273e8690038fb3102e41e296d51fb2925d57be91c67da359f593",
+      "edits": [
+        {
+          "after": "int inherited_bounds_main(int argc,char**argv)",
+          "before": "int main(int argc,char**argv)"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v122-bounds/verification/tb_bounds.cpp",
+      "original_sha256": "0eeb02a163673be13a96cc8ff5894d8d806749b5ea4466619b885e8faaa0504a"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/ready_original.sv",
+      "candidate_sha256": "bf4cd55197f6c2af88e89a651cd465ba777131bd65363c6ca93d6761f35ed212",
+      "edits": [
+        {
+          "after": "module ready_original #(",
+          "before": "module ready_candidate #("
+        },
+        {
+          "after": "controller_admission_original admission (",
+          "before": "cs88_admission_v91i2a admission ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v124-owner/verification/ready_candidate.sv",
+      "original_sha256": "193b68dae58c906c49a0c4d03bd123c54168ef5ca069aa1ae6eccef188172bf2"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/controller_admission_original.sv",
+      "candidate_sha256": "57943bf5c862432fed2088f1293437af24a8be67db7573f102a70226e5a1864c",
+      "edits": [
+        {
+          "after": "module controller_admission_original (",
+          "before": "module cs88_admission_v91i2a ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v122-bounds/cs88_admission_v91i2a.sv",
+      "original_sha256": "54dc87ded7abf37a9dc6757a4dabe62d6530f8127989d0fef2a4fc0f723376cf"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/ready_candidate.sv",
+      "candidate_sha256": "5dc392ceea9fe7abd6a88daf5d989f13a0513bd04df7327928f3e477d685f69c",
+      "edits": [
+        {
+          "after": "controller_admission_candidate admission (",
+          "before": "cs88_admission_v91i2a admission ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v124-owner/verification/ready_candidate.sv",
+      "original_sha256": "193b68dae58c906c49a0c4d03bd123c54168ef5ca069aa1ae6eccef188172bf2"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/controller_admission_candidate.sv",
+      "candidate_sha256": "86c349097fbfb7f52a97311fa2fb35794a375e00d25fafafeedfb701b01f0894",
+      "edits": [
+        {
+          "after": "module controller_admission_candidate (",
+          "before": "module cs88_admission_v91i2a ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v125-tile/cs88_admission_v91i2a.sv",
+      "original_sha256": "2f65ff770775404071e383890c75549ccb08ec9998993c86f1662cfed65d71eb"
+    }
+  ],
+  "new_predicate_or_owner_forces": 0,
+  "new_verification_inputs": [
+    {
+      "path": "fpga/experiments/cu66-v125-tile/verification/tile_priming.hpp",
+      "sha256": "db1e78df06dcd210a22eeb4ba92591448d04821f4c17673c4e8bce5738e00f78"
+    },
+    {
+      "path": "fpga/experiments/cu66-v125-tile/verification/tile_monitor.hpp",
+      "sha256": "b26c6e1803c6b8484ca07f6801960d612c8bd670efeb324bd7b33fca57e3fdc7"
+    },
+    {
+      "path": "fpga/experiments/cu66-v125-tile/verification/tb_scalar.cpp",
+      "sha256": "3fbad3c70abdbb9880d97056736f48e93a97af04886435ddba0db037cc4a8b66"
+    },
+    {
+      "path": "fpga/experiments/cu66-v125-tile/verification/tb_tile.cpp",
+      "sha256": "f1b680d60ad1378155e6d67c2b60fbe2e5cd4b82b2834b660772166db400ed21"
+    },
+    {
+      "path": "fpga/experiments/cu66-v125-tile/verification/tb_caller.cpp",
+      "sha256": "c3458957f6ed98ae11e931c2240944f68ae541d013350666f0ea7ff18028fbc6"
+    }
+  ],
+  "old_require_checks_removed": 0,
+  "prepared_key_priming_is_natural_traffic": false,
+  "scalar_extraction": {
+    "fragments": [
+      "    function automatic logic hidden(input logic [1:0] p, input logic [31:0] t);\n        if(p!=0)return t>=1046&&t<=1064;\n        return (t>=633&&t<=651)||(t>=723&&t<=741)||\n            (t>=993&&t<=1011)||(t>=1083&&t<=1101)||\n            (t>=4071&&t<=4110)||(t>=4161&&t<=4200)||\n            (t>=4251&&t<=4290)||(t>=4431&&t<=4460)||\n            (t>=4521&&t<=4550);\n    endfunction",
+      "    function automatic logic [31:0] tile_count(input logic [1:0] p);\n        return p==0?32'd5400:32'd1350;\n    endfunction",
+      "    logic prepared_tile_hidden, prepared_tile_terminal, prepared_group_terminal;\n`ifndef SYNTHESIS\n    logic tile_pred_owner_valid, group_pred_owner_valid;\n    logic [31:0] tile_pred_owner_epoch, tile_pred_owner_tile;\n    logic [1:0] tile_pred_owner_plane;\n    logic [31:0] group_pred_owner_epoch, group_pred_owner_tile, group_pred_owner_end;\n    logic [1:0] group_pred_owner_plane;\n`endif\n    task automatic prepare_tile_key(input logic [1:0] next_plane,\n                                    input logic [31:0] next_tile);\n        prepared_tile_hidden<=hidden(next_plane,next_tile);\n        prepared_tile_terminal<=next_tile==tile_count(next_plane);\n`ifndef SYNTHESIS\n        tile_pred_owner_valid<=1;\n        tile_pred_owner_epoch<=receipt_epoch;\n        tile_pred_owner_plane<=next_plane;tile_pred_owner_tile<=next_tile;\n        group_pred_owner_valid<=0;\n`endif\n    endtask\n    task automatic prepare_group_key(input logic [1:0] next_plane,\n                                     input logic [31:0] next_tile,\n                                     input logic [31:0] owned_end);\n        // Atomic group snapshot intentionally refreshes all three scalars,\n        // including tile decisions when the tag commit leaves tile unchanged.\n        prepare_tile_key(next_plane,next_tile);\n        prepared_group_terminal<=next_tile==owned_end;\n`ifndef SYNTHESIS\n        group_pred_owner_valid<=1;\n        group_pred_owner_epoch<=receipt_epoch;\n        group_pred_owner_plane<=next_plane;group_pred_owner_tile<=next_tile;\n        group_pred_owner_end<=owned_end;\n`endif\n    endtask\n"
+    ],
+    "scope": "Exact production functions/tasks/register declarations and terminal successor calls. Wrapper clocks explicit capture/hold/cancel/terminal-scalar operations, not original coordinate state. plane_clear preserves original plane2 no-write guard.",
+    "source": "fpga/experiments/cu66-v125-tile/cs88_admission_v91i2a.sv",
+    "source_sha256": "2f65ff770775404071e383890c75549ccb08ec9998993c86f1662cfed65d71eb",
+    "tail": "\n    always_ff @(posedge clk)begin\n        if(reset||start||abort_packet)begin\n            tile_pred_owner_valid<=0;group_pred_owner_valid<=0;\n        end else begin\n            if(group_begin)group_pred_owner_valid<=0;\n            if(capture)begin\n                if(key_terminal_capture)prepare_tile_key(plane==2?plane:plane+2'd1,32'd0);\n                else if(plane_clear_capture)begin\n                    if(plane!=2)prepare_tile_key(plane+2'd1,32'd0);\n                end else if(group_capture)prepare_group_key(plane,tile,group_end);\n                else prepare_tile_key(plane,tile);\n            end\n        end\n    end\n    assign out_hidden=prepared_tile_hidden;\n    assign out_terminal=prepared_tile_terminal;\n    assign out_group=prepared_group_terminal;\n    assign tile_valid=tile_pred_owner_valid;assign group_valid=group_pred_owner_valid;\n    assign tile_epoch=tile_pred_owner_epoch;assign tile_key=tile_pred_owner_tile;\n    assign tile_plane=tile_pred_owner_plane;\n    assign group_epoch=group_pred_owner_epoch;assign group_key=group_pred_owner_tile;\n    assign group_end_key=group_pred_owner_end;assign group_plane=group_pred_owner_plane;\nendmodule\n",
+    "target": "fpga/experiments/cu66-v125-tile/verification/scalar_probe.sv",
+    "target_sha256": "0b0d59d634e6674f5bc6ad4e78dc29a16880510b0c49f1359e0339f34e5b7e17",
+    "terminal_call_fragments": [
+      "prepare_tile_key(plane==2?plane:plane+2'd1,32'd0);",
+      "prepare_tile_key(plane+2'd1,32'd0);"
+    ],
+    "wrapper": "module scalar_probe (\n    input logic clk,reset,start,abort_packet,capture,group_capture,group_begin,\n    input logic key_terminal_capture,plane_clear_capture,\n    input logic [1:0] plane,input logic [31:0] tile,group_end,receipt_epoch,\n    output logic out_hidden,out_terminal,out_group,\n    output logic tile_valid,group_valid,\n    output logic [31:0] tile_epoch,tile_key,group_epoch,group_key,group_end_key,\n    output logic [1:0] tile_plane,group_plane\n);\n"
+  },
+  "schema": "v125-tile-verification-derivation-v1",
+  "unchanged": [
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/header_match_priming.hpp",
+      "original": "fpga/experiments/cu66-v122-bounds/verification/header_match_priming.hpp",
+      "sha256": "242e9d726ab9904799a1f40ec5a614fbc23f28f9bc4611c1b92642e25d2260e4"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/tb_owner_base.cpp",
+      "original": "fpga/experiments/cu66-v122-bounds/verification/tb_owner_base.cpp",
+      "sha256": "01a2f5c38c94a53fd216125282aab6a8adf3db849701c91b9746672907f336f6"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/tb_admission.cpp",
+      "original": "fpga/experiments/cu66-v122-bounds/verification/tb_admission.cpp",
+      "sha256": "3e6c060e00a94b21a68564f0ae771718e20202403c094177e555f70bc30a6ae7"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/bounds_priming.hpp",
+      "original": "fpga/experiments/cu66-v122-bounds/verification/bounds_priming.hpp",
+      "sha256": "6c719bd54b44267178f36b668f1f82867c58bdc8bfa6364124e972b5292ed34d"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/admission_probe.sv",
+      "original": "fpga/experiments/cu66-v122-bounds/verification/admission_probe.sv",
+      "sha256": "43e63f2ee08850de79e703a4d0c9c849fcc025b419829c69f232e0ed5f2cee09"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/tb_match.cpp",
+      "original": "fpga/experiments/cu66-v122-bounds/verification/tb_match.cpp",
+      "sha256": "908e0f76530d457f7f69dee5f012e33f223d74a3785fbb8ab0a1ef6caaa00058"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/tb_admission_legacy.frozen.cpp",
+      "original": "fpga/experiments/cu66-v122-bounds/verification/tb_admission_legacy.frozen.cpp",
+      "sha256": "4fc90a1d0a7a166b00a8ce38287b6a396333b84a21b227dc4bc6acb01c40728e"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/ready_probe.sv",
+      "original": "fpga/experiments/cu66-v124-owner/verification/ready_probe.sv",
+      "sha256": "f10518021711ee09ac5c44c4c42e490ee3d7a3d666990b073f3e6222000a64f6"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/caller_pair.hpp",
+      "original": "fpga/experiments/cu66-v124-owner/verification/caller_pair.hpp",
+      "sha256": "7a9c97bcc639a2dd6435b754e602451b8fa4255cbb908fa1eeb46667a2275f23"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v125-tile/verification/tb_controller.cpp",
+      "original": "fpga/experiments/cu66-v124-owner/verification/tb_controller.cpp",
+      "sha256": "27ce4018b9b8fb49d7218632c3bfda84c81433decb159af264a1b6837c94dcfa"
+    }
+  ]
+}

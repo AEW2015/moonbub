@@ -1,0 +1,407 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (lin64) Build 6511674 Tue Jun 16 11:01:26 MDT 2026
+| Date         : Tue Nov 10 05:33:46 2026
+| Host         : geto running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_timing -from [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *admission/plane_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == Q}] -to [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *admission/group_end_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == D || REF_PIN_NAME == CE}] -delay_type max -max_paths 50 -nworst 1 -path_type full_clock_expanded -file /output/admission_plane-to-admission_group_end.rpt
+| Design       : cs88_pipeline_v91k
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (MET) :             1.303ns  (required time - arrival time)
+  Source:                 coefficients/admission/plane_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/group_end_reg[6]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.308ns  (logic 1.661ns (26.333%)  route 4.647ns (73.667%))
+  Logic Levels:           7  (CARRY4=4 LUT2=1 LUT3=1 LUT4=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44060, unset)        0.973     0.973    coefficients/admission/clk
+    SLICE_X34Y35         FDRE                                         r  coefficients/admission/plane_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X34Y35         FDRE (Prop_fdre_C_Q)         0.518     1.491 f  coefficients/admission/plane_reg[1]/Q
+                         net (fo=114, routed)         1.071     2.562    coefficients/admission/mode_store/p_0_in0
+    SLICE_X19Y35         LUT2 (Prop_lut2_I0_O)        0.124     2.686 r  coefficients/admission/mode_store/plane_blocks[1][0]_i_2/O
+                         net (fo=176, routed)         1.225     3.911    coefficients/admission/mode_store_n_20
+    SLICE_X18Y38         LUT3 (Prop_lut3_I0_O)        0.124     4.035 r  coefficients/admission/group_end[12]_i_26/O
+                         net (fo=1, routed)           0.000     4.035    coefficients/admission/group_end[12]_i_26_n_0
+    SLICE_X18Y38         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401     4.436 r  coefficients/admission/group_end_reg[12]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     4.436    coefficients/admission/group_end_reg[12]_i_14_n_0
+    SLICE_X18Y39         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.550 r  coefficients/admission/group_end_reg[12]_i_9/CO[3]
+                         net (fo=1, routed)           0.000     4.550    coefficients/admission/group_end_reg[12]_i_9_n_0
+    SLICE_X18Y40         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.664 r  coefficients/admission/group_end_reg[12]_i_4/CO[3]
+                         net (fo=1, routed)           0.000     4.664    coefficients/admission/group_end_reg[12]_i_4_n_0
+    SLICE_X18Y41         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.778 r  coefficients/admission/group_end_reg[12]_i_3/CO[3]
+                         net (fo=7, routed)           1.769     6.548    coefficients/admission/group_end2
+    SLICE_X19Y35         LUT4 (Prop_lut4_I1_O)        0.152     6.700 r  coefficients/admission/group_end[6]_i_1/O
+                         net (fo=1, routed)           0.581     7.281    coefficients/admission/group_end0[6]
+    SLICE_X16Y35         FDRE                                         r  coefficients/admission/group_end_reg[6]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44060, unset)        0.924     8.924    coefficients/admission/clk
+    SLICE_X16Y35         FDRE                                         r  coefficients/admission/group_end_reg[6]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X16Y35         FDRE (Setup_fdre_C_D)       -0.305     8.584    coefficients/admission/group_end_reg[6]
+  -------------------------------------------------------------------
+                         required time                          8.584    <hidden>
+                         arrival time                          -7.281    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  1.303    <hidden>
+
+Slack (MET) :             1.631ns  (required time - arrival time)
+  Source:                 coefficients/admission/plane_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/group_end_reg[3]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.184ns  (logic 1.633ns (26.407%)  route 4.551ns (73.593%))
+  Logic Levels:           7  (CARRY4=4 LUT2=1 LUT3=2)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44060, unset)        0.973     0.973    coefficients/admission/clk
+    SLICE_X34Y35         FDRE                                         r  coefficients/admission/plane_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X34Y35         FDRE (Prop_fdre_C_Q)         0.518     1.491 f  coefficients/admission/plane_reg[1]/Q
+                         net (fo=114, routed)         1.071     2.562    coefficients/admission/mode_store/p_0_in0
+    SLICE_X19Y35         LUT2 (Prop_lut2_I0_O)        0.124     2.686 r  coefficients/admission/mode_store/plane_blocks[1][0]_i_2/O
+                         net (fo=176, routed)         1.225     3.911    coefficients/admission/mode_store_n_20
+    SLICE_X18Y38         LUT3 (Prop_lut3_I0_O)        0.124     4.035 r  coefficients/admission/group_end[12]_i_26/O
+                         net (fo=1, routed)           0.000     4.035    coefficients/admission/group_end[12]_i_26_n_0
+    SLICE_X18Y38         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401     4.436 r  coefficients/admission/group_end_reg[12]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     4.436    coefficients/admission/group_end_reg[12]_i_14_n_0
+    SLICE_X18Y39         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.550 r  coefficients/admission/group_end_reg[12]_i_9/CO[3]
+                         net (fo=1, routed)           0.000     4.550    coefficients/admission/group_end_reg[12]_i_9_n_0
+    SLICE_X18Y40         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.664 r  coefficients/admission/group_end_reg[12]_i_4/CO[3]
+                         net (fo=1, routed)           0.000     4.664    coefficients/admission/group_end_reg[12]_i_4_n_0
+    SLICE_X18Y41         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.778 r  coefficients/admission/group_end_reg[12]_i_3/CO[3]
+                         net (fo=7, routed)           1.299     6.078    coefficients/admission/group_end2
+    SLICE_X20Y39         LUT3 (Prop_lut3_I1_O)        0.124     6.202 r  coefficients/admission/group_end[3]_i_1/O
+                         net (fo=1, routed)           0.955     7.157    coefficients/admission/group_end0[3]
+    SLICE_X20Y36         FDRE                                         r  coefficients/admission/group_end_reg[3]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44060, unset)        0.924     8.924    coefficients/admission/clk
+    SLICE_X20Y36         FDRE                                         r  coefficients/admission/group_end_reg[3]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X20Y36         FDRE (Setup_fdre_C_D)       -0.101     8.788    coefficients/admission/group_end_reg[3]
+  -------------------------------------------------------------------
+                         required time                          8.788    <hidden>
+                         arrival time                          -7.157    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  1.631    <hidden>
+
+Slack (MET) :             2.407ns  (required time - arrival time)
+  Source:                 coefficients/admission/plane_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/group_end_reg[1]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        5.540ns  (logic 1.633ns (29.478%)  route 3.907ns (70.522%))
+  Logic Levels:           7  (CARRY4=4 LUT2=1 LUT3=1 LUT4=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44060, unset)        0.973     0.973    coefficients/admission/clk
+    SLICE_X34Y35         FDRE                                         r  coefficients/admission/plane_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X34Y35         FDRE (Prop_fdre_C_Q)         0.518     1.491 f  coefficients/admission/plane_reg[1]/Q
+                         net (fo=114, routed)         1.071     2.562    coefficients/admission/mode_store/p_0_in0
+    SLICE_X19Y35         LUT2 (Prop_lut2_I0_O)        0.124     2.686 r  coefficients/admission/mode_store/plane_blocks[1][0]_i_2/O
+                         net (fo=176, routed)         1.225     3.911    coefficients/admission/mode_store_n_20
+    SLICE_X18Y38         LUT3 (Prop_lut3_I0_O)        0.124     4.035 r  coefficients/admission/group_end[12]_i_26/O
+                         net (fo=1, routed)           0.000     4.035    coefficients/admission/group_end[12]_i_26_n_0
+    SLICE_X18Y38         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401     4.436 r  coefficients/admission/group_end_reg[12]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     4.436    coefficients/admission/group_end_reg[12]_i_14_n_0
+    SLICE_X18Y39         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.550 r  coefficients/admission/group_end_reg[12]_i_9/CO[3]
+                         net (fo=1, routed)           0.000     4.550    coefficients/admission/group_end_reg[12]_i_9_n_0
+    SLICE_X18Y40         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.664 r  coefficients/admission/group_end_reg[12]_i_4/CO[3]
+                         net (fo=1, routed)           0.000     4.664    coefficients/admission/group_end_reg[12]_i_4_n_0
+    SLICE_X18Y41         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.778 r  coefficients/admission/group_end_reg[12]_i_3/CO[3]
+                         net (fo=7, routed)           1.610     6.389    coefficients/admission/group_end2
+    SLICE_X19Y36         LUT4 (Prop_lut4_I1_O)        0.124     6.513 r  coefficients/admission/group_end[1]_i_1/O
+                         net (fo=1, routed)           0.000     6.513    coefficients/admission/group_end0[1]
+    SLICE_X19Y36         FDRE                                         r  coefficients/admission/group_end_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44060, unset)        0.924     8.924    coefficients/admission/clk
+    SLICE_X19Y36         FDRE                                         r  coefficients/admission/group_end_reg[1]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X19Y36         FDRE (Setup_fdre_C_D)        0.031     8.920    coefficients/admission/group_end_reg[1]
+  -------------------------------------------------------------------
+                         required time                          8.920    <hidden>
+                         arrival time                          -6.513    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  2.407    <hidden>
+
+Slack (MET) :             2.423ns  (required time - arrival time)
+  Source:                 coefficients/admission/plane_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/group_end_reg[2]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        5.568ns  (logic 1.661ns (29.833%)  route 3.907ns (70.167%))
+  Logic Levels:           7  (CARRY4=4 LUT2=1 LUT3=1 LUT4=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44060, unset)        0.973     0.973    coefficients/admission/clk
+    SLICE_X34Y35         FDRE                                         r  coefficients/admission/plane_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X34Y35         FDRE (Prop_fdre_C_Q)         0.518     1.491 f  coefficients/admission/plane_reg[1]/Q
+                         net (fo=114, routed)         1.071     2.562    coefficients/admission/mode_store/p_0_in0
+    SLICE_X19Y35         LUT2 (Prop_lut2_I0_O)        0.124     2.686 r  coefficients/admission/mode_store/plane_blocks[1][0]_i_2/O
+                         net (fo=176, routed)         1.225     3.911    coefficients/admission/mode_store_n_20
+    SLICE_X18Y38         LUT3 (Prop_lut3_I0_O)        0.124     4.035 r  coefficients/admission/group_end[12]_i_26/O
+                         net (fo=1, routed)           0.000     4.035    coefficients/admission/group_end[12]_i_26_n_0
+    SLICE_X18Y38         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401     4.436 r  coefficients/admission/group_end_reg[12]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     4.436    coefficients/admission/group_end_reg[12]_i_14_n_0
+    SLICE_X18Y39         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.550 r  coefficients/admission/group_end_reg[12]_i_9/CO[3]
+                         net (fo=1, routed)           0.000     4.550    coefficients/admission/group_end_reg[12]_i_9_n_0
+    SLICE_X18Y40         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.664 r  coefficients/admission/group_end_reg[12]_i_4/CO[3]
+                         net (fo=1, routed)           0.000     4.664    coefficients/admission/group_end_reg[12]_i_4_n_0
+    SLICE_X18Y41         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.778 r  coefficients/admission/group_end_reg[12]_i_3/CO[3]
+                         net (fo=7, routed)           1.610     6.389    coefficients/admission/group_end2
+    SLICE_X19Y36         LUT4 (Prop_lut4_I1_O)        0.152     6.541 r  coefficients/admission/group_end[2]_i_1/O
+                         net (fo=1, routed)           0.000     6.541    coefficients/admission/group_end0[2]
+    SLICE_X19Y36         FDRE                                         r  coefficients/admission/group_end_reg[2]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44060, unset)        0.924     8.924    coefficients/admission/clk
+    SLICE_X19Y36         FDRE                                         r  coefficients/admission/group_end_reg[2]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X19Y36         FDRE (Setup_fdre_C_D)        0.075     8.964    coefficients/admission/group_end_reg[2]
+  -------------------------------------------------------------------
+                         required time                          8.964    <hidden>
+                         arrival time                          -6.541    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  2.423    <hidden>
+
+Slack (MET) :             2.900ns  (required time - arrival time)
+  Source:                 coefficients/admission/plane_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/group_end_reg[12]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        5.045ns  (logic 1.633ns (32.366%)  route 3.412ns (67.634%))
+  Logic Levels:           7  (CARRY4=4 LUT2=1 LUT3=2)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44060, unset)        0.973     0.973    coefficients/admission/clk
+    SLICE_X34Y35         FDRE                                         r  coefficients/admission/plane_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X34Y35         FDRE (Prop_fdre_C_Q)         0.518     1.491 f  coefficients/admission/plane_reg[1]/Q
+                         net (fo=114, routed)         1.071     2.562    coefficients/admission/mode_store/p_0_in0
+    SLICE_X19Y35         LUT2 (Prop_lut2_I0_O)        0.124     2.686 r  coefficients/admission/mode_store/plane_blocks[1][0]_i_2/O
+                         net (fo=176, routed)         1.225     3.911    coefficients/admission/mode_store_n_20
+    SLICE_X18Y38         LUT3 (Prop_lut3_I0_O)        0.124     4.035 r  coefficients/admission/group_end[12]_i_26/O
+                         net (fo=1, routed)           0.000     4.035    coefficients/admission/group_end[12]_i_26_n_0
+    SLICE_X18Y38         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401     4.436 r  coefficients/admission/group_end_reg[12]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     4.436    coefficients/admission/group_end_reg[12]_i_14_n_0
+    SLICE_X18Y39         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.550 r  coefficients/admission/group_end_reg[12]_i_9/CO[3]
+                         net (fo=1, routed)           0.000     4.550    coefficients/admission/group_end_reg[12]_i_9_n_0
+    SLICE_X18Y40         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.664 r  coefficients/admission/group_end_reg[12]_i_4/CO[3]
+                         net (fo=1, routed)           0.000     4.664    coefficients/admission/group_end_reg[12]_i_4_n_0
+    SLICE_X18Y41         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.778 r  coefficients/admission/group_end_reg[12]_i_3/CO[3]
+                         net (fo=7, routed)           1.116     5.894    coefficients/admission/group_end2
+    SLICE_X19Y36         LUT3 (Prop_lut3_I1_O)        0.124     6.018 r  coefficients/admission/group_end[12]_i_2/O
+                         net (fo=1, routed)           0.000     6.018    coefficients/admission/group_end0[12]
+    SLICE_X19Y36         FDRE                                         r  coefficients/admission/group_end_reg[12]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44060, unset)        0.924     8.924    coefficients/admission/clk
+    SLICE_X19Y36         FDRE                                         r  coefficients/admission/group_end_reg[12]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X19Y36         FDRE (Setup_fdre_C_D)        0.029     8.918    coefficients/admission/group_end_reg[12]
+  -------------------------------------------------------------------
+                         required time                          8.918    <hidden>
+                         arrival time                          -6.018    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  2.900    <hidden>
+
+Slack (MET) :             2.920ns  (required time - arrival time)
+  Source:                 coefficients/admission/plane_reg[1]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/group_end_reg[4]/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        5.071ns  (logic 1.659ns (32.713%)  route 3.412ns (67.287%))
+  Logic Levels:           7  (CARRY4=4 LUT2=1 LUT3=2)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44060, unset)        0.973     0.973    coefficients/admission/clk
+    SLICE_X34Y35         FDRE                                         r  coefficients/admission/plane_reg[1]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X34Y35         FDRE (Prop_fdre_C_Q)         0.518     1.491 f  coefficients/admission/plane_reg[1]/Q
+                         net (fo=114, routed)         1.071     2.562    coefficients/admission/mode_store/p_0_in0
+    SLICE_X19Y35         LUT2 (Prop_lut2_I0_O)        0.124     2.686 r  coefficients/admission/mode_store/plane_blocks[1][0]_i_2/O
+                         net (fo=176, routed)         1.225     3.911    coefficients/admission/mode_store_n_20
+    SLICE_X18Y38         LUT3 (Prop_lut3_I0_O)        0.124     4.035 r  coefficients/admission/group_end[12]_i_26/O
+                         net (fo=1, routed)           0.000     4.035    coefficients/admission/group_end[12]_i_26_n_0
+    SLICE_X18Y38         CARRY4 (Prop_carry4_S[3]_CO[3])
+                                                      0.401     4.436 r  coefficients/admission/group_end_reg[12]_i_14/CO[3]
+                         net (fo=1, routed)           0.000     4.436    coefficients/admission/group_end_reg[12]_i_14_n_0
+    SLICE_X18Y39         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.550 r  coefficients/admission/group_end_reg[12]_i_9/CO[3]
+                         net (fo=1, routed)           0.000     4.550    coefficients/admission/group_end_reg[12]_i_9_n_0
+    SLICE_X18Y40         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.664 r  coefficients/admission/group_end_reg[12]_i_4/CO[3]
+                         net (fo=1, routed)           0.000     4.664    coefficients/admission/group_end_reg[12]_i_4_n_0
+    SLICE_X18Y41         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.778 r  coefficients/admission/group_end_reg[12]_i_3/CO[3]
+                         net (fo=7, routed)           1.116     5.894    coefficients/admission/group_end2
+    SLICE_X19Y36         LUT3 (Prop_lut3_I1_O)        0.150     6.044 r  coefficients/admission/group_end[4]_i_1/O
+                         net (fo=1, routed)           0.000     6.044    coefficients/admission/group_end0[4]
+    SLICE_X19Y36         FDRE                                         r  coefficients/admission/group_end_reg[4]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44060, unset)        0.924     8.924    coefficients/admission/clk
+    SLICE_X19Y36         FDRE                                         r  coefficients/admission/group_end_reg[4]/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X19Y36         FDRE (Setup_fdre_C_D)        0.075     8.964    coefficients/admission/group_end_reg[4]
+  -------------------------------------------------------------------
+                         required time                          8.964    <hidden>
+                         arrival time                          -6.044    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  2.920    <hidden>
+
+
+
+

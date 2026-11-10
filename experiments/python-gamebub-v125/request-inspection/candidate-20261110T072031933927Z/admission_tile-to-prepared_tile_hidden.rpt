@@ -1,0 +1,91 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (lin64) Build 6511674 Tue Jun 16 11:01:26 MDT 2026
+| Date         : Tue Nov 10 07:21:05 2026
+| Host         : geto running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_timing -from [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *admission/tile_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == Q}] -to [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *admission/prepared_tile_hidden_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == D || REF_PIN_NAME == CE}] -delay_type max -max_paths 50 -nworst 1 -path_type full_clock_expanded -file /output/admission_tile-to-prepared_tile_hidden.rpt
+| Design       : cs88_pipeline_v91k
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -0.191ns  (required time - arrival time)
+  Source:                 coefficients/admission/tile_reg[2]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/prepared_tile_hidden_reg/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.136ns  (logic 2.791ns (34.305%)  route 5.345ns (65.695%))
+  Logic Levels:           11  (CARRY4=5 LUT6=6)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=43864, unset)        0.973     0.973    coefficients/admission/clk
+    SLICE_X62Y116        FDRE                                         r  coefficients/admission/tile_reg[2]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X62Y116        FDRE (Prop_fdre_C_Q)         0.518     1.491 r  coefficients/admission/tile_reg[2]/Q
+                         net (fo=52, routed)          0.994     2.485    coefficients/admission/t__0[2]
+    SLICE_X63Y112        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.674     3.159 r  coefficients/admission/tile_reg[3]_i_2/CO[3]
+                         net (fo=1, routed)           0.000     3.159    coefficients/admission/tile_reg[3]_i_2_n_0
+    SLICE_X63Y113        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.273 r  coefficients/admission/tile_reg[8]_i_2/CO[3]
+                         net (fo=1, routed)           0.000     3.273    coefficients/admission/tile_reg[8]_i_2_n_0
+    SLICE_X63Y114        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.387 r  coefficients/admission/tile_reg[9]_i_7/CO[3]
+                         net (fo=1, routed)           0.000     3.387    coefficients/admission/tile_reg[9]_i_7_n_0
+    SLICE_X63Y115        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.501 r  coefficients/admission/tile_reg[16]_i_2/CO[3]
+                         net (fo=1, routed)           0.000     3.501    coefficients/admission/tile_reg[16]_i_2_n_0
+    SLICE_X63Y116        CARRY4 (Prop_carry4_CI_O[1])
+                                                      0.334     3.835 r  coefficients/admission/tile_reg[20]_i_2/O[1]
+                         net (fo=5, routed)           1.341     5.176    coefficients/admission/data2[18]
+    SLICE_X68Y115        LUT6 (Prop_lut6_I3_O)        0.303     5.479 r  coefficients/admission/group_visibility_mask[1]_i_27/O
+                         net (fo=1, routed)           0.847     6.326    coefficients/admission/group_visibility_mask[1]_i_27_n_0
+    SLICE_X68Y115        LUT6 (Prop_lut6_I5_O)        0.124     6.450 r  coefficients/admission/group_visibility_mask[1]_i_8/O
+                         net (fo=3, routed)           0.637     7.088    coefficients/admission/group_visibility_mask[1]_i_8_n_0
+    SLICE_X67Y112        LUT6 (Prop_lut6_I1_O)        0.124     7.212 r  coefficients/admission/group_visibility_mask[1]_i_21/O
+                         net (fo=1, routed)           0.619     7.830    coefficients/admission/group_visibility_mask[1]_i_21_n_0
+    SLICE_X67Y111        LUT6 (Prop_lut6_I2_O)        0.124     7.954 r  coefficients/admission/group_visibility_mask[1]_i_7/O
+                         net (fo=1, routed)           0.436     8.391    coefficients/admission/group_visibility_mask[1]_i_7_n_0
+    SLICE_X66Y111        LUT6 (Prop_lut6_I3_O)        0.124     8.515 r  coefficients/admission/group_visibility_mask[1]_i_2/O
+                         net (fo=2, routed)           0.470     8.985    coefficients/admission/group_visibility_mask[1]_i_2_n_0
+    SLICE_X63Y110        LUT6 (Prop_lut6_I3_O)        0.124     9.109 r  coefficients/admission/prepared_tile_hidden_i_1/O
+                         net (fo=1, routed)           0.000     9.109    coefficients/admission/prepared_tile_hidden_i_1_n_0
+    SLICE_X63Y110        FDRE                                         r  coefficients/admission/prepared_tile_hidden_reg/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=43864, unset)        0.924     8.924    coefficients/admission/clk
+    SLICE_X63Y110        FDRE                                         r  coefficients/admission/prepared_tile_hidden_reg/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X63Y110        FDRE (Setup_fdre_C_D)        0.029     8.918    coefficients/admission/prepared_tile_hidden_reg
+  -------------------------------------------------------------------
+                         required time                          8.918    <hidden>
+                         arrival time                          -9.109    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.191    <hidden>
+
+
+
+

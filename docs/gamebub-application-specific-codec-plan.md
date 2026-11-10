@@ -1,5 +1,18 @@
 # Game Bub application-specific codec: selected direction and gates
 
+**V125 measured continuation, 2026-11-10:** [prepared tile predicates](cu66-v125/README.md)
+pass the focused and full functional suite with zero public-cycle change.
+The matched tile → tile path improves **−1.170 → +2.447 ns**, but tile →
+coordinates remains −0.464 ns and the new hidden-predicate D path is −0.191 ns.
+Global 125 MHz setup **fails at −1.224 ns WNS, −2,209.865 ns TNS and 8,027
+endpoints**. WNS regresses 0.054 ns versus V124 despite fewer failing endpoints;
+this candidate is not promoted. The next [bounded timing experiment](cu66-v125/next-timing.md)
+separates producer successor arithmetic from its cell-lookup ROM on existing
+edges; the nearby scratch emit-bank path also needs repair. Source B100 stays
+unchanged. Full host/ESP32/custom-codec integration, complete-parent timing,
+physical 30 fps and validated hardware <10 ms remain open. This bounded V125
+study does not complete the broader board-qualification milestone.
+
 **V124 measured continuation:** [bank-owner lanes and native replay](cu66-v124/README.md)
 pass focused/full/transport/peer/parent checks with zero public-cycle change.
 Emit-bank → busy improves −1.086→−0.562 ns, while global 125 MHz setup regresses

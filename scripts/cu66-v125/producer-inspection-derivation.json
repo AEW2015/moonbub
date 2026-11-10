@@ -1,0 +1,169 @@
+{
+  "comparer_behavior": {
+    "default_output": "experiments/python-gamebub-v125/producer-observations.json",
+    "execution_by_preparation": false,
+    "retains_full_artifact_and_native_receipt_hash_checks": true,
+    "retains_query_gap_semantics": true,
+    "retains_runner_and_tcl_hash_checks": true
+  },
+  "files": [
+    {
+      "candidate_sha256": "62693097c399bf8acb40cf0fa5378da8e647e1366791a0be296279641896101f",
+      "edits": [
+        {
+          "after": "choices=('baseline-v124', 'candidate')",
+          "before": "choices=('baseline-v123', 'baseline-v124', 'candidate')",
+          "count": 1
+        },
+        {
+          "after": "HERE / 'inspect_producer.tcl'",
+          "before": "HERE / 'inspect_tile.tcl'",
+          "count": 1
+        },
+        {
+          "after": "experiments/python-gamebub-v125/producer-inspection",
+          "before": "experiments/python-gamebub-v125/request-inspection",
+          "count": 1
+        },
+        {
+          "after": "gamebub-v125-producer-inspect-",
+          "before": "gamebub-v125-inspect-",
+          "count": 1
+        },
+        {
+          "after": "dst=/diagnostic/inspect_producer.tcl",
+          "before": "dst=/diagnostic/inspect_tile.tcl",
+          "count": 1
+        },
+        {
+          "after": "'/diagnostic/inspect_producer.tcl'",
+          "before": "'/diagnostic/inspect_tile.tcl'",
+          "count": 1
+        },
+        {
+          "after": "v125-readonly-producer-inspection-v1",
+          "before": "v125-readonly-tile-inspection-v1",
+          "count": 1
+        },
+        {
+          "after": "V125_PRODUCER_READONLY_INSPECTION_STARTED",
+          "before": "V125_READONLY_INSPECTION_STARTED",
+          "count": 1
+        },
+        {
+          "after": "V125_PRODUCER_READONLY_INSPECTION_COMPLETE",
+          "before": "V125_TILE_READONLY_INSPECTION_COMPLETE",
+          "count": 1
+        }
+      ],
+      "forward_reverse_exact": true,
+      "original": "scripts/cu66-v125/inspect_tile.py",
+      "original_sha256": "8234488273ed84d6798d536d176de159c1675599b5ba355cffa4ba9f7c106dbc",
+      "path": "scripts/cu66-v125/inspect_producer.py"
+    },
+    {
+      "candidate_sha256": "e887370dd906e877db8c8798f643fc3334562bd1b1c4d38c1f9f48410cbcafa3",
+      "edits": [
+        {
+          "after": "# Supplemental read-only producer-family inspection of an existing routed checkpoint.\n# Usage: vivado ... -source inspect_producer.tcl -tclargs ROUTE_DCP OUTPUT_DIR",
+          "before": "# Supplemental read-only analysis of an existing routed component checkpoint.\n# Usage: vivado ... -source inspect_tile.tcl -tclargs ROUTE_DCP OUTPUT_DIR",
+          "count": 1
+        },
+        {
+          "after": "# Producer-family source and destination inspection only. Declared widths are\n# taken from the source-bound V124 producer RTL: cursor 13, cache 11, plane 2,\n# and state 8. Missing or renamed mapped cells remain explicit query gaps.\nset producer_sources [dict create]\nforeach {family pattern width} {\n    producer_tile_cursor *coefficients/tile_cursor_reg* 13\n    producer_cell_cache *coefficients/producer_cell_cache_reg* 11\n    producer_plane_id *coefficients/plane_reg* 2\n    producer_state *coefficients/state_reg* 8\n} {dict set producer_sources $family [sequential_group $family $pattern $width]}\nset producer_targets [dict create]\nforeach {family pattern} {\n    producer_cell_cache *coefficients/producer_cell_cache_reg*\n    producer_tile_cursor *coefficients/tile_cursor_reg*\n    producer_state *coefficients/state_reg*\n} {\n    set cells [get_cells -quiet -hierarchical -filter \"NAME =~ $pattern && REF_NAME =~ FD*\"]\n    dict set producer_targets $family [endpoint_group ${family}_D_CE $cells \\\n        {REF_PIN_NAME == D || REF_PIN_NAME == CE}]\n}\ndict for {family pins} $producer_sources {\n    inspect_paths ${family}-all-endpoints $pins ALL_ENDPOINTS\n    dict for {target endpoints} $producer_targets {inspect_paths ${family}-to-${target} $pins $endpoints}\n}\nemit SUMMARY current QUALIFICATION NONE_READONLY_PRODUCER_CHECKPOINT_OBSERVATION",
+          "before": "# Bank-owner sources and return endpoints; two-dimensional banks are selected\n# and indexed independently so bank index is never confused with bit index.\nset sources [dict create]\nforeach {family pattern width} {\n    emit_bank *scratch/emit_bank_reg* 1\n    bank_ready *scratch/bank_ready_reg* 2\n    current_child_epoch *coefficients/current_child_epoch_reg* 32\n    expected_block *coefficients/expected_block_reg* 16\n    raw_mode *synchronous.ingress/raw_mode_reg* 1\n    raw_position *synchronous.ingress/raw_position_reg* 32\n    rank_threshold_mask *scratch/rank_threshold_mask_reg* 64\n} {dict set sources $family [sequential_group $family $pattern $width]}\nforeach bank {0 1} {\n    dict set sources bank_epoch${bank} [sequential_group bank_epoch${bank} *scratch/bank_epoch_reg* 32 $bank]\n    dict set sources bank_block${bank} [sequential_group bank_block${bank} *scratch/bank_block_reg* 16 $bank]\n}\nset targets [dict create]\nforeach {family pattern} {\n    scratch_busy_owned *scratch/busy_owned_reg*\n    scratch_state *scratch/state_reg*\n    producer_state *coefficients/state_reg*\n} {\n    set cells [get_cells -quiet -hierarchical -filter \"NAME =~ $pattern && REF_NAME =~ FD*\"]\n    dict set targets $family [endpoint_group ${family}_D_CE_R_S $cells \\\n        {REF_PIN_NAME == D || REF_PIN_NAME == CE || REF_PIN_NAME == R || REF_PIN_NAME == S}]\n}\ndict for {family pins} $sources {\n    inspect_paths ${family}-all-endpoints $pins ALL_ENDPOINTS\n    dict for {target endpoints} $targets {inspect_paths ${family}-to-${target} $pins $endpoints}\n}\n# Combinational lane nets may be optimized or renamed; absence is an explicit\n# observation gap, not evidence for an unmeasured mapped topology.\nforeach pattern {*tile_owner_match* *child_owner_match*} {\n    set nets [get_nets -quiet -hierarchical -filter \"NAME =~ $pattern\"]\n    emit OWNER_LANE_NET_GROUP $pattern NET_COUNT [llength $nets]\n    if {[llength $nets]==0} {gap $pattern NO_MATCHED_LANE_NETS {No topology claim from absent name}}\n    foreach net [lsort $nets] {\n        emit OWNER_LANE_NET $net KEEP [get_property KEEP $net]\n        emit OWNER_LANE_NET $net PIN_COUNT [llength [get_pins -quiet -of_objects $net]]\n    }\n}\nset cells [get_cells -quiet -hierarchical -filter {NAME =~ *admission/state_reg* && REF_NAME =~ FD*}]\nset ends [endpoint_group admission_state $cells {REF_PIN_NAME == D || REF_PIN_NAME == CE || REF_PIN_NAME == R || REF_PIN_NAME == S}]\nset pins [sequential_group admission_cursor *admission/cursor_reg* 32]\ninspect_paths admission_cursor-all-endpoints $pins ALL_ENDPOINTS\ninspect_paths admission_cursor-to-admission_state $pins $ends\nset ram [get_cells -quiet -hierarchical -filter {NAME =~ *admission/memory_reg* && REF_NAME =~ RAMB*}]\nset ends [endpoint_group admission_ram_enable $ram {REF_PIN_NAME == ENARDEN || REF_PIN_NAME == ENBWREN}]\nforeach {family pattern width} {\n    refill_prepared_req_addr *refill_queue/prepared_req_addr_reg* 32\n    refill_issued *refill_queue/issued_reg* 32\n} {\n    set pins [sequential_group $family $pattern $width]\n    inspect_paths ${family}-all-endpoints $pins ALL_ENDPOINTS\n    inspect_paths ${family}-to-admission_ram_enable $pins $ends\n}\n# V125 admission predicate sources and local consumers. New scalar sources may\n# be absent in the two baseline checkpoints; preserve that gap explicitly.\nset tile_sources [dict create]\nforeach {family pattern width} {\n    admission_tile *admission/tile_reg* 32\n    admission_plane *admission/plane_reg* 2\n    admission_group_end *admission/group_end_reg* 32\n    admission_group_tag *admission/group_tag_reg* 2\n    admission_coord_cell *admission/coord_cell_reg* 11\n    prepared_tile_hidden *admission/prepared_tile_hidden_reg* 1\n    prepared_tile_terminal *admission/prepared_tile_terminal_reg* 1\n    prepared_group_terminal *admission/prepared_group_terminal_reg* 1\n} {dict set tile_sources $family [sequential_group $family $pattern $width]}\nset tile_targets [dict create]\nforeach {family pattern} {\n    admission_tile *admission/tile_reg*\n    admission_plane *admission/plane_reg*\n    admission_group_end *admission/group_end_reg*\n    admission_coordinate *admission/coord_*_reg*\n    admission_state *admission/state_reg*\n    prepared_tile_hidden *admission/prepared_tile_hidden_reg*\n    prepared_tile_terminal *admission/prepared_tile_terminal_reg*\n    prepared_group_terminal *admission/prepared_group_terminal_reg*\n} {\n    set cells [get_cells -quiet -hierarchical -filter \"NAME =~ $pattern && REF_NAME =~ FD*\"]\n    dict set tile_targets $family [endpoint_group ${family}_D_CE $cells \\\n        {REF_PIN_NAME == D || REF_PIN_NAME == CE}]\n}\nset mode_rams [get_cells -quiet -hierarchical -filter {NAME =~ *admission/mode_store/* && REF_NAME =~ RAMB*}]\ndict set tile_targets mode_RAM_EN_WE [endpoint_group mode_RAM_EN_WE $mode_rams \\\n    {REF_PIN_NAME =~ EN* || REF_PIN_NAME =~ WE*}]\ndict set tile_targets mode_RAM_data [endpoint_group mode_RAM_data $mode_rams \\\n    {REF_PIN_NAME =~ DI*}]\ndict for {family pins} $tile_sources {\n    inspect_paths ${family}-all-endpoints $pins ALL_ENDPOINTS\n    dict for {target endpoints} $tile_targets {inspect_paths ${family}-to-${target} $pins $endpoints}\n}\nemit SUMMARY current QUALIFICATION NONE_READONLY_CHECKPOINT_OBSERVATION",
+          "count": 1
+        },
+        {
+          "after": "V125_PRODUCER_READONLY_INSPECTION_COMPLETE; existing checkpoint only; no new physical trial or positive repeat",
+          "before": "V125_TILE_READONLY_INSPECTION_COMPLETE; existing checkpoint only; no new physical trial or positive repeat",
+          "count": 1
+        }
+      ],
+      "forward_reverse_exact": true,
+      "original": "scripts/cu66-v125/inspect_tile.tcl",
+      "original_sha256": "39486c9de01a27b96652345200ff1a8437a1b584310fb638d4ff547444cc7a7b",
+      "path": "scripts/cu66-v125/inspect_producer.tcl"
+    },
+    {
+      "candidate_sha256": "1070366d2fe5db1487daee09886f46ac11c2b21d6dc18e1dd19c1975aa4efe35",
+      "edits": [
+        {
+          "after": "Summarize matched readonly producer-family observations, retaining absent-path gaps.",
+          "before": "Summarize the frozen matched read-only queries, retaining absent-path gaps.",
+          "count": 1
+        },
+        {
+          "after": "scripts/cu66-v125/inspect_producer.py",
+          "before": "scripts/cu66-v125/inspect_tile.py",
+          "count": 1
+        },
+        {
+          "after": "scripts/cu66-v125/inspect_producer.tcl",
+          "before": "scripts/cu66-v125/inspect_tile.tcl",
+          "count": 1
+        },
+        {
+          "after": "experiments/python-gamebub-v125/producer-observations.json",
+          "before": "experiments/python-gamebub-v125/tile-observations.json",
+          "count": 1
+        },
+        {
+          "after": "v125-matched-readonly-producer-path-comparison-v1",
+          "before": "v125-matched-readonly-tile-path-comparison-v1",
+          "count": 1
+        }
+      ],
+      "forward_reverse_exact": true,
+      "original": "scripts/cu66-v125/compare_observations.py",
+      "original_sha256": "9f6beffc8a534a0ff5bafa9c319b8b25b18aebaacfbe2fa52c8419da9d2de6ad",
+      "path": "scripts/cu66-v125/compare_producer.py"
+    }
+  ],
+  "limitations": [
+    "Readonly checkpoint observation only; does not qualify a new composition or establish causality.",
+    "Endpoint naming may differ after mapping; empty or renamed families are recorded as query gaps.",
+    "No new physical run, resource/timing qualification, or hardware claim."
+  ],
+  "producer_rtl_declared_widths": {
+    "producer_cell_cache": 11,
+    "producer_plane_id": 2,
+    "producer_state": 8,
+    "producer_tile_cursor": 13
+  },
+  "queries": {
+    "endpoint_families": [
+      "producer_cell_cache",
+      "producer_tile_cursor",
+      "producer_state"
+    ],
+    "endpoints": "D/CE; each source also queried against all timed endpoints",
+    "inventory": "actual sequential cells, Q pins, unique named indices, declared-vs-observed widths, and explicit gaps",
+    "source_families": [
+      "producer_tile_cursor",
+      "producer_cell_cache",
+      "producer_plane_id",
+      "producer_state"
+    ]
+  },
+  "retained_controls": {
+    "memory_watchdog_and_fresh_output_directory": true,
+    "no_implementation_or_constraint_or_checkpoint_write_commands": true,
+    "part_xc7a100tcsg324_1_and_existing_component_clk_8ns": true,
+    "readonly_checkpoint_mount": true,
+    "readonly_tools_mount": true,
+    "two_cpu_8g_memory_and_240s_tool_timeout": true
+  },
+  "schema": "v125-readonly-producer-inspection-derivation-v1",
+  "scope": "New readonly diagnostic inspection wrapper and source-query script only; no Vivado, checkpoint load, query, or physical trial executed by this derivation.",
+  "source_contract": {
+    "current_v125_admission_path": "fpga/experiments/cu66-v125-tile/cs88_admission_v91i2a.sv",
+    "current_v125_admission_sha256": "2f65ff770775404071e383890c75549ccb08ec9998993c86f1662cfed65d71eb",
+    "parent_index": "experiments/python-gamebub-v124/integration/results.json",
+    "parent_index_sha256": "9514c117b7a3769babb3cb4bc9b1c6b4bf355212203c710695696b7b63fcf33f",
+    "producer_alias": "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv",
+    "producer_path": "fpga/experiments/cu66-v124-owner/cs88_coefficients_v91k.sv",
+    "producer_sha256": "963b46c3449d3a31e5ae85763f0681c6e68156c8d8c2c4c330d834ed2554fb53"
+  },
+  "status": "PREPARED_STATIC_NOT_EXECUTED"
+}

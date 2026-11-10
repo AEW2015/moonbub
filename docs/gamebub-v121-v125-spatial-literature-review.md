@@ -1,5 +1,17 @@
 # Game Bub: spatial architecture review and V121–V125 exploration plan
 
+**V125 measured follow-up, 2026-11-10:** [existing-edge tile predicates](cu66-v125/README.md)
+pass all functional gates with unchanged public cycles. Tile → tile improves
+−1.170 → +2.447 ns, but the full 125 MHz route fails at **−1.224 ns WNS,
+−2,209.865 ns TNS / 8,027 setup endpoints**. Fewer failing endpoints do not
+offset the worse WNS. New predicate-output paths are positive in the query;
+tile → hidden-predicate D (−0.191 ns) and tile/group-end coordinate paths remain
+negative. The global producer cursor → cell-cache path (−1.224 ns) and scratch
+emit-bank path (−1.219 ns) lead the next [registered-stage experiment](cu66-v125/next-timing.md).
+No clock qualification, board image, hardware 30 fps or validated <10 ms follows
+from this component study. All broader V124/V125 roadmap exits below remain
+separate; the qualified B100 control is unchanged.
+
 **V124 measured follow-up:** [spatial owner lanes and native endpoint replay](cu66-v124/README.md)
 pass all functional gates with exact cycles. The targeted busy return improves
 0.524 ns, but global 125 MHz WNS regresses to **−1.170 ns**, TNS to −2,527.615 ns
