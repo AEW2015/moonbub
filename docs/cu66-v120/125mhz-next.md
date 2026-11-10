@@ -1,5 +1,12 @@
 # Continuing the 125 MHz implementation
 
+The separate [V121 experiment](../cu66-v121/README.md) has now measured this
+request-address cut. The old issued → RAM-enable family improves from −1.517 ns
+to +0.303 ns, with +0.581 ns for the new prepared-address family. Overall 125 MHz
+setup remains open at −1.347 ns; the worst now starts at admission cursor and
+ends in state decoding. V121's source/functional/native/query evidence is
+separate from the unchanged qualified 100 MHz Source B below.
+
 The [2026-11-09 spatial literature review and proposed V121–V125 roadmap](../gamebub-v121-v125-spatial-literature-review.md)
 connects these measured paths to elastic request stages, local memory banking,
 validation overlap and ESP32 Wi-Fi/QSPI integration. Its reproducible analytical

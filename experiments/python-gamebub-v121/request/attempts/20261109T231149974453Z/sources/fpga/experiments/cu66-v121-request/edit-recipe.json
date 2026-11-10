@@ -1,0 +1,45 @@
+{
+  "accepted_wrap_contract": "Original accepted request span-overflow assertion retained.",
+  "added_public_cycles": 0,
+  "added_source_payload_bits": 32,
+  "candidate": "fpga/experiments/cu66-v121-request/byte_refill_queue_v91i2b.sv",
+  "candidate_sha256": "69b80d1210dcb17ad0eed0ba24cff68e31fbf213d5984b64ffc32ae213ac8e48",
+  "edits": [
+    {
+      "after": "    // V121: next full32 address owned by the existing start/issue edges.\n    // Holds through stalls, responses, pops, completion and faults.\n    logic [31:0] prepared_req_addr;\n    logic blocked, response_fault, issue;\n",
+      "before": "    logic blocked, response_fault, issue;\n",
+      "reason": "Add one full32 cursor; do not add an ownership or pipeline edge."
+    },
+    {
+      "after": "    assign req_addr=prepared_req_addr;\n",
+      "before": "    assign req_addr=offset+issued;\n",
+      "reason": "Remove the offset-plus-issued adder from admission address and bounds inputs."
+    },
+    {
+      "after": "            prepared_req_addr<=0;\n            offset<=0;length<=0;owner_epoch<=0;issued<=0;consumed<=0;pending_addr<=0;pending_last<=0;\n",
+      "before": "            offset<=0;length<=0;owner_epoch<=0;issued<=0;consumed<=0;pending_addr<=0;pending_last<=0;\n",
+      "reason": "Preserve reset/cancel/clear_stats precedence and unqualified address."
+    },
+    {
+      "after": "            prepared_req_addr<=start_offset;\n            offset<=start_offset;length<=start_length;owner_epoch<=start_epoch;\n",
+      "before": "            offset<=start_offset;length<=start_length;owner_epoch<=start_epoch;\n",
+      "reason": "Capture exact start offset for empty, valid and replacement starts."
+    },
+    {
+      "after": "                prepared_req_addr<=prepared_req_addr+32'd1;\n                issued<=issued+1;pending_addr<=req_addr;pending_last<=issued+1==length;\n",
+      "before": "                issued<=issued+1;pending_addr<=req_addr;pending_last<=issued+1==length;\n",
+      "reason": "Advance exactly once on accepted request using literal unsigned modular full32 addition."
+    },
+    {
+      "after": "`ifndef SYNTHESIS\n    always_ff @(posedge clk) if(!blocked)begin\n        assert(prepared_req_addr==offset+issued)\n            else $fatal(1,\"V121 prepared full32 request owner mismatch\");\n    end\n`endif\n\n`ifndef SYNTHESIS\n    always_ff @(posedge clk) if(!blocked)begin\n        assert({1'b0,fifo_count}+{2'b0,pending}<=3'd2)else $fatal(1,\"refill owner credit exceeded\");\n        if(!response_fault)assert(next_owned<=3'd2)else $fatal(1,\"refill reservation exceeded\");\n        if(issue)assert(req_addr>=offset&&issued<length)else $fatal(1,\"refill request span overflow\");\n        if(pop_event)begin\n            assert(consumed<length)else $fatal(1,\"extra refill byte\");\n            assert(out_last==(consumed+1==length))else $fatal(1,\"refill last binding\");\n            if(out_last)assert(next_count==0&&!issue&&!pending)else $fatal(1,\"tail pop with local owners remaining\");\n        end\n    end\n`endif",
+      "before": "`ifndef SYNTHESIS\n    always_ff @(posedge clk) if(!blocked)begin\n        assert({1'b0,fifo_count}+{2'b0,pending}<=3'd2)else $fatal(1,\"refill owner credit exceeded\");\n        if(!response_fault)assert(next_owned<=3'd2)else $fatal(1,\"refill reservation exceeded\");\n        if(issue)assert(req_addr>=offset&&issued<length)else $fatal(1,\"refill request span overflow\");\n        if(pop_event)begin\n            assert(consumed<length)else $fatal(1,\"extra refill byte\");\n            assert(out_last==(consumed+1==length))else $fatal(1,\"refill last binding\");\n            if(out_last)assert(next_count==0&&!issue&&!pending)else $fatal(1,\"tail pop with local owners remaining\");\n        end\n    end\n`endif",
+      "reason": "Add a full32 owner invariant while retaining the entire inherited assertion block byte-exact."
+    }
+  ],
+  "external_interface_changes": 0,
+  "old_assertions_removed": 0,
+  "old_private_value_contract_changes": 0,
+  "original": "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv",
+  "original_sha256": "af78e9d263fcdaa5ccc0d13f370aa994f46e2feb198c54c9775122c02d07a505",
+  "schema": "v121-prepared-request-existing-edge-v1"
+}

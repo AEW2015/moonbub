@@ -1,5 +1,10 @@
 # V120 decoder development and remote hardware handoff
 
+[V121's measured request repair](../cu66-v121/README.md) closes its targeted
+request-to-RAM-enable family at 125 MHz, while global 125 MHz setup still fails
+at −1.347 ns. All functional stages preserve exact Source B cycles. This is a
+separate experimental source; the qualified Source B handoff below is unchanged.
+
 Next research: [spatial architecture literature review and proposed V121–V125 plan](../gamebub-v121-v125-spatial-literature-review.md),
 including 125 MHz control partitioning, latency/service budgets and the real
 ESP32 Wi-Fi/QSPI endpoint work needed for 30 fps. These are proposed experiments;

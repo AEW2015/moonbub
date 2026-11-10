@@ -1,5 +1,13 @@
 # Game Bub application-specific codec: selected direction and gates
 
+**V121 measured continuation:** [the refill request repair](cu66-v121/README.md)
+passes all four functional stages with zero public-cycle change. Its targeted
+125 MHz issued-counter → RAM-enable path improves from −1.517 ns to +0.303 ns;
+the prepared-address path has +0.581 ns slack. Overall 125 MHz setup still fails
+at −1.347 ns WNS, −3,248.192 ns TNS and 9,407 endpoints. The next measured timing
+target is admission cursor arithmetic into state decoding. Qualified 100 MHz
+Source B remains unchanged; physical 30 fps and validated hardware <10 ms are open.
+
 **Current continuation, 2026-11-09:** [V120 Source B](cu66-v120/handoff.md) is
 repeat-qualified for internal component timing at 100 MHz; its 125 MHz route
 fails at −1.517 ns. Complete-parent timing, sustained hardware 30 fps and

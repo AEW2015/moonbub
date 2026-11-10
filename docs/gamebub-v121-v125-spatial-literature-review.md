@@ -1,5 +1,12 @@
 # Game Bub: spatial architecture review and V121–V125 exploration plan
 
+**V121 follow-up measured:** [existing-edge request preparation](cu66-v121/README.md)
+passes focused/full/transport/peer/parent checks with zero public-cycle change.
+The targeted issued → RAM-enable path now has +0.303 ns slack, and the new
+prepared-address path has +0.581 ns. Global 125 MHz setup still fails at −1.347 ns;
+admission cursor/state decoding is the next timing target. The roadmap's clock,
+strict latency and physical frame-rate gates remain separate and open.
+
 Reviewed **2026-11-09** against V120 evidence at
 `ddace39683118b2fa97267f484f534ea046ed798`.
 This is a literature review and proposed experiment sequence, not completion of

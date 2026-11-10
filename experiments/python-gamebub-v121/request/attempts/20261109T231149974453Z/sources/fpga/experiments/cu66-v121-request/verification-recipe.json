@@ -1,0 +1,68 @@
+{
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v121-request/verification/request_original.sv",
+      "candidate_sha256": "db46887d6a350596e92868509fb01240bce183c72dd8e83d3ac3a4665cff3b59",
+      "edits": [
+        {
+          "after": "module request_original (",
+          "before": "module byte_refill_queue_v91i2b ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v91i2b/byte_refill_queue_v91i2b.sv",
+      "original_sha256": "af78e9d263fcdaa5ccc0d13f370aa994f46e2feb198c54c9775122c02d07a505"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v121-request/verification/request_candidate.sv",
+      "candidate_sha256": "01d57a3f80ee2b59af63c9e102634f5e5cd5849815bde2cc4c1055b688a67c71",
+      "edits": [
+        {
+          "after": "module request_candidate (",
+          "before": "module byte_refill_queue_v91i2b ("
+        }
+      ],
+      "original": "fpga/experiments/cu66-v121-request/byte_refill_queue_v91i2b.sv",
+      "original_sha256": "69b80d1210dcb17ad0eed0ba24cff68e31fbf213d5984b64ffc32ae213ac8e48"
+    }
+  ],
+  "added_public_cycles": 0,
+  "comparison": "Every original output, qualified and unqualified, before and after every tested edge.",
+  "legacy": {
+    "candidate": "fpga/experiments/cu66-v121-request/verification/tb_refill_legacy.cpp",
+    "candidate_sha256": "1e26c4a32713779f77614b8fd47c7fe8b09b3185a815348bffaff4829bafbdb1",
+    "edits": [
+      {
+        "after": "#include \"Vrequest_probe.h\"",
+        "before": "#include \"Vbyte_refill_queue_v91i2b.h\""
+      },
+      {
+        "after": "    Vrequest_probe d;",
+        "before": "    Vbyte_refill_queue_v91i2b d;"
+      },
+      {
+        "after": "d.rsp_data=flight?flight->byte:0;d.eval();\n        need(!d.mismatch,\"V121 preedge exact public output mismatch\");\n        if(flight){++physical_responses;if(d.reset||d.cancel||d.start||d.clear_stats)++physical_responses_on_revoke;}",
+        "before": "d.rsp_data=flight?flight->byte:0;d.eval();"
+      },
+      {
+        "after": "d.clk=1;d.eval();++cycles;\n        need(!d.mismatch,\"V121 postedge exact public output mismatch\");",
+        "before": "d.clk=1;d.eval();++cycles;"
+      },
+      {
+        "after": "    uint64_t simultaneous=0,read_edges=0,pop_edges=0;\n    uint64_t physical_responses=0,physical_responses_on_revoke=0;",
+        "before": "    uint64_t simultaneous=0,read_edges=0,pop_edges=0;"
+      },
+      {
+        "after": "                need(d.req_epoch==epoch,\"read owner epoch changed\");\n                need(d.req_addr==uint32_t(offset+uint32_t(read_edges)),\"independent exact full32 issue sequence\");",
+        "before": "                need(d.req_epoch==epoch,\"read owner epoch changed\");"
+      },
+      {
+        "after": "int inherited_main(int argc,char **argv){",
+        "before": "int main(int argc,char **argv){"
+      }
+    ],
+    "original": "fpga/experiments/cu66-v91i2b/tb_refill_queue.cpp",
+    "original_sha256": "9d8622967eda476374c6446ec55059d485604436901fc0f532aa9ccaffec45ce"
+  },
+  "old_require_checks_removed": 0,
+  "schema": "v121-request-exact-cycle-adapters-v1"
+}

@@ -1,0 +1,18 @@
+{
+  "candidate": "scripts/cu66-v121/integration/collect_final.py",
+  "candidate_sha256": "93af6c5c87f5593592cc578a928e762de8c638865b72925573da814587766d4a",
+  "edits": [
+    {
+      "after": "    # Only the frozen v97_forward generated library has no user C++ entrypoint.\n    executables = [item for item in compiles if '--exe' in item]\n    libraries = [item for item in compiles if '--exe' not in item]\n    assert executables and all('-CFLAGS' in item and '-Werror' in item[item.index('-CFLAGS')+1] for item in executables)\n    assert all('--build' in item and '--top-module' in item and item[item.index('--top-module')+1] == 'v97_forward' for item in libraries)\n    adapters = [item for item in commands if 'g++' in item]\n    assert all(all(flag in item for flag in ('-std=c++17', '-O2', '-Wall', '-Wextra', '-Werror')) for item in adapters)\n    if raw.get('custom_transport_status'):\n        assert len(libraries) == 1 and len(adapters) == 1\n    else:\n        assert not libraries and not adapters",
+      "before": "    assert all('-Werror' in item[item.index('-CFLAGS')+1] for item in compiles)"
+    },
+    {
+      "after": "    result['collector_derivation'] = dict(\n        original=dict(path='scripts/cu66-v121/integration/collect.py', sha256='79693a07f44438aea002ecdc39373e9df992aad36b562b6f08160f93804f1d8b'),\n        candidate=dict(path=str(Path(__file__).relative_to(ROOT)), sha256=sha(Path(__file__))),\n        recipe=dict(path='scripts/cu66-v121/integration/collector-fix.json', sha256=sha(Path(__file__).with_name('collector-fix.json'))))\n    failures=AREA/'integration/orchestration/failures.json'\n    result['orchestration_failures'] = dict(path=str(failures.relative_to(ROOT)), sha256=sha(failures))\n    target = AREA/'integration/results.json'",
+      "before": "    target = AREA/'integration/results.json'"
+    }
+  ],
+  "original": "scripts/cu66-v121/integration/collect.py",
+  "original_sha256": "79693a07f44438aea002ecdc39373e9df992aad36b562b6f08160f93804f1d8b",
+  "reason": "Preserve original pinned collector and all functional receipts; derive separate collect_final.py with executable C++ and independent adapter host-warning gates; restrict non-executable Verilator builds to the frozen v97_forward library.",
+  "schema": "v121-final-collector-host-flag-scope-v1"
+}
