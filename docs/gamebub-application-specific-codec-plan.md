@@ -1,5 +1,18 @@
 # Game Bub application-specific codec: selected direction and gates
 
+**V124 measured continuation:** [bank-owner lanes and native replay](cu66-v124/README.md)
+pass focused/full/transport/peer/parent checks with zero public-cycle change.
+Emit-bank → busy improves −1.086→−0.562 ns, while global 125 MHz setup regresses
+to **−1.170 ns WNS, −2,527.615 ns TNS and 9,787 failures**. No promotion.
+Actual Sunshine C++ packetization → firmware Rust parsing passes; replay of those
+native bytes through actual QSPI/CDC/guarded-JPEG RTL also passes its finite
+pixel/fault checks. These are source-bound native/file seams, not a complete
+single-timebase firmware/Wi-Fi/custom-codec harness. The
+[next timing proposal](cu66-v124/next-timing.md) targets admission tile-control
+predicates on existing write edges; RAW and other negative families remain open.
+Source B100 stays unchanged. Modeled stalled row latency remains 12.425576 ms
+at an assumed complete-parent 125 MHz; physical 30 fps and validated <10 ms remain open.
+
 **V123 measured continuation:** [the rank-mask experiment](cu66-v123/README.md)
 passes focused/full/transport/peer/parent checks with zero public-cycle delta.
 Global 125 MHz WNS improves **−1.949 → −1.086 ns**, absolute TNS falls 62.81%

@@ -1,0 +1,86 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (lin64) Build 6511674 Tue Jun 16 11:01:26 MDT 2026
+| Date         : Tue Nov 10 03:49:12 2026
+| Host         : geto running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_timing -from [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *synchronous.ingress/raw_mode_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == Q}] -to [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *scratch/busy_owned_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == D || REF_PIN_NAME == CE || REF_PIN_NAME == R || REF_PIN_NAME == S}] -delay_type max -max_paths 50 -nworst 1 -path_type full_clock_expanded -file /output/raw_mode-to-scratch_busy_owned.rpt
+| Design       : cs88_pipeline_v91k
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -0.891ns  (required time - arrival time)
+  Source:                 coefficients/child/packet_decoder/synchronous.ingress/raw_mode_reg/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/child/scratch/busy_owned_reg/D
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        8.839ns  (logic 2.112ns (23.893%)  route 6.727ns (76.107%))
+  Logic Levels:           10  (CARRY4=2 LUT3=1 LUT4=1 LUT6=6)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44060, unset)        0.973     0.973    coefficients/child/packet_decoder/synchronous.ingress/clk
+    SLICE_X73Y76         FDRE                                         r  coefficients/child/packet_decoder/synchronous.ingress/raw_mode_reg/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X73Y76         FDRE (Prop_fdre_C_Q)         0.456     1.429 r  coefficients/child/packet_decoder/synchronous.ingress/raw_mode_reg/Q
+                         net (fo=102, routed)         0.910     2.339    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_epoch_0_sn_1
+    SLICE_X80Y75         LUT3 (Prop_lut3_I1_O)        0.124     2.463 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/dbg_coef_block[2]_INST_0/O
+                         net (fo=11, routed)          1.449     3.912    coefficients/child/scratch/pending_storage[1].record_payload_reg[1][21]_0
+    SLICE_X81Y92         LUT4 (Prop_lut4_I3_O)        0.124     4.036 r  coefficients/child/scratch/state[4]_i_204/O
+                         net (fo=1, routed)           0.000     4.036    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_57_0[1]
+    SLICE_X81Y92         CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     4.586 r  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_102/CO[3]
+                         net (fo=1, routed)           0.000     4.586    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_102_n_0
+    SLICE_X81Y93         CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     4.700 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state_reg[4]_i_57/CO[3]
+                         net (fo=1, routed)           1.312     6.012    coefficients/child/packet_decoder/synchronous.ingress/context_decoder/scratch/phase_input_bad5
+    SLICE_X76Y89         LUT6 (Prop_lut6_I2_O)        0.124     6.136 f  coefficients/child/packet_decoder/synchronous.ingress/context_decoder/state[4]_i_38/O
+                         net (fo=4, routed)           0.575     6.711    coefficients/child/scratch/state[4]_i_24_1
+    SLICE_X75Y87         LUT6 (Prop_lut6_I4_O)        0.124     6.835 f  coefficients/child/scratch/state[4]_i_31__0/O
+                         net (fo=1, routed)           0.433     7.268    coefficients/child/scratch/state[4]_i_31__0_n_0
+    SLICE_X75Y87         LUT6 (Prop_lut6_I3_O)        0.124     7.392 r  coefficients/child/scratch/state[4]_i_24/O
+                         net (fo=5, routed)           0.590     7.982    coefficients/child/scratch/state[4]_i_24_n_0
+    SLICE_X69Y87         LUT6 (Prop_lut6_I2_O)        0.124     8.106 r  coefficients/child/scratch/busy_owned_i_9/O
+                         net (fo=1, routed)           0.618     8.724    coefficients/child/scratch/busy_owned_i_9_n_0
+    SLICE_X63Y82         LUT6 (Prop_lut6_I1_O)        0.124     8.848 f  coefficients/child/scratch/busy_owned_i_5/O
+                         net (fo=1, routed)           0.840     9.688    coefficients/child/scratch/busy_owned_i_5_n_0
+    SLICE_X55Y74         LUT6 (Prop_lut6_I4_O)        0.124     9.812 r  coefficients/child/scratch/busy_owned_i_1/O
+                         net (fo=1, routed)           0.000     9.812    coefficients/child/scratch/busy_owned_i_1_n_0
+    SLICE_X55Y74         FDRE                                         r  coefficients/child/scratch/busy_owned_reg/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44060, unset)        0.924     8.924    coefficients/child/scratch/clk
+    SLICE_X55Y74         FDRE                                         r  coefficients/child/scratch/busy_owned_reg/C
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    SLICE_X55Y74         FDRE (Setup_fdre_C_D)        0.032     8.921    coefficients/child/scratch/busy_owned_reg
+  -------------------------------------------------------------------
+                         required time                          8.921    <hidden>
+                         arrival time                          -9.812    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.891    <hidden>
+
+
+
+

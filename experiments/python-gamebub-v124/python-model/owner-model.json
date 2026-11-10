@@ -1,0 +1,49 @@
+{
+  "classification": "FINITE_TWO_STATE_ALGEBRAIC_MODEL_NOT_RTL_PROOF",
+  "counts": {
+    "explicit_patterns": {
+      "duplicate_banks": 192,
+      "selected_match_opposite_poison": 192,
+      "selected_mismatch_opposite_match": 192
+    },
+    "full16_block_width": 16,
+    "full32_epoch_width": 32,
+    "gate_contexts": 2048,
+    "identity_cases": 101344,
+    "no_owner_cases": 58417,
+    "owner_matches": 42927,
+    "random_cases": 100000,
+    "random_seed": 12420261109,
+    "ready_child_valid_bankready_independence_contexts": 16
+  },
+  "coverage_notes": [
+    "both bank selectors",
+    "tile mode and non-tile fallback",
+    "full 32-bit epoch equality and high-bit mismatches",
+    "full 16-bit block equality/boundaries/wrap adjacency",
+    "opposite-bank poison, duplicate tags and mismatches",
+    "bank_ready and child_valid do not affect owner identity",
+    "ready/valid/error-67 boolean gate contexts preserve listed priority"
+  ],
+  "equations": {
+    "perbank_spatial": "tile_mode ? (((bank_epoch[0]==active_epoch)&&(bank_block[0]==expected_block)) OR (same for bank 1), selected strictly by selector) : the unchanged fallback scalar equation",
+    "ready_valid_error67": "exact same computed owner_match enters ready/valid/error67 gates; reset/abort, accepted-start, refill-error, child-error precedence preserved",
+    "selected_scalar": "tile_mode ? ((bank_epoch[selector]==active_epoch) && (bank_block[selector]==expected_block)) : ((fallback_epoch==active_epoch) && (fallback_block==expected_block))"
+  },
+  "model_source_sha256": "c5f3977ffb67607efa7d13ee3da7a60c4572fb9c9ecc0e23b02c791ac56ebcb5",
+  "schema": "v124-owner-equation-independent-model-v1",
+  "scope": {
+    "FPS": false,
+    "RTL_equivalence": false,
+    "formal_proof": false,
+    "throughput": false,
+    "timing": false
+  },
+  "v123_producer": {
+    "candidate_path": "fpga/experiments/cu66-v124-owner/cs88_coefficients_v91k.sv",
+    "candidate_sha256": "963b46c3449d3a31e5ae85763f0681c6e68156c8d8c2c4c330d834ed2554fb53",
+    "frozen_path": "fpga/experiments/cu66-v119-owner/cs88_coefficients_v91k.sv",
+    "functional_alias": "fpga/experiments/cu66-v91k/cs88_coefficients_v91k.sv",
+    "sha256": "3517bda5016d7c2920e20fbc0767bbb1146e091cea4a5216db9a8b9a6532ee30"
+  }
+}

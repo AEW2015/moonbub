@@ -1,0 +1,112 @@
+{
+  "adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v124-owner/verification/ready_original.sv",
+      "candidate_sha256": "9ed2146bfd485cc10d87c8e02865feb5e44ea1463d0d859927a528868ad8bfcf",
+      "edits": [
+        {
+          "after": "module ready_original #",
+          "before": "module cs88_coefficients_v91k #"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v119-owner/cs88_coefficients_v91k.sv",
+      "original_sha256": "3517bda5016d7c2920e20fbc0767bbb1146e091cea4a5216db9a8b9a6532ee30"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v124-owner/verification/ready_candidate.sv",
+      "candidate_sha256": "193b68dae58c906c49a0c4d03bd123c54168ef5ca069aa1ae6eccef188172bf2",
+      "edits": [
+        {
+          "after": "module ready_candidate #",
+          "before": "module cs88_coefficients_v91k #"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v124-owner/cs88_coefficients_v91k.sv",
+      "original_sha256": "963b46c3449d3a31e5ae85763f0681c6e68156c8d8c2c4c330d834ed2554fb53"
+    }
+  ],
+  "added_public_cycles": 0,
+  "added_registers": 0,
+  "fixture_adapters": [
+    {
+      "candidate": "fpga/experiments/cu66-v124-owner/verification/tb_owner.cpp",
+      "candidate_sha256": "ad87aea8751ebf5f8c416cf283915aace922217b686cfe3d64d42c8c4d355370",
+      "edits": [
+        {
+          "after": "int inherited_owner_main(int argc,char**argv)",
+          "before": "int main(int argc,char**argv)"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v119-owner/producer-verification/tb_owner.cpp",
+      "original_sha256": "9c94477b2d01b728bcab28cdeb67a16dcacb7b6ae96cf38c6d6c747a2ff4e11b"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v124-owner/verification/ready_probe.sv",
+      "candidate_sha256": "f10518021711ee09ac5c44c4c42e490ee3d7a3d666990b073f3e6222000a64f6",
+      "edits": [
+        {
+          "after": "assign probe_internal_equal=(old_dut.child_out_ready==new_dut.child_out_ready)&&",
+          "before": "assign probe_internal_equal="
+        }
+      ],
+      "original": "fpga/experiments/cu66-v119-owner/producer-verification/ready_probe.sv",
+      "original_sha256": "057a7881004bbd78c9e6f6023bff14034915c0cd1397ab72511ba07b83ccae14"
+    },
+    {
+      "candidate": "fpga/experiments/cu66-v124-owner/verification/tb_controller.cpp",
+      "candidate_sha256": "27ce4018b9b8fb49d7218632c3bfda84c81433decb159af264a1b6837c94dcfa",
+      "edits": [
+        {
+          "after": "#include \"caller_pair.hpp\"",
+          "before": "#include \"Vcs88_pipeline_v91i2b.h\""
+        },
+        {
+          "after": "int inherited_controller_main(int argc,char **argv)",
+          "before": "int main(int argc,char **argv)"
+        }
+      ],
+      "original": "fpga/experiments/cu66-v91i2b/tb_pipeline.cpp",
+      "original_sha256": "bec2ddd1556a8cf822fa6ced95130bd76accc94e5d31d21a9224a66ea5d250de"
+    }
+  ],
+  "old_assertions_removed": 0,
+  "old_require_checks_removed": 0,
+  "production": {
+    "candidate": "fpga/experiments/cu66-v124-owner/cs88_coefficients_v91k.sv",
+    "candidate_sha256": "963b46c3449d3a31e5ae85763f0681c6e68156c8d8c2c4c330d834ed2554fb53",
+    "edits": [
+      {
+        "after": "    // V124: full-width owner comparison precedes the one-bit bank selector.\n    // KEEP is restricted to these two combinational result bits; no placement,\n    // hierarchy, reset, new FF, or timing exception is introduced.\n    (* keep = \"true\" *) logic [1:0] tile_owner_match;\n    logic child_owner_match;\n    for(genvar owner_bank=0;owner_bank<2;owner_bank=owner_bank+1)begin: owner_lanes\n        assign tile_owner_match[owner_bank]=\n            dbg_bank_epoch[owner_bank]==current_child_epoch &&\n            dbg_bank_block[owner_bank]==expected_block;\n    end\n    assign child_owner_match=dbg_tile_mode ? tile_owner_match[dbg_emit_bank] :\n        (child_out_epoch==current_child_epoch && out_block==expected_block);\n`ifndef SYNTHESIS\n    // Unconditional tile cycles, including invalid/unready/reset/abort cycles.\n    // Raw views, not bank validity or presumed current ownership, certify this.\n    always_ff @(posedge clk)begin\n        if(dbg_tile_mode)begin\n            assert(child_out_epoch==dbg_bank_epoch[dbg_emit_bank] &&\n                out_block==dbg_bank_block[dbg_emit_bank])\n                else $fatal(1,\"V124 tile bank raw views differ from selected fields\");\n        end\n        for(integer owner_bank=0;owner_bank<2;owner_bank=owner_bank+1)\n            assert(tile_owner_match[owner_bank]==\n                (dbg_bank_epoch[owner_bank]==current_child_epoch &&\n                 dbg_bank_block[owner_bank]==expected_block))\n                else $fatal(1,\"V124 complete full32/full16 owner lane mismatch\");\n        assert(child_owner_match==(child_out_epoch==current_child_epoch &&\n            out_block==expected_block))\n            else $fatal(1,\"V124 generic selected owner identity mismatch\");\n    end\n`endif\n    assign child_out_ready=state==DISPATCH&&out_ready&&child_owner_match&&!reset&&!abort_packet;",
+        "before": "    assign child_out_ready=state==DISPATCH&&out_ready&&child_out_epoch==current_child_epoch&&out_block==expected_block&&!reset&&!abort_packet;",
+        "reason": "Prepare two full32 epoch/full16 block combinational equality lanes before one-bit selection; preserve non-tile scalar fallback and every invalid-cycle owner value."
+      },
+      {
+        "after": "    assign out_valid=state==DISPATCH&&child_out_valid&&child_owner_match&&!reset&&!abort_packet;",
+        "before": "    assign out_valid=state==DISPATCH&&child_out_valid&&child_out_epoch==current_child_epoch&&out_block==expected_block&&!reset&&!abort_packet;",
+        "reason": "Use the same exact owner predicate for public valid; no bank-ready or child-valid assumption added."
+      },
+      {
+        "after": "                        if(child_out_valid&&!child_owner_match)begin",
+        "before": "                        if(child_out_valid&&(child_out_epoch!=current_child_epoch||out_block!=expected_block))begin",
+        "reason": "Preserve same-edge error67 priority using the exact complement of the common owner predicate."
+      }
+    ],
+    "original": "fpga/experiments/cu66-v119-owner/cs88_coefficients_v91k.sv",
+    "original_sha256": "3517bda5016d7c2920e20fbc0767bbb1146e091cea4a5216db9a8b9a6532ee30"
+  },
+  "schema": "v124-spatial-owner-lanes-recipe-v1",
+  "synthesis_attribute": {
+    "bit_count": 2,
+    "exact_target": "tile_owner_match[1:0]",
+    "name": "keep",
+    "other_directives_added": false,
+    "value": "true"
+  },
+  "unchanged": [
+    {
+      "candidate": "fpga/experiments/cu66-v124-owner/verification/tb_ready.cpp",
+      "original": "fpga/experiments/cu66-v119-owner/producer-verification/tb_ready.cpp",
+      "sha256": "18df5666ac840033458ca3804d66034c66d996a131084b3e4980a6bddaae6b9c"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "prepare": {
+    "candidate": "scripts/cu66-v124/jpeg_wire/prepare.py",
+    "candidate_sha256": "234cc56bda3507cd28d634ad93d2e1460f8152980fb1d7120d99f496f2af5907",
+    "edits": [
+      {
+        "after": "A=R/'experiments/python-gamebub-v124/jpeg-wire';OLD_A=R/'experiments/python-gamebub-v115/jpeg-wire';S=R/'fpga/experiments/cu66-v115-jpeg-wire'",
+        "before": "A=R/'experiments/python-gamebub-v115/jpeg-wire';S=R/'fpga/experiments/cu66-v115-jpeg-wire'",
+        "count": 1
+      },
+      {
+        "after": " endpoint_index=R/'experiments/python-gamebub-v124/endpoint/results.json';selected=json.loads(endpoint_index.read_text());assert selected['status']=='PASS_NATIVE_PACKETIZER_TO_RUST_RECEIVER'\n selected_receipt=R/selected['selected_receipt']['path'];endpoint_result=R/selected['result']['path'];assert sha(selected_receipt)==selected['selected_receipt']['sha256'] and sha(endpoint_result)==selected['result']['sha256']\n er=json.loads(selected_receipt.read_text());endpoint_attempt=R/selected['selected_attempt'];assert all(sha(endpoint_attempt/rel)==meta['sha256'] for rel,meta in er['source_snapshots'].items());native_packet=R/selected['selected_attempt']/'out/native-1024.bin';rust_recovered=R/selected['selected_attempt']/'out/case-native_golden_1024.jpg';jpeg=R/'host/fixtures/pattern-720x480-420-q65.jpg';fixture=native_packet;wire=fixture.read_bytes();jpeg_bytes=jpeg.read_bytes();native_sha=sha(fixture);result_data=json.loads(endpoint_result.read_text())\n assert er['status']=='PASS' and native_sha==result_data['native_packet_outputs']['1024']['sha256']==selected['packetization_sizes']['1024']['sha256']\n assert sha(rust_recovered)==result_data['cases'][0]['recovered_sha256'] and rust_recovered.read_bytes()==jpeg_bytes\n assert result_data['golden_1024']['byte_exact'] and native_sha==result_data['golden_1024']['sha256']\n pos=0;parts=[];chunks=[];receiver=Reassembler();completed=None",
+        "before": " fixture=R/'host/fixtures/pattern-msv1-packets.bin';wire=fixture.read_bytes();jpeg=(R/'host/fixtures/pattern-720x480-420-q65.jpg').read_bytes();pos=0;parts=[];chunks=[];receiver=Reassembler();completed=None",
+        "count": 1
+      },
+      {
+        "after": " assert pos==len(wire) and b''.join(parts)==jpeg_bytes and completed is not None and completed[1]==jpeg_bytes==rust_recovered.read_bytes() and len(chunks)==26 and len(jpeg_bytes)==26159",
+        "before": " assert pos==len(wire) and b''.join(parts)==jpeg and len(chunks)==26 and len(jpeg)==26159",
+        "count": 1
+      },
+      {
+        "after": " assert (OLD_A/'golden-rgb565.bin').read_bytes()==bytes(golden),'frozen V115 RGB565 golden changed'\n A.mkdir(parents=True,exist_ok=True)",
+        "before": " A.mkdir(parents=True,exist_ok=True);(A/'golden-rgb565.bin').write_bytes(golden)",
+        "count": 1
+      },
+      {
+        "after": " other=[S/'tb_jpeg_wire.cpp',fixture,jpeg,reference,OLD_A/'golden-rgb565.bin',R/'host/moonshine/protocol.py',R/'firmware/handheld/src/streaming/protocol.rs',R/'firmware/handheld/src/streaming/mod.rs',pathlib.Path(__file__),pathlib.Path(__file__).parent/'qualify.py',R/'scripts/cu66-v114/optimized_spatial.py',endpoint_index,selected_receipt,endpoint_result,rust_recovered,endpoint_attempt/'src/packetizer_probe.cpp',endpoint_attempt/'src/receiver_probe.rs',endpoint_attempt/'src/run.py',endpoint_attempt/'source/sunshine/msv1.cpp',endpoint_attempt/'source/sunshine/msv1.h',endpoint_attempt/'source/moonbub/protocol.rs']",
+        "before": " other=[S/'tb_jpeg_wire.cpp',fixture,R/'host/fixtures/pattern-720x480-420-q65.jpg',reference,A/'golden-rgb565.bin',R/'host/moonshine/protocol.py',R/'firmware/handheld/src/streaming/protocol.rs',R/'firmware/handheld/src/streaming/mod.rs',pathlib.Path(__file__),pathlib.Path(__file__).parent/'qualify.py',R/'scripts/cu66-v114/optimized_spatial.py']",
+        "count": 1
+      },
+      {
+        "after": " root_review=OLD_A/'root-lint-review-message.json'",
+        "before": " root_review=A/'root-lint-review-message.json'",
+        "count": 1
+      },
+      {
+        "after": " other += [OLD_A/'root-lint-review.json',root_review,S/'baseline-lint.vlt',S/'baseline-lint-review.json',OLD_A/'compile-diagnostics.json',R/waiver['failed_raw_report']]",
+        "before": " other += [A/'root-lint-review.json',root_review,S/'baseline-lint.vlt',S/'baseline-lint-review.json',A/'compile-diagnostics.json',R/waiver['failed_raw_report']]",
+        "count": 1
+      },
+      {
+        "after": "c=dict(schema='v124-native-msv1-to-real-qspi-jpeg-preparation-v1',status='PREPARED_NOT_RUN',baseline_lint=dict(path='fpga/experiments/cu66-v115-jpeg-wire/baseline-lint.vlt',sha256=waiver['vlt_sha256'],rules=waiver['exact_rules'],diagnostics=waiver['inherited_diagnostics'],root_review_path=str(root_review.relative_to(R)),root_review_sha256=sha(root_review),scope='Exact frozen source+line only; Root-reviewed digital baseline lint, not assertion or physical CDC waiver'),rtl_source_order=[str(p.relative_to(R))for p in sources],source_sha256=sources_map,fixture=dict(packets=26,jpeg_bytes=len(jpeg_bytes),crc32=zlib.crc32(jpeg_bytes),packet_sha256=native_sha,packet_trace=chunks),native_endpoint=dict(selected_pointer=str(endpoint_index.relative_to(R)),selected_pointer_sha256=sha(endpoint_index),receipt=str(selected_receipt.relative_to(R)),receipt_sha256=sha(selected_receipt),result=str(endpoint_result.relative_to(R)),result_sha256=sha(endpoint_result),native_packet_file=str(fixture.relative_to(R)),native_packet_sha256=native_sha,rust_recovered_jpeg=str(rust_recovered.relative_to(R)),rust_recovered_sha256=sha(rust_recovered),native_golden_byte_exact=True,rust_and_python_recovered_jpeg_byte_exact=True),oracle='Frozen upstream C-model PPM converted without Pillow to little-endian RGB565 and original V115 golden; related upstream JPEG mathematics, not an independent decoder oracle. Production Python MSV1 parser/reassembler consumes the actual native C++ packet file as an additional parser oracle, never as producer.',firmware_scope='Input packets are output bytes from Sunshine native packetizer archived in the selected host endpoint attempt. Existing C++ pin-driver adapter mirrors begin/forward/commit MMIO into actual streaming/mod.rs. No Rust firmware session, ESP32 CPU, capture, encode, send, Wi-Fi, or timing claim.',guarded_JPEG_scope='Actual vendor JPEG modules except existing isolated SOF research jpeg_input_guarded.v substitution. Not unmodified production input, CS88 decoder, or V124 spatial codec timing composition.',sink_scope='Finite one-frame address/seen model and immutable V115 RGB565 golden; accepted pixel value/owner/held tuple checks; explicit modeled drain and frame-boundary publication fence. No SDRAM/LCD physical model in this wrapper.')",
+        "before": "c=dict(schema='v115-real-qspi-jpeg-preparation-v1',status='PREPARED_NOT_RUN',baseline_lint=dict(path='fpga/experiments/cu66-v115-jpeg-wire/baseline-lint.vlt',sha256=waiver['vlt_sha256'],rules=waiver['exact_rules'],diagnostics=waiver['inherited_diagnostics'],root_review_path=str(root_review.relative_to(R)),root_review_sha256=sha(root_review),scope='Exact frozen source+line only; Root-reviewed digital baseline lint, not assertion or physical CDC waiver'),rtl_source_order=[str(p.relative_to(R))for p in sources],source_sha256=sources_map,fixture=dict(packets=26,jpeg_bytes=len(jpeg),crc32=zlib.crc32(jpeg),packet_trace=chunks),oracle='Existing fixed-color related upstream C-model PPM, converted without Pillow to little-endian RGB565; shares upstream JPEG mathematics and is not independent decoder validation.',firmware_scope='C++ pin-driver adapter mirrors begin/forward/commit MMIO from actual streaming/mod.rs. Production Python parser/reassembler checks fixture. No Rust/ESP32 CPU execution or timing claim.',guarded_JPEG_scope='Actual vendor JPEG modules except existing isolated SOF research jpeg_input_guarded.v substitution. Not unmodified production input, CS88 decoder, or V115 spatial codec timing composition.',sink_scope='Finite one-frame address/seen model and immutable golden; accepted pixel value/owner/held tuple checks; explicit modeled drain and frame-boundary publication fence. No SDRAM/LCD physical model in this wrapper.')",
+        "count": 1
+      }
+    ],
+    "original": "scripts/cu66-v115/jpeg-wire/prepare.py",
+    "original_sha256": "6b0f50186c61ac9465a7c0127eb97d25283ec8a3169eb3b29e8ec5d0d03cfefe"
+  },
+  "qualify": {
+    "candidate": "scripts/cu66-v124/jpeg_wire/qualify.py",
+    "candidate_sha256": "c9652c0e2cce898abb45c2e297f5dbbac54e9f3dbe660922f709ad491245c565",
+    "edits": [
+      {
+        "after": "R=pathlib.Path(__file__).resolve().parents[3];A=R/'experiments/python-gamebub-v124/jpeg-wire';OLD_A=R/'experiments/python-gamebub-v115/jpeg-wire';S=R/'fpga/experiments/cu66-v115-jpeg-wire'",
+        "before": "R=pathlib.Path(__file__).resolve().parents[3];A=R/'experiments/python-gamebub-v115/jpeg-wire';S=R/'fpga/experiments/cu66-v115-jpeg-wire'",
+        "count": 1
+      },
+      {
+        "after": "def save(p,v):p.write_text(json.dumps(v,indent=2,sort_keys=True)+'\\n')\ndef resources():\n m={x.split(':')[0]:int(x.split()[1])*1024 for x in pathlib.Path('/proc/meminfo').read_text().splitlines()};f=next(x for x in pathlib.Path('/proc/pressure/memory').read_text().splitlines()if x.startswith('full '));return dict(available_bytes=m['MemAvailable'],psi_full_avg10=float(f.split('avg10=')[1].split()[0]),combined_used_fraction=(m['MemTotal']-m['MemAvailable']+m['SwapTotal']-m['SwapFree'])/(m['MemTotal']+m['SwapTotal']))",
+        "before": "def save(p,v):p.write_text(json.dumps(v,indent=2,sort_keys=True)+'\\n')",
+        "count": 1
+      },
+      {
+        "after": "gate=resources();assert gate['available_bytes']>=8*1024**3 and gate['psi_full_avg10']<1 and gate['combined_used_fraction']<.85,gate",
+        "before": "gate=m.memory();assert gate['available_bytes']>=8*1024**3 and gate['psi_full_avg10']<1,gate",
+        "count": 1
+      },
+      {
+        "after": "sample=dict(command=name,elapsed_seconds=time.monotonic()-t,**resources());raw['memory_samples'].append(sample);high=high+1 if sample['psi_full_avg10']>=5 else 0",
+        "before": "sample=dict(command=name,elapsed_seconds=time.monotonic()-t,**m.memory());raw['memory_samples'].append(sample);high=high+1 if sample['psi_full_avg10']>=5 else 0",
+        "count": 1
+      },
+      {
+        "after": "if sample['available_bytes']<4*1024**3 or high>=2 or sample['combined_used_fraction']>=.90 or sample['elapsed_seconds']>cap+20:",
+        "before": "if sample['available_bytes']<4*1024**3 or high>=2 or sample['elapsed_seconds']>cap+20:",
+        "count": 1
+      },
+      {
+        "after": "snap=lambda p:str(out/'sources'/p.relative_to(R))",
+        "before": "snap=lambda p:str(out/'sources'/p.relative_to(R))",
+        "count": 1
+      },
+      {
+        "after": "command([mapped+'/obj/Vjpeg_wire',snap(R/contract['native_endpoint']['native_packet_file']),snap(OLD_A/'golden-rgb565.bin'),str(phase)],name,300)",
+        "before": "command([mapped+'/obj/Vjpeg_wire',snap(R/'host/fixtures/pattern-msv1-packets.bin'),snap(A/'golden-rgb565.bin'),str(phase)],name,300)",
+        "count": 1
+      },
+      {
+        "after": "v124-native-msv1-real-qspi-cdc-guarded-jpeg-v1",
+        "before": "v115-real-qspi-cdc-guarded-jpeg-v1",
+        "count": 1
+      },
+      {
+        "after": "'v124-jpeg-wire-'",
+        "before": "'v115-jpeg-wire-'",
+        "count": 1
+      },
+      {
+        "after": "'gamebub-v124-jpeg-wire-'",
+        "before": "'gamebub-v115-jpeg-wire-'",
+        "count": 1
+      },
+      {
+        "after": "'V124_JPEG_WIRE'",
+        "before": "'V115_JPEG_WIRE'",
+        "count": 1
+      }
+    ],
+    "original": "scripts/cu66-v115/jpeg-wire/qualify.py",
+    "original_sha256": "3bce7d674431e3a75b02379e2dbb3d8c9ef70c3473efac985f60235b762ab932"
+  },
+  "schema": "v124-jpeg-wire-reversible-derivation-v1"
+}

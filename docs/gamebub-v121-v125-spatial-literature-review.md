@@ -1,5 +1,15 @@
 # Game Bub: spatial architecture review and V121–V125 exploration plan
 
+**V124 measured follow-up:** [spatial owner lanes and native endpoint replay](cu66-v124/README.md)
+pass all functional gates with exact cycles. The targeted busy return improves
+0.524 ns, but global 125 MHz WNS regresses to **−1.170 ns**, TNS to −2,527.615 ns
+and setup failures to 9,787. The route is not promoted. Production C++ serializer
+→ actual Rust protocol parity and a native-file QSPI/CDC/JPEG RTL replay pass;
+the [single-timebase harness, custom negotiation and calibrated physical service](cu66-v124/harness-boundaries.md)
+remain open. The next bounded timing hypothesis is existing-edge tile-predicate
+preparation/local control, with RAW/owner-tag/refill regressions retained in the
+evidence. This does not close the broader V124 or V125 roadmap exits below.
+
 **V123 measured follow-up:** [prepared scratch rank](cu66-v123/README.md) passes
 all functional gates with exact cycles. The fresh 125 MHz route improves from
 V122's −1.949 ns to **−1.086 ns WNS**, with 6,724 setup failures; it remains

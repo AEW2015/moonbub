@@ -1,0 +1,1057 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2026.1 (lin64) Build 6511674 Tue Jun 16 11:01:26 MDT 2026
+| Date         : Tue Nov 10 05:14:19 2026
+| Host         : geto running 64-bit Ubuntu 22.04.5 LTS
+| Command      : report_timing -from [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *refill_queue/prepared_req_addr_reg* && REF_NAME =~ FD*}] -filter {REF_PIN_NAME == Q}] -to [get_pins -quiet -of_objects [get_cells -quiet -hierarchical -filter {NAME =~ *admission/memory_reg* && REF_NAME =~ RAMB*}] -filter {REF_PIN_NAME == ENARDEN || REF_PIN_NAME == ENBWREN}] -delay_type max -max_paths 50 -nworst 1 -path_type full_clock_expanded -file /output/refill_prepared_req_addr-to-admission_ram_enable.rpt
+| Design       : cs88_pipeline_v91k
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+| Design State : Routed
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -0.059ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_0_1/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.532ns  (logic 1.858ns (24.669%)  route 5.674ns (75.331%))
+  Logic Levels:           7  (CARRY4=4 LUT3=1 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          1.249     7.595    coefficients/admission/ram_epoch[0]
+    SLICE_X61Y165        LUT3 (Prop_lut3_I2_O)        0.124     7.719 r  coefficients/admission/memory_reg_0_1_ENBWREN_cooolgate_en_gate_36/O
+                         net (fo=1, routed)           0.786     8.505    coefficients/admission/memory_reg_0_1_ENBWREN_cooolgate_en_sig_19
+    RAMB36_X1Y34         RAMB36E1                                     r  coefficients/admission/memory_reg_0_1/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X1Y34         RAMB36E1                                     r  coefficients/admission/memory_reg_0_1/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X1Y34         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_0_1
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -8.505    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.059    <hidden>
+
+Slack (VIOLATED) :        -0.022ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_0_4/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.495ns  (logic 1.858ns (24.789%)  route 5.637ns (75.211%))
+  Logic Levels:           7  (CARRY4=4 LUT3=1 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          1.272     7.617    coefficients/admission/ram_epoch[0]
+    SLICE_X68Y137        LUT3 (Prop_lut3_I2_O)        0.124     7.741 r  coefficients/admission/memory_reg_0_4_ENBWREN_cooolgate_en_gate_42/O
+                         net (fo=1, routed)           0.727     8.468    coefficients/admission/memory_reg_0_4_ENBWREN_cooolgate_en_sig_22
+    RAMB36_X1Y28         RAMB36E1                                     r  coefficients/admission/memory_reg_0_4/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X1Y28         RAMB36E1                                     r  coefficients/admission/memory_reg_0_4/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X1Y28         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_0_4
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -8.468    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.022    <hidden>
+
+Slack (VIOLATED) :        -0.021ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_0_2/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.494ns  (logic 1.858ns (24.793%)  route 5.636ns (75.207%))
+  Logic Levels:           7  (CARRY4=4 LUT3=1 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          1.504     7.850    coefficients/admission/ram_epoch[0]
+    SLICE_X81Y142        LUT3 (Prop_lut3_I2_O)        0.124     7.974 r  coefficients/admission/memory_reg_0_2_ENBWREN_cooolgate_en_gate_38/O
+                         net (fo=1, routed)           0.493     8.467    coefficients/admission/memory_reg_0_2_ENBWREN_cooolgate_en_sig_20
+    RAMB36_X3Y28         RAMB36E1                                     r  coefficients/admission/memory_reg_0_2/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X3Y28         RAMB36E1                                     r  coefficients/admission/memory_reg_0_2/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X3Y28         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_0_2
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -8.467    <hidden>
+  -------------------------------------------------------------------
+                         slack                                 -0.021    <hidden>
+
+Slack (MET) :             0.077ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_0_6/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.396ns  (logic 1.858ns (25.123%)  route 5.538ns (74.877%))
+  Logic Levels:           7  (CARRY4=4 LUT3=1 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          0.785     7.130    coefficients/admission/ram_epoch[0]
+    SLICE_X61Y142        LUT3 (Prop_lut3_I2_O)        0.124     7.254 r  coefficients/admission/memory_reg_0_6_ENBWREN_cooolgate_en_gate_46/O
+                         net (fo=1, routed)           1.114     8.369    coefficients/admission/memory_reg_0_6_ENBWREN_cooolgate_en_sig_24
+    RAMB36_X2Y26         RAMB36E1                                     r  coefficients/admission/memory_reg_0_6/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X2Y26         RAMB36E1                                     r  coefficients/admission/memory_reg_0_6/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X2Y26         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_0_6
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -8.369    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.077    <hidden>
+
+Slack (MET) :             0.168ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_0_7/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.305ns  (logic 1.858ns (25.435%)  route 5.447ns (74.565%))
+  Logic Levels:           7  (CARRY4=4 LUT3=1 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          0.918     7.264    coefficients/admission/ram_epoch[0]
+    SLICE_X67Y142        LUT3 (Prop_lut3_I2_O)        0.124     7.388 r  coefficients/admission/memory_reg_0_7_ENBWREN_cooolgate_en_gate_48/O
+                         net (fo=1, routed)           0.890     8.278    coefficients/admission/memory_reg_0_7_ENBWREN_cooolgate_en_sig_25
+    RAMB36_X1Y26         RAMB36E1                                     r  coefficients/admission/memory_reg_0_7/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X1Y26         RAMB36E1                                     r  coefficients/admission/memory_reg_0_7/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X1Y26         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_0_7
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -8.278    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.168    <hidden>
+
+Slack (MET) :             0.178ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_0_5/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.295ns  (logic 1.858ns (25.469%)  route 5.437ns (74.531%))
+  Logic Levels:           7  (CARRY4=4 LUT3=1 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          0.955     7.300    coefficients/admission/ram_epoch[0]
+    SLICE_X61Y142        LUT3 (Prop_lut3_I2_O)        0.124     7.424 r  coefficients/admission/memory_reg_0_5_ENBWREN_cooolgate_en_gate_44/O
+                         net (fo=1, routed)           0.844     8.268    coefficients/admission/memory_reg_0_5_ENBWREN_cooolgate_en_sig_23
+    RAMB36_X2Y28         RAMB36E1                                     r  coefficients/admission/memory_reg_0_5/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X2Y28         RAMB36E1                                     r  coefficients/admission/memory_reg_0_5/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X2Y28         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_0_5
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -8.268    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.178    <hidden>
+
+Slack (MET) :             0.296ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_1_1/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        7.177ns  (logic 1.734ns (24.162%)  route 5.443ns (75.838%))
+  Logic Levels:           6  (CARRY4=4 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          1.804     8.150    coefficients/admission/ram_epoch[0]
+    RAMB36_X1Y35         RAMB36E1                                     r  coefficients/admission/memory_reg_1_1/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X1Y35         RAMB36E1                                     r  coefficients/admission/memory_reg_1_1/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X1Y35         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_1_1
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -8.150    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.296    <hidden>
+
+Slack (MET) :             0.540ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_0_3/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.933ns  (logic 1.858ns (26.799%)  route 5.075ns (73.201%))
+  Logic Levels:           7  (CARRY4=4 LUT3=1 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          0.855     7.201    coefficients/admission/ram_epoch[0]
+    SLICE_X61Y162        LUT3 (Prop_lut3_I2_O)        0.124     7.325 r  coefficients/admission/memory_reg_0_3_ENBWREN_cooolgate_en_gate_40/O
+                         net (fo=1, routed)           0.581     7.906    coefficients/admission/memory_reg_0_3_ENBWREN_cooolgate_en_sig_21
+    RAMB36_X1Y32         RAMB36E1                                     r  coefficients/admission/memory_reg_0_3/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X1Y32         RAMB36E1                                     r  coefficients/admission/memory_reg_0_3/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X1Y32         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_0_3
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -7.906    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.540    <hidden>
+
+Slack (MET) :             0.576ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_1_6/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.897ns  (logic 1.734ns (25.141%)  route 5.163ns (74.859%))
+  Logic Levels:           6  (CARRY4=4 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          1.524     7.870    coefficients/admission/ram_epoch[0]
+    RAMB36_X2Y27         RAMB36E1                                     r  coefficients/admission/memory_reg_1_6/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X2Y27         RAMB36E1                                     r  coefficients/admission/memory_reg_1_6/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X2Y27         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_1_6
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -7.870    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.576    <hidden>
+
+Slack (MET) :             0.728ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_1_2/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.745ns  (logic 1.734ns (25.709%)  route 5.011ns (74.291%))
+  Logic Levels:           6  (CARRY4=4 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          1.372     7.718    coefficients/admission/ram_epoch[0]
+    RAMB36_X3Y29         RAMB36E1                                     r  coefficients/admission/memory_reg_1_2/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X3Y29         RAMB36E1                                     r  coefficients/admission/memory_reg_1_2/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X3Y29         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_1_2
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -7.718    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.728    <hidden>
+
+Slack (MET) :             0.750ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_1_3/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.723ns  (logic 1.734ns (25.791%)  route 4.989ns (74.209%))
+  Logic Levels:           6  (CARRY4=4 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          1.351     7.696    coefficients/admission/ram_epoch[0]
+    RAMB36_X1Y33         RAMB36E1                                     r  coefficients/admission/memory_reg_1_3/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X1Y33         RAMB36E1                                     r  coefficients/admission/memory_reg_1_3/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X1Y33         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_1_3
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -7.696    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.750    <hidden>
+
+Slack (MET) :             0.803ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_0_0/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.670ns  (logic 1.858ns (27.858%)  route 4.812ns (72.142%))
+  Logic Levels:           7  (CARRY4=4 LUT3=1 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          0.592     6.937    coefficients/admission/ram_epoch[0]
+    SLICE_X61Y152        LUT3 (Prop_lut3_I2_O)        0.124     7.061 r  coefficients/admission/memory_reg_0_0_ENBWREN_cooolgate_en_gate_34/O
+                         net (fo=1, routed)           0.581     7.643    coefficients/admission/memory_reg_0_0_ENBWREN_cooolgate_en_sig_18
+    RAMB36_X1Y30         RAMB36E1                                     r  coefficients/admission/memory_reg_0_0/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X1Y30         RAMB36E1                                     r  coefficients/admission/memory_reg_0_0/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X1Y30         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_0_0
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -7.643    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.803    <hidden>
+
+Slack (MET) :             0.927ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_1_5/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.546ns  (logic 1.734ns (26.491%)  route 4.812ns (73.509%))
+  Logic Levels:           6  (CARRY4=4 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          1.173     7.519    coefficients/admission/ram_epoch[0]
+    RAMB36_X2Y29         RAMB36E1                                     r  coefficients/admission/memory_reg_1_5/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X2Y29         RAMB36E1                                     r  coefficients/admission/memory_reg_1_5/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X2Y29         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_1_5
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -7.519    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.927    <hidden>
+
+Slack (MET) :             0.963ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_1_7/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.510ns  (logic 1.734ns (26.635%)  route 4.776ns (73.365%))
+  Logic Levels:           6  (CARRY4=4 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          1.137     7.483    coefficients/admission/ram_epoch[0]
+    RAMB36_X1Y27         RAMB36E1                                     r  coefficients/admission/memory_reg_1_7/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X1Y27         RAMB36E1                                     r  coefficients/admission/memory_reg_1_7/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X1Y27         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_1_7
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -7.483    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  0.963    <hidden>
+
+Slack (MET) :             1.174ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_1_0/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.299ns  (logic 1.734ns (27.530%)  route 4.565ns (72.470%))
+  Logic Levels:           6  (CARRY4=4 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          0.926     7.272    coefficients/admission/ram_epoch[0]
+    RAMB36_X1Y31         RAMB36E1                                     r  coefficients/admission/memory_reg_1_0/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X1Y31         RAMB36E1                                     r  coefficients/admission/memory_reg_1_0/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X1Y31         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_1_0
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -7.272    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  1.174    <hidden>
+
+Slack (MET) :             1.344ns  (required time - arrival time)
+  Source:                 coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+                            (rising edge-triggered cell FDRE clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Destination:            coefficients/admission/memory_reg_1_4/ENBWREN
+                            (rising edge-triggered cell RAMB36E1 clocked by component_clk  {rise@0.000ns fall@4.000ns period=8.000ns})
+  Path Group:             component_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            8.000ns  (component_clk rise@8.000ns - component_clk rise@0.000ns)
+  Data Path Delay:        6.129ns  (logic 1.734ns (28.293%)  route 4.395ns (71.707%))
+  Logic Levels:           6  (CARRY4=4 LUT4=1 LUT6=1)
+  Clock Path Skew:        -0.049ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    0.924ns = ( 8.924 - 8.000 ) 
+    Source Clock Delay      (SCD):    0.973ns
+    Clock Pessimism Removal (CPR):    0.000ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock component_clk rise edge)
+                                                      0.000     0.000 r  <hidden>
+                                                      0.000     0.000 r  clk
+                         net (fo=44039, unset)        0.973     0.973    coefficients/refill_overlap_enabled.refill_queue/clk
+    SLICE_X29Y147        FDRE                                         r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y147        FDRE (Prop_fdre_C_Q)         0.419     1.392 r  coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[3]/Q
+                         net (fo=5, routed)           1.274     2.666    coefficients/refill_overlap_enabled.refill_queue/prepared_req_addr_reg[31]_0[3]
+    SLICE_X23Y150        LUT4 (Prop_lut4_I0_O)        0.299     2.965 r  coefficients/refill_overlap_enabled.refill_queue/frame_read_req_INST_0_i_75/O
+                         net (fo=1, routed)           0.000     2.965    coefficients/admission/S[1]
+    SLICE_X23Y150        CARRY4 (Prop_carry4_S[1]_CO[3])
+                                                      0.550     3.515 r  coefficients/admission/frame_read_req_INST_0_i_60/CO[3]
+                         net (fo=1, routed)           0.000     3.515    coefficients/admission/frame_read_req_INST_0_i_60_n_0
+    SLICE_X23Y151        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.629 r  coefficients/admission/frame_read_req_INST_0_i_43/CO[3]
+                         net (fo=1, routed)           0.000     3.629    coefficients/admission/frame_read_req_INST_0_i_43_n_0
+    SLICE_X23Y152        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.743 r  coefficients/admission/frame_read_req_INST_0_i_25/CO[3]
+                         net (fo=1, routed)           0.000     3.743    coefficients/admission/frame_read_req_INST_0_i_25_n_0
+    SLICE_X23Y153        CARRY4 (Prop_carry4_CI_CO[3])
+                                                      0.114     3.857 r  coefficients/admission/frame_read_req_INST_0_i_15/CO[3]
+                         net (fo=3, routed)           2.364     6.222    coefficients/admission/replay_ready0
+    SLICE_X60Y149        LUT6 (Prop_lut6_I1_O)        0.124     6.346 r  coefficients/admission/ram_addr[31]_i_1/O
+                         net (fo=80, routed)          0.756     7.102    coefficients/admission/ram_epoch[0]
+    RAMB36_X1Y29         RAMB36E1                                     r  coefficients/admission/memory_reg_1_4/ENBWREN
+  -------------------------------------------------------------------    -------------------
+
+                         (clock component_clk rise edge)
+                                                      8.000     8.000 r  <hidden>
+                                                      0.000     8.000 r  clk
+                         net (fo=44039, unset)        0.924     8.924    coefficients/admission/clk
+    RAMB36_X1Y29         RAMB36E1                                     r  coefficients/admission/memory_reg_1_4/CLKBWRCLK
+                         clock pessimism              0.000     8.924    <hidden>
+                         clock uncertainty           -0.035     8.889    <hidden>
+    RAMB36_X1Y29         RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ENBWREN)
+                                                     -0.443     8.446    coefficients/admission/memory_reg_1_4
+  -------------------------------------------------------------------
+                         required time                          8.446    <hidden>
+                         arrival time                          -7.102    <hidden>
+  -------------------------------------------------------------------
+                         slack                                  1.344    <hidden>
+
+
+
+

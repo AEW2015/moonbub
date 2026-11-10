@@ -1,5 +1,11 @@
 # V123: prepared scratch rank and spatial-overlap prototypes
 
+**Continuation:** [V124 implements the proposed owner-lane experiment](../cu66-v124/README.md).
+Its busy-return path improves, but global 125 MHz setup regresses to −1.170 ns
+and remains unqualified. V124 also adds actual native endpoint parity and a
+source-bound QSPI/JPEG replay; the full endpoint/hardware milestones remain open.
+The V123 results and next-trial proposal below retain their historical scope.
+
 **V123 improves timing, but still fails 125 MHz and is not promoted.**
 The [routed results](timing-results.md) are WNS −1.086 ns, TNS −1,709.649 ns and
 6,724 setup failures, versus V122's −1.949 ns/−4,597.575 ns/11,866 failures.

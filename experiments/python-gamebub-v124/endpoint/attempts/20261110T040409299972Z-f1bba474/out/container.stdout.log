@@ -1,0 +1,36 @@
+error[E0382]: borrow of moved value: `recovered`
+  --> src/receiver_probe.rs:81:179
+   |
+20 | ...et mut recovered = Vec::<u8>::new();
+   |       ------------- move occurs because `recovered` has type `Vec<u8>`, which does not implement the `Copy` trait
+...
+77 | ...s::write(&args[2], recovered)?;
+   |                       --------- value moved here
+...
+81 | ...println!("receiver_probe accepted_datagrams={accepted_datagrams} accepted_payload_bytes={accepted_payload_bytes} recovered_bytes={} dropped={dropped} events={event_count}", recovered.le...
+   |                                                                                                                                                                                 ^^^^^^^^^ value borrowed here after move
+   |
+help: consider borrowing `recovered`
+   |
+77 |     fs::write(&args[2], &recovered)?;
+   |                         +
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0382`.
+Traceback (most recent call last):
+  File "/attempt/src/run.py", line 275, in <module>
+    if __name__=='__main__': main()
+                             ^^^^^^
+  File "/attempt/src/run.py", line 268, in main
+    if a.inside: inside(a.inside); return
+                 ^^^^^^^^^^^^^^^^
+  File "/attempt/src/run.py", line 201, in inside
+    run(cxx,cwd=d); run(rust,cwd=d)
+                    ^^^^^^^^^^^^^^^
+  File "/attempt/src/run.py", line 26, in run
+    def run(cmd,**kw): return subprocess.run([str(x) for x in cmd],check=True,**kw)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/opt/gamebub-tools/cargo/bin/rustc', '+stable', '--edition=2021', '-D', 'warnings', 'src/receiver_probe.rs', '-o', 'bin/receiver_probe']' returned non-zero exit status 1.
