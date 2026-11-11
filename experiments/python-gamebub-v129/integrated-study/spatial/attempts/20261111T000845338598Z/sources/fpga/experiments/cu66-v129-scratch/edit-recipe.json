@@ -1,0 +1,48 @@
+{
+  "added_production_registers": 0,
+  "added_public_cycles": 0,
+  "baseline": {
+    "path": "fpga/experiments/cu66-v128-raw/packed_scratch_v91g2.sv",
+    "sha256": "4254026004142414376d9b848f7b50f05d8a484b7f932b5c91d0a5a7efde92c4"
+  },
+  "candidate": {
+    "path": "fpga/experiments/cu66-v129-scratch/packed_scratch_v91g2.sv",
+    "sha256": "45d6be3128a8e8840f3033a1205be979340e9744b3989189057cfae96edb63be"
+  },
+  "edits": [
+    {
+      "new": "    logic [2:0] phase;\n    // V129: evaluate each full-width count comparison before phase selection.\n    // No stored payload, reset, enable, interface, or cycle is added.\n    wire [3:0] band_count_matches;\n    for(genvar count_lane=0;count_lane<4;count_lane=count_lane+1)begin: band_count_lanes\n        assign band_count_matches[count_lane]=written==counts[count_lane];\n    end\n    wire selected_band_count_match=band_count_matches[phase[1:0]];\n",
+      "occurrences": 1,
+      "old": "    logic [2:0] phase;\n",
+      "tag": "four_full32_count_lanes"
+    },
+    {
+      "new": "band_end_epoch==active_epoch && band_end_band==phase[1:0] && selected_band_count_match",
+      "occurrences": 1,
+      "old": "band_end_epoch==active_epoch && band_end_band==phase[1:0] && written==counts[phase[1:0]]",
+      "tag": "debug_enqueue_equality"
+    },
+    {
+      "new": "band_end_epoch!=active_epoch || band_end_band!=phase[1:0] || !selected_band_count_match",
+      "occurrences": 1,
+      "old": "band_end_epoch!=active_epoch || band_end_band!=phase[1:0] || written!=counts[phase[1:0]]",
+      "tag": "original_error_priority_inequality"
+    }
+  ],
+  "full_count_width": 32,
+  "memory_request_ack_logic_unchanged": true,
+  "original_assertions_retained": true,
+  "original_error_priority_unchanged": true,
+  "phase_selection_bits": 2,
+  "phase_width": 3,
+  "preparer": {
+    "path": "scripts/cu66-v129-scratch/prepare.py",
+    "sha256": "0ed749ac0562e19b9d9fde3228d541264fcf68ed5b52b8df9aadf2c1be0791ea"
+  },
+  "reverse_byte_exact": true,
+  "schema": "v129-scratch-full32-band-count-factor-v1",
+  "scope": "Two-state Boolean identity for all count values and phases, including invalid/unready views. Physical mapping and four-state behavior need separate evidence.",
+  "source_alias": "fpga/experiments/cu66-v91g2/packed_scratch_v91g2.sv",
+  "status": "SOURCE_PREPARED_NOT_RTL_QUALIFIED",
+  "synthesis_attributes_added": 0
+}
