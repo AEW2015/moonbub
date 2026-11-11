@@ -1,0 +1,18 @@
+{
+  "candidate_sha256": "fdc98933ca4f0becc19d9a3b5b6eca156ca9d335a210ba79020b1e405cfe52c2",
+  "contract": "unchanged public cycles; valid-qualified raw data inherited from speculative-read baseline",
+  "edits": [
+    {
+      "new": "    logic active_cell [0:1349];\n    // Read on the existing MODE_END and preceding ACTIVE_SCAN edges.\n    // The bit is unowned after cancel; no payload reset or extra public cycle.\n    logic active_scan_value;\n    always_ff @(posedge clk) begin\n        if(state==MODE_END)\n            active_scan_value<=active_cell[0];\n        else if(state==ACTIVE_SCAN && active_index<1349)\n            active_scan_value<=active_cell[active_index[10:0]+11'd1];\n    end\n`ifndef SYNTHESIS\n    logic scan_owner_valid=0;\n    logic [31:0] scan_owner_index, scan_owner_epoch;\n    always_ff @(posedge clk)begin\n        if(reset||start||abort_packet)scan_owner_valid<=0;\n        else if(state==MODE_END)begin\n            scan_owner_valid<=1;scan_owner_index<=0;scan_owner_epoch<=receipt_epoch;\n        end else if(state==ACTIVE_SCAN && active_index<1349)begin\n            scan_owner_valid<=1;scan_owner_index<=active_index+1;scan_owner_epoch<=receipt_epoch;\n        end else if(state!=ACTIVE_SCAN)scan_owner_valid<=0;\n    end\n    always_ff @(posedge clk)if(!reset&&!start&&!abort_packet&&state==ACTIVE_SCAN)begin\n        assert(active_index<=1350)else $fatal(1,\"scan index outside reachable range\");\n        if(active_index<1350)begin\n            assert(scan_owner_valid&&scan_owner_index==active_index&&scan_owner_epoch==receipt_epoch)\n                else $fatal(1,\"scan lookahead owner/index mismatch\");\n            assert(active_scan_value==active_cell[active_index[10:0]])\n                else $fatal(1,\"scan lookahead data mismatch\");\n        end\n    end\n`endif",
+      "old": "    logic active_cell [0:1349];"
+    },
+    {
+      "new": "if(active_scan_value)required_cells<=required_cells+1;",
+      "old": "if(active_cell[active_index[10:0]])required_cells<=required_cells+1;"
+    }
+  ],
+  "schema": "v130-active-lookahead-v1",
+  "source": "fpga/experiments/cu66-v130-spec-read/cs88_admission_v91i2a.sv",
+  "source_sha256": "0b7131bbccc7c9cbc794b51a205210a32138f74bc751d5d8679a87745acb7168",
+  "status": "PREPARED_NOT_QUALIFIED"
+}

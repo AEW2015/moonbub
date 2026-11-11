@@ -1,0 +1,34 @@
+{
+  "added_pending_eligibility_assertions": 1,
+  "all_original_need_checks_retained": true,
+  "api_change": "Public start E/cache assertion/original metadata poison retained; one actual E+1 delivery tick before activating new-frame diagnostics; all reply/drain checks unchanged. V117 keeps the original hold needs/watchdog/seven checks, but establishes both reconstruction owners READY before selecting its permanent capacity stall.",
+  "derived": "fpga/experiments/cu66-v117-harness/bench_command_api.cpp",
+  "derived_sha256": "1e741341d18fcde01cdd18ef752a9c88db0e8837ca10898cd015d723aceb4c90",
+  "edits": [
+    {
+      "after": "tick();d.start=0;need(!d.cache_complete",
+      "before": "tick();d.start=0;monitor_active=true;need(!d.cache_complete"
+    },
+    {
+      "after": "        d.accepted_ref_valid=!c.ref_valid;d.accepted_qcache_valid=!c.qvalid;d.accepted_ref_fid=~c.ref_fid;d.accepted_ref_generation=~c.ref_gen;\n        need(!d.start_ready&&!d.in_ready&&!d.cache_ready&&!d.coefficient_valid&&!d.coefficient_ready&&!d.residual_valid&&!d.residual_ready&&!d.out_valid&&!d.mem_req_valid&&!d.ref_req_valid,\"pending IV114 command exposed transfer eligibility\");\n        tick();monitor_active=true;\n    }\n    void feed_until",
+      "before": "        d.accepted_ref_valid=!c.ref_valid;d.accepted_qcache_valid=!c.qvalid;d.accepted_ref_fid=~c.ref_fid;d.accepted_ref_generation=~c.ref_gen;\n    }\n    void feed_until"
+    },
+    {
+      "after": "        // V117 has two owners: a transient mode/math stall can legally end\n        // while one canonical head is held. Establish actual capacity-full\n        // ownership before retaining the original seven-edge permanent stall.\n        auto both_reconstruction_ready=[&](){const auto&r=*b.d.rootp;return\n            r.cs88_pipeline_v91k__DOT__reconstruction__DOT__owner_state[0]==3&&\n            r.cs88_pipeline_v91k__DOT__reconstruction__DOT__owner_state[1]==3&&\n            r.cs88_pipeline_v91k__DOT__reconstruction__DOT__owned_tiles==2;};\n        for(unsigned k=0;k<2000000&&!(b.d.residual_valid&&!b.d.residual_ready&&b.d.out_valid&&both_reconstruction_ready());++k){b.tick();}",
+      "before": "        for(unsigned k=0;k<2000000&&!(b.d.residual_valid&&!b.d.residual_ready&&b.d.out_valid);++k){b.tick();}"
+    },
+    {
+      "after": "        need(b.d.residual_valid&&!b.d.residual_ready&&b.d.out_valid,\"held residual/canonical outputs absent\");\n        need(both_reconstruction_ready()&&!b.d.reconstruct_lookup_req,\"two completed owners must block new lookup before held cancel test\");",
+      "before": "        need(b.d.residual_valid&&!b.d.residual_ready&&b.d.out_valid,\"held residual/canonical outputs absent\");"
+    },
+    {
+      "after": "        for(unsigned k=0;k<7;++k){b.tick();need(b.d.residual_valid&&!b.d.residual_ready&&b.d.out_valid,\"held outputs lost before cancel\");need(both_reconstruction_ready()&&!b.d.reconstruct_lookup_req,\"two held owners changed before cancel\");}",
+      "before": "        for(unsigned k=0;k<7;++k){b.tick();need(b.d.residual_valid&&!b.d.residual_ready&&b.d.out_valid,\"held outputs lost before cancel\");}"
+    }
+  ],
+  "old_harness_unchanged": true,
+  "original": "fpga/experiments/cu66-v107-elastic/verification/bench.cpp",
+  "original_frozen_bench_changed": false,
+  "original_sha256": "ec51ee82e4981d00a432aab633defd01e5fe638dbe999e4a41de2f2a5ad12384",
+  "schema": "v117-command-api-and-two-owner-hold-fixture-v1"
+}

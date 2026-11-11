@@ -1,0 +1,49 @@
+{
+  "added_attributes": 0,
+  "alias": "fpga/experiments/cu66-v91/br88_rice_elastic.sv",
+  "candidate": {
+    "path": "fpga/experiments/cu66-v129-parser/br88_rice_elastic.sv",
+    "sha256": "55ae4bb5678626ab37c469d47d3fd9f23d0df920ebca575b38d0e55a114e834f"
+  },
+  "edits": [
+    {
+      "after": "    logic [5:0] suffix_take_bits;\n    // Independent existing-edge response candidates; no new state.\n    logic [5:0] prefix_response_take;\n    logic [31:0] prefix_response_consumed, suffix_response_consumed;\n    logic suffix_response_truncated;\n",
+      "before": "    logic [5:0] suffix_take_bits;\n",
+      "count": 1
+    },
+    {
+      "after": "        suffix_take_bits=serial && suffix_left!=0 ? 6'd1 : 6'(suffix_left);\n        prefix_response_take=serial ? 6'd1 :\n            (found_one ? 6'(prefix_rank)+6'd1 : window);\n        prefix_response_consumed=consumed+32'(prefix_response_take);\n        suffix_response_consumed=consumed+32'(suffix_take_bits);\n        suffix_response_truncated=!(|remaining[31:5]) && remaining[4:0]<suffix_left;\n",
+      "before": "        suffix_take_bits=serial && suffix_left!=0 ? 6'd1 : 6'(suffix_left);\n",
+      "count": 1
+    },
+    {
+      "after": "                        output_zero<=1; out_consumed<=prefix_response_consumed; state<=RESPONSE;\n",
+      "before": "                        output_zero<=1; out_consumed<=consumed+32'(take_bits); state<=RESPONSE;\n",
+      "count": 1
+    },
+    {
+      "after": "                if (suffix_response_truncated) respond_error(TRUNCATED);\n",
+      "before": "                if (remaining<32'(suffix_left)) respond_error(TRUNCATED);\n",
+      "count": 1
+    },
+    {
+      "after": "                        out_consumed<=suffix_response_consumed; state<=RESPONSE;\n",
+      "before": "                        out_consumed<=consumed+32'(take_bits); state<=RESPONSE;\n",
+      "count": 1
+    }
+  ],
+  "functional_or_timing_qualified": false,
+  "new_public_cycles": 0,
+  "new_state_bits": 0,
+  "original": {
+    "path": "fpga/experiments/cu66-v116-rice/br88_rice_elastic.sv",
+    "sha256": "c118357680db9825786d8b78fd7222abb24f7bf2039f6174c61c6ed2edd7e4b9"
+  },
+  "original_guard_blocks_unchanged": true,
+  "prepare_sha256": "75561009d7953c40bc44c7cc8ac0f357ea3df9525515ecad08f07e4bbf4aa1c1",
+  "retained_guard_blocks": 4,
+  "reverse_reconstruction_exact": true,
+  "schema": "v129-rice-response-split-recipe-v1",
+  "scope": "Source-level response-path duplication and full32-preserving suffix comparison; physical sharing and timing require measurement.",
+  "status": "CANDIDATE_PREPARED_NOT_QUALIFIED"
+}

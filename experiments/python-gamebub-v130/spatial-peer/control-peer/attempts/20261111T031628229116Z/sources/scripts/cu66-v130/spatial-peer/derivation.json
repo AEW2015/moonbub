@@ -1,0 +1,178 @@
+{
+  "added_masks_to_parent_oracles": 0,
+  "original_oracle_checks_removed": 0,
+  "schema": "v130-spatial-peer-explicit-derivation-v1",
+  "sources": [
+    {
+      "candidate": "scripts/cu66-v130/spatial-peer/spatial.py",
+      "candidate_sha256": "17cf450f9177ae8b532c6884e7b2e8e594e4c56e6e86dd08c8bf3b3633489761",
+      "edits": [
+        {
+          "after": "AREA=ROOT/'experiments/python-gamebub-v130/spatial-peer/spatial'",
+          "before": "AREA=ROOT/'experiments/python-gamebub-v129/integrated-study/spatial'",
+          "count": 1
+        },
+        {
+          "after": "B_CANONICAL=ROOT/'experiments/python-gamebub-v129/integrated-study/spatial/results.json'",
+          "before": "B_CANONICAL=ROOT/'experiments/python-gamebub-v128/integrated-study/spatial/results.json'",
+          "count": 1
+        },
+        {
+          "after": "b['status']=='PASS_V129_FINAL_SPATIAL_CANONICAL'",
+          "before": "b['status']=='PASS_V128_FINAL_SPATIAL_CANONICAL'",
+          "count": 1
+        },
+        {
+          "after": "def prepare_v129(require_proofs):",
+          "before": "def prepare(require_proofs):",
+          "count": 1
+        },
+        {
+          "after": "def prepare(require_proofs):\n # The V129 proof and baseline remain frozen; replace admission only afterward.\n base,baseline_receipt,sources,origins,replacements,packaging,files=prepare_v129(require_proofs)\n import runpy\n helper=runpy.run_path(str(ROOT/'scripts/cu66-v130/full-parent/preflight.py'))\n sources,origins,packaging,extra=helper['overlay'](sources,origins,require_proofs)\n replacement=next(x for x in replacements if x['alias']=='fpga/experiments/cu66-v91i2/cs88_admission_v91i2a.sv')\n candidate=next(x for x in sources if x.name=='cs88_admission_v91i2a.sv')\n replacement.update(candidate=rel(candidate),candidate_sha256=sha(candidate))\n b=load(B_CANONICAL);br=(ROOT/b['selected_receipt']).parent\n retained=[br/run['artifacts'][key]['path'] for field in ('runs','transport_runs') for run in b[field] for key in ('events','canonical_actual')]\n files=sorted(set(files+extra+retained+[ROOT/'scripts/cu66-v130/spatial-peer/freeze.py',ROOT/'scripts/cu66-v130/spatial-peer/derivation.json',ROOT/'experiments/python-gamebub-v130/audit/parent-independent.json',ROOT/'experiments/python-gamebub-v130/full-parent/results.json']))\n return base,baseline_receipt,sources,origins,replacements,packaging,files\n\ndef semantic_events(actual,baseline_gz,stdout,prefix):",
+          "before": "def semantic_events(actual,baseline_gz,stdout,prefix):",
+          "count": 1
+        },
+        {
+          "after": "ap.add_argument('--run',action='store_true');ap.add_argument('--freeze-only',action='store_true');ap.add_argument('--root-grant');ap.add_argument('--attempt-id');",
+          "before": "ap.add_argument('--run',action='store_true');ap.add_argument('--attempt-id');",
+          "count": 1
+        },
+        {
+          "after": " if a.freeze_only:\n  import runpy\n  runpy.run_path(str(ROOT/'scripts/cu66-v130/spatial-peer/freeze.py'))['freeze']('spatial',files,sources,origins);return\n if not a.run:print('SPATIAL_V130_PREPARED_NOT_RUN',json.dumps(replacements));return\n assert a.root_grant=='ROOT_V130_EXPLORATORY_SPATIAL'\n import runpy\n preflight=ROOT/'experiments/python-gamebub-v130/spatial-peer/preflight-spatial.json'\n runpy.run_path(str(ROOT/'scripts/cu66-v130/spatial-peer/freeze.py'))['verify']('spatial',files,sources,origins)\n files=sorted(set(files+[preflight]))",
+          "before": " if not a.run:print('V129_SPATIAL_PREPARED_NOT_RUN',json.dumps(replacements));return",
+          "count": 1
+        },
+        {
+          "after": "v130-spec-spatial",
+          "before": "v129-cuts-spatial",
+          "count": 4
+        },
+        {
+          "after": "v130-spec-study",
+          "before": "v129-cuts-study",
+          "count": 1
+        },
+        {
+          "after": "V130_SPATIAL",
+          "before": "V129_SPATIAL",
+          "count": 1
+        },
+        {
+          "after": "r['status']='PASS_V130_EXPLORATORY_SPATIAL_CANONICAL'",
+          "before": "r['status']='PASS_V129_FINAL_SPATIAL_CANONICAL'",
+          "count": 1
+        },
+        {
+          "after": "V130 speculative admission validation; exactly one origin changes from frozen V129; all other 17 origins",
+          "before": "V129 parser and scratch validation; exactly two origins change from frozen V128; all other 16 origins",
+          "count": 1
+        },
+        {
+          "after": " while checked public-event cycle traces are required to match",
+          "before": " and exact public cycles remain unchanged",
+          "count": 1
+        },
+        {
+          "after": "public_cycle_equivalence_claim=False",
+          "before": "public_cycle_equivalence_claim=True",
+          "count": 1
+        },
+        {
+          "after": "Recorded stdout, event cycles, canonical hashes, error priority and physical debt must match V129; no all-public-port-cycle contract is asserted",
+          "before": "All public values, ordering, event cycles, canonical hashes, error priority and physical debt are exact to Source B",
+          "count": 1
+        },
+        {
+          "after": "   assert (out/(prefix+'-simulation.jsonl')).read_bytes()==(broot/(prefix+'-simulation.jsonl')).read_bytes(),'V129 raw stdout differs'\n   bc=next(x for x in bcontrol['runs']if x['seed']==seed)",
+          "before": "   bc=next(x for x in bcontrol['runs']if x['seed']==seed)",
+          "count": 1
+        },
+        {
+          "after": "   assert (out/(prefix+'-simulation.jsonl')).read_bytes()==(broot/(prefix+'-simulation.jsonl')).read_bytes(),'V129 transport raw stdout differs'\n   bc=next(x for x in bcontrol['transport_runs']if x['seed']==seed)",
+          "before": "   bc=next(x for x in bcontrol['transport_runs']if x['seed']==seed)",
+          "count": 1
+        },
+        {
+          "after": "path=build/(prefix+'-canonical.tsv');old=reference['artifacts']['canonical_actual'];assert sha(path)==old['raw_sha256'],'canonical accepted pixel bytes differ';assert path.read_bytes()==gzip.decompress((broot/bc['artifacts']['canonical_actual']['path']).read_bytes()),'V129 canonical raw differs'",
+          "before": "path=build/(prefix+'-canonical.tsv');old=reference['artifacts']['canonical_actual'];assert sha(path)==old['raw_sha256'],'canonical accepted pixel bytes differ'",
+          "count": 1
+        },
+        {
+          "after": "path=build/(prefix+'-canonical.tsv');assert sha(path)==reference['artifacts']['canonical_actual']['raw_sha256'],'transport canonical accepted pixel bytes differ';assert path.read_bytes()==gzip.decompress((broot/bc['artifacts']['canonical_actual']['path']).read_bytes()),'V129 transport canonical raw differs'",
+          "before": "path=build/(prefix+'-canonical.tsv');assert sha(path)==reference['artifacts']['canonical_actual']['raw_sha256'],'transport canonical accepted pixel bytes differ'",
+          "count": 1
+        },
+        {
+          "after": " r['candidate_scope']=dict(parent_masks=[],focused_pair_valid_qualified_only=['replay_data when replay_rsp_valid','stage_read_data when stage_read_rsp'],invalid_cycle_data_may_differ=True,external_debug_consumer_contract='unverified',all_public_ports_cycle_compared=False,hardware_or_timing_qualified=False)\n started=time.monotonic();worker=threading.local()",
+          "before": " started=time.monotonic();worker=threading.local()",
+          "count": 1
+        }
+      ],
+      "original": "scripts/cu66-v129/integration/spatial.py",
+      "original_sha256": "b25c52ca9bb07ada39972991ee32b228204ed9782701d71adfd2fb2427a33d2a"
+    },
+    {
+      "candidate": "scripts/cu66-v130/spatial-peer/peer.py",
+      "candidate_sha256": "1009ed59cb1cb2fdfac36e8f0e847327edc80aaffb1fc0dfba44f871a0b59839",
+      "edits": [
+        {
+          "after": "A=R/'experiments/python-gamebub-v130/spatial-peer/control-peer'",
+          "before": "A=R/'experiments/python-gamebub-v129/integrated-study/control-peer'",
+          "count": 1
+        },
+        {
+          "after": "scripts/cu66-v130/spatial-peer/spatial.py",
+          "before": "scripts/cu66-v129/integration/spatial.py",
+          "count": 1
+        },
+        {
+          "after": "ap.add_argument('--run',action='store_true');ap.add_argument('--freeze-only',action='store_true');ap.add_argument('--root-grant');a=ap.parse_args()",
+          "before": "ap.add_argument('--run',action='store_true');a=ap.parse_args()",
+          "count": 1
+        },
+        {
+          "after": "_,bpath,baseline=contract['legacy']().resolve_stage(contract['load'](R/'experiments/python-gamebub-v129/integration/results.json')['stages']['peer']);contract['legacy']().verify_closure(bpath,baseline,'V129 peer baseline')",
+          "before": "bpath,baseline=contract['baseline']('control-peer')",
+          "count": 1
+        },
+        {
+          "after": " files=sorted(set(files+[bpath.parent/('peer-'+str(seed)+'-'+suffix) for seed in (115501,115502) for suffix in ('simulation.jsonl','events.jsonl.gz','canonical.tsv.gz')]))\n if a.freeze_only:\n  runpy.run_path(str(R/'scripts/cu66-v130/spatial-peer/freeze.py'))['freeze']('peer',files,sources,origins);return\n if not a.run:print('PEER_V130_PREPARED_NOT_RUN');return\n assert a.root_grant=='ROOT_V130_EXPLORATORY_PEER'\n preflight=R/'experiments/python-gamebub-v130/spatial-peer/preflight-peer.json'\n runpy.run_path(str(R/'scripts/cu66-v130/spatial-peer/freeze.py'))['verify']('peer',files,sources,origins)\n files=sorted(set(files+[preflight]))",
+          "before": " if not a.run:print('V129_CONTROL_PEER_PREPARED_NOT_RUN');return",
+          "count": 1
+        },
+        {
+          "after": "v130-spec-peer",
+          "before": "v129-cuts-peer",
+          "count": 2
+        },
+        {
+          "after": "V130_CONTROL_PEER",
+          "before": "V129_CONTROL_PEER",
+          "count": 1
+        },
+        {
+          "after": "one exploratory admission source differs from V129; no promotion or timing claim",
+          "before": "no production source or selected proof changes",
+          "count": 1
+        },
+        {
+          "after": "r.update(status='PASS_V130_EXPLORATORY_PEER',actual_RTL_run=True)",
+          "before": "r.update(status='PASS',actual_RTL_run=True)",
+          "count": 1
+        },
+        {
+          "after": "   assert lines==oldlines,'V129 peer stdout/event cycles changed'\n   assert (out/(prefix+'-simulation.jsonl')).read_bytes()==(bpath.parent/(prefix+'-simulation.jsonl')).read_bytes(),'V129 raw stdout differs'",
+          "before": "   assert lines==oldlines,'V121 peer stdout/event cycles changed from Source B'",
+          "count": 1
+        },
+        {
+          "after": " r['candidate_scope']=dict(parent_masks=[],focused_pair_valid_qualified_only=['replay_data when replay_rsp_valid','stage_read_data when stage_read_rsp'],invalid_cycle_data_may_differ=True,external_debug_consumer_contract='unverified',all_public_ports_cycle_compared=False,hardware_or_timing_qualified=False)\n started=time.monotonic()\n def command(argv,name,cap):",
+          "before": " started=time.monotonic()\n def command(argv,name,cap):",
+          "count": 1
+        }
+      ],
+      "original": "scripts/cu66-v129/integration/peer.py",
+      "original_sha256": "045be663cd997042dc75d681b91231b928c5df5295051314e786fa104c5c01b2"
+    }
+  ]
+}
